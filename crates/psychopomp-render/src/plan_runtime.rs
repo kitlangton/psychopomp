@@ -2,6 +2,7 @@ use std::{
     collections::HashMap,
     fs,
     io::{BufRead, Write},
+    num::NonZeroU32,
     path::{Path, PathBuf},
 };
 
@@ -21,7 +22,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::{
-    exposure::{HEIGHT, WIDTH},
+    exposure::{HEIGHT, RenderOptions, WIDTH},
     render::{HeadlessRenderer, RenderSpec, Theme},
 };
 
@@ -90,13 +91,13 @@ pub(crate) async fn render_builtin_hero(output: &Path) -> Result<()> {
     let window = plan_window(&plan, WindowSelection::Full)?;
     let (loaded, mut renderer) =
         still::Loaded::prepare(PlanFile::Plan(plan), Path::new("."), Theme::Original).await?;
-    loaded.render_video(&mut renderer, output, window)
+    loaded.render_video(&mut renderer, output, window, RenderOptions::default())
 }
 
 const FRAME_USAGE: &str =
     "psychopomp plan frame <plan-or-reel.json> <seconds> [output.png] [--shutter] [--theme NAME]";
 const SNAPSHOT_USAGE: &str = "psychopomp plan snapshot <plan-or-reel.json> <a,b,c | from:to:step> <dir> [--compare] [--shutter] [--theme NAME]";
-const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME]";
+const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME] [--fps FPS] [--samples COUNT]";
 const PRESENT_USAGE: &str = "psychopomp plan present <plan.json> [--theme NAME] [--speed 1|0.5|0.25|0.1] [--debug] [--reduced-motion] [--full-quality] [--fps FPS] [--benchmark | --benchmark-gpu]";
 
 fn usage() -> String {
@@ -121,8 +122,9 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
     };
     match (command.as_str(), arguments) {
         ("render", arguments) => {
-            let (arguments, theme) = delivery_theme(arguments)?;
-            render_command(&arguments, theme)
+            let (arguments, options) = render_options(arguments)?;
+            let (arguments, theme) = delivery_theme(&arguments)?;
+            render_command(&arguments, theme, options)
         }
         ("frame", arguments) => {
             let (arguments, theme) = delivery_theme(arguments)?;
@@ -256,7 +258,47 @@ fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
     delivery::write_png(&output, &loaded.still(&mut renderer, seconds, shutter)?)
 }
 
-fn render_command(arguments: &[String], theme: Theme) -> Result<()> {
+/// Remove export overrides before parsing the existing path and window arguments.
+fn render_options(arguments: &[String]) -> Result<(Vec<String>, RenderOptions)> {
+    let mut args = Vec::new();
+    let mut fps = None;
+    let mut samples = None;
+    let mut iter = arguments.iter();
+    while let Some(arg) = iter.next() {
+        if matches!(arg.as_str(), "--theme" | "--range" | "--cue") {
+            let value = iter
+                .next()
+                .filter(|value| !value.starts_with("--"))
+                .with_context(|| format!("{arg} requires a value"))?;
+            args.extend([arg.clone(), value.clone()]);
+            continue;
+        }
+        let target = match arg.as_str() {
+            "--fps" => &mut fps,
+            "--samples" => &mut samples,
+            _ => {
+                args.push(arg.clone());
+                continue;
+            }
+        };
+        anyhow::ensure!(target.is_none(), "{arg} may be specified once");
+        *target = Some(
+            iter.next()
+                .with_context(|| format!("{arg} requires a positive integer"))?
+                .parse::<NonZeroU32>()
+                .with_context(|| format!("{arg} requires a positive integer"))?,
+        );
+    }
+    Ok((
+        args,
+        RenderOptions {
+            fps: fps.unwrap_or(RenderOptions::default().fps),
+            samples,
+        },
+    ))
+}
+
+fn render_command(arguments: &[String], theme: Theme, options: RenderOptions) -> Result<()> {
     let Some(path) = arguments.first() else {
         bail!("plan render requires a plan path");
     };
@@ -300,7 +342,7 @@ fn render_command(arguments: &[String], theme: Theme) -> Result<()> {
     let _slot = render_queue::wait()?;
     let base = path.parent().unwrap_or_else(|| Path::new("."));
     let (loaded, mut renderer) = pollster::block_on(still::Loaded::prepare(file, base, theme))?;
-    loaded.render_video(&mut renderer, &output, window)
+    loaded.render_video(&mut renderer, &output, window, options)
 }
 
 fn create_output_directory(output: &Path) -> Result<()> {
@@ -1679,7 +1721,13 @@ fn handle_server_request(request: ServerRequest, renderer: &mut HeadlessRenderer
             let window = plan_window(&scene_plan, selection)?;
             let base = plan.parent().unwrap_or_else(|| Path::new("."));
             let prepared = PreparedPlan::prepare(scene_plan, base, renderer)?;
-            delivery::render_video(&prepared, renderer, &output, window)?;
+            delivery::render_video(
+                &prepared,
+                renderer,
+                &output,
+                window,
+                RenderOptions::default(),
+            )?;
             Ok(json!({
                 "output": output,
                 "startNanos": window.start().as_nanos(),
@@ -1755,7 +1803,8 @@ mod tests {
     use serde_json::json;
 
     use super::{
-        BUILTIN_HERO_PLAN, CompiledPlan, TargetGeometry, parse_range, validate_renderer_plan,
+        BUILTIN_HERO_PLAN, CompiledPlan, RenderOptions, TargetGeometry, delivery_theme,
+        parse_range, render_options, validate_renderer_plan,
     };
 
     #[test]
@@ -1892,6 +1941,100 @@ mod tests {
                 .to_string()
                 .contains("no actor consuming Image media 'image'")
         );
+    }
+
+    #[test]
+    fn render_quality_flags_preserve_defaults_and_window_arguments() {
+        let args = |values: &[&str]| {
+            values
+                .iter()
+                .map(|value| value.to_string())
+                .collect::<Vec<_>>()
+        };
+        let original = args(&["scene.json", "out.mp4", "--range", "1..2"]);
+        let (remaining, options) = render_options(&original).unwrap();
+        assert_eq!(remaining, original);
+        assert_eq!(options, RenderOptions::default());
+        assert_eq!(options.fps.get(), 60);
+        assert_eq!(options.samples, None);
+
+        let flags = args(&[
+            "--fps",
+            "30",
+            "scene.json",
+            "out.mp4",
+            "--range",
+            "1..2",
+            "--samples",
+            "4",
+            "--theme",
+            "neutral",
+        ]);
+        let (without_quality, options) = render_options(&flags).unwrap();
+        let (remaining, _) = delivery_theme(&without_quality).unwrap();
+        assert_eq!(remaining, original);
+        assert_eq!(options.fps.get(), 30);
+        assert_eq!(options.samples.unwrap().get(), 4);
+
+        let (_, options) = render_options(&args(&["scene.json", "--samples", "1"])).unwrap();
+        assert_eq!(options.fps.get(), 60);
+        assert_eq!(options.samples.unwrap().get(), 1);
+        let (_, options) = render_options(&args(&["scene.json", "--fps", "24"])).unwrap();
+        assert_eq!(options.fps.get(), 24);
+        assert_eq!(options.samples, None);
+    }
+
+    #[test]
+    fn invalid_render_quality_flags_are_rejected() {
+        for flag in ["--fps", "--samples"] {
+            for value in ["0", "-1", "1.5", "NaN", "inf", "4294967296", "--range"] {
+                let args = ["scene.json", flag, value].map(str::to_owned);
+                assert!(render_options(&args).is_err(), "{flag} {value}");
+            }
+            assert!(render_options(&["scene.json".to_owned(), flag.to_owned()]).is_err());
+            let repeated = ["scene.json", flag, "4", flag, "8"].map(str::to_owned);
+            assert!(render_options(&repeated).is_err());
+        }
+    }
+
+    #[test]
+    fn theme_removal_does_not_conceal_missing_render_quality_values() {
+        for flag in ["--fps", "--samples"] {
+            let args = [
+                "render",
+                "missing-scene.json",
+                "out.mp4",
+                flag,
+                "--theme",
+                "neutral",
+                "30",
+            ]
+            .map(str::to_owned);
+            let error = super::command(&args).unwrap_err();
+            assert!(error.to_string().contains("requires a positive integer"));
+        }
+    }
+
+    #[test]
+    fn quality_removal_does_not_conceal_missing_existing_option_values() {
+        for (flag, value) in [
+            ("--theme", "neutral"),
+            ("--range", "1..2"),
+            ("--cue", "intro"),
+        ] {
+            let args = [
+                "render",
+                "missing-scene.json",
+                "out.mp4",
+                flag,
+                "--fps",
+                "30",
+                value,
+            ]
+            .map(str::to_owned);
+            let error = super::command(&args).unwrap_err();
+            assert!(error.to_string().contains("requires a value"));
+        }
     }
 
     #[test]

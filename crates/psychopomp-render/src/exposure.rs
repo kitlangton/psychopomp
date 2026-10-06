@@ -1,7 +1,7 @@
 //! Frame exposure: the output format, how many shutter samples a frame takes,
 //! their weights across a 180-degree shutter, and encoding a timeline one
 //! exposed frame at a time. Every root and the legacy scenes share it.
-use std::{ops::Range, path::Path, time::Instant};
+use std::{num::NonZeroU32, ops::Range, path::Path, time::Instant};
 
 use anyhow::{Result, bail};
 use psychopomp::{
@@ -20,6 +20,23 @@ const FPS: u32 = 60;
 const TEMPORAL_SAMPLES: u32 = 8;
 const ENTRANCE_TEMPORAL_SAMPLES: u32 = 16;
 const SHUTTER_ANGLE: f32 = 180.0;
+
+/// Video export quality; omitted samples retain each recipe's native schedule.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct RenderOptions {
+    pub fps: NonZeroU32,
+    pub samples: Option<NonZeroU32>,
+}
+
+impl Default for RenderOptions {
+    fn default() -> Self {
+        Self {
+            fps: NonZeroU32::new(FPS).unwrap(),
+            samples: None,
+        }
+    }
+}
+
 /// How long a frame's shutter stays open.
 pub(crate) const SHUTTER_SECONDS: f64 = SHUTTER_ANGLE as f64 / 360.0 / FPS as f64;
 /// The fewest samples a reel frame takes while its segments mix or move.
@@ -46,6 +63,7 @@ pub(crate) fn encode_exposures<K: PartialEq>(
     duration: Duration,
     media: &[MediaPlacement],
     window: TimeRange,
+    options: RenderOptions,
     mut samples_at: impl FnMut(f64) -> u32,
     mut sample_key: impl FnMut(f64) -> Result<K>,
     mut render_exposure: impl FnMut(&mut HeadlessRenderer, &[(f64, f32)]) -> Result<Vec<u8>>,
@@ -63,7 +81,8 @@ pub(crate) fn encode_exposures<K: PartialEq>(
         );
     }
     let started = Instant::now();
-    let frame_count = window.duration().frame_count(FPS);
+    let fps = options.fps.get();
+    let frame_count = window.duration().frame_count(fps);
     let media = media
         .iter()
         .filter_map(|placement| placement.for_window(window))
@@ -73,22 +92,24 @@ pub(crate) fn encode_exposures<K: PartialEq>(
         VideoSpec {
             width: WIDTH,
             height: HEIGHT,
-            fps: FPS,
+            fps,
         },
         &media,
     )?;
     for frame in 0..frame_count {
-        let frame_start = window.start().as_seconds() + frame as f64 / f64::from(FPS);
-        let frame_end = (window.start().as_seconds() + (frame + 1) as f64 / f64::from(FPS))
+        let frame_start = window.start().as_seconds() + frame as f64 / f64::from(fps);
+        let frame_end = (window.start().as_seconds() + (frame + 1) as f64 / f64::from(fps))
             .min(window.end().as_seconds());
         let center = (frame_start + frame_end) * 0.5;
-        let samples = samples_at(center).max(1);
+        let samples = options
+            .samples
+            .map_or_else(|| samples_at(center).max(1), NonZeroU32::get);
         let exposure = merge_equal_samples(
-            exposure(center, frame_end - frame_start, samples),
+            exposure_at_fps(center, frame_end - frame_start, samples, fps),
             &mut sample_key,
         )?;
         encoder.write_frame(&render_exposure(renderer, &exposure)?)?;
-        if frame % u64::from(FPS) == 0 || frame + 1 == frame_count {
+        if frame % u64::from(fps) == 0 || frame + 1 == frame_count {
             eprintln!(
                 "Rendered {:>3}/{frame_count} frames ({center:.1}s, {samples} samples, {} unique)",
                 frame + 1,
@@ -110,7 +131,11 @@ pub(crate) fn encode_exposures<K: PartialEq>(
 /// to 1. The weights ease off over the outer quarter at each end, so a fast
 /// highlight's streak fades out instead of ending on a hard copy.
 pub(crate) fn exposure(center: f64, span: f64, samples: u32) -> Vec<(f64, f32)> {
-    let shutter = (f64::from(SHUTTER_ANGLE) / 360.0 / f64::from(FPS)).min(span);
+    exposure_at_fps(center, span, samples, FPS)
+}
+
+fn exposure_at_fps(center: f64, span: f64, samples: u32, fps: u32) -> Vec<(f64, f32)> {
+    let shutter = (f64::from(SHUTTER_ANGLE) / 360.0 / f64::from(fps)).min(span);
     let (start, end) = (center - span * 0.5, center + span * 0.5);
     let mut weighted = (0..samples)
         .map(|sample| {
@@ -411,8 +436,37 @@ mod tests {
 
     use super::{
         FRAME_BYTES, Region, WeightedLinear, accumulate_region, add_linear, encode_frame,
-        encode_linear, exposure, linear_tables, merge_equal_samples,
+        encode_linear, exposure, exposure_at_fps, linear_tables, merge_equal_samples,
     };
+
+    #[test]
+    fn default_fps_preserves_exposure_times_and_weights() {
+        for samples in [1, 4, 8, 16, 24] {
+            assert_eq!(
+                exposure(2.0, 1.0 / 60.0, samples),
+                exposure_at_fps(2.0, 1.0 / 60.0, samples, 60),
+            );
+        }
+    }
+
+    #[test]
+    fn export_fps_scales_the_shutter_without_crossing_partial_frames() {
+        let native = exposure_at_fps(2.0, 1.0 / 60.0, 4, 60);
+        let slower = exposure_at_fps(2.0, 1.0 / 30.0, 4, 30);
+        for ((native_time, native_weight), (slower_time, slower_weight)) in
+            native.into_iter().zip(slower)
+        {
+            assert!(((slower_time - 2.0) - 2.0 * (native_time - 2.0)).abs() < 1e-12);
+            assert_eq!(native_weight, slower_weight);
+        }
+        let partial = exposure_at_fps(12.0005, 0.001, 4, 30);
+        assert!(
+            partial
+                .iter()
+                .all(|(time, _)| (12.0..=12.001).contains(time))
+        );
+        assert!((partial.iter().map(|(_, weight)| weight).sum::<f32>() - 1.0).abs() < 1e-5);
+    }
 
     #[test]
     fn partial_frame_samples_stay_inside_the_render_window() {

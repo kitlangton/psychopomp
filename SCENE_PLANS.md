@@ -129,11 +129,20 @@ Render only one cue or exact range on the original scene clock:
 ```bash
 cargo run --release -- plan render target/agent-demo.json output/intro.mp4 --cue intro
 cargo run --release -- plan render target/agent-demo.json output/window.mp4 --range 0.2..0.4
+cargo run --release -- plan render target/agent-demo.json output/preview.mp4 --range 0.2..0.4 --fps 30 --samples 4
 ```
+
+`plan render` accepts optional positive-integer `--fps` and `--samples` overrides,
+for both scenes and reels. Omit them to keep 60 fps and the native per-recipe
+sample schedule. `--samples` replaces that schedule even during reel transitions;
+identical visual samples still merge. Lower settings reduce temporal smoothness
+and motion-blur quality in exchange for faster rendering. The 180-degree export
+shutter follows fps; procedural shader effects retain their native calibration.
+Frame, snapshot, presentation and server commands keep their existing behavior.
 
 A Render Window trims and rebases intersecting media to output time zero, but visual sampling remains on the original global scene clock. Starting a window in the middle of a spring therefore preserves its position and velocity.
 
-Delivery remains frame-based: a window whose duration is not exactly frame-aligned emits one final frame sampled only within the remaining window interval. At 60 fps, the encoded duration therefore rounds up to the next frame boundary.
+Delivery remains frame-based: a window whose duration is not exactly frame-aligned emits one final frame sampled only within the remaining window interval. At the selected fps (60 by default), the encoded duration therefore rounds up to the next frame boundary.
 
 ## Play As A Presentation
 

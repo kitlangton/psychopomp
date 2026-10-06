@@ -6,7 +6,7 @@ use psychopomp::composition::{Time, TimeRange};
 
 use super::{PreparedPlan, reel::PreparedReel};
 use crate::{
-    exposure::{HEIGHT, WIDTH, encode_exposures},
+    exposure::{HEIGHT, RenderOptions, WIDTH, encode_exposures},
     render::HeadlessRenderer,
 };
 
@@ -15,6 +15,7 @@ pub(super) fn render_video(
     renderer: &mut HeadlessRenderer,
     output: &Path,
     window: TimeRange,
+    options: RenderOptions,
 ) -> Result<()> {
     renderer.set_file_name(prepared.file_name());
     encode_exposures(
@@ -23,6 +24,7 @@ pub(super) fn render_video(
         prepared.duration(),
         &prepared.media,
         window,
+        options,
         |center| prepared.temporal_samples(center),
         |time| prepared.visual_sample_key(time),
         |renderer, exposure| prepared.render_exposure(renderer, exposure),
@@ -36,6 +38,7 @@ pub(super) fn render_reel(
     renderer: &mut HeadlessRenderer,
     output: &Path,
     window: TimeRange,
+    options: RenderOptions,
 ) -> Result<()> {
     encode_exposures(
         renderer,
@@ -43,6 +46,7 @@ pub(super) fn render_reel(
         prepared.duration(),
         prepared.media(),
         window,
+        options,
         |center| prepared.temporal_samples(center),
         |time| prepared.visual_sample_key(time),
         |renderer, exposure| prepared.render_exposure(renderer, exposure),
