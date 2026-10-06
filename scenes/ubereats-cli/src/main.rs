@@ -1,72 +1,89 @@
-//! Uber Eats CLI walkthrough as a Stage film + animated code zoom.
-//! Act 1 (`ubereats-before`): clicking through the website takes 4 turns and 25s,
-//! getting snagged on a closed-store dialog and scrolling 100 menu items.
-//! Rewind (`◀◀ rewind`).
-//! Act 2 (`ubereats-after`): capture the flow once in `🥤 karma-cafe`, get a
-//! redacted 3-endpoint digest, and run `ubereats-cli` in 60ms. When login
-//! expires (401), Browser Control pauses with an in-page Continue pill and
-//! retries automatically.
-//! Then the camera zooms inside the `ubereats-cli` card to reveal the 15-line
-//! TypeScript implementation (`ubereats-code`).
+//! Uber Eats CLI explainer reel — zero generic Stage nodes.
+//!
+//! - Segment 1 (`ubereats-ui`): Real 60fps Browser Control screen recording
+//!   (`ubereats-ui-flow.mp4`) with camera focus zooms into the search bar and
+//!   the Karma Cafe "Espresso Nut" menu item, paired with a live `ChecklistActor`
+//!   tracking the 4 slow LLM turns (25.0s).
+//! - Segment 2 (`ubereats-harvest`): Wipes in (`UI CLICKING · 25s` -> `API HARVEST`).
+//!   Left: `TerminalActor` running `browser-control network start` / `stop`.
+//!   Right: `TreeActor` unfolding the 3 harvested JSON endpoints and highlighting
+//!   the redacted `${BC_SECRET_1}` cookie and `x-csrf-token` header.
+//! - Segment 3 (`ubereats-runtime`): Pushes in.
+//!   Left: `BarsActor` benchmark (`25,000 ms` -> `60 ms`, `417×` speedup) +
+//!   `TerminalActor` running `bun ubereats-cli.ts add "Espresso Nut"`.
+//!   Right: Real 60fps Browser Control recording (`ubereats-handoff.mp4`) showing
+//!   the in-page Liquid Glass Handoff modal (`Sign in to https://www.ubereats.com,
+//!   then click Continue`) and zooming onto the Continue button as it is clicked.
+//! - Segment 4 (`ubereats-code`): Pushes up into the 14-line `ubereats-cli.ts`
+//!   Editor with pinned `CalloutActor` chips and a Liquid-Glass `LensActor` (loupe).
 
 use std::{fs, path::PathBuf};
 
 use anyhow::{Context, Result};
 use psychopomp::{
-    author::{PlanBuilder, PlanTime, seconds},
-    editor::diff::{Diff, add, keep},
-    math::{Vec2, Vec3, easing::Ease, vec2},
+    author::{PlanBuilder, millis, seconds},
+    axis::AxisPlan,
+    bars::{BarDeltaPlan, BarSeriesPlan, BarsActor, BarsPlan},
+    callout::{CalloutActor, CalloutAnchorPlan, CalloutPlan, CalloutSide},
+    caption::CaptionSpanPlan,
+    checklist::{ChecklistActor, ChecklistItemPlan, ChecklistPlan, Outcome},
+    code::StyledSpan,
+    editor::{
+        EDITOR_RECIPE, EditorLinePlan, EditorPartPlan, EditorRecipePlan, EditorSemanticRangePlan,
+        EditorTargetSelector, diff,
+    },
+    effects::spinner::Mark,
+    footage::{self, Clip, FootageActor, FootagePlan},
+    highlight,
+    lens::{LensActor, LensPlan},
     narration::Narration,
-    plan::{ReelPlan, ReelSegmentPlan, ReelTransitionStyle, ScenePlan},
+    plan::{
+        ReelPlan, ReelSegmentPlan, ReelWipePlan, ScenePlan,
+        WipeDirection::{Left, Up},
+    },
+    readout::ReadoutFormat,
     sfx,
-    stage::{Camera, OrbEntrance, StageActor, StageElement, StagePlan, StagePost, reply_after},
+    terminal::{TerminalActor, TerminalPlan},
     tone::Tone,
+    tree::{TreeActor, TreePlan},
+    video::{self, VideoActor, VideoPlan},
 };
-use psychopomp_pr_walkthrough::film::{Pr, chip, code, footer, header, span};
+use psychopomp_pr_walkthrough::film::{Pr, chip, footer, header};
+use serde_json::json;
 
-const AGENT: [f32; 3] = [340.0, 350.0, 0.0];
-const CLI: [f32; 3] = [340.0, 690.0, -50.0];
-const BROWSER: [f32; 3] = [920.0, 520.0, 0.0];
-const UBEREATS: [f32; 3] = [1540.0, 520.0, 0.0];
-const DIALOG: [f32; 3] = [920.0, 260.0, -80.0];
-
-const CARD: [f32; 2] = [346.0, 120.0];
-const BROWSER_SIZE: [f32; 2] = [392.0, 128.0];
-const OVERLAY_SIZE: [f32; 2] = [364.0, 108.0];
-const CLOSING_CAMERA: [f32; 3] = [-160.0, 70.0, 60.0];
-
-const PR: Pr = Pr {
+const TITLE: Pr = Pr {
     number: "browser-control",
     title: "from browser flow to 60ms CLI",
     slug: "ubereats",
 };
 
+fn span(text: &str, tone: Tone) -> CaptionSpanPlan {
+    CaptionSpanPlan::new(text, tone)
+}
+
 fn main() -> Result<()> {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let narration = Narration::load(&root.join("narration"))?;
-    let stage = stage_film(&narration)?;
-    let code_scene = code(&PR, &narration, cli_diff(), false)?;
-    let reel = ReelPlan {
-        version: ReelPlan::VERSION,
-        id: "ubereats-cli".to_owned(),
-        segments: vec![
-            ReelSegmentPlan {
-                transition_nanos: 0,
-                transition_style: ReelTransitionStyle::Dip,
-                transition_focus: None,
-                transition_wipe: None,
-                plan: stage,
-            },
-            ReelSegmentPlan {
-                transition_nanos: seconds(1.15),
-                transition_style: ReelTransitionStyle::Zoom,
-                transition_focus: Some(cli_rect()),
-                transition_wipe: None,
-                plan: code_scene,
-            },
+
+    let seg_ui = build_ui_segment(&narration)?;
+    let (seg_harvest, seg_runtime) = build_after_segments(&narration)?;
+    let seg_code = build_code_segment(&narration)?;
+
+    let reel = ReelPlan::new(
+        "ubereats-cli",
+        vec![
+            ReelSegmentPlan::cut(seg_ui),
+            ReelSegmentPlan::wiped(
+                seg_harvest,
+                seconds(0.95),
+                ReelWipePlan::new(Left).labeled("UI CLICKING · 25s", "API HARVEST"),
+            ),
+            ReelSegmentPlan::pushed(seg_runtime, seconds(0.8), Left),
+            ReelSegmentPlan::pushed(seg_code, seconds(0.85), Up),
         ],
-    };
+    )?;
     reel.validate()?;
+
     let output = root.join("ubereats-cli.reel.json");
     fs::write(&output, serde_json::to_string_pretty(&reel)? + "\n")?;
     eprintln!(
@@ -78,413 +95,777 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn cli_rect() -> [f32; 4] {
-    Camera::at(Vec3::from(CLOSING_CAMERA), vec2(1920.0, 1080.0))
-        .project_rect(Vec3::from(CLI), Vec2::from(CARD))
-        .expect("cli card is in front of the camera")
-}
+// ---------------------------------------------------------------------------
+// Segment 1: Real Browser Control UI Recording + 4-Turn Checklist
+// ---------------------------------------------------------------------------
 
-fn cli_diff() -> (Diff, Vec<&'static str>, &'static str) {
-    let diff = Diff {
-        file_name: "ubereats-cli.ts",
-        lines: vec![
-            keep("import { BrowserControlClient } from \"@opencode-ai/browser-control\""),
-            add(
-                1,
-                "const ubereats = BrowserControlClient.origin(\"https://www.ubereats.com\", {",
-            ),
-            add(1, "  session: \"karma-cafe\","),
-            add(1, "  headers: { \"x-csrf-token\": \"x\" },"),
-            add(1, "  handoffOnAuthFailure: true,"),
-            add(1, "})"),
-            keep(""),
-            add(
-                2,
-                "const store = await ubereats.post(\"/_p/api/getStoreV1\", {",
-            ),
-            add(2, "  storeUuid: \"78cb1602-9f58-57bb-ad08-f6b8f80bb788\","),
-            add(2, "  diningMode: \"DELIVERY\","),
-            add(2, "})"),
-            add(3, "await ubereats.post(\"/_p/api/createDraftOrderV2\", {"),
-            add(
-                3,
-                "  isMulticart: true, shoppingCartItems: [espressoNutSmoothie],",
-            ),
-            add(3, "})"),
-        ],
-    };
-    (
-        diff,
+fn build_ui_segment(narration: &Narration) -> Result<ScenePlan> {
+    let reading = narration.reading(seconds(0.9), [("ubereats-before", seconds(1.4))])?;
+    let mut scene = PlanBuilder::new("ubereats-ui", reading.duration());
+    let [before] = reading.place(&mut scene);
+    let b = |phrase: &str| before.at(phrase);
+
+    header(&mut scene, &TITLE, Some(seconds(0.25)))?;
+    let mut mode_chip = chip(
+        &mut scene,
+        "chip-ui",
+        Tone::Warning,
+        "UI clicking · 4 turns",
+    )?;
+    mode_chip.show(&mut scene, seconds(0.45));
+
+    // Real 60fps CDP recording of Browser Control driving Uber Eats (1440x900).
+    let clip_dur = reading.duration() - seconds(0.4);
+    let mut browser_video = VideoActor::declare(
+        &mut scene,
+        "browser-ui",
+        VideoPlan::new("ui-flow", [1440, 900], 60)
+            .at([640.0, 525.0], 1120.0)
+            .titled("🥤 karma-cafe  ·  ubereats.com/feed"),
+        video::media(
+            "ui-flow",
+            "../../assets/ubereats-cli/ubereats-ui-flow-28s.mp4",
+            (0, clip_dur),
+            seconds(0.25),
+        ),
+    )?;
+    browser_video.fly_in(&mut scene, seconds(0.25));
+
+    // Camera focus moves on the live recording keyed to narration phrases.
+    let search_at = b("type into the search");
+    browser_video.focus(&mut scene, search_at, [250.0, 0.0, 940.0, 320.0], 0.85);
+    sfx::TICK.play(&mut scene, "focus-search", search_at, -16.0);
+
+    let results_at = b("wait for results");
+    browser_video.unfocus(&mut scene, results_at, 0.85);
+
+    let scroll_focus_at = b("scroll through a hundred") + seconds(1.2);
+    browser_video.focus(
+        &mut scene,
+        scroll_focus_at,
+        [280.0, 480.0, 880.0, 420.0],
+        0.9,
+    );
+    browser_video.unfocus(&mut scene, b("25 seconds") + seconds(1.4), 0.9);
+
+    // Right-hand Checklist tracking the 4 slow model turns.
+    let check_plan = ChecklistPlan::new([1265.0, 225.0], 595.0)
+        .size(24.0)
+        .title("UI automation loop")
+        .rail()
+        .panel()
+        .item(ChecklistItemPlan::new("t1", "Turn 1 · open /feed & snapshot").result("5.4s"))
+        .item(ChecklistItemPlan::new("t2", "Turn 2 · search \"Karma Cafe\"").result("6.1s"))
+        .item(ChecklistItemPlan::new("t3", "Turn 3 · dismiss closed dialog").result("6.7s"))
+        .item(ChecklistItemPlan::new("t4", "Turn 4 · scroll 100 items & add").result("6.8s"));
+    let mut checks = ChecklistActor::declare(&mut scene, "turns", &check_plan)?;
+    checks.show(&mut scene, seconds(0.55));
+    checks.reveal(&mut scene, seconds(0.8))?;
+
+    let t1_start = b("open the feed");
+    checks.start(&mut scene, "t1", t1_start)?;
+    checks.resolve(&mut scene, "t1", search_at - millis(150), Outcome::Done)?;
+
+    checks.start(&mut scene, "t2", search_at)?;
+    let dialog_at = b("dismiss a closed store");
+    checks.resolve(&mut scene, "t2", dialog_at - millis(150), Outcome::Done)?;
+
+    checks.start(&mut scene, "t3", dialog_at)?;
+    let scroll_at = b("scroll through a hundred");
+    checks.resolve(&mut scene, "t3", scroll_at - millis(150), Outcome::Done)?;
+
+    checks.start(&mut scene, "t4", scroll_at)?;
+    let slow_at = b("25 seconds");
+    checks.resolve(&mut scene, "t4", slow_at, Outcome::Done)?;
+    sfx::FAILURE.play(&mut scene, "slow-total", slow_at, -11.0);
+
+    let mut slow_footer = footer(
+        &mut scene,
+        "footer-ui",
         vec![
-            "point browser control client",
-            "get store",
-            "create draft order",
+            span("UI clicking every run: ", Tone::Plain),
+            span("25.0 seconds · 4 LLM turns", Tone::Error),
+            span(" for a single smoothie", Tone::Muted),
         ],
-        "condensed for display · 15 lines · live cookies + auto-handoff on 401",
-    )
+    )?;
+    slow_footer.type_in(&mut scene, slow_at, 46.0, 0.8);
+
+    scene.finish().context("ubereats-ui")
 }
 
-fn stage_plan() -> StagePlan {
-    let elements = vec![
-        StageElement::orb("ubereats", UBEREATS, 132.0)
-            .points(900)
-            .tone(Tone::Plain),
-        StageElement::label(
-            "ubereats-name",
-            [UBEREATS[0], 688.0, 0.0],
-            24.0,
-            &[("Uber Eats API", Tone::Plain)],
-        ),
-        StageElement::label(
-            "ubereats-sub",
-            [UBEREATS[0], 720.0, 0.0],
-            19.0,
-            &[("●", Tone::Success), (" Karma Cafe · $14.00", Tone::Muted)],
-        ),
-        StageElement::card("agent", AGENT, CARD, "coding agent")
-            .statuses(&[
-                ("goal: 1x Espresso Nut", Tone::Plain),
-                ("clicking UI · turn 1..4", Tone::Warning),
-                ("25s · 4 model turns", Tone::Error),
-                ("capturing flow once", Tone::Accent),
-                ("endpoints harvested ✓", Tone::Success),
-            ])
-            .tone(Tone::Request),
-        StageElement::card("browser", BROWSER, BROWSER_SIZE, "karma-cafe · browser tab")
-            .statuses(&[
-                ("attached · cookies live", Tone::Muted),
-                ("searching & scrolling…", Tone::Warning),
-                ("blocked by dialog", Tone::Error),
-                ("network.start(/_p/api/)", Tone::Accent),
-                ("window.fetch · 60ms ✓", Tone::Success),
-                ("401 · waiting for sign-in", Tone::Warning),
-            ])
-            .tone(Tone::Plain),
-        StageElement::card("cli", CLI, CARD, "ubereats-cli.ts")
-            .statuses(&[
-                ("BrowserControlClient.origin", Tone::Accent),
-                ("POST createDraftOrderV2", Tone::Request),
-                ("1x Espresso Nut in cart ✓", Tone::Success),
-                ("paused for login handoff", Tone::Warning),
-            ])
-            .tone(Tone::Accent),
-        StageElement::card("dialog", DIALOG, OVERLAY_SIZE, "store closed modal")
-            .statuses(&[("intercepts pointer events", Tone::Error)])
-            .tone(Tone::Error),
-        StageElement::card("pill", DIALOG, OVERLAY_SIZE, "in-page handoff pill")
-            .statuses(&[
-                ("Sign in, then Continue →", Tone::Accent),
-                ("signed in · continuing ✓", Tone::Success),
-            ])
-            .tone(Tone::Accent),
-        StageElement::beam("ui-link", "agent", "browser").tone(Tone::Request),
-        StageElement::beam("web-link", "browser", "ubereats").tone(Tone::Plain),
-        StageElement::beam("cli-link", "cli", "browser").tone(Tone::Accent),
-        StageElement::packet("click-1", "ui-link")
-            .labeled("goto /feed")
-            .tone(Tone::Request),
-        StageElement::packet("click-2", "ui-link")
-            .labeled("fill \"Karma Cafe\"")
-            .tone(Tone::Request),
-        StageElement::packet("click-3", "ui-link")
-            .labeled("scroll 100 items")
-            .tone(Tone::Warning),
-        StageElement::packet("capture-once", "ui-link")
-            .labeled("network.start + add once")
-            .tone(Tone::Accent),
-        StageElement::packet("api-probe", "web-link")
-            .labeled("POST /_p/api/*")
-            .tone(Tone::Accent),
-        StageElement::packet("digest-back", "ui-link")
-            .reversed()
-            .labeled("3 endpoints · ${BC_SECRET_1}")
-            .tone(Tone::Success),
-        StageElement::packet("cli-call", "cli-link")
-            .labeled("post(createDraftOrderV2)")
-            .tone(Tone::Accent),
-        StageElement::packet("fetch-fast", "web-link")
-            .labeled("window.fetch · x-csrf-token")
-            .tone(Tone::Accent),
-        StageElement::packet("fetch-ok", "web-link")
-            .reversed()
-            .labeled("200 OK · 60ms")
-            .tone(Tone::Success),
-        StageElement::packet("cli-ok", "cli-link")
-            .reversed()
-            .labeled("1x Espresso Nut ✓")
-            .tone(Tone::Success),
-        StageElement::packet("cli-expired-try", "cli-link")
-            .labeled("post(createDraftOrderV2)")
-            .tone(Tone::Request),
-        StageElement::packet("fetch-401", "web-link")
-            .reversed()
-            .labeled("401 Unauthorized")
-            .tone(Tone::Error),
-        StageElement::packet("fetch-retry", "web-link")
-            .labeled("retry POST createDraftOrderV2")
-            .tone(Tone::Accent),
-        StageElement::packet("fetch-retry-ok", "web-link")
-            .reversed()
-            .labeled("200 OK · cart updated")
-            .tone(Tone::Success),
-        StageElement::packet("cli-retry-ok", "cli-link")
-            .reversed()
-            .labeled("1x Espresso Nut ✓")
-            .tone(Tone::Success),
-        StageElement::label(
-            "digest-line",
-            [BROWSER[0], 770.0, 0.0],
-            19.0,
-            &[
-                ("endpoints ▸ ", Tone::Muted),
-                ("getSearchFeed · getStore · createDraftOrder", Tone::Success),
+// ---------------------------------------------------------------------------
+// Segments 2 & 3: Harvest (Terminal + JSON Tree) & Runtime (Bars + Handoff Video)
+// ---------------------------------------------------------------------------
+
+fn build_after_segments(narration: &Narration) -> Result<(ScenePlan, ScenePlan)> {
+    let clip = narration.clip("ubereats-after")?;
+    let split_at = clip.split(23.0, "secret references", "now");
+
+    // ── Segment 2: Terminal + Interactive JSON Tree (`0 .. split_at`) ──
+    let lead1 = seconds(0.6);
+    let tail1 = seconds(1.1);
+    let dur1 = lead1 + split_at + tail1;
+    let mut scene1 = PlanBuilder::new("ubereats-harvest", dur1);
+    let spoken1 = clip.place_range(&mut scene1, lead1, 0, split_at, "-harvest");
+    let a1 = |phrase: &str| spoken1.at(phrase);
+
+    header(&mut scene1, &TITLE, Some(seconds(0.15)))?;
+    let mut chip1 = chip(&mut scene1, "chip-harvest", Tone::Accent, "1. harvest once")?;
+    chip1.show(&mut scene1, seconds(0.25));
+
+    let mut term1 = TerminalActor::declare(
+        &mut scene1,
+        "term-harvest",
+        TerminalPlan::new([70.0, 175.0], 850.0, 13)
+            .size(20.0)
+            .titled("zsh — browser-control network")
+            .prompt(vec![
+                span("karma-cafe", Tone::Accent),
+                span(" ❯ ", Tone::Success),
+            ]),
+    )?;
+    let t_shown = term1.show(&mut scene1, seconds(0.3));
+
+    let cap_at = a1("start network capture");
+    let cmd1_done = term1.type_command(
+        &mut scene1,
+        cap_at.max(t_shown + millis(200)),
+        "browser-control network start --url \"/_p/api/\"",
+    )?;
+    sfx::SEND.play(&mut scene1, "net-start", cap_at, -12.0);
+
+    let add_once = a1("add the smoothie once");
+    let printed1 = term1.print(
+        &mut scene1,
+        cmd1_done + millis(200),
+        [
+            vec![
+                span("● ", Tone::Accent),
+                span("Capturing ", Tone::Plain),
+                span("🥤 karma-cafe (/_p/api/*)", Tone::Muted),
             ],
-        ),
-        StageElement::label(
-            "secret-line",
-            [BROWSER[0], 804.0, 0.0],
-            19.0,
-            &[
-                ("redacted  ▸ ", Tone::Muted),
-                ("cookie=${BC_SECRET_1} · x-csrf-token=x", Tone::Accent),
+            vec![],
+        ],
+    )?;
+    let spin_capture = term1.spin(
+        &mut scene1,
+        add_once.max(printed1 + millis(150)),
+        vec![span("Adding 1x Espresso Nut in browser once…", Tone::Muted)],
+    )?;
+
+    let stop_at = a1("stop capture");
+    let resolved_cap = term1.resolve(
+        &mut scene1,
+        &spin_capture,
+        stop_at,
+        Mark::Check,
+        vec![
+            span("3 POST routes captured", Tone::Success),
+            span("  [/_p/api/*]", Tone::Muted),
+        ],
+    )?;
+    term1.prompt(&mut scene1, resolved_cap + millis(180))?;
+    let stop_cmd = term1.type_command(
+        &mut scene1,
+        stop_at + millis(350),
+        "browser-control network stop --secrets ubereats",
+    )?;
+    let digest_at = a1("clean digest");
+    let redact_at = a1("cookies redacted");
+    term1.print(
+        &mut scene1,
+        stop_cmd + millis(200),
+        [
+            vec![
+                span("✓ ", Tone::Success),
+                span("Endpoints: ", Tone::Plain),
+                span(
+                    "getSearchFeedV1, getStoreV1, createDraftOrderV2",
+                    Tone::Accent,
+                ),
             ],
-        ),
-        StageElement::ring("calm", UBEREATS, 146.0)
-            .thickness(1.3)
-            .tone(Tone::Success),
-        StageElement::ring("calm-outer", UBEREATS, 152.0)
-            .thickness(1.3)
-            .tone(Tone::Success),
+            vec![
+                span("✓ ", Tone::Success),
+                span("Secrets:   ", Tone::Plain),
+                span(
+                    "cookie → ${BC_SECRET_1}, x-csrf-token → \"x\"",
+                    Tone::Warning,
+                ),
+            ],
+        ],
+    )?;
+
+    // Right side: Interactive TreeActor unfolding the harvested JSON digest.
+    let digest_json = json!({
+        "session": "🥤 karma-cafe",
+        "endpoints": [
+            {
+                "method": "POST",
+                "path": "/_p/api/getSearchFeedV1",
+                "requestKeys": ["userQuery", "vertical"]
+            },
+            {
+                "method": "POST",
+                "path": "/_p/api/getStoreV1",
+                "requestKeys": ["storeUuid", "diningMode"]
+            },
+            {
+                "method": "POST",
+                "path": "/_p/api/createDraftOrderV2",
+                "requestKeys": ["isMulticart", "shoppingCartItems"]
+            }
+        ],
+        "secrets": {
+            "cookie": "${BC_SECRET_1}",
+            "x-csrf-token": "x"
+        }
+    });
+    let mut tree = TreeActor::declare(
+        &mut scene1,
+        "digest-tree",
+        TreePlan::new([960.0, 175.0], 890.0, digest_json)
+            .max_rows(19)
+            .expanded(["$"]),
+    )?;
+    tree.show(&mut scene1, seconds(0.45));
+    tree.open(&mut scene1, "$.endpoints", digest_at - millis(300))?;
+    tree.open(&mut scene1, "$.endpoints[0]", digest_at)?;
+    tree.open(&mut scene1, "$.endpoints[1]", digest_at + millis(350))?;
+    tree.open(&mut scene1, "$.endpoints[2]", digest_at + millis(700))?;
+    tree.highlight(
+        &mut scene1,
+        "$.endpoints[2].path",
+        digest_at + millis(900),
+        2.4,
+    )?;
+    sfx::CONFIRM.play(&mut scene1, "tree-open", digest_at, -12.0);
+
+    tree.open(&mut scene1, "$.secrets", redact_at - millis(200))?;
+    tree.reveal(&mut scene1, "$.secrets", redact_at)?;
+    tree.highlight(
+        &mut scene1,
+        "$.secrets.cookie",
+        redact_at + millis(200),
+        2.6,
+    )?;
+    sfx::MARK.play(
+        &mut scene1,
+        "secret-highlight",
+        redact_at + millis(200),
+        -14.0,
+    );
+
+    let mut footer1 = footer(
+        &mut scene1,
+        "footer-harvest",
+        vec![
+            span("network.stop() ", Tone::Accent),
+            span("extracts JSON routes & redacts cookies into ", Tone::Plain),
+            span("${BC_SECRET_1}", Tone::Success),
+        ],
+    )?;
+    footer1.type_in(&mut scene1, redact_at, 46.0, 0.8);
+
+    // ── Segment 3: 60ms Benchmark Bars + CLI Terminal + Live Handoff Video ──
+    let lead2 = seconds(0.5);
+    let tail2 = seconds(1.3);
+    let part2_len = clip.duration() - split_at;
+    let dur2 = lead2 + part2_len + tail2;
+    let mut scene2 = PlanBuilder::new("ubereats-runtime", dur2);
+    let spoken2 = clip.place_range(&mut scene2, lead2, split_at, clip.duration(), "-runtime");
+    let a2 = |phrase: &str| spoken2.at(phrase);
+
+    header(&mut scene2, &TITLE, Some(seconds(0.15)))?;
+    let mut chip2 = chip(
+        &mut scene2,
+        "chip-runtime",
+        Tone::Success,
+        "2. 60ms CLI + auto-handoff",
+    )?;
+    chip2.show(&mut scene2, seconds(0.25));
+
+    // Top-left Benchmark Bars: 25,000ms UI vs 60ms CLI.
+    let rows = [
+        ("search", "Search store", 6200.0, 18.0),
+        ("menu", "Read menu", 9400.0, 22.0),
+        ("add", "Add to cart", 9400.0, 20.0),
     ];
-    StagePlan {
-        post: StagePost::RESTRAINED,
-        elements,
+    let bars_plan = rows.iter().fold(
+        BarsPlan::new(
+            [275.0, 215.0],
+            470.0,
+            AxisPlan::new([0.0, 10000.0]).every(5000.0),
+        )
+        .row_height(78.0)
+        .size(21.0)
+        .series(BarSeriesPlan::new("before", "UI clicks", Tone::Error))
+        .series(BarSeriesPlan::new("after", "CLI fetch", Tone::Success))
+        .readout(ReadoutFormat::new(0).grouped().unit("ms"))
+        .delta(BarDeltaPlan::new("before", "after").factor()),
+        |plan, (id, label, ..)| plan.row(*id, *label),
+    );
+    let mut bench = BarsActor::declare(&mut scene2, "bench", &bars_plan)?;
+    bench.show(&mut scene2, seconds(0.3));
+    let before_vals = rows
+        .iter()
+        .map(|(id, _, b, _)| (*id, *b))
+        .collect::<Vec<_>>();
+    let after_vals = rows
+        .iter()
+        .map(|(id, _, _, a)| (*id, *a))
+        .collect::<Vec<_>>();
+    let direct_at = a2("calls uber eats directly");
+    let ms_at = a2("60 milliseconds");
+    bench.grow(&mut scene2, direct_at, "before", &before_vals)?;
+    bench.grow(&mut scene2, direct_at + millis(550), "after", &after_vals)?;
+    bench.reveal_deltas(&mut scene2, ms_at)?;
+    sfx::SUCCESS.play(&mut scene2, "bars-delta", ms_at, -10.0);
+
+    // Bottom-left Terminal running `bun ubereats-cli.ts add "Espresso Nut"`.
+    let mut term2 = TerminalActor::declare(
+        &mut scene2,
+        "term-cli",
+        TerminalPlan::new([70.0, 545.0], 840.0, 9)
+            .size(19.0)
+            .titled("zsh — ubereats-cli.ts")
+            .prompt(vec![
+                span("~/ubereats", Tone::Request),
+                span(" ❯ ", Tone::Success),
+            ]),
+    )?;
+    let t2_shown = term2.show(&mut scene2, seconds(0.4));
+    let run_cmd = term2.type_command(
+        &mut scene2,
+        t2_shown + millis(250),
+        "bun ubereats-cli.ts add \"Espresso Nut\"",
+    )?;
+    let fast_spin = term2.spin(
+        &mut scene2,
+        run_cmd + millis(150),
+        vec![span("POST /_p/api/createDraftOrderV2", Tone::Muted)],
+    )?;
+    let fast_done = term2.resolve(
+        &mut scene2,
+        &fast_spin,
+        ms_at,
+        Mark::Check,
+        vec![
+            span("1x Espresso Nut ($14.00) in cart", Tone::Success),
+            span("  [60ms]", Tone::Accent),
+        ],
+    )?;
+    term2.highlight(&mut scene2, &fast_spin, fast_done + millis(100), 1.5)?;
+
+    // Expired session (401) -> In-page Continue pill -> Auto-retry!
+    let expires_at = a2("expires");
+    let err_401_at = a2("401");
+    let pause_at = a2("pauses");
+    let retry_at = a2("retries the request");
+
+    term2.print(
+        &mut scene2,
+        err_401_at,
+        [
+            vec![],
+            vec![
+                span("! ", Tone::Warning),
+                span("401 Unauthorized ", Tone::Error),
+                span("→ pausing for in-page Continue pill…", Tone::Warning),
+            ],
+        ],
+    )?;
+    sfx::FAILURE.play(&mut scene2, "sfx-401", err_401_at, -11.0);
+
+    let retry_spin = term2.spin(
+        &mut scene2,
+        pause_at,
+        vec![span(
+            "Waiting for sign-in on 🥤 karma-cafe tab…",
+            Tone::Warning,
+        )],
+    )?;
+    term2.resolve(
+        &mut scene2,
+        &retry_spin,
+        retry_at,
+        Mark::Check,
+        vec![
+            span("Signed in · auto-retried createDraftOrderV2", Tone::Success),
+            span("  [200 OK]", Tone::Accent),
+        ],
+    )?;
+    sfx::BLOOM.play(&mut scene2, "sfx-retry-ok", retry_at, -9.0);
+
+    // Right side: Real recorded Browser Control tab showing the Handoff modal & Continue click!
+    let handoff_start = err_401_at;
+    let handoff_dur = seconds(7.8);
+    let mut handoff_video = VideoActor::declare(
+        &mut scene2,
+        "handoff-video",
+        VideoPlan::new("handoff-clip", [1440, 900], 60)
+            .at([1415.0, 535.0], 860.0)
+            .titled("🥤 karma-cafe  ·  in-page auth handoff"),
+        video::media(
+            "handoff-clip",
+            "../../assets/ubereats-cli/ubereats-handoff.mp4",
+            (0, handoff_dur),
+            handoff_start,
+        ),
+    )?;
+    // Keep a still frame of the Karma Cafe tab before `handoff_start`, then play the handoff clip.
+    let pre_handoff = FootageActor::declare(
+        &mut scene2,
+        "pre-handoff",
+        &FootagePlan::new(
+            Clip::new("pre-handoff-media").trimmed(0.0, 0.5).looping(),
+            [1415.0, 535.0],
+            [860.0, 538.0],
+        )
+        .framed(),
+        footage::media(
+            "pre-handoff-media",
+            "../../assets/ubereats-cli/ubereats-handoff.mp4",
+            0,
+            handoff_start + millis(400),
+        ),
+    )?;
+    pre_handoff.fly_in(&mut scene2, seconds(0.4));
+    let pre_op = pre_handoff.channel(&mut scene2, "opacity");
+    scene2.spring(&pre_op, handoff_start, 0.0, 0.25, 0.0);
+
+    let hv_op = handoff_video.channel(&mut scene2, "opacity", 0.0);
+    scene2.spring(&hv_op, handoff_start, 1.0, 0.25, 0.0);
+
+    let pill_at = a2("continue pill");
+    handoff_video.focus(
+        &mut scene2,
+        pill_at - millis(300),
+        [760.0, 500.0, 680.0, 400.0],
+        0.75,
+    );
+    sfx::CONFIRM.play(&mut scene2, "zoom-pill", pill_at, -11.0);
+
+    let sign_in_at = a2("sign in once");
+    handoff_video.unfocus(&mut scene2, retry_at + millis(400), 0.85);
+    let _ = (expires_at, sign_in_at);
+
+    let mut footer2 = footer(
+        &mut scene2,
+        "footer-runtime",
+        vec![
+            span("60ms in-tab fetch · ", Tone::Plain),
+            span("417× faster", Tone::Success),
+            span(" · auto-handoff on 401", Tone::Accent),
+        ],
+    )?;
+    footer2.type_in(&mut scene2, retry_at, 46.0, 0.8);
+
+    Ok((
+        scene1.finish().context("ubereats-harvest")?,
+        scene2.finish().context("ubereats-runtime")?,
+    ))
+}
+
+// ---------------------------------------------------------------------------
+// Segment 4: 14-Line Code Editor + Liquid-Glass Loupe + Pinned Callouts
+// ---------------------------------------------------------------------------
+
+fn plain_line(id: &str, text: &str) -> EditorLinePlan {
+    EditorLinePlan {
+        id: id.into(),
+        parts: vec![EditorPartPlan {
+            id: "code".into(),
+            spans: highlight::typescript(text),
+        }],
+        semantic_ranges: Vec::new(),
+        mark: None,
     }
 }
 
-fn stage_film(narration: &Narration) -> Result<ScenePlan> {
-    let reading = narration.reading(
-        seconds(1.4),
-        [
-            ("ubereats-before", seconds(2.0)),
-            ("ubereats-after", seconds(2.2)),
-        ],
+fn targeted_line(id: &str, lead: &str, range: (&str, &str), tail: &str) -> EditorLinePlan {
+    let part = |id: &str, spans: Vec<StyledSpan>| EditorPartPlan {
+        id: id.into(),
+        spans,
+    };
+    let mut parts = vec![
+        part("lead", highlight::typescript(lead)),
+        part(range.0, highlight::typescript(range.1)),
+    ];
+    if !tail.is_empty() {
+        parts.push(part("tail", highlight::typescript(tail)));
+    }
+    EditorLinePlan {
+        id: id.into(),
+        parts,
+        semantic_ranges: vec![EditorSemanticRangePlan {
+            id: range.0.into(),
+            first_part_id: range.0.into(),
+            last_part_id: range.0.into(),
+        }],
+        mark: None,
+    }
+}
+
+fn editor_anchor(target: &str, edge: CalloutSide) -> CalloutAnchorPlan {
+    CalloutAnchorPlan::Editor {
+        id: target.into(),
+        target: target.into(),
+        edge,
+        side: None,
+    }
+}
+
+fn build_code_segment(narration: &Narration) -> Result<ScenePlan> {
+    let reading = narration.reading(seconds(0.8), [("ubereats-code", seconds(1.6))])?;
+    let mut scene = PlanBuilder::new("ubereats-code", reading.duration());
+    let [spoken] = reading.place(&mut scene);
+    let c = |phrase: &str| spoken.at(phrase);
+
+    header(&mut scene, &TITLE, Some(seconds(0.15)))?;
+    let mut code_chip = chip(
+        &mut scene,
+        "chip-code",
+        Tone::Accent,
+        "3. 14 lines of TypeScript",
     )?;
-    let mut scene = PlanBuilder::new("ubereats-stage", reading.duration());
-    let [before, after] = reading.place(&mut scene);
-    let b = |phrase: &str| before.at(phrase);
-    let a = |phrase: &str| after.at(phrase);
-    let mut stage = StageActor::declare(&mut scene, "stage", &stage_plan())?;
-    let s = &mut stage;
-    let sc = &mut scene;
+    code_chip.show(&mut scene, seconds(0.25));
 
-    // ── Establish: agent, browser tab, and Uber Eats API orb ──
-    s.channel(sc, "camera.z", -140.0);
-    s.channel(sc, "camera.dof", 0.42);
-    s.to(sc, "camera.z", 0, 0.0, 2.0);
-    s.orb_in(sc, "ubereats", seconds(0.15), OrbEntrance::HERO);
-    s.fade_in(sc, "ubereats-name", seconds(0.8), 1.0, 0.5);
-    s.fade_in(sc, "ubereats-sub", seconds(0.95), 1.0, 0.5);
+    let s1 = c("point browser control client");
+    let s2 = c("get store");
+    let s3 = c("create draft order");
 
-    let browser_ready = s.settle_in(sc, "browser", seconds(0.45));
-    let web_contact = s.connect(sc, "web-link", browser_ready + seconds(0.15), 0.65);
-    sfx::TICK.play(sc, "connect-web", web_contact, -20.0);
+    let initial = vec!["import".to_owned()];
+    let step1 = vec![
+        "import", "origin", "session", "headers", "handoff", "close1",
+    ]
+    .into_iter()
+    .map(str::to_owned)
+    .collect::<Vec<_>>();
+    let step2 = vec![
+        "import",
+        "origin",
+        "session",
+        "headers",
+        "handoff",
+        "close1",
+        "blank1",
+        "store",
+        "storeUuid",
+        "mode",
+        "close2",
+    ]
+    .into_iter()
+    .map(str::to_owned)
+    .collect::<Vec<_>>();
+    let final_ids = vec![
+        "import",
+        "origin",
+        "session",
+        "headers",
+        "handoff",
+        "close1",
+        "blank1",
+        "store",
+        "storeUuid",
+        "mode",
+        "close2",
+        "draft",
+        "items",
+        "close3",
+    ]
+    .into_iter()
+    .map(str::to_owned)
+    .collect::<Vec<_>>();
 
-    let agent_ready = s.settle_in(sc, "agent", seconds(0.65));
-    let ui_contact = s.connect(sc, "ui-link", agent_ready + seconds(0.15), 0.65);
-    sfx::TICK.play(sc, "connect-ui", ui_contact, -20.0);
+    let mut snapshots = Vec::new();
+    snapshots.extend(diff::step_snapshots(&initial, &step1, s1));
+    snapshots.extend(diff::step_snapshots(&step1, &step2, s2));
+    snapshots.extend(diff::step_snapshots(&step2, &final_ids, s3));
 
-    header(sc, &PR, Some(seconds(0.35)))?;
-    let mut before_chip = chip(sc, "chip-before", Tone::Warning, "UI clicking")?;
-    before_chip.show(sc, seconds(0.65));
+    let lines = vec![
+        plain_line(
+            "import",
+            "import { BrowserControlClient } from \"@opencode-ai/browser-control\"",
+        ),
+        targeted_line(
+            "origin",
+            "const ubereats = ",
+            (
+                "originCall",
+                "BrowserControlClient.origin(\"https://www.ubereats.com\"",
+            ),
+            ", {",
+        ),
+        targeted_line(
+            "session",
+            "  ",
+            ("sessionProp", "session: \"karma-cafe\","),
+            "",
+        ),
+        targeted_line(
+            "headers",
+            "  ",
+            ("csrfProp", "headers: { \"x-csrf-token\": \"x\" },"),
+            "",
+        ),
+        targeted_line(
+            "handoff",
+            "  ",
+            ("handoffProp", "handoffOnAuthFailure: true,"),
+            "",
+        ),
+        plain_line("close1", "})"),
+        plain_line("blank1", " "),
+        targeted_line(
+            "store",
+            "const store = await ",
+            ("getStoreCall", "ubereats.post(\"/_p/api/getStoreV1\""),
+            ", {",
+        ),
+        plain_line(
+            "storeUuid",
+            "  storeUuid: \"78cb1602-9f58-57bb-ad08-f6b8f80bb788\",",
+        ),
+        plain_line("mode", "  diningMode: \"DELIVERY\","),
+        plain_line("close2", "})"),
+        targeted_line(
+            "draft",
+            "await ",
+            (
+                "createDraftCall",
+                "ubereats.post(\"/_p/api/createDraftOrderV2\"",
+            ),
+            ", {",
+        ),
+        plain_line(
+            "items",
+            "  isMulticart: true, shoppingCartItems: [espressoNutSmoothie],",
+        ),
+        targeted_line("close3", "", ("draftEnd", "})"), ""),
+    ]
+    .into_iter()
+    .chain(diff::gap_lines(&snapshots))
+    .collect::<Vec<_>>();
 
-    // ── Act 1: Clicking through the UI every time ──
-    let clicks = b("clicks through the website");
-    s.to(sc, "agent.status", clicks, 1.0, 0.35);
-    s.clock(sc, "agent.spinner", clicks);
-    s.to(sc, "ui-link.emphasis", clicks, 1.0, 0.5);
+    let recipe = EditorRecipePlan {
+        file_name: "ubereats-cli.ts".into(),
+        focus_line_id: "handoff".into(),
+        lines,
+        initial_line_ids: initial,
+        final_line_ids: final_ids,
+        snapshots,
+        line_height: 42.0,
+        entering_offset_x: 0.0,
+        focus_height: 42.0,
+        inline_reveal: None,
+        additional_inline_reveals: Vec::new(),
+    };
+    let editor = scene.actor("editor", EDITOR_RECIPE, &recipe)?;
+    for (target, line) in [
+        ("originCall", "origin"),
+        ("sessionProp", "session"),
+        ("csrfProp", "headers"),
+        ("handoffProp", "handoff"),
+        ("getStoreCall", "store"),
+        ("createDraftCall", "draft"),
+        ("draftEnd", "close3"),
+    ] {
+        scene.semantic_target(
+            target,
+            &editor,
+            EditorTargetSelector {
+                line_id: line.into(),
+                range_id: target.into(),
+            },
+        )?;
+    }
+    let panel_y = scene.continuous(&editor, "panel-y", 60.0);
+    let panel_opacity = scene.continuous(&editor, "panel-opacity", 0.0);
+    scene.spring(&panel_y, 0, 0.0, 0.65, 0.0);
+    scene.spring(&panel_opacity, 0, 1.0, 0.45, 0.0);
 
-    let open_feed = s.send(sc, "click-1", b("open the feed"), 0.65);
-    sfx::SEND.play(sc, "send-feed", b("open the feed"), -10.0);
-    s.land(sc, "browser", open_feed);
-    s.to(sc, "browser.status", open_feed, 1.0, 0.3);
+    // Pinned Callouts explaining the key properties right in the right margin.
+    let mut session_callout = CalloutActor::declare(
+        &mut scene,
+        "callout-session",
+        &CalloutPlan::new(
+            editor_anchor("sessionProp", CalloutSide::Right),
+            vec![
+                span("reuses live tab ", Tone::Plain),
+                span("cookies & TLS", Tone::Accent),
+            ],
+        )
+        .side(CalloutSide::Right)
+        .elbow()
+        .reach(260.0)
+        .tone(Tone::Accent)
+        .chip(),
+    )?;
+    let mut handoff_callout = CalloutActor::declare(
+        &mut scene,
+        "callout-handoff",
+        &CalloutPlan::new(
+            editor_anchor("handoffProp", CalloutSide::Right),
+            vec![
+                span("401 → ", Tone::Warning),
+                span("in-page Continue pill + retry", Tone::Success),
+            ],
+        )
+        .side(CalloutSide::Right)
+        .elbow()
+        .reach(210.0)
+        .tone(Tone::Success)
+        .chip(),
+    )?;
+    let mut draft_callout = CalloutActor::declare(
+        &mut scene,
+        "callout-draft",
+        &CalloutPlan::new(
+            editor_anchor("draftEnd", CalloutSide::BottomRight),
+            vec![
+                span("60ms in-tab fetch · ", Tone::Plain),
+                span("cart only, never orders", Tone::Success),
+            ],
+        )
+        .side(CalloutSide::BottomRight)
+        .elbow()
+        .reach(44.0)
+        .tone(Tone::Success)
+        .chip(),
+    )?;
 
-    let search_box = s.send(sc, "click-2", b("type into the search"), 0.65);
-    sfx::SEND.play(sc, "send-search", b("type into the search"), -10.0);
-    s.land(sc, "browser", search_box);
+    session_callout.show(&mut scene, c("karma cafe session"));
+    handoff_callout.show(&mut scene, c("handoff on auth failure"));
+    handoff_callout.emphasize(&mut scene, c("handoff on auth failure") + millis(300));
+    draft_callout.show(&mut scene, c("without placing the order") - millis(400));
 
-    // Closed-store dialog pops and blocks pointer events.
-    let dialog_at = b("dismiss a closed store");
-    s.settle_in(sc, "dialog", dialog_at);
-    s.hit(sc, "dialog.alarm", dialog_at + seconds(0.08), 0.45, 0.0);
-    s.hit(sc, "browser.alarm", dialog_at + seconds(0.08), 0.35, 0.0);
-    s.to(sc, "browser.status", dialog_at, 2.0, 0.25);
-    s.glitch(sc, "dialog", dialog_at + seconds(0.06), [6.0, 8.0, 6.0]);
-    sfx::FAILURE.play(sc, "dialog-block", dialog_at, -10.0);
+    // Liquid-Glass Loupe gliding across the key expressions as they are spoken.
+    let mut loupe = LensActor::declare(
+        &mut scene,
+        "loupe",
+        &LensPlan::capsule(
+            editor_anchor("handoffProp", CalloutSide::Center),
+            [420.0, 74.0],
+        )
+        .anchor(editor_anchor("getStoreCall", CalloutSide::Center))
+        .anchor(editor_anchor("createDraftCall", CalloutSide::Center))
+        .magnification(1.38),
+    )?;
+    let handoff_at = c("handoff on auth failure");
+    loupe.show(&mut scene, handoff_at);
+    loupe.move_to(&mut scene, "getStoreCall", s2 + millis(650))?;
+    loupe.move_to(&mut scene, "createDraftCall", s3 + millis(650))?;
+    loupe.hide(&mut scene, c("without placing the order") - millis(200));
 
-    let scroll_at = b("scroll through a hundred");
-    s.fade_out(sc, "dialog", scroll_at - seconds(0.2), 0.35);
-    s.to(sc, "browser.status", scroll_at, 1.0, 0.3);
-    let scroll_pkt = s.send(sc, "click-3", scroll_at, 0.7);
-    s.land(sc, "browser", scroll_pkt);
-
-    let slow_at = b("25 seconds");
-    s.to(sc, "agent.status", slow_at, 2.0, 0.3);
-    s.set(sc, "agent.spinner", slow_at, -1.0);
-    s.hit(sc, "agent.alarm", slow_at, 0.45, 0.15);
-    sfx::FAILURE.play(sc, "slow-verdict", slow_at, -11.0);
-    let mut footer_before = footer(
-        sc,
-        "footer-before",
+    let mut code_footer = footer(
+        &mut scene,
+        "footer-code",
         vec![
-            span("UI clicks every time: ", Tone::Plain),
-            span("25 seconds · 4 LLM turns", Tone::Error),
+            span("BrowserControlClient.origin() ", Tone::Accent),
+            span("· live session cookies · auto-handoff on 401", Tone::Plain),
         ],
     )?;
-    footer_before.type_in(sc, slow_at, 44.0, 0.8);
+    code_footer.type_in(&mut scene, s1, 46.0, 0.8);
 
-    // ── Rewind ──
-    let switch = before.end() + seconds(0.35);
-    s.rewind(sc, switch, 0.12);
-    sfx::LAUNCH.play(sc, "rewind", switch - seconds(0.1), -14.0);
-    before_chip.hide(sc, switch);
-    footer_before.hide(sc, switch);
-    let mut rewind_chip = chip(sc, "chip-rewind", Tone::Accent, "◀◀ rewind")?;
-    rewind_chip.show(sc, switch + seconds(0.25));
-    rewind_chip.hide(sc, switch + seconds(1.4));
-    let mut after_chip = chip(sc, "chip-after", Tone::Success, "harvest + CLI")?;
-    after_chip.show(sc, switch + seconds(1.55));
-
-    s.to(sc, "agent.alarm", switch, 0.0, 0.4);
-    s.to(sc, "browser.alarm", switch, 0.0, 0.4);
-    s.to(sc, "agent.status", switch + seconds(0.2), 0.0, 0.4);
-    s.to(sc, "browser.status", switch + seconds(0.2), 0.0, 0.4);
-    s.to(sc, "ui-link.emphasis", switch, 0.0, 0.4);
-
-    // ── Act 2: Capture once -> Harvest endpoints -> 60ms CLI ──
-    let start_cap = a("start network capture");
-    s.to(sc, "agent.status", start_cap, 3.0, 0.3);
-    s.to(sc, "browser.status", start_cap, 3.0, 0.3);
-    let cap_pkt = s.send(sc, "capture-once", start_cap, 0.65);
-    sfx::SEND.play(sc, "cap-send", start_cap, -10.0);
-    s.land(sc, "browser", cap_pkt);
-
-    let add_once = a("add the smoothie once");
-    let probe_pkt = s.send(
-        sc,
-        "api-probe",
-        add_once.not_before(reply_after(cap_pkt)),
-        0.65,
-    );
-    s.land(sc, "ubereats", probe_pkt);
-
-    // Clean digest returns with redacted secret refs.
-    let digest_at = a("clean digest");
-    let digest_pkt = s.send(sc, "digest-back", digest_at - seconds(0.2), 0.65);
-    s.land(sc, "agent", digest_pkt);
-    s.to(sc, "agent.status", digest_pkt, 4.0, 0.3);
-    s.type_in(sc, "digest-line", digest_at, 52.0);
-    sfx::CONFIRM.play(sc, "digest-land", digest_pkt, -12.0);
-
-    let redacted_at = a("cookies redacted");
-    s.type_in(sc, "secret-line", redacted_at, 52.0);
-    sfx::MARK.play(sc, "redacted-mark", redacted_at, -14.0);
-
-    // The generated CLI card settles in and connects to the browser session.
-    let cli_at = a("command line tool");
-    let cli_ready = s.settle_in(sc, "cli", cli_at);
-    let cli_contact = s.connect(sc, "cli-link", cli_ready + seconds(0.15), 0.55);
-    s.hit(sc, "cli-link.surge", cli_contact, 0.4, 0.0);
-    s.twang(sc, "cli-link", cli_contact);
-    sfx::TICK.play(sc, "connect-cli", cli_contact, -18.0);
-
-    // Direct 60ms API call through the live browser tab!
-    let direct_at = a("calls uber eats directly");
-    s.to(sc, "cli.status", direct_at, 1.0, 0.25);
-    s.to(sc, "cli.glow", direct_at, 0.5, 0.5);
-    let cli_call = s.send(sc, "cli-call", direct_at, 0.45);
-    sfx::SEND.play(sc, "cli-send", direct_at, -9.0);
-    s.land(sc, "browser", cli_call);
-
-    let fast_fetch = s.send(sc, "fetch-fast", reply_after(cli_call), 0.45);
-    s.land(sc, "ubereats", fast_fetch);
-    let fast_ok = s.send(sc, "fetch-ok", reply_after(fast_fetch), 0.45);
-    s.land(sc, "browser", fast_ok);
-    s.to(sc, "browser.status", fast_ok, 4.0, 0.25);
-
-    let cli_ok = s.send(sc, "cli-ok", reply_after(fast_ok), 0.45);
-    s.land(sc, "cli", cli_ok);
-    s.to(sc, "cli.status", cli_ok, 2.0, 0.25);
-    s.hit(sc, "cli.flash", cli_ok, 0.5, 0.0);
-    sfx::SUCCESS.play(sc, "cli-60ms", cli_ok, -8.0);
-
-    // ── Act 3: Expired login (401) -> In-page Continue pill -> Auto-retry ──
-    let expires_at = a("expires");
-    s.to(sc, "digest-line.opacity", expires_at, 0.0, 0.4);
-    s.to(sc, "secret-line.opacity", expires_at, 0.0, 0.4);
-    let try_expired = s.send(sc, "cli-expired-try", expires_at, 0.45);
-    s.land(sc, "browser", try_expired);
-
-    let err_401_at = a("401");
-    let pkt_401 = s.send(sc, "fetch-401", err_401_at - seconds(0.25), 0.45);
-    s.land(sc, "browser", pkt_401);
-    s.to(sc, "browser.status", pkt_401, 5.0, 0.25);
-    s.hit(sc, "browser.alarm", pkt_401, 0.35, 0.0);
-    sfx::FAILURE.play(sc, "err-401", pkt_401, -11.0);
-
-    // Browser Control pauses and shows the in-page Continue pill.
-    let pill_at = a("continue pill");
-    s.to(sc, "cli.status", a("pauses"), 3.0, 0.25);
-    s.settle_in(sc, "pill", pill_at - seconds(0.2));
-    s.hit(sc, "pill.flash", pill_at, 0.45, 0.0);
-    sfx::CONFIRM.play(sc, "pill-show", pill_at, -11.0);
-
-    // User signs in once; pill turns green and fades; request retries automatically!
-    let sign_in_at = a("sign in once");
-    s.to(sc, "pill.status", sign_in_at, 1.0, 0.25);
-    s.hit(sc, "pill.flash", sign_in_at, 0.5, 0.0);
-    sfx::SUCCESS.play(sc, "signed-in", sign_in_at, -9.0);
-
-    let retry_at = a("retries the request");
-    s.fade_out(sc, "pill", retry_at, 0.35);
-    let retry_pkt = s.send(sc, "fetch-retry", retry_at, 0.42);
-    sfx::SEND.play(sc, "retry-send", retry_at, -9.0);
-    s.land(sc, "ubereats", retry_pkt);
-    s.hit(sc, "ubereats.pulse", retry_pkt + seconds(0.1), 0.75, 0.0);
-    s.ease(sc, "ubereats.rotation", retry_pkt, 1.4, 2.0, Ease::CubicOut);
-    s.halo(sc, [("calm", 0.35), ("calm-outer", 0.5)], retry_pkt, 0.22);
-
-    let retry_ok = s.send(sc, "fetch-retry-ok", reply_after(retry_pkt), 0.42);
-    s.land(sc, "browser", retry_ok);
-    s.to(sc, "browser.status", retry_ok, 4.0, 0.25);
-
-    let final_ok = s.send(sc, "cli-retry-ok", reply_after(retry_ok), 0.42);
-    s.land(sc, "cli", final_ok);
-    s.to(sc, "cli.status", final_ok, 2.0, 0.25);
-    s.hit(sc, "cli.flash", final_ok, 0.55, 0.0);
-    s.hit(sc, "post.bloom", final_ok, 0.28, 0.18);
-    sfx::BLOOM.play(sc, "final-bloom", final_ok, -8.0);
-
-    let mut footer_after = footer(
-        sc,
-        "footer-after",
-        vec![
-            span("60ms in-tab fetch · ", Tone::Plain),
-            span("auto-handoff on 401", Tone::Success),
-        ],
-    )?;
-    footer_after.type_in(sc, retry_at, 44.0, 0.8);
-
-    // ── Closing camera glides to `cli` card before zooming into its code ──
-    let close = after.end() + seconds(0.3);
-    s.to(sc, "camera.x", close, CLOSING_CAMERA[0], 1.2);
-    s.to(sc, "camera.y", close, CLOSING_CAMERA[1], 1.2);
-    s.to(sc, "camera.z", close, CLOSING_CAMERA[2], 1.2);
-    s.to(sc, "camera.focus", close, -50.0, 1.0);
-    s.to(sc, "cli.glow", close, 0.65, 0.8);
-    after_chip.hide(sc, close);
-    footer_after.hide(sc, close);
-    s.halo_out(sc, ["calm", "calm-outer"], close, 0.6);
-
-    scene.finish().context("ubereats-stage")
+    scene.finish().context("ubereats-code")
 }
