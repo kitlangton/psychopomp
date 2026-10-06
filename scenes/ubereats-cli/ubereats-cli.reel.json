@@ -1,0 +1,5220 @@
+{
+  "version": 1,
+  "id": "ubereats-cli",
+  "segments": [
+    {
+      "transitionNanos": 0,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "ubereats-stage",
+        "durationNanos": 75023250000,
+        "actors": [
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    1540.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "ubereats",
+                  "kind": "orb",
+                  "points": 900,
+                  "radius": 132.0,
+                  "tone": "plain"
+                },
+                {
+                  "at": [
+                    1540.0,
+                    688.0,
+                    0.0
+                  ],
+                  "id": "ubereats-name",
+                  "kind": "label",
+                  "size": 24.0,
+                  "spans": [
+                    {
+                      "text": "Uber Eats API"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1540.0,
+                    720.0,
+                    0.0
+                  ],
+                  "id": "ubereats-sub",
+                  "kind": "label",
+                  "size": 19.0,
+                  "spans": [
+                    {
+                      "text": "●",
+                      "tone": "success"
+                    },
+                    {
+                      "text": " Karma Cafe · $14.00",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    340.0,
+                    350.0,
+                    0.0
+                  ],
+                  "id": "agent",
+                  "kind": "card",
+                  "size": [
+                    346.0,
+                    120.0
+                  ],
+                  "status": [
+                    {
+                      "text": "goal: 1x Espresso Nut"
+                    },
+                    {
+                      "text": "clicking UI · turn 1..4",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "25s · 4 model turns",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "capturing flow once",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "endpoints harvested ✓",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "coding agent",
+                  "tone": "request"
+                },
+                {
+                  "at": [
+                    920.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "browser",
+                  "kind": "card",
+                  "size": [
+                    392.0,
+                    128.0
+                  ],
+                  "status": [
+                    {
+                      "text": "attached · cookies live",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "searching & scrolling…",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "blocked by dialog",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "network.start(/_p/api/)",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "window.fetch · 60ms ✓",
+                      "tone": "success"
+                    },
+                    {
+                      "text": "401 · waiting for sign-in",
+                      "tone": "warning"
+                    }
+                  ],
+                  "title": "karma-cafe · browser tab"
+                },
+                {
+                  "at": [
+                    340.0,
+                    690.0,
+                    -50.0
+                  ],
+                  "id": "cli",
+                  "kind": "card",
+                  "size": [
+                    346.0,
+                    120.0
+                  ],
+                  "status": [
+                    {
+                      "text": "BrowserControlClient.origin",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "POST createDraftOrderV2",
+                      "tone": "request"
+                    },
+                    {
+                      "text": "1x Espresso Nut in cart ✓",
+                      "tone": "success"
+                    },
+                    {
+                      "text": "paused for login handoff",
+                      "tone": "warning"
+                    }
+                  ],
+                  "title": "ubereats-cli.ts",
+                  "tone": "accent"
+                },
+                {
+                  "at": [
+                    920.0,
+                    260.0,
+                    -80.0
+                  ],
+                  "id": "dialog",
+                  "kind": "card",
+                  "size": [
+                    364.0,
+                    108.0
+                  ],
+                  "status": [
+                    {
+                      "text": "intercepts pointer events",
+                      "tone": "error"
+                    }
+                  ],
+                  "title": "store closed modal",
+                  "tone": "error"
+                },
+                {
+                  "at": [
+                    920.0,
+                    260.0,
+                    -80.0
+                  ],
+                  "id": "pill",
+                  "kind": "card",
+                  "size": [
+                    364.0,
+                    108.0
+                  ],
+                  "status": [
+                    {
+                      "text": "Sign in, then Continue →",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "signed in · continuing ✓",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "in-page handoff pill",
+                  "tone": "accent"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "agent",
+                  "id": "ui-link",
+                  "kind": "beam",
+                  "to": "browser",
+                  "tone": "request"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "browser",
+                  "id": "web-link",
+                  "kind": "beam",
+                  "to": "ubereats"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "cli",
+                  "id": "cli-link",
+                  "kind": "beam",
+                  "to": "browser",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "ui-link",
+                  "id": "click-1",
+                  "kind": "packet",
+                  "label": "goto /feed",
+                  "tone": "request"
+                },
+                {
+                  "beam": "ui-link",
+                  "id": "click-2",
+                  "kind": "packet",
+                  "label": "fill \"Karma Cafe\"",
+                  "tone": "request"
+                },
+                {
+                  "beam": "ui-link",
+                  "id": "click-3",
+                  "kind": "packet",
+                  "label": "scroll 100 items",
+                  "tone": "warning"
+                },
+                {
+                  "beam": "ui-link",
+                  "id": "capture-once",
+                  "kind": "packet",
+                  "label": "network.start + add once",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "web-link",
+                  "id": "api-probe",
+                  "kind": "packet",
+                  "label": "POST /_p/api/*",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "ui-link",
+                  "id": "digest-back",
+                  "kind": "packet",
+                  "label": "3 endpoints · ${BC_SECRET_1}",
+                  "reverse": true,
+                  "tone": "success"
+                },
+                {
+                  "beam": "cli-link",
+                  "id": "cli-call",
+                  "kind": "packet",
+                  "label": "post(createDraftOrderV2)",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "web-link",
+                  "id": "fetch-fast",
+                  "kind": "packet",
+                  "label": "window.fetch · x-csrf-token",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "web-link",
+                  "id": "fetch-ok",
+                  "kind": "packet",
+                  "label": "200 OK · 60ms",
+                  "reverse": true,
+                  "tone": "success"
+                },
+                {
+                  "beam": "cli-link",
+                  "id": "cli-ok",
+                  "kind": "packet",
+                  "label": "1x Espresso Nut ✓",
+                  "reverse": true,
+                  "tone": "success"
+                },
+                {
+                  "beam": "cli-link",
+                  "id": "cli-expired-try",
+                  "kind": "packet",
+                  "label": "post(createDraftOrderV2)",
+                  "tone": "request"
+                },
+                {
+                  "beam": "web-link",
+                  "id": "fetch-401",
+                  "kind": "packet",
+                  "label": "401 Unauthorized",
+                  "reverse": true,
+                  "tone": "error"
+                },
+                {
+                  "beam": "web-link",
+                  "id": "fetch-retry",
+                  "kind": "packet",
+                  "label": "retry POST createDraftOrderV2",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "web-link",
+                  "id": "fetch-retry-ok",
+                  "kind": "packet",
+                  "label": "200 OK · cart updated",
+                  "reverse": true,
+                  "tone": "success"
+                },
+                {
+                  "beam": "cli-link",
+                  "id": "cli-retry-ok",
+                  "kind": "packet",
+                  "label": "1x Espresso Nut ✓",
+                  "reverse": true,
+                  "tone": "success"
+                },
+                {
+                  "at": [
+                    920.0,
+                    770.0,
+                    0.0
+                  ],
+                  "id": "digest-line",
+                  "kind": "label",
+                  "size": 19.0,
+                  "spans": [
+                    {
+                      "text": "endpoints ▸ ",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "getSearchFeed · getStore · createDraftOrder",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    920.0,
+                    804.0,
+                    0.0
+                  ],
+                  "id": "secret-line",
+                  "kind": "label",
+                  "size": 19.0,
+                  "spans": [
+                    {
+                      "text": "redacted  ▸ ",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "cookie=${BC_SECRET_1} · x-csrf-token=x",
+                      "tone": "accent"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1540.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "calm",
+                  "kind": "ring",
+                  "radius": 146.0,
+                  "thickness": 1.2999999523162842,
+                  "tone": "success"
+                },
+                {
+                  "at": [
+                    1540.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "calm-outer",
+                  "kind": "ring",
+                  "radius": 152.0,
+                  "thickness": 1.2999999523162842,
+                  "tone": "success"
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "browser-control",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "from browser flow to 60ms CLI"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip-before",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "warning"
+                  },
+                  {
+                    "text": "UI clicking"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "footer-before",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "UI clicks every time: "
+                  },
+                  {
+                    "text": "25 seconds · 4 LLM turns",
+                    "tone": "error"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          },
+          {
+            "id": "chip-rewind",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "◀◀ rewind"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "chip-after",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "harvest + CLI"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "footer-after",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "60ms in-tab fetch · "
+                  },
+                  {
+                    "text": "auto-handoff on 401",
+                    "tone": "success"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -140.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 2.4,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": 60.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.dof",
+            "actorId": "stage",
+            "property": "camera.dof",
+            "initial": 0.42,
+            "events": []
+          },
+          {
+            "id": "stage.ubereats.scale",
+            "actorId": "stage",
+            "property": "ubereats.scale",
+            "initial": 0.58,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 0.8,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.ubereats.blur",
+            "actorId": "stage",
+            "property": "ubereats.blur",
+            "initial": 11.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "responseSeconds": 0.84000003,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.ubereats.rotation",
+            "actorId": "stage",
+            "property": "ubereats.rotation",
+            "initial": -1.8,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "durationNanos": 1250000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 71083875000,
+                "target": 1.4,
+                "durationNanos": 2000000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.ubereats.opacity",
+            "actorId": "stage",
+            "property": "ubereats.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.ubereats-name.opacity",
+            "actorId": "stage",
+            "property": "ubereats-name.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 800000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.ubereats-sub.opacity",
+            "actorId": "stage",
+            "property": "ubereats-sub.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 950000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.scale",
+            "actorId": "stage",
+            "property": "browser.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 450000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.y",
+            "actorId": "stage",
+            "property": "browser.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 450000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 450000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.content",
+            "actorId": "stage",
+            "property": "browser.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 450000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 515000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.opacity",
+            "actorId": "stage",
+            "property": "browser.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 450000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.blur",
+            "actorId": "stage",
+            "property": "browser.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 450000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 450000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.web-link.port",
+            "actorId": "stage",
+            "property": "web-link.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1100000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.web-link.draw",
+            "actorId": "stage",
+            "property": "web-link.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1400000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1400000000,
+                "target": 1.0,
+                "durationNanos": 650000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.scale",
+            "actorId": "stage",
+            "property": "agent.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.y",
+            "actorId": "stage",
+            "property": "agent.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.content",
+            "actorId": "stage",
+            "property": "agent.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 715000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.opacity",
+            "actorId": "stage",
+            "property": "agent.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.blur",
+            "actorId": "stage",
+            "property": "agent.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 650000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.ui-link.port",
+            "actorId": "stage",
+            "property": "ui-link.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1300000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.ui-link.draw",
+            "actorId": "stage",
+            "property": "ui-link.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1600000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1600000000,
+                "target": 1.0,
+                "durationNanos": 650000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "header.opacity",
+            "actorId": "header",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 350000000,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "header.typed",
+            "actorId": "header",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 368181818,
+                "value": 0.02173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 386363636,
+                "value": 0.04347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 404545454,
+                "value": 0.06521739
+              },
+              {
+                "operation": "set",
+                "atNanos": 422727272,
+                "value": 0.08695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 440909090,
+                "value": 0.10869565
+              },
+              {
+                "operation": "set",
+                "atNanos": 459090908,
+                "value": 0.13043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 477272726,
+                "value": 0.1521739
+              },
+              {
+                "operation": "set",
+                "atNanos": 495454544,
+                "value": 0.17391305
+              },
+              {
+                "operation": "set",
+                "atNanos": 513636362,
+                "value": 0.19565217
+              },
+              {
+                "operation": "set",
+                "atNanos": 531818180,
+                "value": 0.2173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 549999998,
+                "value": 0.23913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 568181816,
+                "value": 0.26086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 586363634,
+                "value": 0.2826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 604545452,
+                "value": 0.3043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 622727270,
+                "value": 0.32608697
+              },
+              {
+                "operation": "set",
+                "atNanos": 640909088,
+                "value": 0.3478261
+              },
+              {
+                "operation": "set",
+                "atNanos": 659090906,
+                "value": 0.36956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 677272724,
+                "value": 0.39130434
+              },
+              {
+                "operation": "set",
+                "atNanos": 695454542,
+                "value": 0.41304347
+              },
+              {
+                "operation": "set",
+                "atNanos": 713636360,
+                "value": 0.4347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 731818178,
+                "value": 0.45652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 749999996,
+                "value": 0.47826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 768181814,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 786363632,
+                "value": 0.5217391
+              },
+              {
+                "operation": "set",
+                "atNanos": 804545450,
+                "value": 0.54347825
+              },
+              {
+                "operation": "set",
+                "atNanos": 822727268,
+                "value": 0.5652174
+              },
+              {
+                "operation": "set",
+                "atNanos": 840909086,
+                "value": 0.5869565
+              },
+              {
+                "operation": "set",
+                "atNanos": 859090904,
+                "value": 0.6086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 877272722,
+                "value": 0.6304348
+              },
+              {
+                "operation": "set",
+                "atNanos": 895454540,
+                "value": 0.65217394
+              },
+              {
+                "operation": "set",
+                "atNanos": 913636358,
+                "value": 0.67391306
+              },
+              {
+                "operation": "set",
+                "atNanos": 931818176,
+                "value": 0.6956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 949999994,
+                "value": 0.7173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 968181812,
+                "value": 0.73913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 986363630,
+                "value": 0.76086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 1004545448,
+                "value": 0.7826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 1022727266,
+                "value": 0.8043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 1040909084,
+                "value": 0.82608694
+              },
+              {
+                "operation": "set",
+                "atNanos": 1059090902,
+                "value": 0.84782606
+              },
+              {
+                "operation": "set",
+                "atNanos": 1077272720,
+                "value": 0.8695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 1095454538,
+                "value": 0.8913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 1113636356,
+                "value": 0.9130435
+              },
+              {
+                "operation": "set",
+                "atNanos": 1131818174,
+                "value": 0.9347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 1149999992,
+                "value": 0.95652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 1168181810,
+                "value": 0.9782609
+              },
+              {
+                "operation": "set",
+                "atNanos": 1186363628,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "header.caret",
+            "actorId": "header",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 350000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 1786363651,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-before.opacity",
+            "actorId": "chip-before",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27033875000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-before.y",
+            "actorId": "chip-before",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.status",
+            "actorId": "stage",
+            "property": "agent.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 9180000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22020000000,
+                "target": 2.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27233875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35603875000,
+                "target": 3.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 45293875000,
+                "target": 4.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.spinner",
+            "actorId": "stage",
+            "property": "agent.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 9180000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 9180000000,
+                "target": 65.843,
+                "durationNanos": 65843000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 22020000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.ui-link.emphasis",
+            "actorId": "stage",
+            "property": "ui-link.emphasis",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 9180000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27033875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.click-1.age",
+            "actorId": "stage",
+            "property": "click-1.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 11780000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 11780000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.click-1.flight",
+            "actorId": "stage",
+            "property": "click-1.flight",
+            "initial": 0.65,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 11780000000,
+                "value": 0.65
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.flash",
+            "actorId": "stage",
+            "property": "browser.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 12770000000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 12770000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 13770000000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 13770000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 19600000000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 19600000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 36253875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 36253875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 54313875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 54313875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 56053875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 56053875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 61333875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 61333875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 62983875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 62983875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 71923875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 71923875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.status",
+            "actorId": "stage",
+            "property": "browser.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 12770000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 16020000000,
+                "target": 2.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 18900000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27233875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35603875000,
+                "target": 3.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 56053875000,
+                "target": 4.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 62983875000,
+                "target": 5.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 71923875000,
+                "target": 4.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.click-2.age",
+            "actorId": "stage",
+            "property": "click-2.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 12780000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 12780000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.click-2.flight",
+            "actorId": "stage",
+            "property": "click-2.flight",
+            "initial": 0.65,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 12780000000,
+                "value": 0.65
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.scale",
+            "actorId": "stage",
+            "property": "dialog.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16020000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 16020000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.y",
+            "actorId": "stage",
+            "property": "dialog.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16020000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 16020000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.content",
+            "actorId": "stage",
+            "property": "dialog.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16020000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 16085000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.opacity",
+            "actorId": "stage",
+            "property": "dialog.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16020000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 16020000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "spring",
+                "atNanos": 18700000000,
+                "target": 0.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.blur",
+            "actorId": "stage",
+            "property": "dialog.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16020000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 16020000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.alarm",
+            "actorId": "stage",
+            "property": "dialog.alarm",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16100000000,
+                "value": 0.45
+              },
+              {
+                "operation": "ease",
+                "atNanos": 16100000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.browser.alarm",
+            "actorId": "stage",
+            "property": "browser.alarm",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16100000000,
+                "value": 0.35
+              },
+              {
+                "operation": "ease",
+                "atNanos": 16100000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27033875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "set",
+                "atNanos": 62983875000,
+                "value": 0.35
+              },
+              {
+                "operation": "ease",
+                "atNanos": 62983875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.dialog.glitch",
+            "actorId": "stage",
+            "property": "dialog.glitch",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16080000000,
+                "value": 6.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 16107000000,
+                "value": 8.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 16134000000,
+                "value": 6.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 16161000000,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "stage.click-3.age",
+            "actorId": "stage",
+            "property": "click-3.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18560000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 18560000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.click-3.flight",
+            "actorId": "stage",
+            "property": "click-3.flight",
+            "initial": 0.7,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18560000000,
+                "value": 0.7
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.alarm",
+            "actorId": "stage",
+            "property": "agent.alarm",
+            "initial": 0.15,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 22020000000,
+                "value": 0.45
+              },
+              {
+                "operation": "ease",
+                "atNanos": 22020000000,
+                "target": 0.15,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27033875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-before.opacity",
+            "actorId": "footer-before",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 22020000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 27033875000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-before.typed",
+            "actorId": "footer-before",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 22042727272,
+                "value": 0.02173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 22065454544,
+                "value": 0.04347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 22088181816,
+                "value": 0.06521739
+              },
+              {
+                "operation": "set",
+                "atNanos": 22110909088,
+                "value": 0.08695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 22133636360,
+                "value": 0.10869565
+              },
+              {
+                "operation": "set",
+                "atNanos": 22156363632,
+                "value": 0.13043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 22179090904,
+                "value": 0.1521739
+              },
+              {
+                "operation": "set",
+                "atNanos": 22201818176,
+                "value": 0.17391305
+              },
+              {
+                "operation": "set",
+                "atNanos": 22224545448,
+                "value": 0.19565217
+              },
+              {
+                "operation": "set",
+                "atNanos": 22247272720,
+                "value": 0.2173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 22269999992,
+                "value": 0.23913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 22292727264,
+                "value": 0.26086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 22315454536,
+                "value": 0.2826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 22338181808,
+                "value": 0.3043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 22360909080,
+                "value": 0.32608697
+              },
+              {
+                "operation": "set",
+                "atNanos": 22383636352,
+                "value": 0.3478261
+              },
+              {
+                "operation": "set",
+                "atNanos": 22406363624,
+                "value": 0.36956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 22429090896,
+                "value": 0.39130434
+              },
+              {
+                "operation": "set",
+                "atNanos": 22451818168,
+                "value": 0.41304347
+              },
+              {
+                "operation": "set",
+                "atNanos": 22474545440,
+                "value": 0.4347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 22497272712,
+                "value": 0.45652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 22519999984,
+                "value": 0.47826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 22542727256,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 22565454528,
+                "value": 0.5217391
+              },
+              {
+                "operation": "set",
+                "atNanos": 22588181800,
+                "value": 0.54347825
+              },
+              {
+                "operation": "set",
+                "atNanos": 22610909072,
+                "value": 0.5652174
+              },
+              {
+                "operation": "set",
+                "atNanos": 22633636344,
+                "value": 0.5869565
+              },
+              {
+                "operation": "set",
+                "atNanos": 22656363616,
+                "value": 0.6086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 22679090888,
+                "value": 0.6304348
+              },
+              {
+                "operation": "set",
+                "atNanos": 22701818160,
+                "value": 0.65217394
+              },
+              {
+                "operation": "set",
+                "atNanos": 22724545432,
+                "value": 0.67391306
+              },
+              {
+                "operation": "set",
+                "atNanos": 22747272704,
+                "value": 0.6956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 22769999976,
+                "value": 0.7173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 22792727248,
+                "value": 0.73913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 22815454520,
+                "value": 0.76086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 22838181792,
+                "value": 0.7826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 22860909064,
+                "value": 0.8043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 22883636336,
+                "value": 0.82608694
+              },
+              {
+                "operation": "set",
+                "atNanos": 22906363608,
+                "value": 0.84782606
+              },
+              {
+                "operation": "set",
+                "atNanos": 22929090880,
+                "value": 0.8695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 22951818152,
+                "value": 0.8913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 22974545424,
+                "value": 0.9130435
+              },
+              {
+                "operation": "set",
+                "atNanos": 22997272696,
+                "value": 0.9347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 23019999968,
+                "value": 0.95652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 23042727240,
+                "value": 0.9782609
+              },
+              {
+                "operation": "set",
+                "atNanos": 23065454512,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "footer-before.caret",
+            "actorId": "footer-before",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 22020000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 23865454523,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.post.rewind",
+            "actorId": "stage",
+            "property": "post.rewind",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 27033875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 27033875000,
+                "target": 1.4,
+                "durationNanos": 1400000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.post.chroma",
+            "actorId": "stage",
+            "property": "post.chroma",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 27033875000,
+                "value": 0.12
+              },
+              {
+                "operation": "ease",
+                "atNanos": 27033875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "chip-rewind.opacity",
+            "actorId": "chip-rewind",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 27283875000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 28433875000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-rewind.y",
+            "actorId": "chip-rewind",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 27283875000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-after.opacity",
+            "actorId": "chip-after",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 28583875000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-after.y",
+            "actorId": "chip-after",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 28583875000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.capture-once.age",
+            "actorId": "stage",
+            "property": "capture-once.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 35263875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 35263875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.capture-once.flight",
+            "actorId": "stage",
+            "property": "capture-once.flight",
+            "initial": 0.65,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 35263875000,
+                "value": 0.65
+              }
+            ]
+          },
+          {
+            "id": "stage.api-probe.age",
+            "actorId": "stage",
+            "property": "api-probe.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 38943875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 38943875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.api-probe.flight",
+            "actorId": "stage",
+            "property": "api-probe.flight",
+            "initial": 0.65,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 38943875000,
+                "value": 0.65
+              }
+            ]
+          },
+          {
+            "id": "stage.ubereats.pulse",
+            "actorId": "stage",
+            "property": "ubereats.pulse",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 39933875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 39933875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 55183875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 55183875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 71083875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 71083875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 71183875000,
+                "value": 0.75
+              },
+              {
+                "operation": "ease",
+                "atNanos": 71183875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.digest-back.age",
+            "actorId": "stage",
+            "property": "digest-back.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44303875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 44303875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.digest-back.flight",
+            "actorId": "stage",
+            "property": "digest-back.flight",
+            "initial": 0.65,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44303875000,
+                "value": 0.65
+              }
+            ]
+          },
+          {
+            "id": "stage.agent.flash",
+            "actorId": "stage",
+            "property": "agent.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 45293875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 45293875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.digest-line.opacity",
+            "actorId": "stage",
+            "property": "digest-line.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44843875000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 60883875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.digest-line.typed",
+            "actorId": "stage",
+            "property": "digest-line.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44863105769,
+                "value": 0.018181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 44882336538,
+                "value": 0.036363635
+              },
+              {
+                "operation": "set",
+                "atNanos": 44901567307,
+                "value": 0.054545455
+              },
+              {
+                "operation": "set",
+                "atNanos": 44920798076,
+                "value": 0.07272727
+              },
+              {
+                "operation": "set",
+                "atNanos": 44940028845,
+                "value": 0.09090909
+              },
+              {
+                "operation": "set",
+                "atNanos": 44959259614,
+                "value": 0.10909091
+              },
+              {
+                "operation": "set",
+                "atNanos": 44978490383,
+                "value": 0.12727273
+              },
+              {
+                "operation": "set",
+                "atNanos": 44997721152,
+                "value": 0.14545454
+              },
+              {
+                "operation": "set",
+                "atNanos": 45016951921,
+                "value": 0.16363636
+              },
+              {
+                "operation": "set",
+                "atNanos": 45036182690,
+                "value": 0.18181819
+              },
+              {
+                "operation": "set",
+                "atNanos": 45055413459,
+                "value": 0.2
+              },
+              {
+                "operation": "set",
+                "atNanos": 45074644228,
+                "value": 0.21818182
+              },
+              {
+                "operation": "set",
+                "atNanos": 45093874997,
+                "value": 0.23636363
+              },
+              {
+                "operation": "set",
+                "atNanos": 45113105766,
+                "value": 0.25454545
+              },
+              {
+                "operation": "set",
+                "atNanos": 45132336535,
+                "value": 0.27272728
+              },
+              {
+                "operation": "set",
+                "atNanos": 45151567304,
+                "value": 0.29090908
+              },
+              {
+                "operation": "set",
+                "atNanos": 45170798073,
+                "value": 0.3090909
+              },
+              {
+                "operation": "set",
+                "atNanos": 45190028842,
+                "value": 0.3272727
+              },
+              {
+                "operation": "set",
+                "atNanos": 45209259611,
+                "value": 0.34545454
+              },
+              {
+                "operation": "set",
+                "atNanos": 45228490380,
+                "value": 0.36363637
+              },
+              {
+                "operation": "set",
+                "atNanos": 45247721149,
+                "value": 0.38181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 45266951918,
+                "value": 0.4
+              },
+              {
+                "operation": "set",
+                "atNanos": 45286182687,
+                "value": 0.4181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 45305413456,
+                "value": 0.43636364
+              },
+              {
+                "operation": "set",
+                "atNanos": 45324644225,
+                "value": 0.45454547
+              },
+              {
+                "operation": "set",
+                "atNanos": 45343874994,
+                "value": 0.47272727
+              },
+              {
+                "operation": "set",
+                "atNanos": 45363105763,
+                "value": 0.4909091
+              },
+              {
+                "operation": "set",
+                "atNanos": 45382336532,
+                "value": 0.5090909
+              },
+              {
+                "operation": "set",
+                "atNanos": 45401567301,
+                "value": 0.5272727
+              },
+              {
+                "operation": "set",
+                "atNanos": 45420798070,
+                "value": 0.54545456
+              },
+              {
+                "operation": "set",
+                "atNanos": 45440028839,
+                "value": 0.56363636
+              },
+              {
+                "operation": "set",
+                "atNanos": 45459259608,
+                "value": 0.58181816
+              },
+              {
+                "operation": "set",
+                "atNanos": 45478490377,
+                "value": 0.6
+              },
+              {
+                "operation": "set",
+                "atNanos": 45497721146,
+                "value": 0.6181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 45516951915,
+                "value": 0.6363636
+              },
+              {
+                "operation": "set",
+                "atNanos": 45536182684,
+                "value": 0.6545454
+              },
+              {
+                "operation": "set",
+                "atNanos": 45555413453,
+                "value": 0.6727273
+              },
+              {
+                "operation": "set",
+                "atNanos": 45574644222,
+                "value": 0.6909091
+              },
+              {
+                "operation": "set",
+                "atNanos": 45593874991,
+                "value": 0.7090909
+              },
+              {
+                "operation": "set",
+                "atNanos": 45613105760,
+                "value": 0.72727275
+              },
+              {
+                "operation": "set",
+                "atNanos": 45632336529,
+                "value": 0.74545455
+              },
+              {
+                "operation": "set",
+                "atNanos": 45651567298,
+                "value": 0.76363635
+              },
+              {
+                "operation": "set",
+                "atNanos": 45670798067,
+                "value": 0.7818182
+              },
+              {
+                "operation": "set",
+                "atNanos": 45690028836,
+                "value": 0.8
+              },
+              {
+                "operation": "set",
+                "atNanos": 45709259605,
+                "value": 0.8181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 45728490374,
+                "value": 0.8363636
+              },
+              {
+                "operation": "set",
+                "atNanos": 45747721143,
+                "value": 0.8545455
+              },
+              {
+                "operation": "set",
+                "atNanos": 45766951912,
+                "value": 0.8727273
+              },
+              {
+                "operation": "set",
+                "atNanos": 45786182681,
+                "value": 0.8909091
+              },
+              {
+                "operation": "set",
+                "atNanos": 45805413450,
+                "value": 0.90909094
+              },
+              {
+                "operation": "set",
+                "atNanos": 45824644219,
+                "value": 0.92727274
+              },
+              {
+                "operation": "set",
+                "atNanos": 45843874988,
+                "value": 0.94545454
+              },
+              {
+                "operation": "set",
+                "atNanos": 45863105757,
+                "value": 0.96363634
+              },
+              {
+                "operation": "set",
+                "atNanos": 45882336526,
+                "value": 0.9818182
+              },
+              {
+                "operation": "set",
+                "atNanos": 45901567295,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.secret-line.opacity",
+            "actorId": "stage",
+            "property": "secret-line.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 49023875000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 60883875000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.secret-line.typed",
+            "actorId": "stage",
+            "property": "secret-line.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 49043105769,
+                "value": 0.02
+              },
+              {
+                "operation": "set",
+                "atNanos": 49062336538,
+                "value": 0.04
+              },
+              {
+                "operation": "set",
+                "atNanos": 49081567307,
+                "value": 0.06
+              },
+              {
+                "operation": "set",
+                "atNanos": 49100798076,
+                "value": 0.08
+              },
+              {
+                "operation": "set",
+                "atNanos": 49120028845,
+                "value": 0.1
+              },
+              {
+                "operation": "set",
+                "atNanos": 49139259614,
+                "value": 0.12
+              },
+              {
+                "operation": "set",
+                "atNanos": 49158490383,
+                "value": 0.14
+              },
+              {
+                "operation": "set",
+                "atNanos": 49177721152,
+                "value": 0.16
+              },
+              {
+                "operation": "set",
+                "atNanos": 49196951921,
+                "value": 0.18
+              },
+              {
+                "operation": "set",
+                "atNanos": 49216182690,
+                "value": 0.2
+              },
+              {
+                "operation": "set",
+                "atNanos": 49235413459,
+                "value": 0.22
+              },
+              {
+                "operation": "set",
+                "atNanos": 49254644228,
+                "value": 0.24
+              },
+              {
+                "operation": "set",
+                "atNanos": 49273874997,
+                "value": 0.26
+              },
+              {
+                "operation": "set",
+                "atNanos": 49293105766,
+                "value": 0.28
+              },
+              {
+                "operation": "set",
+                "atNanos": 49312336535,
+                "value": 0.3
+              },
+              {
+                "operation": "set",
+                "atNanos": 49331567304,
+                "value": 0.32
+              },
+              {
+                "operation": "set",
+                "atNanos": 49350798073,
+                "value": 0.34
+              },
+              {
+                "operation": "set",
+                "atNanos": 49370028842,
+                "value": 0.36
+              },
+              {
+                "operation": "set",
+                "atNanos": 49389259611,
+                "value": 0.38
+              },
+              {
+                "operation": "set",
+                "atNanos": 49408490380,
+                "value": 0.4
+              },
+              {
+                "operation": "set",
+                "atNanos": 49427721149,
+                "value": 0.42
+              },
+              {
+                "operation": "set",
+                "atNanos": 49446951918,
+                "value": 0.44
+              },
+              {
+                "operation": "set",
+                "atNanos": 49466182687,
+                "value": 0.46
+              },
+              {
+                "operation": "set",
+                "atNanos": 49485413456,
+                "value": 0.48
+              },
+              {
+                "operation": "set",
+                "atNanos": 49504644225,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 49523874994,
+                "value": 0.52
+              },
+              {
+                "operation": "set",
+                "atNanos": 49543105763,
+                "value": 0.54
+              },
+              {
+                "operation": "set",
+                "atNanos": 49562336532,
+                "value": 0.56
+              },
+              {
+                "operation": "set",
+                "atNanos": 49581567301,
+                "value": 0.58
+              },
+              {
+                "operation": "set",
+                "atNanos": 49600798070,
+                "value": 0.6
+              },
+              {
+                "operation": "set",
+                "atNanos": 49620028839,
+                "value": 0.62
+              },
+              {
+                "operation": "set",
+                "atNanos": 49639259608,
+                "value": 0.64
+              },
+              {
+                "operation": "set",
+                "atNanos": 49658490377,
+                "value": 0.66
+              },
+              {
+                "operation": "set",
+                "atNanos": 49677721146,
+                "value": 0.68
+              },
+              {
+                "operation": "set",
+                "atNanos": 49696951915,
+                "value": 0.7
+              },
+              {
+                "operation": "set",
+                "atNanos": 49716182684,
+                "value": 0.72
+              },
+              {
+                "operation": "set",
+                "atNanos": 49735413453,
+                "value": 0.74
+              },
+              {
+                "operation": "set",
+                "atNanos": 49754644222,
+                "value": 0.76
+              },
+              {
+                "operation": "set",
+                "atNanos": 49773874991,
+                "value": 0.78
+              },
+              {
+                "operation": "set",
+                "atNanos": 49793105760,
+                "value": 0.8
+              },
+              {
+                "operation": "set",
+                "atNanos": 49812336529,
+                "value": 0.82
+              },
+              {
+                "operation": "set",
+                "atNanos": 49831567298,
+                "value": 0.84
+              },
+              {
+                "operation": "set",
+                "atNanos": 49850798067,
+                "value": 0.86
+              },
+              {
+                "operation": "set",
+                "atNanos": 49870028836,
+                "value": 0.88
+              },
+              {
+                "operation": "set",
+                "atNanos": 49889259605,
+                "value": 0.9
+              },
+              {
+                "operation": "set",
+                "atNanos": 49908490374,
+                "value": 0.92
+              },
+              {
+                "operation": "set",
+                "atNanos": 49927721143,
+                "value": 0.94
+              },
+              {
+                "operation": "set",
+                "atNanos": 49946951912,
+                "value": 0.96
+              },
+              {
+                "operation": "set",
+                "atNanos": 49966182681,
+                "value": 0.98
+              },
+              {
+                "operation": "set",
+                "atNanos": 49985413450,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.scale",
+            "actorId": "stage",
+            "property": "cli.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 34123875000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 34123875000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.y",
+            "actorId": "stage",
+            "property": "cli.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 34123875000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 34123875000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.content",
+            "actorId": "stage",
+            "property": "cli.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 34123875000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 34188875000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.opacity",
+            "actorId": "stage",
+            "property": "cli.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 34123875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 34123875000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.blur",
+            "actorId": "stage",
+            "property": "cli.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 34123875000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 34123875000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-link.port",
+            "actorId": "stage",
+            "property": "cli-link.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 34773875000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-link.draw",
+            "actorId": "stage",
+            "property": "cli-link.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 35073875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 35073875000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-link.surge",
+            "actorId": "stage",
+            "property": "cli-link.surge",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 35623875000,
+                "value": 0.4
+              },
+              {
+                "operation": "ease",
+                "atNanos": 35623875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-link.twang",
+            "actorId": "stage",
+            "property": "cli-link.twang",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 35623875000,
+                "target": 1.0,
+                "responseSeconds": 0.10800001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35713875000,
+                "target": 0.0,
+                "responseSeconds": 0.504,
+                "dampingRatio": 0.72,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.status",
+            "actorId": "stage",
+            "property": "cli.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 53863875000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 56923875000,
+                "target": 2.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 64783875000,
+                "target": 3.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 72763875000,
+                "target": 2.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.glow",
+            "actorId": "stage",
+            "property": "cli.glow",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 53863875000,
+                "target": 0.5,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": 0.65,
+                "responseSeconds": 0.96000004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-call.age",
+            "actorId": "stage",
+            "property": "cli-call.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 53523875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 53523875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-call.flight",
+            "actorId": "stage",
+            "property": "cli-call.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 53523875000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-fast.age",
+            "actorId": "stage",
+            "property": "fetch-fast.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 54393875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 54393875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-fast.flight",
+            "actorId": "stage",
+            "property": "fetch-fast.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 54393875000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-ok.age",
+            "actorId": "stage",
+            "property": "fetch-ok.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 55263875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 55263875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-ok.flight",
+            "actorId": "stage",
+            "property": "fetch-ok.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 55263875000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-ok.age",
+            "actorId": "stage",
+            "property": "cli-ok.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 56133875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 56133875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-ok.flight",
+            "actorId": "stage",
+            "property": "cli-ok.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 56133875000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.cli.flash",
+            "actorId": "stage",
+            "property": "cli.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 56923875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 56923875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 56923875000,
+                "value": 0.5
+              },
+              {
+                "operation": "ease",
+                "atNanos": 56923875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 72763875000,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 72763875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 72763875000,
+                "value": 0.55
+              },
+              {
+                "operation": "ease",
+                "atNanos": 72763875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-expired-try.age",
+            "actorId": "stage",
+            "property": "cli-expired-try.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 60543875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 60543875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-expired-try.flight",
+            "actorId": "stage",
+            "property": "cli-expired-try.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 60543875000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-401.age",
+            "actorId": "stage",
+            "property": "fetch-401.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 62193875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 62193875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-401.flight",
+            "actorId": "stage",
+            "property": "fetch-401.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 62193875000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.scale",
+            "actorId": "stage",
+            "property": "pill.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 66443875000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 66443875000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.y",
+            "actorId": "stage",
+            "property": "pill.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 66443875000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 66443875000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.content",
+            "actorId": "stage",
+            "property": "pill.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 66443875000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 66508875000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.opacity",
+            "actorId": "stage",
+            "property": "pill.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 66443875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 66443875000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "spring",
+                "atNanos": 70663875000,
+                "target": 0.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.blur",
+            "actorId": "stage",
+            "property": "pill.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 66443875000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 66443875000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.flash",
+            "actorId": "stage",
+            "property": "pill.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 66643875000,
+                "value": 0.45
+              },
+              {
+                "operation": "ease",
+                "atNanos": 66643875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
+                "atNanos": 69163875000,
+                "value": 0.5
+              },
+              {
+                "operation": "ease",
+                "atNanos": 69163875000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.pill.status",
+            "actorId": "stage",
+            "property": "pill.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 69163875000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-retry.age",
+            "actorId": "stage",
+            "property": "fetch-retry.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 70323875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 70323875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-retry.flight",
+            "actorId": "stage",
+            "property": "fetch-retry.flight",
+            "initial": 0.42,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 70323875000,
+                "value": 0.42
+              }
+            ]
+          },
+          {
+            "id": "stage.calm.opacity",
+            "actorId": "stage",
+            "property": "calm.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 71083875000,
+                "target": 0.35,
+                "responseSeconds": 0.264,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 73203250000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.calm-outer.opacity",
+            "actorId": "stage",
+            "property": "calm-outer.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 71143875000,
+                "target": 0.5,
+                "responseSeconds": 0.264,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-retry-ok.age",
+            "actorId": "stage",
+            "property": "fetch-retry-ok.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 71163875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 71163875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.fetch-retry-ok.flight",
+            "actorId": "stage",
+            "property": "fetch-retry-ok.flight",
+            "initial": 0.42,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 71163875000,
+                "value": 0.42
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-retry-ok.age",
+            "actorId": "stage",
+            "property": "cli-retry-ok.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 72003875000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 72003875000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.cli-retry-ok.flight",
+            "actorId": "stage",
+            "property": "cli-retry-ok.flight",
+            "initial": 0.42,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 72003875000,
+                "value": 0.42
+              }
+            ]
+          },
+          {
+            "id": "stage.post.bloom",
+            "actorId": "stage",
+            "property": "post.bloom",
+            "initial": 0.18,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 72763875000,
+                "value": 0.28
+              },
+              {
+                "operation": "ease",
+                "atNanos": 72763875000,
+                "target": 0.18,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "footer-after.opacity",
+            "actorId": "footer-after",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 70663875000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-after.typed",
+            "actorId": "footer-after",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 70686602272,
+                "value": 0.025641026
+              },
+              {
+                "operation": "set",
+                "atNanos": 70709329544,
+                "value": 0.051282052
+              },
+              {
+                "operation": "set",
+                "atNanos": 70732056816,
+                "value": 0.07692308
+              },
+              {
+                "operation": "set",
+                "atNanos": 70754784088,
+                "value": 0.102564104
+              },
+              {
+                "operation": "set",
+                "atNanos": 70777511360,
+                "value": 0.12820514
+              },
+              {
+                "operation": "set",
+                "atNanos": 70800238632,
+                "value": 0.15384616
+              },
+              {
+                "operation": "set",
+                "atNanos": 70822965904,
+                "value": 0.17948718
+              },
+              {
+                "operation": "set",
+                "atNanos": 70845693176,
+                "value": 0.20512821
+              },
+              {
+                "operation": "set",
+                "atNanos": 70868420448,
+                "value": 0.23076923
+              },
+              {
+                "operation": "set",
+                "atNanos": 70891147720,
+                "value": 0.25641027
+              },
+              {
+                "operation": "set",
+                "atNanos": 70913874992,
+                "value": 0.2820513
+              },
+              {
+                "operation": "set",
+                "atNanos": 70936602264,
+                "value": 0.30769232
+              },
+              {
+                "operation": "set",
+                "atNanos": 70959329536,
+                "value": 0.33333334
+              },
+              {
+                "operation": "set",
+                "atNanos": 70982056808,
+                "value": 0.35897437
+              },
+              {
+                "operation": "set",
+                "atNanos": 71004784080,
+                "value": 0.3846154
+              },
+              {
+                "operation": "set",
+                "atNanos": 71027511352,
+                "value": 0.41025642
+              },
+              {
+                "operation": "set",
+                "atNanos": 71050238624,
+                "value": 0.43589744
+              },
+              {
+                "operation": "set",
+                "atNanos": 71072965896,
+                "value": 0.46153846
+              },
+              {
+                "operation": "set",
+                "atNanos": 71095693168,
+                "value": 0.4871795
+              },
+              {
+                "operation": "set",
+                "atNanos": 71118420440,
+                "value": 0.51282054
+              },
+              {
+                "operation": "set",
+                "atNanos": 71141147712,
+                "value": 0.53846157
+              },
+              {
+                "operation": "set",
+                "atNanos": 71163874984,
+                "value": 0.5641026
+              },
+              {
+                "operation": "set",
+                "atNanos": 71186602256,
+                "value": 0.5897436
+              },
+              {
+                "operation": "set",
+                "atNanos": 71209329528,
+                "value": 0.61538464
+              },
+              {
+                "operation": "set",
+                "atNanos": 71232056800,
+                "value": 0.64102566
+              },
+              {
+                "operation": "set",
+                "atNanos": 71254784072,
+                "value": 0.6666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 71277511344,
+                "value": 0.6923077
+              },
+              {
+                "operation": "set",
+                "atNanos": 71300238616,
+                "value": 0.71794873
+              },
+              {
+                "operation": "set",
+                "atNanos": 71322965888,
+                "value": 0.74358976
+              },
+              {
+                "operation": "set",
+                "atNanos": 71345693160,
+                "value": 0.7692308
+              },
+              {
+                "operation": "set",
+                "atNanos": 71368420432,
+                "value": 0.7948718
+              },
+              {
+                "operation": "set",
+                "atNanos": 71391147704,
+                "value": 0.82051283
+              },
+              {
+                "operation": "set",
+                "atNanos": 71413874976,
+                "value": 0.84615386
+              },
+              {
+                "operation": "set",
+                "atNanos": 71436602248,
+                "value": 0.8717949
+              },
+              {
+                "operation": "set",
+                "atNanos": 71459329520,
+                "value": 0.8974359
+              },
+              {
+                "operation": "set",
+                "atNanos": 71482056792,
+                "value": 0.9230769
+              },
+              {
+                "operation": "set",
+                "atNanos": 71504784064,
+                "value": 0.94871795
+              },
+              {
+                "operation": "set",
+                "atNanos": 71527511336,
+                "value": 0.974359
+              },
+              {
+                "operation": "set",
+                "atNanos": 71550238608,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "footer-after.caret",
+            "actorId": "footer-after",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 70663875000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 72350238619,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.x",
+            "actorId": "stage",
+            "property": "camera.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": -160.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.y",
+            "actorId": "stage",
+            "property": "camera.y",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": 70.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.focus",
+            "actorId": "stage",
+            "property": "camera.focus",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 73123250000,
+                "target": -50.0,
+                "responseSeconds": 1.2,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [],
+        "media": [
+          {
+            "id": "narration-ubereats-before",
+            "path": "narration/ubereats-before.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 25283875000,
+            "timelineStartNanos": 1400000000,
+            "timelineEndNanos": 26683875000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "narration-ubereats-after",
+            "path": "narration/ubereats-after.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 44139375000,
+            "timelineStartNanos": 28683875000,
+            "timelineEndNanos": 72823250000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "connect-web",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 2050000000,
+            "timelineEndNanos": 2190000000,
+            "gainDb": -20.0
+          },
+          {
+            "id": "connect-ui",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 2250000000,
+            "timelineEndNanos": 2390000000,
+            "gainDb": -20.0
+          },
+          {
+            "id": "send-feed",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 12120000000,
+            "timelineEndNanos": 12280000000,
+            "gainDb": -10.0
+          },
+          {
+            "id": "send-search",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 13120000000,
+            "timelineEndNanos": 13280000000,
+            "gainDb": -10.0
+          },
+          {
+            "id": "dialog-block",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 16020000000,
+            "timelineEndNanos": 16500000000,
+            "gainDb": -10.0
+          },
+          {
+            "id": "slow-verdict",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 22020000000,
+            "timelineEndNanos": 22500000000,
+            "gainDb": -11.0
+          },
+          {
+            "id": "rewind",
+            "path": "../../assets/opencode-hot-reload/launch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 1370000000,
+            "timelineStartNanos": 26933875000,
+            "timelineEndNanos": 28303875000,
+            "gainDb": -14.0
+          },
+          {
+            "id": "cap-send",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 35603875000,
+            "timelineEndNanos": 35763875000,
+            "gainDb": -10.0
+          },
+          {
+            "id": "digest-land",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 45293875000,
+            "timelineEndNanos": 45633875000,
+            "gainDb": -12.0
+          },
+          {
+            "id": "redacted-mark",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 49023875000,
+            "timelineEndNanos": 49323875000,
+            "gainDb": -14.0
+          },
+          {
+            "id": "connect-cli",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 35623875000,
+            "timelineEndNanos": 35763875000,
+            "gainDb": -18.0
+          },
+          {
+            "id": "cli-send",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 53863875000,
+            "timelineEndNanos": 54023875000,
+            "gainDb": -9.0
+          },
+          {
+            "id": "cli-60ms",
+            "path": "../../assets/visual-effects/task-success.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 420000000,
+            "timelineStartNanos": 56923875000,
+            "timelineEndNanos": 57343875000,
+            "gainDb": -8.0
+          },
+          {
+            "id": "err-401",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 62983875000,
+            "timelineEndNanos": 63463875000,
+            "gainDb": -11.0
+          },
+          {
+            "id": "pill-show",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 66643875000,
+            "timelineEndNanos": 66983875000,
+            "gainDb": -11.0
+          },
+          {
+            "id": "signed-in",
+            "path": "../../assets/visual-effects/task-success.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 420000000,
+            "timelineStartNanos": 69163875000,
+            "timelineEndNanos": 69583875000,
+            "gainDb": -9.0
+          },
+          {
+            "id": "retry-send",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 70663875000,
+            "timelineEndNanos": 70823875000,
+            "gainDb": -9.0
+          },
+          {
+            "id": "final-bloom",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 72763875000,
+            "timelineEndNanos": 73558875000,
+            "gainDb": -8.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 1150000000,
+      "transitionStyle": "zoom",
+      "transitionFocus": [
+        273.02325,
+        561.70544,
+        375.50388,
+        130.23256
+      ],
+      "plan": {
+        "version": 2,
+        "id": "ubereats-code",
+        "durationNanos": 29540708333,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "browser-control",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "from browser flow to 60ms CLI"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip-change",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "the change"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "editor",
+            "recipe": "editor",
+            "data": {
+              "enteringOffsetX": 0.0,
+              "fileName": "ubereats-cli.ts",
+              "finalLineIds": [
+                "line-0",
+                "line-1",
+                "line-2",
+                "line-3",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-7",
+                "line-8",
+                "line-9",
+                "line-10",
+                "line-11",
+                "line-12",
+                "line-13"
+              ],
+              "focusHeight": 44.0,
+              "focusLineId": "line-0",
+              "initialLineIds": [
+                "line-0",
+                "line-6"
+              ],
+              "lineHeight": 44.0,
+              "lines": [
+                {
+                  "id": "line-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "import"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " { "
+                        },
+                        {
+                          "style": "type",
+                          "text": "BrowserControlClient"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " } "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "from"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"@opencode-ai/browser-control\""
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-1",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ubereats = "
+                        },
+                        {
+                          "style": "type",
+                          "text": "BrowserControlClient"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "origin"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"https://www.ubereats.com\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-2",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  session: "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"karma-cafe\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ","
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-3",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  headers: { "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"x-csrf-token\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ": "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"x\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": " },"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-4",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  handoffOnAuthFailure: "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "true"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ","
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-5",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "})"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-6",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-7",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " store = "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "await"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ubereats."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "post"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"/_p/api/getStoreV1\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-8",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  storeUuid: "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"78cb1602-9f58-57bb-ad08-f6b8f80bb788\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ","
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-9",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  diningMode: "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"DELIVERY\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ","
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-10",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "})"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-11",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "await"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ubereats."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "post"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"/_p/api/createDraftOrderV2\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-12",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  isMulticart: "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "true"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", shoppingCartItems: [espressoNutSmoothie],"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-13",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "})"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-1",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-2",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-3",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-4",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                }
+              ],
+              "snapshots": [
+                {
+                  "atNanos": 5120000000,
+                  "lineIds": [
+                    "line-0",
+                    "gap-0",
+                    "gap-1",
+                    "gap-2",
+                    "gap-3",
+                    "gap-4",
+                    "line-6"
+                  ]
+                },
+                {
+                  "atNanos": 5420000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6"
+                  ]
+                },
+                {
+                  "atNanos": 16900000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-9",
+                    "line-10"
+                  ]
+                },
+                {
+                  "atNanos": 20640000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-9",
+                    "line-10",
+                    "line-11",
+                    "line-12",
+                    "line-13"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "footer",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "condensed for display · 15 lines · live cookies + auto-handoff on 401",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "chip-change.opacity",
+            "actorId": "chip-change",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 200000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-change.y",
+            "actorId": "chip-change",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 200000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer.opacity",
+            "actorId": "footer",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer.y",
+            "actorId": "footer",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [],
+        "media": [
+          {
+            "id": "narration-ubereats-code",
+            "path": "narration/ubereats-code.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 27040708333,
+            "timelineStartNanos": 900000000,
+            "timelineEndNanos": 27940708333,
+            "gainDb": 0.0
+          }
+        ]
+      }
+    }
+  ]
+}

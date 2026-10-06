@@ -2028,6 +2028,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-ubereats-cli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-pr-walkthrough",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-video"
 version = "0.1.0"
 dependencies = [
@@ -2041,6 +2051,16 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "psychopomp",
+ "serde_json",
+]
+
+[[package]]
+name = "psychopomp-weekly-ten"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
  "serde_json",
 ]
 

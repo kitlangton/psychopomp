@@ -1,0 +1,309 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.1
+  },
+  {
+   "word": "entire",
+   "start": 0.1,
+   "end": 0.32
+  },
+  {
+   "word": "tool",
+   "start": 0.32,
+   "end": 0.76
+  },
+  {
+   "word": "is",
+   "start": 0.76,
+   "end": 1.14
+  },
+  {
+   "word": "15",
+   "start": 1.14,
+   "end": 1.6
+  },
+  {
+   "word": "lines",
+   "start": 1.6,
+   "end": 2.12
+  },
+  {
+   "word": "of",
+   "start": 2.12,
+   "end": 2.42
+  },
+  {
+   "word": "code.",
+   "start": 2.42,
+   "end": 2.68
+  },
+  {
+   "word": "First,",
+   "start": 3.28,
+   "end": 3.96
+  },
+  {
+   "word": "point",
+   "start": 4.22,
+   "end": 4.5
+  },
+  {
+   "word": "browser",
+   "start": 4.5,
+   "end": 4.86
+  },
+  {
+   "word": "control",
+   "start": 4.86,
+   "end": 5.26
+  },
+  {
+   "word": "client",
+   "start": 5.26,
+   "end": 5.8
+  },
+  {
+   "word": "at",
+   "start": 5.8,
+   "end": 6.22
+  },
+  {
+   "word": "Uber",
+   "start": 6.22,
+   "end": 6.48
+  },
+  {
+   "word": "Eats",
+   "start": 6.48,
+   "end": 6.92
+  },
+  {
+   "word": "with",
+   "start": 6.92,
+   "end": 7.54
+  },
+  {
+   "word": "your",
+   "start": 7.54,
+   "end": 7.74
+  },
+  {
+   "word": "Karma",
+   "start": 7.74,
+   "end": 8.12
+  },
+  {
+   "word": "Cafe",
+   "start": 8.12,
+   "end": 8.4
+  },
+  {
+   "word": "session,",
+   "start": 8.4,
+   "end": 8.9
+  },
+  {
+   "word": "the",
+   "start": 9.22,
+   "end": 9.7
+  },
+  {
+   "word": "CSRF",
+   "start": 9.7,
+   "end": 10.72
+  },
+  {
+   "word": "header,",
+   "start": 10.72,
+   "end": 11.06
+  },
+  {
+   "word": "and",
+   "start": 11.2,
+   "end": 11.92
+  },
+  {
+   "word": "handoff",
+   "start": 11.92,
+   "end": 12.6
+  },
+  {
+   "word": "on",
+   "start": 12.6,
+   "end": 12.88
+  },
+  {
+   "word": "auth",
+   "start": 12.88,
+   "end": 13.22
+  },
+  {
+   "word": "failure",
+   "start": 13.22,
+   "end": 13.6
+  },
+  {
+   "word": "turned",
+   "start": 13.6,
+   "end": 13.96
+  },
+  {
+   "word": "on.",
+   "start": 13.96,
+   "end": 14.28
+  },
+  {
+   "word": "Next,",
+   "start": 14.5,
+   "end": 14.96
+  },
+  {
+   "word": "post",
+   "start": 15.22,
+   "end": 15.8
+  },
+  {
+   "word": "to",
+   "start": 15.8,
+   "end": 16
+  },
+  {
+   "word": "Get",
+   "start": 16,
+   "end": 16.3
+  },
+  {
+   "word": "Store",
+   "start": 16.3,
+   "end": 16.64
+  },
+  {
+   "word": "to",
+   "start": 16.64,
+   "end": 16.96
+  },
+  {
+   "word": "read",
+   "start": 16.96,
+   "end": 17.26
+  },
+  {
+   "word": "the",
+   "start": 17.26,
+   "end": 17.46
+  },
+  {
+   "word": "smoothie",
+   "start": 17.46,
+   "end": 17.76
+  },
+  {
+   "word": "menu.",
+   "start": 17.76,
+   "end": 18.12
+  },
+  {
+   "word": "Finally,",
+   "start": 18.42,
+   "end": 19.04
+  },
+  {
+   "word": "post",
+   "start": 19.24,
+   "end": 19.5
+  },
+  {
+   "word": "to",
+   "start": 19.5,
+   "end": 19.74
+  },
+  {
+   "word": "Create",
+   "start": 19.74,
+   "end": 20.08
+  },
+  {
+   "word": "Draft",
+   "start": 20.08,
+   "end": 20.68
+  },
+  {
+   "word": "Order",
+   "start": 20.68,
+   "end": 20.92
+  },
+  {
+   "word": "to",
+   "start": 20.92,
+   "end": 21.58
+  },
+  {
+   "word": "drop",
+   "start": 21.58,
+   "end": 21.86
+  },
+  {
+   "word": "the",
+   "start": 21.86,
+   "end": 22.06
+  },
+  {
+   "word": "Espresso",
+   "start": 22.06,
+   "end": 22.66
+  },
+  {
+   "word": "Nuts",
+   "start": 22.66,
+   "end": 22.9
+  },
+  {
+   "word": "smoothie",
+   "start": 22.9,
+   "end": 23.24
+  },
+  {
+   "word": "straight",
+   "start": 23.24,
+   "end": 24.08
+  },
+  {
+   "word": "into",
+   "start": 24.08,
+   "end": 24.44
+  },
+  {
+   "word": "your",
+   "start": 24.44,
+   "end": 24.7
+  },
+  {
+   "word": "cart",
+   "start": 24.7,
+   "end": 25
+  },
+  {
+   "word": "without",
+   "start": 25,
+   "end": 25.7
+  },
+  {
+   "word": "placing",
+   "start": 25.7,
+   "end": 26.18
+  },
+  {
+   "word": "the",
+   "start": 26.18,
+   "end": 26.42
+  },
+  {
+   "word": "order.",
+   "start": 26.42,
+   "end": 26.66
+  }
+ ]
+}
