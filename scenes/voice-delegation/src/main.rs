@@ -52,6 +52,9 @@ const BELOW: f32 = 558.0;
 /// between the app and the session.
 const HANDOFF_X: f32 = (VOICE[0] + VOICE_RADIUS + APP[0] - APP_SIZE * 0.5) * 0.5;
 const PROMPT_X: f32 = (APP[0] + APP_SIZE * 0.5 + SESSION[0] - SESSION_SIZE[0] * 0.5) * 0.5;
+/// The call transcript the app keeps, under the app: the source of the
+/// words the app sends.
+const TRANSCRIPT: [f32; 3] = [APP[0], 700.0, 0.0];
 
 /// The panel opaque delegation draws over the voice agent and the app.
 const CURTAIN: [f32; 3] = [860.0, 560.0, -30.0];
@@ -152,7 +155,7 @@ fn stage_plan() -> StagePlan {
         icon("app", APP, APP_SIZE, "device-mobile", Tone::Muted),
         label(
             "app-name",
-            [APP[0], 612.0, 0.0],
+            [APP[0], 428.0, 0.0],
             21.0,
             &[("the app", Tone::Muted)],
         ),
@@ -189,8 +192,22 @@ fn stage_plan() -> StagePlan {
             "signal-note",
             [HANDOFF_X, BELOW, 0.0],
             19.0,
-            &[("no text", Tone::Accent)],
+            &[("{ id, offset_ms }", Tone::Accent)],
         ),
+        label(
+            "signal-caption",
+            [HANDOFF_X - 12.0, BELOW + 30.0, 0.0],
+            17.0,
+            &[("a signal · no arguments", Tone::Muted)],
+        ),
+        icon("transcript", TRANSCRIPT, 40.0, "file", Tone::Muted),
+        label(
+            "transcript-name",
+            [TRANSCRIPT[0], TRANSCRIPT[1] + 44.0, 0.0],
+            19.0,
+            &[("call transcript", Tone::Muted)],
+        ),
+        StageElement::beam("transcript-feed", "transcript", "app"),
         label(
             "prompt-name",
             [PROMPT_X, ABOVE, 0.0],
@@ -229,6 +246,7 @@ fn stage_plan() -> StagePlan {
             .labeled("“sure, checking…”")
             .tone(Tone::Accent),
         StageElement::packet("signal", "handoff").tone(Tone::Request),
+        StageElement::packet("lines", "transcript-feed").tone(Tone::Request),
         StageElement::packet("words", "prompt")
             .labeled("your words")
             .tone(Tone::Request),
@@ -456,7 +474,8 @@ fn call(narration: &Narration) -> Result<ScenePlan> {
     s.send(sc, "ack", answers, 0.8);
     heard_ack.type_in(sc, answers + millis(200), 46.0, 0.4);
 
-    // The handoff: a signal with no text, then the app's own prompt.
+    // The handoff: a signal with no arguments, then the app's own prompt,
+    // built from the call transcript the app keeps.
     let hands_off = turn.at("hands off");
     s.to(sc, "camera.x", hands_off, 60.0, 1.6);
     let signal = s.send(sc, "signal", hands_off, 0.8);
@@ -464,7 +483,15 @@ fn call(narration: &Narration) -> Result<ScenePlan> {
     s.land(sc, "app", signal);
     s.type_in(sc, "signal-name", signal, 40.0);
     s.type_in(sc, "signal-note", turn.at("carries no text"), 24.0);
+    s.type_in(sc, "signal-caption", turn.at("only signals"), 30.0);
     let sends = turn.at("the app sends");
+    let source = sends.saturating_sub(millis(900));
+    s.fade_in(sc, "transcript", source, 1.0, 0.5);
+    s.fade_in(sc, "transcript-name", source + millis(120), 1.0, 0.5);
+    s.connect(sc, "transcript-feed", source + millis(150), 0.4);
+    let fed = s.send_arriving(sc, "lines", sends + millis(150), 0.5);
+    s.land(sc, "app", fed);
+    sfx::TICK.play(sc, "lines", fed, -20.0);
     let words = s.send(sc, "words", sends + millis(200), 0.85);
     sfx::SEND.play(sc, "words", sends + millis(200), -12.0);
     s.land(sc, "session", words);
@@ -474,8 +501,11 @@ fn call(narration: &Narration) -> Result<ScenePlan> {
         sc,
         "footer-handoff",
         vec![
-            span("the delegation carries no text, so ", Tone::Muted),
-            span("the app sends your words", Tone::Request),
+            span("the delegation has no arguments, so ", Tone::Muted),
+            span(
+                "the app sends your words from its transcript",
+                Tone::Request,
+            ),
         ],
     )?;
     footer_handoff.type_in(sc, turn.at("call transcript"), 46.0, 0.8);
@@ -498,7 +528,13 @@ fn call(narration: &Narration) -> Result<ScenePlan> {
     footer_handoff.hide(sc, progress);
     s.to(sc, "camera.x", progress, 0.0, 1.6);
     s.to(sc, "camera.z", progress, 0.0, 1.6);
-    for name in ["signal-name", "signal-note", "prompt-name", "prompt-note"] {
+    for name in [
+        "signal-name",
+        "signal-note",
+        "signal-caption",
+        "prompt-name",
+        "prompt-note",
+    ] {
         s.fade_out(sc, name, progress, 0.3);
     }
     let relayed = s.send(sc, "progress", progress + millis(300), 0.8);

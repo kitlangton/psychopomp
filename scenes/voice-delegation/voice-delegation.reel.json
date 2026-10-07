@@ -119,7 +119,7 @@
                 {
                   "at": [
                     1060.0,
-                    612.0,
+                    428.0,
                     0.0
                   ],
                   "id": "app-name",
@@ -246,10 +246,61 @@
                   "size": 19.0,
                   "spans": [
                     {
-                      "text": "no text",
+                      "text": "{ id, offset_ms }",
                       "tone": "accent"
                     }
                   ]
+                },
+                {
+                  "at": [
+                    883.0,
+                    588.0,
+                    0.0
+                  ],
+                  "id": "signal-caption",
+                  "kind": "label",
+                  "size": 17.0,
+                  "spans": [
+                    {
+                      "text": "a signal · no arguments",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1060.0,
+                    700.0,
+                    0.0
+                  ],
+                  "icon": "file",
+                  "id": "transcript",
+                  "kind": "icon",
+                  "size": 40.0,
+                  "tone": "muted"
+                },
+                {
+                  "at": [
+                    1060.0,
+                    744.0,
+                    0.0
+                  ],
+                  "id": "transcript-name",
+                  "kind": "label",
+                  "size": 19.0,
+                  "spans": [
+                    {
+                      "text": "call transcript",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "bend": 0.0,
+                  "from": "transcript",
+                  "id": "transcript-feed",
+                  "kind": "beam",
+                  "to": "app"
                 },
                 {
                   "at": [
@@ -342,6 +393,12 @@
                 {
                   "beam": "handoff",
                   "id": "signal",
+                  "kind": "packet",
+                  "tone": "request"
+                },
+                {
+                  "beam": "transcript-feed",
+                  "id": "lines",
                   "kind": "packet",
                   "tone": "request"
                 },
@@ -658,11 +715,11 @@
               "lines": [
                 [
                   {
-                    "text": "the delegation carries no text, so ",
+                    "text": "the delegation has no arguments, so ",
                     "tone": "muted"
                   },
                   {
-                    "text": "the app sends your words",
+                    "text": "the app sends your words from its transcript",
                     "tone": "request"
                   }
                 ]
@@ -3787,6 +3844,18 @@
               },
               {
                 "operation": "set",
+                "atNanos": 44890624999,
+                "value": 0.6
+              },
+              {
+                "operation": "ease",
+                "atNanos": 44890624999,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "set",
                 "atNanos": 134986541664,
                 "value": 0.6
               },
@@ -3950,37 +4019,341 @@
               {
                 "operation": "set",
                 "atNanos": 39402291665,
-                "value": 0.14285715
+                "value": 0.05882353
               },
               {
                 "operation": "set",
                 "atNanos": 39443958331,
-                "value": 0.2857143
+                "value": 0.11764706
               },
               {
                 "operation": "set",
                 "atNanos": 39485624997,
-                "value": 0.42857143
+                "value": 0.1764706
               },
               {
                 "operation": "set",
                 "atNanos": 39527291663,
-                "value": 0.5714286
+                "value": 0.23529412
               },
               {
                 "operation": "set",
                 "atNanos": 39568958329,
-                "value": 0.71428573
+                "value": 0.29411766
               },
               {
                 "operation": "set",
                 "atNanos": 39610624995,
-                "value": 0.85714287
+                "value": 0.3529412
               },
               {
                 "operation": "set",
                 "atNanos": 39652291661,
+                "value": 0.4117647
+              },
+              {
+                "operation": "set",
+                "atNanos": 39693958327,
+                "value": 0.47058824
+              },
+              {
+                "operation": "set",
+                "atNanos": 39735624993,
+                "value": 0.5294118
+              },
+              {
+                "operation": "set",
+                "atNanos": 39777291659,
+                "value": 0.5882353
+              },
+              {
+                "operation": "set",
+                "atNanos": 39818958325,
+                "value": 0.64705884
+              },
+              {
+                "operation": "set",
+                "atNanos": 39860624991,
+                "value": 0.7058824
+              },
+              {
+                "operation": "set",
+                "atNanos": 39902291657,
+                "value": 0.7647059
+              },
+              {
+                "operation": "set",
+                "atNanos": 39943958323,
+                "value": 0.8235294
+              },
+              {
+                "operation": "set",
+                "atNanos": 39985624989,
+                "value": 0.88235295
+              },
+              {
+                "operation": "set",
+                "atNanos": 40027291655,
+                "value": 0.9411765
+              },
+              {
+                "operation": "set",
+                "atNanos": 40068958321,
                 "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.signal-caption.opacity",
+            "actorId": "stage",
+            "property": "signal-caption.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 42200624999,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 56180624999,
+                "target": 0.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.signal-caption.typed",
+            "actorId": "stage",
+            "property": "signal-caption.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 42233958332,
+                "value": 0.04347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 42267291665,
+                "value": 0.08695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 42300624998,
+                "value": 0.13043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 42333958331,
+                "value": 0.17391305
+              },
+              {
+                "operation": "set",
+                "atNanos": 42367291664,
+                "value": 0.2173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 42400624997,
+                "value": 0.26086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 42433958330,
+                "value": 0.3043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 42467291663,
+                "value": 0.3478261
+              },
+              {
+                "operation": "set",
+                "atNanos": 42500624996,
+                "value": 0.39130434
+              },
+              {
+                "operation": "set",
+                "atNanos": 42533958329,
+                "value": 0.4347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 42567291662,
+                "value": 0.47826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 42600624995,
+                "value": 0.5217391
+              },
+              {
+                "operation": "set",
+                "atNanos": 42633958328,
+                "value": 0.5652174
+              },
+              {
+                "operation": "set",
+                "atNanos": 42667291661,
+                "value": 0.6086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 42700624994,
+                "value": 0.65217394
+              },
+              {
+                "operation": "set",
+                "atNanos": 42733958327,
+                "value": 0.6956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 42767291660,
+                "value": 0.73913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 42800624993,
+                "value": 0.7826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 42833958326,
+                "value": 0.82608694
+              },
+              {
+                "operation": "set",
+                "atNanos": 42867291659,
+                "value": 0.8695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 42900624992,
+                "value": 0.9130435
+              },
+              {
+                "operation": "set",
+                "atNanos": 42933958325,
+                "value": 0.95652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 42967291658,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.transcript.opacity",
+            "actorId": "stage",
+            "property": "transcript.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 43840624999,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.transcript-name.opacity",
+            "actorId": "stage",
+            "property": "transcript-name.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 43960624999,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.transcript-feed.port",
+            "actorId": "stage",
+            "property": "transcript-feed.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 43990624999,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.transcript-feed.draw",
+            "actorId": "stage",
+            "property": "transcript-feed.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44290624999,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 44290624999,
+                "target": 1.0,
+                "durationNanos": 400000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.lines.age",
+            "actorId": "stage",
+            "property": "lines.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44050624999,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 44050624999,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.lines.flight",
+            "actorId": "stage",
+            "property": "lines.flight",
+            "initial": 0.5,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 44050624999,
+                "value": 0.5
               }
             ]
           },
@@ -4313,296 +4686,401 @@
               {
                 "operation": "set",
                 "atNanos": 48602364129,
-                "value": 0.016949153
+                "value": 0.0125
               },
               {
                 "operation": "set",
                 "atNanos": 48624103259,
-                "value": 0.033898305
+                "value": 0.025
               },
               {
                 "operation": "set",
                 "atNanos": 48645842389,
-                "value": 0.050847456
+                "value": 0.0375
               },
               {
                 "operation": "set",
                 "atNanos": 48667581519,
-                "value": 0.06779661
+                "value": 0.05
               },
               {
                 "operation": "set",
                 "atNanos": 48689320649,
-                "value": 0.084745765
+                "value": 0.0625
               },
               {
                 "operation": "set",
                 "atNanos": 48711059779,
-                "value": 0.10169491
+                "value": 0.075
               },
               {
                 "operation": "set",
                 "atNanos": 48732798909,
-                "value": 0.118644066
+                "value": 0.0875
               },
               {
                 "operation": "set",
                 "atNanos": 48754538039,
-                "value": 0.13559322
+                "value": 0.1
               },
               {
                 "operation": "set",
                 "atNanos": 48776277169,
-                "value": 0.15254237
+                "value": 0.1125
               },
               {
                 "operation": "set",
                 "atNanos": 48798016299,
-                "value": 0.16949153
+                "value": 0.125
               },
               {
                 "operation": "set",
                 "atNanos": 48819755429,
-                "value": 0.18644068
+                "value": 0.1375
               },
               {
                 "operation": "set",
                 "atNanos": 48841494559,
-                "value": 0.20338982
+                "value": 0.15
               },
               {
                 "operation": "set",
                 "atNanos": 48863233689,
-                "value": 0.22033899
+                "value": 0.1625
               },
               {
                 "operation": "set",
                 "atNanos": 48884972819,
-                "value": 0.23728813
+                "value": 0.175
               },
               {
                 "operation": "set",
                 "atNanos": 48906711949,
-                "value": 0.2542373
+                "value": 0.1875
               },
               {
                 "operation": "set",
                 "atNanos": 48928451079,
-                "value": 0.27118644
+                "value": 0.2
               },
               {
                 "operation": "set",
                 "atNanos": 48950190209,
-                "value": 0.2881356
+                "value": 0.2125
               },
               {
                 "operation": "set",
                 "atNanos": 48971929339,
-                "value": 0.30508474
+                "value": 0.225
               },
               {
                 "operation": "set",
                 "atNanos": 48993668469,
-                "value": 0.3220339
+                "value": 0.2375
               },
               {
                 "operation": "set",
                 "atNanos": 49015407599,
-                "value": 0.33898306
+                "value": 0.25
               },
               {
                 "operation": "set",
                 "atNanos": 49037146729,
-                "value": 0.3559322
+                "value": 0.2625
               },
               {
                 "operation": "set",
                 "atNanos": 49058885859,
-                "value": 0.37288135
+                "value": 0.275
               },
               {
                 "operation": "set",
                 "atNanos": 49080624989,
-                "value": 0.3898305
+                "value": 0.2875
               },
               {
                 "operation": "set",
                 "atNanos": 49102364119,
-                "value": 0.40677965
+                "value": 0.3
               },
               {
                 "operation": "set",
                 "atNanos": 49124103249,
-                "value": 0.42372882
+                "value": 0.3125
               },
               {
                 "operation": "set",
                 "atNanos": 49145842379,
-                "value": 0.44067797
+                "value": 0.325
               },
               {
                 "operation": "set",
                 "atNanos": 49167581509,
-                "value": 0.45762712
+                "value": 0.3375
               },
               {
                 "operation": "set",
                 "atNanos": 49189320639,
-                "value": 0.47457626
+                "value": 0.35
               },
               {
                 "operation": "set",
                 "atNanos": 49211059769,
-                "value": 0.4915254
+                "value": 0.3625
               },
               {
                 "operation": "set",
                 "atNanos": 49232798899,
-                "value": 0.5084746
+                "value": 0.375
               },
               {
                 "operation": "set",
                 "atNanos": 49254538029,
-                "value": 0.5254237
+                "value": 0.3875
               },
               {
                 "operation": "set",
                 "atNanos": 49276277159,
-                "value": 0.5423729
+                "value": 0.4
               },
               {
                 "operation": "set",
                 "atNanos": 49298016289,
-                "value": 0.55932206
+                "value": 0.4125
               },
               {
                 "operation": "set",
                 "atNanos": 49319755419,
-                "value": 0.5762712
+                "value": 0.425
               },
               {
                 "operation": "set",
                 "atNanos": 49341494549,
-                "value": 0.59322035
+                "value": 0.4375
               },
               {
                 "operation": "set",
                 "atNanos": 49363233679,
-                "value": 0.6101695
+                "value": 0.45
               },
               {
                 "operation": "set",
                 "atNanos": 49384972809,
-                "value": 0.62711865
+                "value": 0.4625
               },
               {
                 "operation": "set",
                 "atNanos": 49406711939,
-                "value": 0.6440678
+                "value": 0.475
               },
               {
                 "operation": "set",
                 "atNanos": 49428451069,
-                "value": 0.66101694
+                "value": 0.4875
               },
               {
                 "operation": "set",
                 "atNanos": 49450190199,
-                "value": 0.6779661
+                "value": 0.5
               },
               {
                 "operation": "set",
                 "atNanos": 49471929329,
-                "value": 0.69491524
+                "value": 0.5125
               },
               {
                 "operation": "set",
                 "atNanos": 49493668459,
-                "value": 0.7118644
+                "value": 0.525
               },
               {
                 "operation": "set",
                 "atNanos": 49515407589,
-                "value": 0.7288136
+                "value": 0.5375
               },
               {
                 "operation": "set",
                 "atNanos": 49537146719,
-                "value": 0.7457627
+                "value": 0.55
               },
               {
                 "operation": "set",
                 "atNanos": 49558885849,
-                "value": 0.7627119
+                "value": 0.5625
               },
               {
                 "operation": "set",
                 "atNanos": 49580624979,
-                "value": 0.779661
+                "value": 0.575
               },
               {
                 "operation": "set",
                 "atNanos": 49602364109,
-                "value": 0.7966102
+                "value": 0.5875
               },
               {
                 "operation": "set",
                 "atNanos": 49624103239,
-                "value": 0.8135593
+                "value": 0.6
               },
               {
                 "operation": "set",
                 "atNanos": 49645842369,
-                "value": 0.8305085
+                "value": 0.6125
               },
               {
                 "operation": "set",
                 "atNanos": 49667581499,
-                "value": 0.84745765
+                "value": 0.625
               },
               {
                 "operation": "set",
                 "atNanos": 49689320629,
-                "value": 0.86440676
+                "value": 0.6375
               },
               {
                 "operation": "set",
                 "atNanos": 49711059759,
-                "value": 0.88135594
+                "value": 0.65
               },
               {
                 "operation": "set",
                 "atNanos": 49732798889,
-                "value": 0.89830506
+                "value": 0.6625
               },
               {
                 "operation": "set",
                 "atNanos": 49754538019,
-                "value": 0.91525424
+                "value": 0.675
               },
               {
                 "operation": "set",
                 "atNanos": 49776277149,
-                "value": 0.9322034
+                "value": 0.6875
               },
               {
                 "operation": "set",
                 "atNanos": 49798016279,
-                "value": 0.9491525
+                "value": 0.7
               },
               {
                 "operation": "set",
                 "atNanos": 49819755409,
-                "value": 0.9661017
+                "value": 0.7125
               },
               {
                 "operation": "set",
                 "atNanos": 49841494539,
-                "value": 0.9830508
+                "value": 0.725
               },
               {
                 "operation": "set",
                 "atNanos": 49863233669,
+                "value": 0.7375
+              },
+              {
+                "operation": "set",
+                "atNanos": 49884972799,
+                "value": 0.75
+              },
+              {
+                "operation": "set",
+                "atNanos": 49906711929,
+                "value": 0.7625
+              },
+              {
+                "operation": "set",
+                "atNanos": 49928451059,
+                "value": 0.775
+              },
+              {
+                "operation": "set",
+                "atNanos": 49950190189,
+                "value": 0.7875
+              },
+              {
+                "operation": "set",
+                "atNanos": 49971929319,
+                "value": 0.8
+              },
+              {
+                "operation": "set",
+                "atNanos": 49993668449,
+                "value": 0.8125
+              },
+              {
+                "operation": "set",
+                "atNanos": 50015407579,
+                "value": 0.825
+              },
+              {
+                "operation": "set",
+                "atNanos": 50037146709,
+                "value": 0.8375
+              },
+              {
+                "operation": "set",
+                "atNanos": 50058885839,
+                "value": 0.85
+              },
+              {
+                "operation": "set",
+                "atNanos": 50080624969,
+                "value": 0.8625
+              },
+              {
+                "operation": "set",
+                "atNanos": 50102364099,
+                "value": 0.875
+              },
+              {
+                "operation": "set",
+                "atNanos": 50124103229,
+                "value": 0.8875
+              },
+              {
+                "operation": "set",
+                "atNanos": 50145842359,
+                "value": 0.9
+              },
+              {
+                "operation": "set",
+                "atNanos": 50167581489,
+                "value": 0.9125
+              },
+              {
+                "operation": "set",
+                "atNanos": 50189320619,
+                "value": 0.925
+              },
+              {
+                "operation": "set",
+                "atNanos": 50211059749,
+                "value": 0.9375
+              },
+              {
+                "operation": "set",
+                "atNanos": 50232798879,
+                "value": 0.95
+              },
+              {
+                "operation": "set",
+                "atNanos": 50254538009,
+                "value": 0.9625
+              },
+              {
+                "operation": "set",
+                "atNanos": 50276277139,
+                "value": 0.975
+              },
+              {
+                "operation": "set",
+                "atNanos": 50298016269,
+                "value": 0.9875
+              },
+              {
+                "operation": "set",
+                "atNanos": 50319755399,
                 "value": 1.0
               }
             ]
@@ -4620,7 +5098,7 @@
               },
               {
                 "operation": "spring",
-                "atNanos": 50663233680,
+                "atNanos": 51119755410,
                 "target": 0.0,
                 "responseSeconds": 0.24000001,
                 "dampingRatio": 1.0,
@@ -8730,6 +9208,17 @@
             "timelineStartNanos": 37280624999,
             "timelineEndNanos": 37440624999,
             "gainDb": -14.0
+          },
+          {
+            "id": "lines",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 44890624999,
+            "timelineEndNanos": 45030624999,
+            "gainDb": -20.0
           },
           {
             "id": "words",
