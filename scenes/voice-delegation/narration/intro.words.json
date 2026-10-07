@@ -1,0 +1,339 @@
+{
+ "wordTimings": [
+  {
+   "word": "When",
+   "start": 0,
+   "end": 0.08
+  },
+  {
+   "word": "you",
+   "start": 0.08,
+   "end": 0.2
+  },
+  {
+   "word": "start",
+   "start": 0.2,
+   "end": 0.48
+  },
+  {
+   "word": "a",
+   "start": 0.48,
+   "end": 0.64
+  },
+  {
+   "word": "voice",
+   "start": 0.64,
+   "end": 0.9
+  },
+  {
+   "word": "call",
+   "start": 0.9,
+   "end": 1.22
+  },
+  {
+   "word": "in",
+   "start": 1.22,
+   "end": 1.44
+  },
+  {
+   "word": "the",
+   "start": 1.44,
+   "end": 1.54
+  },
+  {
+   "word": "OpenCode",
+   "start": 1.54,
+   "end": 2.2
+  },
+  {
+   "word": "iOS",
+   "start": 2.2,
+   "end": 2.48
+  },
+  {
+   "word": "app,",
+   "start": 2.48,
+   "end": 3.04
+  },
+  {
+   "word": "you're",
+   "start": 3.26,
+   "end": 3.88
+  },
+  {
+   "word": "talking",
+   "start": 3.88,
+   "end": 4.16
+  },
+  {
+   "word": "to",
+   "start": 4.16,
+   "end": 4.46
+  },
+  {
+   "word": "two",
+   "start": 4.46,
+   "end": 4.86
+  },
+  {
+   "word": "agents.",
+   "start": 4.86,
+   "end": 5.3
+  },
+  {
+   "word": "The",
+   "start": 5.76,
+   "end": 6.32
+  },
+  {
+   "word": "first",
+   "start": 6.32,
+   "end": 6.62
+  },
+  {
+   "word": "is",
+   "start": 6.62,
+   "end": 6.94
+  },
+  {
+   "word": "the",
+   "start": 6.94,
+   "end": 7.22
+  },
+  {
+   "word": "voice",
+   "start": 7.22,
+   "end": 7.56
+  },
+  {
+   "word": "agent.",
+   "start": 7.56,
+   "end": 7.92
+  },
+  {
+   "word": "It's",
+   "start": 8.82,
+   "end": 9.12
+  },
+  {
+   "word": "GPT",
+   "start": 9.12,
+   "end": 9.58
+  },
+  {
+   "word": "Live,",
+   "start": 9.58,
+   "end": 9.92
+  },
+  {
+   "word": "a",
+   "start": 10.2,
+   "end": 10.9
+  },
+  {
+   "word": "full",
+   "start": 10.9,
+   "end": 11.22
+  },
+  {
+   "word": "duplex",
+   "start": 11.22,
+   "end": 11.88
+  },
+  {
+   "word": "speech",
+   "start": 11.88,
+   "end": 12.22
+  },
+  {
+   "word": "model,",
+   "start": 12.22,
+   "end": 12.66
+  },
+  {
+   "word": "so",
+   "start": 12.82,
+   "end": 13.4
+  },
+  {
+   "word": "it",
+   "start": 13.4,
+   "end": 13.58
+  },
+  {
+   "word": "hears",
+   "start": 13.58,
+   "end": 13.86
+  },
+  {
+   "word": "you",
+   "start": 13.86,
+   "end": 14.12
+  },
+  {
+   "word": "and",
+   "start": 14.12,
+   "end": 14.52
+  },
+  {
+   "word": "talks",
+   "start": 14.52,
+   "end": 14.86
+  },
+  {
+   "word": "back",
+   "start": 14.86,
+   "end": 15.18
+  },
+  {
+   "word": "in",
+   "start": 15.18,
+   "end": 15.46
+  },
+  {
+   "word": "real",
+   "start": 15.46,
+   "end": 15.64
+  },
+  {
+   "word": "time.",
+   "start": 15.64,
+   "end": 15.98
+  },
+  {
+   "word": "It",
+   "start": 16.2,
+   "end": 16.48
+  },
+  {
+   "word": "can't",
+   "start": 16.48,
+   "end": 16.86
+  },
+  {
+   "word": "do",
+   "start": 16.86,
+   "end": 17.02
+  },
+  {
+   "word": "the",
+   "start": 17.02,
+   "end": 17.16
+  },
+  {
+   "word": "work,",
+   "start": 17.16,
+   "end": 17.42
+  },
+  {
+   "word": "though,",
+   "start": 17.5,
+   "end": 17.66
+  },
+  {
+   "word": "so",
+   "start": 17.8,
+   "end": 18.52
+  },
+  {
+   "word": "it",
+   "start": 18.52,
+   "end": 18.7
+  },
+  {
+   "word": "delegates",
+   "start": 18.7,
+   "end": 19.06
+  },
+  {
+   "word": "to",
+   "start": 19.06,
+   "end": 19.44
+  },
+  {
+   "word": "the",
+   "start": 19.44,
+   "end": 19.54
+  },
+  {
+   "word": "second",
+   "start": 19.54,
+   "end": 19.9
+  },
+  {
+   "word": "one,",
+   "start": 19.9,
+   "end": 20.16
+  },
+  {
+   "word": "the",
+   "start": 20.4,
+   "end": 20.9
+  },
+  {
+   "word": "delegation",
+   "start": 20.9,
+   "end": 21.28
+  },
+  {
+   "word": "agent.",
+   "start": 21.28,
+   "end": 21.82
+  },
+  {
+   "word": "That's",
+   "start": 22.38,
+   "end": 22.86
+  },
+  {
+   "word": "the",
+   "start": 22.86,
+   "end": 22.92
+  },
+  {
+   "word": "OpenCode",
+   "start": 22.92,
+   "end": 23.56
+  },
+  {
+   "word": "session",
+   "start": 23.56,
+   "end": 23.8
+  },
+  {
+   "word": "you're",
+   "start": 23.8,
+   "end": 24.18
+  },
+  {
+   "word": "in,",
+   "start": 24.18,
+   "end": 24.42
+  },
+  {
+   "word": "and",
+   "start": 24.54,
+   "end": 25.24
+  },
+  {
+   "word": "it",
+   "start": 25.24,
+   "end": 25.38
+  },
+  {
+   "word": "has",
+   "start": 25.38,
+   "end": 25.6
+  },
+  {
+   "word": "the",
+   "start": 25.6,
+   "end": 25.86
+  },
+  {
+   "word": "tools.",
+   "start": 25.86,
+   "end": 26.26
+  }
+ ]
+}

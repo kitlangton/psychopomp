@@ -1,0 +1,52 @@
+{
+  "clips": [
+    {
+      "id": "intro",
+      "file": "intro.mp3",
+      "words": "intro.words.json",
+      "durationNanos": 26780624999,
+      "textHash": "c1e63fc008bb72b4",
+      "engine": "fish"
+    },
+    {
+      "id": "turn",
+      "file": "turn.mp3",
+      "words": "turn.words.json",
+      "durationNanos": 36117041666,
+      "textHash": "ca3f77185c510036",
+      "engine": "fish"
+    },
+    {
+      "id": "replies",
+      "file": "replies.mp3",
+      "words": "replies.words.json",
+      "durationNanos": 18482083333,
+      "textHash": "9837c81ac100438a",
+      "engine": "fish"
+    },
+    {
+      "id": "opaque",
+      "file": "opaque.mp3",
+      "words": "opaque.words.json",
+      "durationNanos": 39406791666,
+      "textHash": "cf382dc57e85153f",
+      "engine": "fish"
+    },
+    {
+      "id": "transparent",
+      "file": "transparent.mp3",
+      "words": "transparent.words.json",
+      "durationNanos": 29747895833,
+      "textHash": "669880ece9091c10",
+      "engine": "fish"
+    },
+    {
+      "id": "outro",
+      "file": "outro.mp3",
+      "words": "outro.words.json",
+      "durationNanos": 25762874999,
+      "textHash": "bc8a5168bdfeacd9",
+      "engine": "fish"
+    }
+  ]
+}

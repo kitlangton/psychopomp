@@ -2055,6 +2055,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-voice-delegation"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-weekly-ten"
 version = "0.1.0"
 dependencies = [

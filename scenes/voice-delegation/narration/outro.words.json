@@ -1,0 +1,324 @@
+{
+ "wordTimings": [
+  {
+   "word": "This",
+   "start": 0,
+   "end": 0.26
+  },
+  {
+   "word": "is",
+   "start": 0.26,
+   "end": 0.48
+  },
+  {
+   "word": "the",
+   "start": 0.48,
+   "end": 0.66
+  },
+  {
+   "word": "part",
+   "start": 0.66,
+   "end": 0.94
+  },
+  {
+   "word": "of",
+   "start": 0.94,
+   "end": 1.06
+  },
+  {
+   "word": "the",
+   "start": 1.06,
+   "end": 1.14
+  },
+  {
+   "word": "design",
+   "start": 1.14,
+   "end": 1.46
+  },
+  {
+   "word": "where",
+   "start": 1.46,
+   "end": 1.82
+  },
+  {
+   "word": "we",
+   "start": 1.82,
+   "end": 2
+  },
+  {
+   "word": "can",
+   "start": 2,
+   "end": 2.14
+  },
+  {
+   "word": "experiment",
+   "start": 2.14,
+   "end": 2.66
+  },
+  {
+   "word": "the",
+   "start": 2.66,
+   "end": 2.96
+  },
+  {
+   "word": "most,",
+   "start": 2.96,
+   "end": 3.34
+  },
+  {
+   "word": "and",
+   "start": 3.48,
+   "end": 3.98
+  },
+  {
+   "word": "go",
+   "start": 3.98,
+   "end": 4.2
+  },
+  {
+   "word": "on",
+   "start": 4.2,
+   "end": 4.48
+  },
+  {
+   "word": "intuition.",
+   "start": 4.48,
+   "end": 4.96
+  },
+  {
+   "word": "We're",
+   "start": 5.7,
+   "end": 6.36
+  },
+  {
+   "word": "starting",
+   "start": 6.36,
+   "end": 6.72
+  },
+  {
+   "word": "with",
+   "start": 6.72,
+   "end": 7.02
+  },
+  {
+   "word": "transparent.",
+   "start": 7.02,
+   "end": 7.58
+  },
+  {
+   "word": "It's",
+   "start": 8.16,
+   "end": 8.82
+  },
+  {
+   "word": "one",
+   "start": 8.82,
+   "end": 8.92
+  },
+  {
+   "word": "of",
+   "start": 8.92,
+   "end": 9.12
+  },
+  {
+   "word": "several",
+   "start": 9.12,
+   "end": 9.54
+  },
+  {
+   "word": "open",
+   "start": 9.54,
+   "end": 9.92
+  },
+  {
+   "word": "choices.",
+   "start": 9.92,
+   "end": 10.3
+  },
+  {
+   "word": "Others",
+   "start": 10.74,
+   "end": 11.4
+  },
+  {
+   "word": "are",
+   "start": 11.4,
+   "end": 11.7
+  },
+  {
+   "word": "whether",
+   "start": 11.7,
+   "end": 12.04
+  },
+  {
+   "word": "a",
+   "start": 12.04,
+   "end": 12.26
+  },
+  {
+   "word": "request",
+   "start": 12.26,
+   "end": 12.64
+  },
+  {
+   "word": "should",
+   "start": 12.64,
+   "end": 13.04
+  },
+  {
+   "word": "steer",
+   "start": 13.04,
+   "end": 13.5
+  },
+  {
+   "word": "or",
+   "start": 13.5,
+   "end": 13.82
+  },
+  {
+   "word": "queue,",
+   "start": 13.82,
+   "end": 14.16
+  },
+  {
+   "word": "one",
+   "start": 14.46,
+   "end": 15.22
+  },
+  {
+   "word": "session",
+   "start": 15.22,
+   "end": 15.66
+  },
+  {
+   "word": "per",
+   "start": 15.66,
+   "end": 15.96
+  },
+  {
+   "word": "call",
+   "start": 15.96,
+   "end": 16.34
+  },
+  {
+   "word": "or",
+   "start": 16.34,
+   "end": 16.68
+  },
+  {
+   "word": "a",
+   "start": 16.68,
+   "end": 17.18
+  },
+  {
+   "word": "coordinator",
+   "start": 17.18,
+   "end": 17.68
+  },
+  {
+   "word": "over",
+   "start": 17.68,
+   "end": 18.12
+  },
+  {
+   "word": "many,",
+   "start": 18.12,
+   "end": 18.48
+  },
+  {
+   "word": "what",
+   "start": 18.62,
+   "end": 19.26
+  },
+  {
+   "word": "gets",
+   "start": 19.26,
+   "end": 19.48
+  },
+  {
+   "word": "saved",
+   "start": 19.48,
+   "end": 19.86
+  },
+  {
+   "word": "in",
+   "start": 19.86,
+   "end": 20.1
+  },
+  {
+   "word": "the",
+   "start": 20.1,
+   "end": 20.22
+  },
+  {
+   "word": "session,",
+   "start": 20.22,
+   "end": 20.56
+  },
+  {
+   "word": "and",
+   "start": 20.76,
+   "end": 21.6
+  },
+  {
+   "word": "whether",
+   "start": 21.6,
+   "end": 21.86
+  },
+  {
+   "word": "the",
+   "start": 21.86,
+   "end": 22.04
+  },
+  {
+   "word": "call",
+   "start": 22.04,
+   "end": 22.28
+  },
+  {
+   "word": "runs",
+   "start": 22.28,
+   "end": 22.52
+  },
+  {
+   "word": "on",
+   "start": 22.52,
+   "end": 22.82
+  },
+  {
+   "word": "the",
+   "start": 22.82,
+   "end": 22.94
+  },
+  {
+   "word": "phone",
+   "start": 22.94,
+   "end": 23.2
+  },
+  {
+   "word": "or",
+   "start": 23.2,
+   "end": 23.58
+  },
+  {
+   "word": "on",
+   "start": 23.58,
+   "end": 24.18
+  },
+  {
+   "word": "the",
+   "start": 24.18,
+   "end": 24.32
+  },
+  {
+   "word": "OpenCode",
+   "start": 24.32,
+   "end": 24.96
+  },
+  {
+   "word": "server.",
+   "start": 24.96,
+   "end": 25.26
+  }
+ ]
+}

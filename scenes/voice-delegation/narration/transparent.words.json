@@ -1,0 +1,359 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.18
+  },
+  {
+   "word": "second",
+   "start": 0.18,
+   "end": 0.52
+  },
+  {
+   "word": "option",
+   "start": 0.52,
+   "end": 0.9
+  },
+  {
+   "word": "is",
+   "start": 0.9,
+   "end": 1.34
+  },
+  {
+   "word": "transparent.",
+   "start": 1.34,
+   "end": 1.98
+  },
+  {
+   "word": "The",
+   "start": 2.52,
+   "end": 3.22
+  },
+  {
+   "word": "session",
+   "start": 3.22,
+   "end": 3.5
+  },
+  {
+   "word": "shows",
+   "start": 3.5,
+   "end": 3.82
+  },
+  {
+   "word": "that",
+   "start": 3.82,
+   "end": 4.22
+  },
+  {
+   "word": "you're",
+   "start": 4.22,
+   "end": 4.36
+  },
+  {
+   "word": "talking",
+   "start": 4.36,
+   "end": 4.68
+  },
+  {
+   "word": "to",
+   "start": 4.68,
+   "end": 4.96
+  },
+  {
+   "word": "a",
+   "start": 4.96,
+   "end": 5.14
+  },
+  {
+   "word": "voice",
+   "start": 5.14,
+   "end": 5.48
+  },
+  {
+   "word": "agent,",
+   "start": 5.48,
+   "end": 5.88
+  },
+  {
+   "word": "and",
+   "start": 6.1,
+   "end": 6.84
+  },
+  {
+   "word": "that",
+   "start": 6.84,
+   "end": 6.94
+  },
+  {
+   "word": "it",
+   "start": 6.94,
+   "end": 7.1
+  },
+  {
+   "word": "delegates",
+   "start": 7.1,
+   "end": 7.48
+  },
+  {
+   "word": "to",
+   "start": 7.48,
+   "end": 7.94
+  },
+  {
+   "word": "this",
+   "start": 7.94,
+   "end": 8.24
+  },
+  {
+   "word": "session.",
+   "start": 8.24,
+   "end": 8.76
+  },
+  {
+   "word": "Its",
+   "start": 9.48,
+   "end": 9.94
+  },
+  {
+   "word": "request",
+   "start": 9.94,
+   "end": 10.26
+  },
+  {
+   "word": "appears",
+   "start": 10.26,
+   "end": 10.62
+  },
+  {
+   "word": "as",
+   "start": 10.62,
+   "end": 11.16
+  },
+  {
+   "word": "a",
+   "start": 11.16,
+   "end": 11.34
+  },
+  {
+   "word": "voice",
+   "start": 11.34,
+   "end": 11.74
+  },
+  {
+   "word": "message.",
+   "start": 11.74,
+   "end": 12.24
+  },
+  {
+   "word": "That's",
+   "start": 12.28,
+   "end": 12.98
+  },
+  {
+   "word": "a",
+   "start": 12.98,
+   "end": 13.06
+  },
+  {
+   "word": "normal",
+   "start": 13.06,
+   "end": 13.4
+  },
+  {
+   "word": "message",
+   "start": 13.4,
+   "end": 13.76
+  },
+  {
+   "word": "bubble",
+   "start": 13.76,
+   "end": 14.06
+  },
+  {
+   "word": "with",
+   "start": 14.06,
+   "end": 14.42
+  },
+  {
+   "word": "a",
+   "start": 14.42,
+   "end": 14.56
+  },
+  {
+   "word": "voice",
+   "start": 14.56,
+   "end": 14.92
+  },
+  {
+   "word": "label",
+   "start": 14.92,
+   "end": 15.26
+  },
+  {
+   "word": "above",
+   "start": 15.26,
+   "end": 15.64
+  },
+  {
+   "word": "it,",
+   "start": 15.64,
+   "end": 15.9
+  },
+  {
+   "word": "prompting",
+   "start": 16,
+   "end": 16.96
+  },
+  {
+   "word": "the",
+   "start": 16.96,
+   "end": 17.04
+  },
+  {
+   "word": "session",
+   "start": 17.04,
+   "end": 17.36
+  },
+  {
+   "word": "on",
+   "start": 17.36,
+   "end": 17.74
+  },
+  {
+   "word": "your",
+   "start": 17.74,
+   "end": 17.92
+  },
+  {
+   "word": "behalf.",
+   "start": 17.92,
+   "end": 18.3
+  },
+  {
+   "word": "The",
+   "start": 18.64,
+   "end": 19.04
+  },
+  {
+   "word": "session's",
+   "start": 19.04,
+   "end": 19.56
+  },
+  {
+   "word": "real",
+   "start": 19.56,
+   "end": 19.82
+  },
+  {
+   "word": "reply",
+   "start": 19.82,
+   "end": 20.2
+  },
+  {
+   "word": "comes",
+   "start": 20.2,
+   "end": 20.68
+  },
+  {
+   "word": "after",
+   "start": 20.68,
+   "end": 21.18
+  },
+  {
+   "word": "it.",
+   "start": 21.18,
+   "end": 21.44
+  },
+  {
+   "word": "This",
+   "start": 21.84,
+   "end": 22.54
+  },
+  {
+   "word": "matches",
+   "start": 22.54,
+   "end": 22.98
+  },
+  {
+   "word": "how",
+   "start": 22.98,
+   "end": 23.34
+  },
+  {
+   "word": "it",
+   "start": 23.34,
+   "end": 23.56
+  },
+  {
+   "word": "actually",
+   "start": 23.56,
+   "end": 23.94
+  },
+  {
+   "word": "works,",
+   "start": 23.94,
+   "end": 24.42
+  },
+  {
+   "word": "so",
+   "start": 24.64,
+   "end": 25.22
+  },
+  {
+   "word": "when",
+   "start": 25.22,
+   "end": 25.42
+  },
+  {
+   "word": "the",
+   "start": 25.42,
+   "end": 25.54
+  },
+  {
+   "word": "spoken",
+   "start": 25.54,
+   "end": 25.88
+  },
+  {
+   "word": "and",
+   "start": 25.88,
+   "end": 26.2
+  },
+  {
+   "word": "written",
+   "start": 26.2,
+   "end": 26.42
+  },
+  {
+   "word": "replies",
+   "start": 26.42,
+   "end": 26.9
+  },
+  {
+   "word": "differ,",
+   "start": 26.9,
+   "end": 27.36
+  },
+  {
+   "word": "the",
+   "start": 27.58,
+   "end": 28.24
+  },
+  {
+   "word": "difference",
+   "start": 28.24,
+   "end": 28.52
+  },
+  {
+   "word": "makes",
+   "start": 28.52,
+   "end": 28.96
+  },
+  {
+   "word": "sense.",
+   "start": 28.96,
+   "end": 29.32
+  }
+ ]
+}

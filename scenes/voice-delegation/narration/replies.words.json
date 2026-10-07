@@ -1,0 +1,219 @@
+{
+ "wordTimings": [
+  {
+   "word": "So",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "every",
+   "start": 0.14,
+   "end": 0.4
+  },
+  {
+   "word": "turn",
+   "start": 0.4,
+   "end": 0.76
+  },
+  {
+   "word": "has",
+   "start": 0.76,
+   "end": 1.12
+  },
+  {
+   "word": "two",
+   "start": 1.12,
+   "end": 1.54
+  },
+  {
+   "word": "replies.",
+   "start": 1.54,
+   "end": 2.02
+  },
+  {
+   "word": "What",
+   "start": 2.72,
+   "end": 3.08
+  },
+  {
+   "word": "I",
+   "start": 3.08,
+   "end": 3.24
+  },
+  {
+   "word": "heard",
+   "start": 3.24,
+   "end": 3.56
+  },
+  {
+   "word": "is",
+   "start": 3.56,
+   "end": 3.82
+  },
+  {
+   "word": "fast",
+   "start": 3.82,
+   "end": 4.28
+  },
+  {
+   "word": "and",
+   "start": 4.28,
+   "end": 4.6
+  },
+  {
+   "word": "paraphrased.",
+   "start": 4.6,
+   "end": 5.46
+  },
+  {
+   "word": "What",
+   "start": 5.88,
+   "end": 6.24
+  },
+  {
+   "word": "happened",
+   "start": 6.24,
+   "end": 6.64
+  },
+  {
+   "word": "is",
+   "start": 6.64,
+   "end": 6.92
+  },
+  {
+   "word": "the",
+   "start": 6.92,
+   "end": 7.1
+  },
+  {
+   "word": "session's",
+   "start": 7.1,
+   "end": 7.58
+  },
+  {
+   "word": "real",
+   "start": 7.58,
+   "end": 7.86
+  },
+  {
+   "word": "reply,",
+   "start": 7.86,
+   "end": 8.24
+  },
+  {
+   "word": "and",
+   "start": 8.52,
+   "end": 9.14
+  },
+  {
+   "word": "the",
+   "start": 9.14,
+   "end": 9.26
+  },
+  {
+   "word": "two",
+   "start": 9.26,
+   "end": 9.44
+  },
+  {
+   "word": "can",
+   "start": 9.44,
+   "end": 9.66
+  },
+  {
+   "word": "differ.",
+   "start": 9.66,
+   "end": 9.96
+  },
+  {
+   "word": "I",
+   "start": 10.82,
+   "end": 11.18
+  },
+  {
+   "word": "heard",
+   "start": 11.18,
+   "end": 11.54
+  },
+  {
+   "word": "that",
+   "start": 11.54,
+   "end": 11.78
+  },
+  {
+   "word": "the",
+   "start": 11.78,
+   "end": 11.92
+  },
+  {
+   "word": "tests",
+   "start": 11.92,
+   "end": 12.3
+  },
+  {
+   "word": "pass",
+   "start": 12.3,
+   "end": 12.74
+  },
+  {
+   "word": "now.",
+   "start": 12.74,
+   "end": 13.14
+  },
+  {
+   "word": "The",
+   "start": 13.66,
+   "end": 14.02
+  },
+  {
+   "word": "session's",
+   "start": 14.02,
+   "end": 14.48
+  },
+  {
+   "word": "reply",
+   "start": 14.48,
+   "end": 14.78
+  },
+  {
+   "word": "says",
+   "start": 14.78,
+   "end": 15.26
+  },
+  {
+   "word": "one",
+   "start": 15.26,
+   "end": 15.76
+  },
+  {
+   "word": "test",
+   "start": 15.76,
+   "end": 16.14
+  },
+  {
+   "word": "is",
+   "start": 16.14,
+   "end": 16.52
+  },
+  {
+   "word": "still",
+   "start": 16.52,
+   "end": 16.78
+  },
+  {
+   "word": "flaky",
+   "start": 16.78,
+   "end": 17.38
+  },
+  {
+   "word": "on",
+   "start": 17.38,
+   "end": 17.6
+  },
+  {
+   "word": "CI.",
+   "start": 17.6,
+   "end": 17.88
+  }
+ ]
+}

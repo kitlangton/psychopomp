@@ -1,0 +1,479 @@
+{
+ "wordTimings": [
+  {
+   "word": "Say",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "I",
+   "start": 0.14,
+   "end": 0.32
+  },
+  {
+   "word": "ask",
+   "start": 0.32,
+   "end": 0.62
+  },
+  {
+   "word": "it",
+   "start": 0.62,
+   "end": 0.76
+  },
+  {
+   "word": "to",
+   "start": 0.76,
+   "end": 0.86
+  },
+  {
+   "word": "check",
+   "start": 0.86,
+   "end": 1.16
+  },
+  {
+   "word": "why",
+   "start": 1.16,
+   "end": 1.44
+  },
+  {
+   "word": "the",
+   "start": 1.44,
+   "end": 1.68
+  },
+  {
+   "word": "upload",
+   "start": 1.68,
+   "end": 2.02
+  },
+  {
+   "word": "test",
+   "start": 2.02,
+   "end": 2.32
+  },
+  {
+   "word": "keeps",
+   "start": 2.32,
+   "end": 2.74
+  },
+  {
+   "word": "failing",
+   "start": 2.74,
+   "end": 3.26
+  },
+  {
+   "word": "on",
+   "start": 3.26,
+   "end": 3.56
+  },
+  {
+   "word": "staging.",
+   "start": 3.56,
+   "end": 3.96
+  },
+  {
+   "word": "The",
+   "start": 4.5,
+   "end": 5.1
+  },
+  {
+   "word": "voice",
+   "start": 5.1,
+   "end": 5.34
+  },
+  {
+   "word": "agent",
+   "start": 5.34,
+   "end": 5.64
+  },
+  {
+   "word": "answers",
+   "start": 5.64,
+   "end": 6.08
+  },
+  {
+   "word": "right",
+   "start": 6.08,
+   "end": 6.46
+  },
+  {
+   "word": "away,",
+   "start": 6.46,
+   "end": 6.72
+  },
+  {
+   "word": "and",
+   "start": 6.94,
+   "end": 7.62
+  },
+  {
+   "word": "then",
+   "start": 7.62,
+   "end": 7.8
+  },
+  {
+   "word": "it",
+   "start": 7.8,
+   "end": 7.9
+  },
+  {
+   "word": "hands",
+   "start": 7.9,
+   "end": 8.14
+  },
+  {
+   "word": "off.",
+   "start": 8.14,
+   "end": 8.44
+  },
+  {
+   "word": "That",
+   "start": 8.9,
+   "end": 9.5
+  },
+  {
+   "word": "handoff",
+   "start": 9.5,
+   "end": 9.98
+  },
+  {
+   "word": "carries",
+   "start": 9.98,
+   "end": 10.3
+  },
+  {
+   "word": "no",
+   "start": 10.3,
+   "end": 10.7
+  },
+  {
+   "word": "text.",
+   "start": 10.7,
+   "end": 11.1
+  },
+  {
+   "word": "GPT",
+   "start": 11.9,
+   "end": 12.5
+  },
+  {
+   "word": "Live",
+   "start": 12.5,
+   "end": 12.82
+  },
+  {
+   "word": "only",
+   "start": 12.82,
+   "end": 13.34
+  },
+  {
+   "word": "signals",
+   "start": 13.34,
+   "end": 13.8
+  },
+  {
+   "word": "that",
+   "start": 13.8,
+   "end": 14.12
+  },
+  {
+   "word": "it's",
+   "start": 14.12,
+   "end": 14.36
+  },
+  {
+   "word": "delegating,",
+   "start": 14.36,
+   "end": 15
+  },
+  {
+   "word": "so",
+   "start": 15.1,
+   "end": 15.36
+  },
+  {
+   "word": "the",
+   "start": 15.36,
+   "end": 15.52
+  },
+  {
+   "word": "app",
+   "start": 15.52,
+   "end": 15.78
+  },
+  {
+   "word": "sends",
+   "start": 15.78,
+   "end": 16.06
+  },
+  {
+   "word": "the",
+   "start": 16.06,
+   "end": 16.32
+  },
+  {
+   "word": "session",
+   "start": 16.32,
+   "end": 16.66
+  },
+  {
+   "word": "my",
+   "start": 16.66,
+   "end": 16.94
+  },
+  {
+   "word": "exact",
+   "start": 16.94,
+   "end": 17.44
+  },
+  {
+   "word": "words,",
+   "start": 17.44,
+   "end": 17.96
+  },
+  {
+   "word": "along",
+   "start": 18.18,
+   "end": 18.8
+  },
+  {
+   "word": "with",
+   "start": 18.8,
+   "end": 19.06
+  },
+  {
+   "word": "the",
+   "start": 19.06,
+   "end": 19.2
+  },
+  {
+   "word": "call",
+   "start": 19.2,
+   "end": 19.4
+  },
+  {
+   "word": "transcript.",
+   "start": 19.4,
+   "end": 19.98
+  },
+  {
+   "word": "The",
+   "start": 20.32,
+   "end": 20.84
+  },
+  {
+   "word": "session",
+   "start": 20.84,
+   "end": 21.08
+  },
+  {
+   "word": "runs",
+   "start": 21.08,
+   "end": 21.46
+  },
+  {
+   "word": "the",
+   "start": 21.46,
+   "end": 21.72
+  },
+  {
+   "word": "tests,",
+   "start": 21.72,
+   "end": 22.16
+  },
+  {
+   "word": "finds",
+   "start": 22.38,
+   "end": 22.9
+  },
+  {
+   "word": "a",
+   "start": 22.9,
+   "end": 23.12
+  },
+  {
+   "word": "race",
+   "start": 23.12,
+   "end": 23.4
+  },
+  {
+   "word": "in",
+   "start": 23.4,
+   "end": 23.62
+  },
+  {
+   "word": "the",
+   "start": 23.62,
+   "end": 23.72
+  },
+  {
+   "word": "retry",
+   "start": 23.72,
+   "end": 24.1
+  },
+  {
+   "word": "code,",
+   "start": 24.1,
+   "end": 24.4
+  },
+  {
+   "word": "adds",
+   "start": 24.66,
+   "end": 25.24
+  },
+  {
+   "word": "a",
+   "start": 25.24,
+   "end": 25.4
+  },
+  {
+   "word": "lock,",
+   "start": 25.4,
+   "end": 25.76
+  },
+  {
+   "word": "and",
+   "start": 25.82,
+   "end": 26.08
+  },
+  {
+   "word": "runs",
+   "start": 26.08,
+   "end": 26.3
+  },
+  {
+   "word": "them",
+   "start": 26.3,
+   "end": 26.54
+  },
+  {
+   "word": "again.",
+   "start": 26.54,
+   "end": 26.8
+  },
+  {
+   "word": "Progress",
+   "start": 26.8,
+   "end": 27.84
+  },
+  {
+   "word": "goes",
+   "start": 27.84,
+   "end": 28.42
+  },
+  {
+   "word": "back",
+   "start": 28.42,
+   "end": 28.76
+  },
+  {
+   "word": "to",
+   "start": 28.76,
+   "end": 28.92
+  },
+  {
+   "word": "the",
+   "start": 28.92,
+   "end": 28.98
+  },
+  {
+   "word": "voice",
+   "start": 28.98,
+   "end": 29.26
+  },
+  {
+   "word": "agent",
+   "start": 29.26,
+   "end": 29.58
+  },
+  {
+   "word": "quietly.",
+   "start": 29.58,
+   "end": 30.12
+  },
+  {
+   "word": "The",
+   "start": 30.6,
+   "end": 31.2
+  },
+  {
+   "word": "result",
+   "start": 31.2,
+   "end": 31.52
+  },
+  {
+   "word": "goes",
+   "start": 31.52,
+   "end": 31.78
+  },
+  {
+   "word": "back",
+   "start": 31.78,
+   "end": 32.12
+  },
+  {
+   "word": "to",
+   "start": 32.12,
+   "end": 32.26
+  },
+  {
+   "word": "be",
+   "start": 32.26,
+   "end": 32.36
+  },
+  {
+   "word": "spoken,",
+   "start": 32.36,
+   "end": 32.74
+  },
+  {
+   "word": "and",
+   "start": 32.94,
+   "end": 33.54
+  },
+  {
+   "word": "the",
+   "start": 33.54,
+   "end": 33.62
+  },
+  {
+   "word": "voice",
+   "start": 33.62,
+   "end": 33.82
+  },
+  {
+   "word": "agent",
+   "start": 33.82,
+   "end": 34.16
+  },
+  {
+   "word": "tells",
+   "start": 34.16,
+   "end": 34.5
+  },
+  {
+   "word": "me",
+   "start": 34.5,
+   "end": 34.76
+  },
+  {
+   "word": "in",
+   "start": 34.76,
+   "end": 34.94
+  },
+  {
+   "word": "its",
+   "start": 34.94,
+   "end": 35.08
+  },
+  {
+   "word": "own",
+   "start": 35.08,
+   "end": 35.28
+  },
+  {
+   "word": "words.",
+   "start": 35.28,
+   "end": 35.66
+  }
+ ]
+}

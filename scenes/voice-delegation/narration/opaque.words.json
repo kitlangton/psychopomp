@@ -1,0 +1,509 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "open",
+   "start": 0.12,
+   "end": 0.36
+  },
+  {
+   "word": "question",
+   "start": 0.36,
+   "end": 0.76
+  },
+  {
+   "word": "is",
+   "start": 0.76,
+   "end": 1.2
+  },
+  {
+   "word": "what",
+   "start": 1.2,
+   "end": 1.52
+  },
+  {
+   "word": "the",
+   "start": 1.52,
+   "end": 1.68
+  },
+  {
+   "word": "session",
+   "start": 1.68,
+   "end": 1.98
+  },
+  {
+   "word": "should",
+   "start": 1.98,
+   "end": 2.28
+  },
+  {
+   "word": "show.",
+   "start": 2.28,
+   "end": 2.64
+  },
+  {
+   "word": "The",
+   "start": 3.4800000000000013,
+   "end": 3.8
+  },
+  {
+   "word": "first",
+   "start": 3.8,
+   "end": 4.06
+  },
+  {
+   "word": "option",
+   "start": 4.06,
+   "end": 4.4
+  },
+  {
+   "word": "is",
+   "start": 4.4,
+   "end": 4.84
+  },
+  {
+   "word": "opaque.",
+   "start": 4.84,
+   "end": 5.34
+  },
+  {
+   "word": "That's",
+   "start": 6.100000000000003,
+   "end": 6.74
+  },
+  {
+   "word": "how",
+   "start": 6.74,
+   "end": 6.88
+  },
+  {
+   "word": "voice",
+   "start": 6.88,
+   "end": 7.26
+  },
+  {
+   "word": "works",
+   "start": 7.26,
+   "end": 7.58
+  },
+  {
+   "word": "in",
+   "start": 7.58,
+   "end": 7.86
+  },
+  {
+   "word": "the",
+   "start": 7.86,
+   "end": 7.9
+  },
+  {
+   "word": "ChatGPT",
+   "start": 7.9,
+   "end": 8.68
+  },
+  {
+   "word": "app",
+   "start": 8.68,
+   "end": 8.92
+  },
+  {
+   "word": "and",
+   "start": 8.92,
+   "end": 9.56
+  },
+  {
+   "word": "in",
+   "start": 9.56,
+   "end": 9.82
+  },
+  {
+   "word": "Codex.",
+   "start": 9.82,
+   "end": 10.42
+  },
+  {
+   "word": "The",
+   "start": 10.48,
+   "end": 10.78
+  },
+  {
+   "word": "voice",
+   "start": 10.78,
+   "end": 11.16
+  },
+  {
+   "word": "agent",
+   "start": 11.16,
+   "end": 11.58
+  },
+  {
+   "word": "and",
+   "start": 11.58,
+   "end": 12.02
+  },
+  {
+   "word": "the",
+   "start": 12.02,
+   "end": 12.12
+  },
+  {
+   "word": "delegation",
+   "start": 12.12,
+   "end": 12.5
+  },
+  {
+   "word": "are",
+   "start": 12.5,
+   "end": 12.94
+  },
+  {
+   "word": "hidden,",
+   "start": 12.94,
+   "end": 13.32
+  },
+  {
+   "word": "so",
+   "start": 13.980000000000002,
+   "end": 14.3
+  },
+  {
+   "word": "it",
+   "start": 14.3,
+   "end": 14.46
+  },
+  {
+   "word": "looks",
+   "start": 14.46,
+   "end": 14.68
+  },
+  {
+   "word": "like",
+   "start": 14.68,
+   "end": 14.92
+  },
+  {
+   "word": "you're",
+   "start": 14.92,
+   "end": 15.08
+  },
+  {
+   "word": "talking",
+   "start": 15.08,
+   "end": 15.38
+  },
+  {
+   "word": "to",
+   "start": 15.38,
+   "end": 15.68
+  },
+  {
+   "word": "one",
+   "start": 15.68,
+   "end": 16.32
+  },
+  {
+   "word": "assistant,",
+   "start": 16.32,
+   "end": 16.76
+  },
+  {
+   "word": "and",
+   "start": 17.380000000000003,
+   "end": 17.7
+  },
+  {
+   "word": "your",
+   "start": 17.7,
+   "end": 17.9
+  },
+  {
+   "word": "words",
+   "start": 17.9,
+   "end": 18.24
+  },
+  {
+   "word": "show",
+   "start": 18.24,
+   "end": 18.5
+  },
+  {
+   "word": "up",
+   "start": 18.5,
+   "end": 18.78
+  },
+  {
+   "word": "as",
+   "start": 18.78,
+   "end": 18.94
+  },
+  {
+   "word": "your",
+   "start": 18.94,
+   "end": 19.08
+  },
+  {
+   "word": "own",
+   "start": 19.08,
+   "end": 19.3
+  },
+  {
+   "word": "messages.",
+   "start": 19.3,
+   "end": 19.7
+  },
+  {
+   "word": "It's",
+   "start": 20.14,
+   "end": 20.78
+  },
+  {
+   "word": "arguably",
+   "start": 20.78,
+   "end": 21.28
+  },
+  {
+   "word": "the",
+   "start": 21.28,
+   "end": 21.72
+  },
+  {
+   "word": "nicest",
+   "start": 21.72,
+   "end": 22.06
+  },
+  {
+   "word": "ideal,",
+   "start": 22.06,
+   "end": 22.54
+  },
+  {
+   "word": "but",
+   "start": 22.82,
+   "end": 23.76
+  },
+  {
+   "word": "it",
+   "start": 23.76,
+   "end": 23.92
+  },
+  {
+   "word": "isn't",
+   "start": 23.92,
+   "end": 24.24
+  },
+  {
+   "word": "the",
+   "start": 24.24,
+   "end": 24.32
+  },
+  {
+   "word": "architecture,",
+   "start": 24.32,
+   "end": 24.84
+  },
+  {
+   "word": "so",
+   "start": 25.18,
+   "end": 25.84
+  },
+  {
+   "word": "it",
+   "start": 25.84,
+   "end": 26.02
+  },
+  {
+   "word": "always",
+   "start": 26.02,
+   "end": 26.3
+  },
+  {
+   "word": "leaks",
+   "start": 26.3,
+   "end": 26.74
+  },
+  {
+   "word": "a",
+   "start": 26.74,
+   "end": 26.94
+  },
+  {
+   "word": "little.",
+   "start": 26.94,
+   "end": 27.16
+  },
+  {
+   "word": "I",
+   "start": 27.16,
+   "end": 28.12
+  },
+  {
+   "word": "slowly",
+   "start": 28.12,
+   "end": 28.54
+  },
+  {
+   "word": "figured",
+   "start": 28.54,
+   "end": 28.96
+  },
+  {
+   "word": "out",
+   "start": 28.96,
+   "end": 29.22
+  },
+  {
+   "word": "from",
+   "start": 29.22,
+   "end": 29.36
+  },
+  {
+   "word": "the",
+   "start": 29.36,
+   "end": 29.52
+  },
+  {
+   "word": "seams",
+   "start": 29.52,
+   "end": 29.84
+  },
+  {
+   "word": "that",
+   "start": 29.84,
+   "end": 30.14
+  },
+  {
+   "word": "there",
+   "start": 30.14,
+   "end": 30.32
+  },
+  {
+   "word": "had",
+   "start": 30.32,
+   "end": 30.5
+  },
+  {
+   "word": "to",
+   "start": 30.5,
+   "end": 30.7
+  },
+  {
+   "word": "be",
+   "start": 30.7,
+   "end": 30.86
+  },
+  {
+   "word": "a",
+   "start": 30.86,
+   "end": 31.02
+  },
+  {
+   "word": "delegation",
+   "start": 31.02,
+   "end": 31.4
+  },
+  {
+   "word": "agent",
+   "start": 31.4,
+   "end": 31.94
+  },
+  {
+   "word": "behind",
+   "start": 31.94,
+   "end": 32.34
+  },
+  {
+   "word": "it.",
+   "start": 32.34,
+   "end": 32.66
+  },
+  {
+   "word": "It",
+   "start": 32.92,
+   "end": 33.44
+  },
+  {
+   "word": "was",
+   "start": 33.44,
+   "end": 33.6
+  },
+  {
+   "word": "confusing,",
+   "start": 33.6,
+   "end": 34.18
+  },
+  {
+   "word": "because",
+   "start": 34.38,
+   "end": 35.1
+  },
+  {
+   "word": "what",
+   "start": 35.1,
+   "end": 35.36
+  },
+  {
+   "word": "I",
+   "start": 35.36,
+   "end": 35.52
+  },
+  {
+   "word": "heard",
+   "start": 35.52,
+   "end": 35.78
+  },
+  {
+   "word": "didn't",
+   "start": 35.78,
+   "end": 36.26
+  },
+  {
+   "word": "match",
+   "start": 36.26,
+   "end": 36.54
+  },
+  {
+   "word": "what",
+   "start": 36.54,
+   "end": 36.74
+  },
+  {
+   "word": "was",
+   "start": 36.74,
+   "end": 36.94
+  },
+  {
+   "word": "written,",
+   "start": 36.94,
+   "end": 37.24
+  },
+  {
+   "word": "and",
+   "start": 37.78,
+   "end": 38.04
+  },
+  {
+   "word": "I",
+   "start": 38.04,
+   "end": 38.12
+  },
+  {
+   "word": "couldn't",
+   "start": 38.12,
+   "end": 38.46
+  },
+  {
+   "word": "see",
+   "start": 38.46,
+   "end": 38.64
+  },
+  {
+   "word": "why.",
+   "start": 38.64,
+   "end": 38.92
+  }
+ ]
+}
