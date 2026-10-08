@@ -451,8 +451,10 @@ scene.cue("intro-end", said.end(), said.end());
 ```
 
 - **Voices.** `Voice::eleven(id)` uses `eleven_v4`; `.stability`, `.similarity`,
-  `.seed`, `.language`, `.ivc()` (`use_pvc_as_ivc`), and `.whisper()` (time with
-  Whisper instead of ElevenLabs' character alignment). v4 has no speed or style:
+  `.seed`, `.language`, `.ivc()` (`use_pvc_as_ivc`), `.whisper()` (time with
+  Whisper instead of ElevenLabs' character alignment), and `.format("mp3_44100_128")`
+  for accounts below the Creator tier, which ElevenLabs refuses the default
+  `mp3_44100_192` (the format is part of the key). v4 has no speed or style:
   direct performance with bracketed tags in the text, and `/IPA/` for
   pronunciation. `Voice::fish(id)` uses `s2.1-pro-free` with `.speed`;
   `Voice::say(name)` is a free macOS voice.

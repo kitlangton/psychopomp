@@ -104,6 +104,7 @@ pub struct Voice {
     model: Option<String>,
     settings: Settings,
     whisper: bool,
+    format: Option<String>,
 }
 
 impl Voice {
@@ -131,6 +132,7 @@ impl Voice {
             model: model.map(str::to_owned),
             settings: Settings::default(),
             whisper: false,
+            format: None,
         }
     }
 
@@ -189,12 +191,24 @@ impl Voice {
         self
     }
 
+    /// ElevenLabs output format, an `mp3_*` such as `mp3_44100_128`, for
+    /// accounts whose tier cannot request the default `mp3_44100_192`.
+    pub fn format(mut self, format: impl Into<String>) -> Self {
+        self.format = Some(format.into());
+        self
+    }
+
     pub(crate) fn backend(&self) -> Backend {
         self.backend
     }
 
     fn check(&self) -> Result<()> {
         let s = &self.settings;
+        if let Some(format) = &self.format
+            && (self.backend != Backend::ElevenLabs || !format.starts_with("mp3_"))
+        {
+            bail!("only ElevenLabs voices choose an output format, and it must be an mp3_* format");
+        }
         match self.backend {
             Backend::ElevenLabs if s.speed.is_some() => {
                 bail!("ElevenLabs v4 has no speed control; direct pace in the text")
@@ -229,9 +243,10 @@ impl Voice {
         if !previous.is_empty() && self.backend != Backend::ElevenLabs {
             bail!("only ElevenLabs stitches a line after another");
         }
+        let eleven = self.format.as_deref().unwrap_or(ELEVEN_FORMAT);
         let (format, align) = match self.backend {
-            Backend::ElevenLabs if !self.whisper => (ELEVEN_FORMAT, PROVIDER_ALIGN.to_owned()),
-            Backend::ElevenLabs => (ELEVEN_FORMAT, whisper_align()),
+            Backend::ElevenLabs if !self.whisper => (eleven, PROVIDER_ALIGN.to_owned()),
+            Backend::ElevenLabs => (eleven, whisper_align()),
             Backend::Fish => (FISH_FORMAT, whisper_align()),
             Backend::Say => (SAY_FORMAT, whisper_align()),
         };
@@ -255,6 +270,7 @@ impl Voice {
             && self.model == other.model
             && self.settings == other.settings
             && self.whisper == other.whisper
+            && self.format == other.format
     }
 
     pub(crate) fn id(&self) -> &str {
@@ -726,6 +742,7 @@ mod tests {
             line(&kit.clone().seed(7), "[soft] Hi."),
             line(&kit.clone().whisper(), "[soft] Hi."),
             line(&kit.clone().model("eleven_v4_turbo"), "[soft] Hi."),
+            line(&kit.clone().format("mp3_44100_128"), "[soft] Hi."),
             line(
                 &Voice::eleven("other").stability(0.2).similarity(0.65),
                 "[soft] Hi.",
@@ -768,7 +785,40 @@ mod tests {
                 .speech(Route::Dialogue, said(), vec![])
                 .is_err()
         );
+        assert!(
+            Voice::fish("f")
+                .format("mp3_44100_128")
+                .speech(Route::Speech, said(), vec![])
+                .is_err()
+        );
+        assert!(
+            Voice::eleven(KIT)
+                .format("pcm_44100")
+                .speech(Route::Speech, said(), vec![])
+                .is_err()
+        );
         assert!(Sound::new("pop").spec(100_000_000).is_err());
+    }
+
+    #[test]
+    fn an_eleven_voice_requests_its_chosen_format() {
+        let said = vec![Said {
+            voice: KIT.into(),
+            text: "Hi.".into(),
+        }];
+        let spec = Voice::eleven(KIT)
+            .format("mp3_44100_128")
+            .speech(Route::Speech, said.clone(), vec![])
+            .unwrap();
+        assert_eq!(spec.format, "mp3_44100_128");
+        let default = Voice::eleven(KIT)
+            .speech(Route::Speech, said, vec![])
+            .unwrap();
+        assert_eq!(default.format, "mp3_44100_192");
+        assert!(
+            !Voice::eleven(KIT).shares_request(&Voice::eleven(KIT).format("mp3_44100_128")),
+            "one dialogue request has one format"
+        );
     }
 
     #[test]
