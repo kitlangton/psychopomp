@@ -47,7 +47,7 @@ impl RangeId {
     }
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Hash, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum SyntaxStyle {
     Plain,
@@ -58,13 +58,13 @@ pub enum SyntaxStyle {
     Rgb(u8, u8, u8),
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct StyledSpan {
     pub text: String,
     pub style: SyntaxStyle,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InlinePart {
     id: PartId,
     spans: Vec<StyledSpan>,
@@ -167,7 +167,7 @@ impl StyledSpan {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CodeLine {
     pub id: LineId,
     parts: Vec<InlinePart>,

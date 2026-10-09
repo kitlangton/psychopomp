@@ -3,7 +3,7 @@
 //! exposed frame at a time. Every root and the legacy scenes share it.
 use std::{ops::Range, path::Path, time::Instant};
 
-use anyhow::{Result, bail};
+use anyhow::{Context, Result, bail};
 use psychopomp::{
     composition::{Duration, MediaPlacement, Time, TimeRange},
     math::{Vec2, shapes::Box2, vec2},
@@ -68,7 +68,7 @@ pub(crate) fn encode_exposures<K: PartialEq>(
         .iter()
         .filter_map(|placement| placement.for_window(window))
         .collect::<Vec<_>>();
-    let mut encoder = FfmpegEncoder::start_with_media(
+    let encoder = FfmpegEncoder::start_with_media(
         output,
         VideoSpec {
             width: WIDTH,
@@ -77,6 +77,8 @@ pub(crate) fn encode_exposures<K: PartialEq>(
         },
         &media,
     )?;
+    // FFmpeg takes frames on a thread of its own while the next one renders.
+    let mut writer = FrameWriter::spawn(encoder, 2, FfmpegEncoder::write_frame);
     for frame in 0..frame_count {
         let frame_start = window.start().as_seconds() + frame as f64 / f64::from(FPS);
         let frame_end = (window.start().as_seconds() + (frame + 1) as f64 / f64::from(FPS))
@@ -87,7 +89,7 @@ pub(crate) fn encode_exposures<K: PartialEq>(
             exposure(center, frame_end - frame_start, samples),
             &mut sample_key,
         )?;
-        encoder.write_frame(&render_exposure(renderer, &exposure)?)?;
+        writer.send(render_exposure(renderer, &exposure)?)?;
         if frame % u64::from(FPS) == 0 || frame + 1 == frame_count {
             eprintln!(
                 "Rendered {:>3}/{frame_count} frames ({center:.1}s, {samples} samples, {} unique)",
@@ -96,13 +98,78 @@ pub(crate) fn encode_exposures<K: PartialEq>(
             );
         }
     }
-    encoder.finish()?;
+    writer.finish()?.finish()?;
     eprintln!(
         "Wrote {} in {:.1}s",
         output.display(),
         started.elapsed().as_secs_f32()
     );
     Ok(())
+}
+
+/// Frames written in order on a thread that owns `S`, through a channel at
+/// most `depth` frames deep. The first write error stops the thread and
+/// surfaces from the next `send` or from `finish`.
+pub(crate) struct FrameWriter<S> {
+    sender: Option<std::sync::mpsc::SyncSender<Vec<u8>>>,
+    thread: Option<std::thread::JoinHandle<Result<S>>>,
+}
+
+impl<S: Send + 'static> FrameWriter<S> {
+    pub(crate) fn spawn(mut sink: S, depth: usize, write: fn(&mut S, &[u8]) -> Result<()>) -> Self {
+        let (sender, receiver) = std::sync::mpsc::sync_channel::<Vec<u8>>(depth);
+        let thread = std::thread::Builder::new()
+            .name("psychopomp-writer".into())
+            .spawn(move || {
+                for frame in receiver {
+                    write(&mut sink, &frame)?;
+                }
+                Ok(sink)
+            })
+            .expect("spawn frame writer thread");
+        Self {
+            sender: Some(sender),
+            thread: Some(thread),
+        }
+    }
+
+    pub(crate) fn send(&mut self, frame: Vec<u8>) -> Result<()> {
+        let sender = self.sender.as_ref().context("frame writer is closed")?;
+        if sender.send(frame).is_err() {
+            // The thread stopped: report why.
+            self.sender.take();
+            return match self.join() {
+                Err(error) => Err(error),
+                Ok(_) => bail!("frame writer stopped early"),
+            };
+        }
+        Ok(())
+    }
+
+    /// Wait for every frame to be written and hand the sink back.
+    pub(crate) fn finish(mut self) -> Result<S> {
+        self.sender.take();
+        self.join()
+    }
+
+    fn join(&mut self) -> Result<S> {
+        self.thread
+            .take()
+            .context("frame writer already joined")?
+            .join()
+            .map_err(|_| anyhow::anyhow!("frame writer thread panicked"))?
+    }
+}
+
+impl<S> Drop for FrameWriter<S> {
+    /// An abandoned writer (a render that failed midway) still stops its
+    /// thread and drops the sink before returning.
+    fn drop(&mut self) {
+        self.sender.take();
+        if let Some(thread) = self.thread.take() {
+            let _ = thread.join();
+        }
+    }
 }
 
 /// One frame's shutter: `samples` stratified times across a 180-degree
@@ -167,16 +234,36 @@ pub(crate) fn accumulate(
         let pixels = render_sample(renderer, time)?;
         check_frame(&pixels)?;
         let weighted = WeightedLinear::new(tables, weight);
-        for (sum, pixel) in sum
-            .as_chunks_mut::<4>()
-            .0
-            .iter_mut()
-            .zip(pixels.as_chunks::<4>().0)
-        {
-            weighted.add(sum, pixel);
-        }
+        zip_pixels(
+            sum.as_chunks_mut::<4>().0,
+            pixels.as_chunks::<4>().0,
+            |sum, pixel| weighted.add(sum, pixel),
+        );
     }
     Ok(encode_frame(tables, &sum))
+}
+
+fn zip_pixels<T: Send, U: Sync>(output: &mut [T], input: &[U], apply: impl Fn(&mut T, &U) + Sync) {
+    let workers = crate::render::bands::available_workers()
+        .min(output.len() / 65_536)
+        .max(1);
+    let span = output.len().div_ceil(workers).max(1);
+    let apply = &apply;
+    let run = move |output: &mut [T], input: &[U]| {
+        for (output, input) in output.iter_mut().zip(input) {
+            apply(output, input);
+        }
+    };
+    std::thread::scope(|scope| {
+        let mut spans = output.chunks_mut(span).zip(input.chunks(span));
+        let first = spans.next();
+        for (output, input) in spans {
+            scope.spawn(move || run(output, input));
+        }
+        if let Some((output, input)) = first {
+            run(output, input);
+        }
+    });
 }
 
 /// `accumulate` for samples that differ only inside `region`. `first` is the
@@ -357,14 +444,11 @@ fn encode_linear(tables: &LinearTables, sum: &[f32; 4]) -> [u8; 4] {
 
 fn encode_frame(tables: &LinearTables, sum: &[f32]) -> Vec<u8> {
     let mut exposed = vec![0_u8; sum.len() / 4 * 4];
-    for (out, sum) in exposed
-        .as_chunks_mut::<4>()
-        .0
-        .iter_mut()
-        .zip(sum.as_chunks::<4>().0)
-    {
-        *out = encode_linear(tables, sum);
-    }
+    zip_pixels(
+        exposed.as_chunks_mut::<4>().0,
+        sum.as_chunks::<4>().0,
+        |out, sum| *out = encode_linear(tables, sum),
+    );
     exposed
 }
 
@@ -408,6 +492,59 @@ pub(crate) fn linear_tables() -> &'static LinearTables {
 #[cfg(test)]
 mod tests {
     use psychopomp::math::{shapes::Box2, vec2};
+
+    #[test]
+    fn frame_writer_keeps_frame_order() {
+        let mut writer = super::FrameWriter::spawn(Vec::new(), 2, |sink, frame| {
+            sink.push(frame.to_vec());
+            Ok(())
+        });
+        for frame in 0..100_u8 {
+            writer.send(vec![frame; 3]).unwrap();
+        }
+        let written = writer.finish().unwrap();
+        assert_eq!(written, (0..100_u8).map(|f| vec![f; 3]).collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn frame_writer_reports_the_first_write_error() {
+        let mut writer = super::FrameWriter::spawn(0_u32, 2, |count, _| {
+            *count += 1;
+            if *count == 3 {
+                anyhow::bail!("pipe closed");
+            }
+            Ok(())
+        });
+        let error = (0..20)
+            .find_map(|_| writer.send(vec![0]).err())
+            .or_else(|| writer.finish().err())
+            .expect("an error surfaces");
+        assert_eq!(error.to_string(), "pipe closed");
+    }
+
+    #[test]
+    fn split_pixel_spans_match_a_serial_loop() {
+        let tables = super::linear_tables();
+        let pixels: Vec<[u8; 4]> = (0..300_007_u32)
+            .map(|i| (i.wrapping_mul(2_654_435_761) >> 3).to_le_bytes())
+            .collect();
+        let mut serial = vec![[0.0_f32; 4]; pixels.len()];
+        let mut split = serial.clone();
+        for weight in [0.125, 0.3, 0.575] {
+            let weighted = super::WeightedLinear::new(tables, weight);
+            for (sum, pixel) in serial.iter_mut().zip(&pixels) {
+                weighted.add(sum, pixel);
+            }
+            super::zip_pixels(&mut split, &pixels, |sum, pixel| weighted.add(sum, pixel));
+        }
+        let bits = |sums: &[[f32; 4]]| {
+            sums.iter()
+                .flatten()
+                .map(|v| v.to_bits())
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(bits(&split), bits(&serial));
+    }
 
     use super::{
         FRAME_BYTES, Region, WeightedLinear, accumulate_region, add_linear, encode_frame,

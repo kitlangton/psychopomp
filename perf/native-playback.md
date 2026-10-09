@@ -58,6 +58,11 @@ Full-quality export stays unchanged, and unsupported preview poses/effects fall
 back to that renderer. Pixel equality across interrupted and out-of-order samples
 is tested independently within each supported profile.
 
+> Note (2026-10-07): the 116–138 ms figure predates threading the full-quality
+> compositor. It now rasterises card and text rows across threads and skips
+> rebuilding an unchanged flat editor frame, with pixels unchanged; re-measure
+> before quoting a per-sample cost.
+
 ## 120 Hz investigation
 
 Target: 120 distinct frames/sec, with an 8.33 ms frame budget. Keep the same

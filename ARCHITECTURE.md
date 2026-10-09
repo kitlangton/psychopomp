@@ -156,7 +156,9 @@ Renderer crate, pixels and delivery:
 - `crates/psychopomp-render/src/render/debug.rs`: optional native debug HUD
 - `crates/psychopomp-render/src/video.rs`: FFmpeg-decoded seekable RGBA frame cache for input video and image sequences, keyed by source content and decode contract
 - `crates/psychopomp-render/src/footage.rs`: the footage store: every source a plan shows, opened once and shared, with frames read through one bounded LRU
-- `crates/psychopomp-render/src/exposure.rs`: delivery dimensions, shutter samples and weights, linear-light accumulation, and encoding a timeline one exposed frame at a time
+- `crates/psychopomp-render/src/render/bands.rs`: row-band parallelism for CPU rasterisation; each row is painted once with serial arithmetic, so output does not depend on thread count, and a fill takes threads only when its area (rows times columns) is worth them
+- `crates/psychopomp-render/src/render/flat_key.rs`: the flat editor key, every input to the flat editor frame compared exactly (floats by bits, plan text by `Eq`); an equal key reuses the last flat frame and its card layers, and the shapes pass separately reuses its readback while its uniform bytes are equal
+- `crates/psychopomp-render/src/exposure.rs`: delivery dimensions, shutter samples and weights, linear-light accumulation, and encoding a timeline one exposed frame at a time; a `FrameWriter` thread owns the FFmpeg encoder behind a two-frame channel, so encoding overlaps the next frame's render in order
 - `crates/psychopomp-render/src/encode.rs`: concrete FFmpeg subprocess, raw RGBA protocol, and compiled audio placement
 
 Scene Programs (`scenes/`), each emitting a Scene Plan, Deck, or Reel:
@@ -1177,7 +1179,10 @@ prepares every segment once on one renderer, samples each visible layer at its l
 time, and mixes opaque frames (a dip mixes over the theme's empty background). Each
 segment's media placements are shifted onto the reel clock with
 `MediaPlacement::shifted` and encoded through `exposure::encode_exposures`, the same
-exposure and FFmpeg path as a single plan. A segment shown alone through a frame
+exposure and FFmpeg path as a single plan. During a transition each segment's frame is
+reused across shutter samples and frames while its visual sample key holds
+(a few recent frames, keyed by segment and key); Stage segments carry ambient
+time and always render. A segment shown alone through a frame
 renders its own exposure (so a Stage keeps its GPU shutter); mixes and zooms take
 16 samples averaged on the CPU. `plan render`, `frame`, `snapshot`, `validate`,
 and `inspect` recognize a reel by its `segments` key; `--cue` selects

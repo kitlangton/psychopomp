@@ -4,7 +4,10 @@ use psychopomp::{
     math::{Vec2, shapes::polygon_distance},
 };
 
-use super::{super::blend_pixel, super::theme::mix, Bounds, rounded_rect_distance};
+use super::{
+    super::bands::for_each_row_band, super::blend_pixel, super::theme::mix, Bounds,
+    rounded_rect_distance,
+};
 
 const CAMERA_DISTANCE: f32 = 1_800.0;
 const BYTES_PER_PIXEL: usize = 4;
@@ -353,21 +356,24 @@ impl<'a> UiCanvas<'a> {
         let min_x = bounds.origin[0].floor().max(0.0) as i32;
         let max_x = bounds.right().ceil().min(self.size[0] as f32) as i32;
         let min_y = bounds.origin[1].floor().max(0.0) as i32;
-        let max_y = bounds.bottom().ceil().min(self.size[1] as f32) as i32;
-        for y in min_y..max_y {
+        let max_y = (bounds.bottom().ceil().min(self.size[1] as f32) as i32).max(0);
+        let clips = self.clips.as_slice();
+        let opacity = opacity.clamp(0.0, 1.0);
+        let span = max_x - min_x;
+        for_each_row_band(self.pixels, self.size, min_y, max_y - 1, span, |y, row| {
             for x in min_x..max_x {
                 let point = [x as f32 + 0.5, y as f32 + 0.5];
                 let coverage = rounded_coverage(point, bounds, corner_radius)
-                    * self.clip_coverage(point)
-                    * opacity.clamp(0.0, 1.0);
+                    * clip_coverage(clips, point)
+                    * opacity;
                 if coverage <= 0.0 {
                     continue;
                 }
                 let color = fill.sample(point, bounds);
-                let index = (y as usize * self.size[0] as usize + x as usize) * BYTES_PER_PIXEL;
-                blend_pixel(&mut self.pixels[index..index + 4], color.0, coverage);
+                let index = x as usize * BYTES_PER_PIXEL;
+                blend_pixel(&mut row[index..index + 4], color.0, coverage);
             }
-        }
+        });
     }
 
     pub fn surface(&mut self, bounds: Bounds, style: SurfaceStyle, opacity: f32) {
@@ -411,7 +417,7 @@ impl<'a> UiCanvas<'a> {
         let min_x = outer.origin[0].floor().max(0.0) as i32;
         let max_x = outer.right().ceil().min(self.size[0] as f32) as i32;
         let min_y = outer.origin[1].floor().max(0.0) as i32;
-        let max_y = outer.bottom().ceil().min(self.size[1] as f32) as i32;
+        let max_y = (outer.bottom().ceil().min(self.size[1] as f32) as i32).max(0);
         let hollow_x = (
             (inner.origin[0] + inner_radius + 1.0).ceil() as i32,
             (inner.right() - inner_radius - 1.0).floor() as i32,
@@ -420,7 +426,10 @@ impl<'a> UiCanvas<'a> {
             inner.origin[1] + inner_radius + 1.0,
             inner.bottom() - inner_radius - 1.0,
         );
-        for y in min_y..max_y {
+        let clips = self.clips.as_slice();
+        let opacity = opacity.clamp(0.0, 1.0);
+        let span = max_x - min_x;
+        for_each_row_band(self.pixels, self.size, min_y, max_y - 1, span, |y, row| {
             let py = y as f32 + 0.5;
             let skip_interior = hollow_x.0 < hollow_x.1 && py >= hollow_y.0 && py <= hollow_y.1;
             let mut x = min_x;
@@ -433,16 +442,16 @@ impl<'a> UiCanvas<'a> {
                 let coverage = (rounded_coverage(point, outer, corner_radius)
                     - rounded_coverage(point, inner, inner_radius))
                 .clamp(0.0, 1.0)
-                    * self.clip_coverage(point)
-                    * opacity.clamp(0.0, 1.0);
+                    * clip_coverage(clips, point)
+                    * opacity;
                 if coverage > 0.0 {
                     let color = fill.sample(point, outer);
-                    let index = (y as usize * self.size[0] as usize + x as usize) * BYTES_PER_PIXEL;
-                    blend_pixel(&mut self.pixels[index..index + 4], color.0, coverage);
+                    let index = x as usize * BYTES_PER_PIXEL;
+                    blend_pixel(&mut row[index..index + 4], color.0, coverage);
                 }
                 x += 1;
             }
-        }
+        });
     }
 
     /// A round-capped stroke through `points`. Segment coverage is unioned
@@ -515,8 +524,11 @@ impl<'a> UiCanvas<'a> {
             let min_x = bounds.origin[0].floor().max(0.0) as i32;
             let max_x = bounds.right().ceil().min(self.size[0] as f32) as i32;
             let min_y = bounds.origin[1].floor().max(0.0) as i32;
-            let max_y = bounds.bottom().ceil().min(self.size[1] as f32) as i32;
-            for y in min_y..max_y {
+            let max_y = (bounds.bottom().ceil().min(self.size[1] as f32) as i32).max(0);
+            let clips = self.clips.as_slice();
+            let opacity = opacity.clamp(0.0, 1.0);
+            let span = max_x - min_x;
+            for_each_row_band(self.pixels, self.size, min_y, max_y - 1, span, |y, row| {
                 for x in min_x..max_x {
                     let point = [x as f32 + 0.5, y as f32 + 0.5];
                     let local = [point[0] - bounds.center()[0], point[1] - bounds.center()[1]];
@@ -524,18 +536,14 @@ impl<'a> UiCanvas<'a> {
                     else {
                         continue;
                     };
-                    let coverage = self.clip_coverage(point) * opacity.clamp(0.0, 1.0);
+                    let coverage = clip_coverage(clips, point) * opacity;
                     if coverage <= 0.0 {
                         continue;
                     }
-                    let index = (y as usize * self.size[0] as usize + x as usize) * BYTES_PER_PIXEL;
-                    blend_pixel(
-                        &mut self.pixels[index..index + 4],
-                        source.sample(sx, sy),
-                        coverage,
-                    );
+                    let index = x as usize * BYTES_PER_PIXEL;
+                    blend_pixel(&mut row[index..index + 4], source.sample(sx, sy), coverage);
                 }
-            }
+            });
             return;
         }
         let source_size = [source.size[0] as f32, source.size[1] as f32];
@@ -551,8 +559,11 @@ impl<'a> UiCanvas<'a> {
         let min_x = bounds.origin[0].floor().max(0.0) as i32;
         let max_x = bounds.right().ceil().min(self.size[0] as f32) as i32;
         let min_y = bounds.origin[1].floor().max(0.0) as i32;
-        let max_y = bounds.bottom().ceil().min(self.size[1] as f32) as i32;
-        for y in min_y..max_y {
+        let max_y = (bounds.bottom().ceil().min(self.size[1] as f32) as i32).max(0);
+        let clips = self.clips.as_slice();
+        let opacity = opacity.clamp(0.0, 1.0);
+        let span = max_x - min_x;
+        for_each_row_band(self.pixels, self.size, min_y, max_y - 1, span, |y, row| {
             for x in min_x..max_x {
                 let point = [x as f32 + 0.5, y as f32 + 0.5];
                 if point[0] < display.origin[0]
@@ -562,7 +573,7 @@ impl<'a> UiCanvas<'a> {
                 {
                     continue;
                 }
-                let coverage = self.clip_coverage(point) * opacity.clamp(0.0, 1.0);
+                let coverage = clip_coverage(clips, point) * opacity;
                 if coverage <= 0.0 {
                     continue;
                 }
@@ -571,17 +582,21 @@ impl<'a> UiCanvas<'a> {
                 let source_y =
                     (point[1] - display.origin[1]) / display.size[1] * source_size[1] - 0.5;
                 let color = source.sample(source_x, source_y);
-                let index = (y as usize * self.size[0] as usize + x as usize) * BYTES_PER_PIXEL;
-                blend_pixel(&mut self.pixels[index..index + 4], color, coverage);
+                let index = x as usize * BYTES_PER_PIXEL;
+                blend_pixel(&mut row[index..index + 4], color, coverage);
             }
-        }
+        });
     }
 
     fn clip_coverage(&self, point: [f32; 2]) -> f32 {
-        self.clips.iter().fold(1.0, |coverage, clip| {
-            coverage * rounded_coverage(point, clip.bounds, clip.corner_radius)
-        })
+        clip_coverage(&self.clips, point)
     }
+}
+
+fn clip_coverage(clips: &[Clip], point: [f32; 2]) -> f32 {
+    clips.iter().fold(1.0, |coverage, clip| {
+        coverage * rounded_coverage(point, clip.bounds, clip.corner_radius)
+    })
 }
 
 impl Fill {
@@ -640,17 +655,10 @@ impl CardUi<'_> {
 
 pub(crate) struct FrameUi<'a> {
     canvas: UiCanvas<'a>,
-    card_pixels: &'a mut Vec<u8>,
-    overlay_pixels: &'a mut Vec<u8>,
 }
 
 impl<'a> FrameUi<'a> {
-    pub fn new(
-        pixels: &'a mut [u8],
-        size: [u32; 2],
-        card_pixels: &'a mut Vec<u8>,
-        overlay_pixels: &'a mut Vec<u8>,
-    ) -> Result<Self> {
+    pub fn new(pixels: &'a mut [u8], size: [u32; 2]) -> Result<Self> {
         let expected = rgba_byte_len(size)?;
         if pixels.len() != expected {
             bail!(
@@ -660,8 +668,6 @@ impl<'a> FrameUi<'a> {
         }
         Ok(Self {
             canvas: UiCanvas::new(pixels, size),
-            card_pixels,
-            overlay_pixels,
         })
     }
 
@@ -724,52 +730,80 @@ impl<'a> FrameUi<'a> {
         Ok(())
     }
 
-    pub fn card<R>(
-        &mut self,
-        frame: CardFrame,
-        draw: impl FnOnce(&mut CardUi<'_>) -> Result<R>,
-    ) -> Result<R> {
+    pub fn card_painted(&mut self, frame: CardFrame, content: &[u8], overlay: &[u8]) -> Result<()> {
         validate_card(frame)?;
-        let local_size = [
-            frame.bounds.size[0].ceil().max(1.0) as u32,
-            frame.bounds.size[1].ceil().max(1.0) as u32,
-        ];
-        let required = rgba_byte_len(local_size)?;
-        self.card_pixels.resize(required, 0);
-        self.card_pixels.fill(0);
-        self.overlay_pixels.resize(required, 0);
-        self.overlay_pixels.fill(0);
-        let result = {
-            let mut card = CardUi {
-                content: UiCanvas::new(self.card_pixels, local_size),
-                overlay: UiCanvas::new(self.overlay_pixels, local_size),
-            };
-            card.content.fill(
-                card.content.bounds(),
-                frame.style.corner_radius,
-                frame.style.material,
-                1.0,
-            );
-            draw(&mut card)
-        }?;
-        composite_card_layer(
+        let required = rgba_byte_len(card_local_size(frame))?;
+        if content.len() != required || overlay.len() != required {
+            bail!("painted card layers do not match the card size");
+        }
+        composite_card_layers(
             self.canvas.pixels,
             self.canvas.size,
-            self.card_pixels,
-            local_size,
             frame,
-            true,
+            content,
+            overlay,
         );
-        composite_card_layer(
-            self.canvas.pixels,
-            self.canvas.size,
-            self.overlay_pixels,
-            local_size,
-            frame,
-            false,
-        );
-        Ok(result)
+        Ok(())
     }
+}
+
+fn composite_card_layers(
+    destination: &mut [u8],
+    destination_size: [u32; 2],
+    frame: CardFrame,
+    content: &[u8],
+    overlay: &[u8],
+) {
+    let local_size = card_local_size(frame);
+    composite_card_layer(
+        destination,
+        destination_size,
+        content,
+        local_size,
+        frame,
+        true,
+    );
+    composite_card_layer(
+        destination,
+        destination_size,
+        overlay,
+        local_size,
+        frame,
+        false,
+    );
+}
+
+fn card_local_size(frame: CardFrame) -> [u32; 2] {
+    [
+        frame.bounds.size[0].ceil().max(1.0) as u32,
+        frame.bounds.size[1].ceil().max(1.0) as u32,
+    ]
+}
+
+pub(crate) fn paint_card_layers<R>(
+    frame: CardFrame,
+    content: &mut Vec<u8>,
+    overlay: &mut Vec<u8>,
+    draw: impl FnOnce(&mut CardUi<'_>) -> Result<R>,
+) -> Result<R> {
+    validate_card(frame)?;
+    let local_size = card_local_size(frame);
+    let required = rgba_byte_len(local_size)?;
+    content.resize(required, 0);
+    content.fill(0);
+    overlay.resize(required, 0);
+    overlay.fill(0);
+    let mut card = CardUi {
+        content: UiCanvas::new(content, local_size),
+        overlay: UiCanvas::new(overlay, local_size),
+    };
+    card.content.fill(
+        card.content.bounds(),
+        frame.style.corner_radius,
+        frame.style.material,
+        1.0,
+    );
+    draw(&mut card)
 }
 
 fn rgba_row_bytes(width: u32) -> Result<usize> {
@@ -907,11 +941,12 @@ fn composite_card_layer(
     let max_x = max_x.ceil().min(destination_size[0] as f32 - 1.0) as i32;
     let min_y = min_y.floor().max(0.0) as i32;
     let max_y = max_y.ceil().min(destination_size[1] as f32 - 1.0) as i32;
-    for_each_card_row(
+    for_each_row_band(
         destination,
         destination_size,
         min_y,
         max_y,
+        max_x - min_x + 1,
         |target_y, row| {
             for target_x in min_x..=max_x {
                 let point = [
@@ -1017,11 +1052,12 @@ fn composite_card_source(
     let max_x = max_x.ceil().min(destination_size[0] as f32 - 1.0) as i32;
     let min_y = min_y.floor().max(0.0) as i32;
     let max_y = max_y.ceil().min(destination_size[1] as f32 - 1.0) as i32;
-    for_each_card_row(
+    for_each_row_band(
         destination,
         destination_size,
         min_y,
         max_y,
+        max_x - min_x + 1,
         |target_y, row| {
             for target_x in min_x..=max_x {
                 let point = [
@@ -1071,45 +1107,6 @@ fn composite_card_source(
             }
         },
     );
-}
-
-fn for_each_card_row(
-    destination: &mut [u8],
-    destination_size: [u32; 2],
-    min_y: i32,
-    max_y: i32,
-    paint_row: impl Fn(i32, &mut [u8]) + Sync,
-) {
-    let start_y = min_y.max(0) as usize;
-    let end_y = (max_y + 1).clamp(0, destination_size[1] as i32) as usize;
-    if start_y >= end_y {
-        return;
-    }
-    let row_bytes = destination_size[0] as usize * BYTES_PER_PIXEL;
-    let rows = &mut destination[start_y * row_bytes..end_y * row_bytes];
-    let row_count = end_y - start_y;
-    let workers = std::thread::available_parallelism()
-        .map_or(1, usize::from)
-        .min(row_count / 32)
-        .max(1);
-    if workers <= 1 {
-        for (offset, row) in rows.chunks_exact_mut(row_bytes).enumerate() {
-            paint_row((start_y + offset) as i32, row);
-        }
-        return;
-    }
-    let rows_per_worker = row_count.div_ceil(workers);
-    let paint_row = &paint_row;
-    std::thread::scope(|scope| {
-        for (chunk_index, band) in rows.chunks_mut(rows_per_worker * row_bytes).enumerate() {
-            let band_start_y = start_y + chunk_index * rows_per_worker;
-            scope.spawn(move || {
-                for (offset, row) in band.chunks_exact_mut(row_bytes).enumerate() {
-                    paint_row((band_start_y + offset) as i32, row);
-                }
-            });
-        }
-    });
 }
 
 fn composite_card_region(
@@ -1364,9 +1361,42 @@ fn invert_matrix_3x3(matrix: [[f32; 3]; 3]) -> [[f32; 3]; 3] {
 #[cfg(test)]
 mod tests {
     use super::{
-        Bounds, CardFrame, CardProjection, CardStyle, CardTransform, Clip, ContentFit, Fill,
-        FrameUi, RgbaSource, SurfaceStyle, UiCanvas, UiColor,
+        Bounds, CardFrame, CardProjection, CardStyle, CardTransform, CardUi, Clip, ContentFit,
+        Fill, FrameUi, RgbaSource, SurfaceStyle, UiCanvas, UiColor, paint_card_layers,
     };
+    use anyhow::Result;
+
+    #[test]
+    fn fills_with_an_infinite_bottom_paint_nothing() {
+        let size = [4_u32, 6];
+        let mut pixels = vec![0_u8; 4 * 6 * 4];
+        let mut canvas = UiCanvas::new(&mut pixels, size);
+        let solid = Fill::Solid(UiColor::srgb8(255, 255, 255, 255));
+        for bounds in [
+            Bounds {
+                origin: [0.0, f32::NEG_INFINITY],
+                size: [4.0, 0.0],
+            },
+            Bounds {
+                origin: [0.0, -10.0],
+                size: [4.0, f32::NEG_INFINITY],
+            },
+        ] {
+            canvas.fill(bounds, 0.0, solid, 1.0);
+            canvas.stroke_fill(bounds, 0.0, 1.0, solid, 1.0);
+        }
+        assert!(pixels.iter().all(|&byte| byte == 0));
+    }
+
+    fn card(
+        ui: &mut FrameUi<'_>,
+        frame: CardFrame,
+        draw: impl FnOnce(&mut CardUi<'_>) -> Result<()>,
+    ) -> Result<()> {
+        let (mut content, mut overlay) = (Vec::new(), Vec::new());
+        paint_card_layers(frame, &mut content, &mut overlay, draw)?;
+        ui.card_painted(frame, &content, &overlay)
+    }
 
     #[test]
     fn source_sampling_matches_filtered_reference_in_flat_and_mixed_regions() {
@@ -1514,11 +1544,9 @@ mod tests {
     #[test]
     fn nested_clips_constrain_composed_rgba_content() {
         let mut output = vec![0; 8 * 8 * 4];
-        let mut card = Vec::new();
-        let mut overlay = Vec::new();
         let source = [255, 255, 255, 255];
         let source = RgbaSource::packed(&source, [1, 1]).unwrap();
-        let mut frame = FrameUi::new(&mut output, [8, 8], &mut card, &mut overlay).unwrap();
+        let mut frame = FrameUi::new(&mut output, [8, 8]).unwrap();
         frame
             .paint(|ui| {
                 ui.clipped(
@@ -1596,34 +1624,32 @@ mod tests {
     #[test]
     fn projected_card_composes_material_content_border_and_shadow() {
         let mut output = vec![0; 32 * 24 * 4];
-        let mut card = Vec::new();
-        let mut overlay = Vec::new();
         let source = [180, 90, 30, 255];
         let source = RgbaSource::packed(&source, [1, 1]).unwrap();
-        let mut frame = FrameUi::new(&mut output, [32, 24], &mut card, &mut overlay).unwrap();
-        frame
-            .card(
-                CardFrame {
-                    bounds: Bounds::from_center([16.0, 11.0], [16.0, 10.0]),
-                    style: CardStyle::standard(),
-                    projection: CardProjection {
-                        scale: 0.9,
-                        rotation_z: -0.08,
-                        tilt_x: -0.12,
-                        tilt_y: 0.16,
-                        surface_blur: 0.0,
-                        near_edge_blur: 1.5,
-                    },
-                    opacity: 1.0,
+        let mut frame = FrameUi::new(&mut output, [32, 24]).unwrap();
+        card(
+            &mut frame,
+            CardFrame {
+                bounds: Bounds::from_center([16.0, 11.0], [16.0, 10.0]),
+                style: CardStyle::standard(),
+                projection: CardProjection {
+                    scale: 0.9,
+                    rotation_z: -0.08,
+                    tilt_x: -0.12,
+                    tilt_y: 0.16,
+                    surface_blur: 0.0,
+                    near_edge_blur: 1.5,
                 },
-                |card| {
-                    card.content(|ui| {
-                        ui.rgba(ui.bounds(), source, ContentFit::Contain, 1.0);
-                        Ok(())
-                    })
-                },
-            )
-            .unwrap();
+                opacity: 1.0,
+            },
+            |card| {
+                card.content(|ui| {
+                    ui.rgba(ui.bounds(), source, ContentFit::Contain, 1.0);
+                    Ok(())
+                })
+            },
+        )
+        .unwrap();
 
         assert!(output.as_chunks::<4>().0.iter().any(|pixel| pixel[0] > 80));
         assert!(output.as_chunks::<4>().0.iter().any(|pixel| pixel[3] > 0));
@@ -1633,8 +1659,6 @@ mod tests {
     #[test]
     fn borrowed_card_source_samples_a_strided_region() {
         let mut output = vec![0; 16 * 16 * 4];
-        let mut card = Vec::new();
-        let mut overlay = Vec::new();
         let mut surface = vec![0; 4 * 2 * 4];
         for y in 0..2 {
             for x in 0..4 {
@@ -1647,7 +1671,7 @@ mod tests {
             }
         }
         let source = RgbaSource::strided_region(&surface, [4, 2], 16, [2, 0], [2, 2]).unwrap();
-        let mut frame = FrameUi::new(&mut output, [16, 16], &mut card, &mut overlay).unwrap();
+        let mut frame = FrameUi::new(&mut output, [16, 16]).unwrap();
         frame
             .card_source(
                 CardFrame {
@@ -1680,8 +1704,6 @@ mod tests {
         for borrowed in [false, true] {
             for width in [7., 7.25, 8.] {
                 let mut output = vec![0; 16 * 16 * 4];
-                let mut card = Vec::new();
-                let mut overlay = Vec::new();
                 let style = CardStyle {
                     material: Fill::Solid(UiColor::srgb8(0, 0, 0, 0)),
                     corner_radius: 0.,
@@ -1697,7 +1719,7 @@ mod tests {
                     projection: CardProjection::default(),
                     opacity: 1.,
                 };
-                let mut ui = FrameUi::new(&mut output, [16, 16], &mut card, &mut overlay).unwrap();
+                let mut ui = FrameUi::new(&mut output, [16, 16]).unwrap();
                 if borrowed {
                     ui.card_source(
                         frame,
@@ -1706,7 +1728,7 @@ mod tests {
                     )
                     .unwrap();
                 } else {
-                    ui.card(frame, |_| Ok(())).unwrap();
+                    card(&mut ui, frame, |_| Ok(())).unwrap();
                 }
                 assert!(
                     output.iter().all(|v| *v == 0),

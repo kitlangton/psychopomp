@@ -11,6 +11,7 @@ use wgpu::util::DeviceExt;
 
 use psychopomp::code::{CodeLine, LineId, PlacedLine, StyledSpan, SyntaxStyle};
 
+pub(crate) mod bands;
 mod callout;
 mod caption;
 mod changed_files;
@@ -18,6 +19,7 @@ mod chart;
 mod chat;
 mod component_prototype;
 mod debug;
+mod flat_key;
 mod fonts;
 mod footage;
 mod grid;
@@ -130,6 +132,15 @@ pub(crate) struct EditorPanel {
     pub scale: f32,
     pub rotation: f32,
     pub tilt: [f32; 2],
+}
+
+#[derive(Default)]
+struct EditorCardLayers {
+    flat: Vec<u8>,
+    /// Every input behind `flat`; meaningful only while `flat` is non-empty.
+    flat_key: flat_key::FlatEditorKey,
+    content: Vec<u8>,
+    overlay: Vec<u8>,
 }
 
 /// Where the flat editor surface is cut out and where its card lands.
@@ -316,8 +327,9 @@ pub struct HeadlessRenderer {
     part_sprites: HashMap<String, (u64, TextSprite)>,
     plain_text_sprites: text::PlainTextCache,
     editor_background_pixels: Vec<u8>,
-    ui_card_pixels: Vec<u8>,
-    ui_overlay_pixels: Vec<u8>,
+    editor_card_layers: EditorCardLayers,
+    /// The last shapes-pass uniform bytes and their readback.
+    shapes_cache: Option<(Vec<u8>, Vec<u8>)>,
     interactive_preview: bool,
     preview_editor_backgrounds: VecDeque<(String, Vec<u8>)>,
     grid_renderer: Option<grid::GridRenderer>,
@@ -452,8 +464,8 @@ impl HeadlessRenderer {
             part_sprites: HashMap::new(),
             plain_text_sprites: text::PlainTextCache::default(),
             editor_background_pixels: Vec::new(),
-            ui_card_pixels: Vec::new(),
-            ui_overlay_pixels: Vec::new(),
+            editor_card_layers: EditorCardLayers::default(),
+            shapes_cache: None,
             interactive_preview: false,
             preview_editor_backgrounds: VecDeque::new(),
             grid_renderer: None,
@@ -482,6 +494,7 @@ impl HeadlessRenderer {
         self.plain_text_sprites.clear();
         self.preview_editor_backgrounds.clear();
         self.editor_background_pixels.clear();
+        self.editor_card_layers = EditorCardLayers::default();
         self.title_sprite = make_title_sprite(
             &mut self.font_system,
             &mut self.swash_cache,
@@ -505,16 +518,7 @@ impl HeadlessRenderer {
         size: [u32; 2],
         draw: impl FnOnce(&mut ui::card::FrameUi<'_>) -> Result<R>,
     ) -> Result<R> {
-        let mut card_pixels = std::mem::take(&mut self.ui_card_pixels);
-        let mut overlay_pixels = std::mem::take(&mut self.ui_overlay_pixels);
-        let result = {
-            let mut frame =
-                ui::card::FrameUi::new(pixels, size, &mut card_pixels, &mut overlay_pixels)?;
-            draw(&mut frame)
-        };
-        self.ui_card_pixels = card_pixels;
-        self.ui_overlay_pixels = overlay_pixels;
-        result
+        draw(&mut ui::card::FrameUi::new(pixels, size)?)
     }
 
     pub fn set_file_name(&mut self, file_name: &str) {
@@ -649,8 +653,15 @@ impl HeadlessRenderer {
                 [c[0], c[1], c[2], 1.]
             },
         };
-        self.queue
-            .write_buffer(&self.uniform_buffer, 0, bytemuck::bytes_of(&uniforms));
+        // The pass reads only these uniforms (size, theme, and chrome
+        // included) through a fixed pipeline, so equal bytes give equal pixels.
+        let key = bytemuck::bytes_of(&uniforms);
+        if let Some((cached, pixels)) = &self.shapes_cache
+            && cached.as_slice() == key
+        {
+            return Ok(pixels.clone());
+        }
+        self.queue.write_buffer(&self.uniform_buffer, 0, key);
 
         let mut encoder = self
             .device
@@ -678,7 +689,9 @@ impl HeadlessRenderer {
             pass.set_bind_group(0, &self.scene_bind_group, &[]);
             pass.draw(0..3, 0..1);
         }
-        self.read_frame(encoder)
+        let pixels = self.read_frame(encoder)?;
+        self.shapes_cache = Some((key.to_vec(), pixels.clone()));
+        Ok(pixels)
     }
 
     fn read_frame(&self, mut encoder: wgpu::CommandEncoder) -> Result<Vec<u8>> {
@@ -814,21 +827,28 @@ impl HeadlessRenderer {
             lines: frame.lines,
             annotations: frame.annotations,
         };
-        let mut flat_pixels = self.render_shapes(&flat_frame)?;
-        self.composite_editor_title(&mut flat_pixels, flat_frame.panel_offset_y);
-        self.composite_text_untransformed(&mut flat_pixels, &flat_frame)?;
+        // The panel pose and opacity are neutralised above, so an equal key
+        // means the flat frame, and the card layers painted from it, still hold.
+        let flat_key = flat_key::FlatEditorKey::new(&flat_frame, self.theme, &self.spec);
+        let flat_hit = !self.editor_card_layers.flat.is_empty()
+            && flat_key == self.editor_card_layers.flat_key;
+        let flat_pixels = if flat_hit && !cfg!(debug_assertions) {
+            None
+        } else {
+            let mut flat_pixels = self.render_shapes(&flat_frame)?;
+            self.composite_editor_title(&mut flat_pixels, flat_frame.panel_offset_y);
+            self.composite_text_untransformed(&mut flat_pixels, &flat_frame)?;
+            debug_assert!(
+                !flat_hit || flat_pixels == self.editor_card_layers.flat,
+                "the flat editor key matched but its pixels changed"
+            );
+            Some(flat_pixels).filter(|_| !flat_hit)
+        };
 
         let EditorCard {
             size: card_size,
             source_origin,
         } = EditorCard::new([self.spec.width, self.spec.height]);
-        let source = ui::card::RgbaSource::strided_region(
-            &flat_pixels,
-            [self.spec.width, self.spec.height],
-            self.spec.width as usize * BYTES_PER_PIXEL as usize,
-            source_origin,
-            card_size,
-        )?;
         if self.editor_background_pixels.is_empty() {
             let theme = self.theme;
             let mut background =
@@ -872,14 +892,26 @@ impl HeadlessRenderer {
         }
         card_style.border_width = 0.75;
         card_style.border_color = ui::card::UiColor::srgb8(255, 255, 255, 10);
-        self.composite_ui(&mut pixels, |ui| {
-            ui.card(
-                ui::card::CardFrame {
-                    bounds: ui::Bounds::from_center(destination_center, destination_size),
-                    style: card_style,
-                    projection: frame.panel_projection(),
-                    opacity: frame.panel_opacity.clamp(0.0, 1.0),
-                },
+        let card_frame = ui::card::CardFrame {
+            bounds: ui::Bounds::from_center(destination_center, destination_size),
+            style: card_style,
+            projection: frame.panel_projection(),
+            opacity: frame.panel_opacity.clamp(0.0, 1.0),
+        };
+        let mut layers = std::mem::take(&mut self.editor_card_layers);
+        if let Some(flat_pixels) = flat_pixels.filter(|flat| *flat != layers.flat) {
+            let source = ui::card::RgbaSource::strided_region(
+                &flat_pixels,
+                [self.spec.width, self.spec.height],
+                self.spec.width as usize * BYTES_PER_PIXEL as usize,
+                source_origin,
+                card_size,
+            )?;
+            layers.flat.clear();
+            ui::card::paint_card_layers(
+                card_frame,
+                &mut layers.content,
+                &mut layers.overlay,
                 |card| {
                     card.content(|canvas| {
                         let bounds = canvas.bounds();
@@ -905,8 +937,15 @@ impl HeadlessRenderer {
                         Ok(())
                     })
                 },
-            )
-        })?;
+            )?;
+            layers.flat = flat_pixels;
+        }
+        layers.flat_key = flat_key;
+        let composited = self.composite_ui(&mut pixels, |ui| {
+            ui.card_painted(card_frame, &layers.content, &layers.overlay)
+        });
+        self.editor_card_layers = layers;
+        composited?;
         Ok(pixels)
     }
 
@@ -1052,6 +1091,9 @@ impl HeadlessRenderer {
             clip_y: [code_top, code_bottom],
         };
         self.composite_selections(pixels, frame, area);
+        let size = [self.spec.width, self.spec.height];
+        let code_rows = [code_top, code_bottom];
+        let mut draws = Vec::new();
         for placed in frame.lines {
             if placed.opacity <= 0.001 {
                 continue;
@@ -1066,6 +1108,13 @@ impl HeadlessRenderer {
                 .iter()
                 .any(|reveal| placed.line.id.as_str() == reveal.line_id)
             {
+                composite_texts(
+                    pixels,
+                    size,
+                    code_rows,
+                    &self.line_draws(&draws, code_right, code_rows),
+                );
+                draws.clear();
                 let reveals = frame
                     .inline_reveals
                     .iter()
@@ -1084,25 +1133,14 @@ impl HeadlessRenderer {
                 )?;
                 continue;
             }
-            let sprite = self
-                .line_sprites
-                .get(&placed.line.id)
-                .map(|(_, sprite)| sprite)
-                .expect("line sprite was populated above");
-            let line_blur = placed.blur;
-            let clip_width = sprite.advance.min((code_right - line_x).max(0.0));
-            composite_text(
-                pixels,
-                [self.spec.width, self.spec.height],
-                TextDraw {
-                    clip_width,
-                    filter: TextFilter::Blur(line_blur),
-                    opacity: placed.opacity,
-                    clip_y: Some([code_top, code_bottom]),
-                    ..TextDraw::new(sprite, [line_x, line_y])
-                },
-            );
+            draws.push((placed, line_x, line_y));
         }
+        composite_texts(
+            pixels,
+            size,
+            code_rows,
+            &self.line_draws(&draws, code_right, code_rows),
+        );
         self.composite_annotations(pixels, frame, area, panel_top);
         composite_sprite_rotated(
             pixels,
@@ -1118,6 +1156,31 @@ impl HeadlessRenderer {
             frame.pointer.opacity,
         );
         Ok(())
+    }
+
+    fn line_draws<'a>(
+        &'a self,
+        lines: &[(&PlacedLine<'_>, f32, f32)],
+        code_right: f32,
+        code_rows: [f32; 2],
+    ) -> Vec<TextDraw<'a>> {
+        lines
+            .iter()
+            .map(|&(placed, line_x, line_y)| {
+                let sprite = self
+                    .line_sprites
+                    .get(&placed.line.id)
+                    .map(|(_, sprite)| sprite)
+                    .expect("line sprite was populated above");
+                TextDraw {
+                    clip_width: sprite.advance.min((code_right - line_x).max(0.0)),
+                    filter: TextFilter::Blur(placed.blur),
+                    opacity: placed.opacity,
+                    clip_y: Some(code_rows),
+                    ..TextDraw::new(sprite, [line_x, line_y])
+                }
+            })
+            .collect()
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -1652,7 +1715,48 @@ impl TextFilter {
     }
 }
 
-fn composite_text(canvas: &mut [u8], [canvas_width, canvas_height]: [u32; 2], draw: TextDraw) {
+fn composite_text(canvas: &mut [u8], size: [u32; 2], draw: TextDraw) {
+    composite_text_rows(canvas, size, [0, size[1] as i32], draw);
+}
+
+fn composite_texts(canvas: &mut [u8], size: [u32; 2], rows: [f32; 2], draws: &[TextDraw]) {
+    match draws {
+        [] => {}
+        [draw] => composite_text(canvas, size, *draw),
+        draws => {
+            // Bands only reach `rows`, so a draw must not paint outside them.
+            debug_assert!(
+                draws.iter().all(|draw| draw
+                    .clip_y
+                    .is_some_and(|[top, bottom]| rows[0] <= top && bottom <= rows[1])),
+                "a banded text draw clips outside rows {rows:?}"
+            );
+            bands::for_each_band(
+                canvas,
+                size,
+                rows[0].floor() as i32,
+                rows[1].ceil() as i32,
+                size[0] as i32,
+                |band_start_y, band| {
+                    let band_rows = [
+                        band_start_y,
+                        band_start_y + (band.len() / (size[0] as usize * 4)) as i32,
+                    ];
+                    for draw in draws {
+                        composite_text_rows(band, size, band_rows, *draw);
+                    }
+                },
+            )
+        }
+    }
+}
+
+fn composite_text_rows(
+    canvas: &mut [u8],
+    [canvas_width, canvas_height]: [u32; 2],
+    rows: [i32; 2],
+    draw: TextDraw,
+) {
     let TextDraw {
         sprite,
         origin: [x, y],
@@ -1687,7 +1791,11 @@ fn composite_text(canvas: &mut [u8], [canvas_width, canvas_height]: [u32; 2], dr
     let right = x - source_left + source_clip[1].ceil() + reach_x + 1.0;
     let top = (y - reach_y - 1.0).max(clip_y[0]);
     let bottom = (y + sprite.height as f32 + reach_y + 1.0).min(clip_y[1]);
-    for target_y in (top.floor() as i32).max(0)..(bottom.ceil() as i32).min(canvas_height as i32) {
+    let first_row = (top.floor() as i32).max(0).max(rows[0]);
+    let end_row = (bottom.ceil() as i32)
+        .min(canvas_height as i32)
+        .min(rows[1]);
+    for target_y in first_row..end_row {
         let row_start = (target_y as f32).max(clip_y[0]);
         let row_end = (target_y as f32 + 1.).min(clip_y[1]);
         let coverage_y = mask.map_or_else(
@@ -1740,7 +1848,8 @@ fn composite_text(canvas: &mut [u8], [canvas_width, canvas_height]: [u32; 2], dr
                 (color[2] / color[3]).round() as u8,
                 (color[3] * coverage_y).round() as u8,
             ];
-            let target_index = (target_y as usize * canvas_width as usize + target_x as usize) * 4;
+            let target_index =
+                ((target_y - rows[0]) as usize * canvas_width as usize + target_x as usize) * 4;
             blend_pixel(&mut canvas[target_index..target_index + 4], source, opacity);
         }
     }
@@ -1931,6 +2040,52 @@ fn attributes(base: Attrs<'static>, style: SyntaxStyle) -> Attrs<'static> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn banded_text_matches_serial_draws_in_order() {
+        use super::{TextDraw, TextFilter, TextSprite, composite_text, composite_texts};
+        let sprite = |seed: u32| {
+            let (width, height) = (90_u32, 40_u32);
+            let pixels = (0..width * height * 4)
+                .map(|i| (i.wrapping_mul(2_654_435_761).wrapping_add(seed) >> 13) as u8)
+                .collect();
+            TextSprite {
+                width,
+                height,
+                advance: width as f32,
+                pixels,
+            }
+        };
+        let sprites = [sprite(1), sprite(7), sprite(42)];
+        // Wide enough that the rows split across threads.
+        let size = [1920_u32, 400];
+        let draws: Vec<TextDraw> = sprites
+            .iter()
+            .cycle()
+            .take(12)
+            .enumerate()
+            .map(|(index, sprite)| TextDraw {
+                clip_width: 70.0 + index as f32,
+                filter: TextFilter::Blur(index as f32 * 0.37),
+                opacity: 0.4 + index as f32 * 0.05,
+                clip_y: Some([30.5, 370.25]),
+                ..TextDraw::new(
+                    sprite,
+                    [index as f32 * 5.3 - 4.0, index as f32 * 27.7 + 10.2],
+                )
+            })
+            .collect();
+        let background: Vec<u8> = (0..size[0] * size[1] * 4)
+            .map(|i| (i % 251) as u8)
+            .collect();
+        let mut serial = background.clone();
+        for draw in &draws {
+            composite_text(&mut serial, size, *draw);
+        }
+        let mut banded = background;
+        composite_texts(&mut banded, size, [30.5, 370.25], &draws);
+        assert_eq!(banded, serial);
+    }
+
     #[test]
     fn editor_canvas_points_follow_the_panel_projection() {
         use super::{EditorPanel, editor_canvas_point};

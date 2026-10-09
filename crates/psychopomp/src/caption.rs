@@ -36,7 +36,7 @@ pub struct CaptionPlan {
     pub glass: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CaptionSpanPlan {
     pub text: String,

@@ -132,7 +132,7 @@ pub enum HoverSide {
 }
 
 /// One block of a Hover Card; consecutive blocks are separated by a rule.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum HoverSectionPlan {
     /// Monospaced, syntax-highlighted lines, such as a type signature.
@@ -153,7 +153,7 @@ impl HoverSectionPlan {
 /// An IDE tooltip pinned to a Semantic Target, with a small pointer toward it.
 /// Channel: `presence` (0 hidden, 1 shown; the card fades in and rises
 /// `RISE` pixels away from its range).
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct HoverPlan {
     pub target: String,

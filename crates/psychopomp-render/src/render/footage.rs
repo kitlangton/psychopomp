@@ -58,13 +58,11 @@ impl FootageLayer {
     /// in size): one pass in bands of rows across threads, each band taking
     /// every layer's rows inside it.
     pub(crate) fn blend_all(layers: &[&Self], pixels: &mut [u8], frame: [u32; 2]) {
-        static WORKERS: std::sync::OnceLock<usize> = std::sync::OnceLock::new();
         if layers.is_empty() {
             return;
         }
         let stride = frame[0] as usize * 4;
-        let workers =
-            *WORKERS.get_or_init(|| std::thread::available_parallelism().map_or(1, usize::from));
+        let workers = super::bands::available_workers();
         let band = (frame[1] as usize).div_ceil(workers).max(1);
         std::thread::scope(|scope| {
             for (index, rows) in pixels.chunks_mut(band * stride).enumerate() {

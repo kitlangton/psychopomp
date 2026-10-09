@@ -6,7 +6,15 @@ pub(crate) fn rounded_rect_distance(local: [f32; 2], size: [f32; 2], radius: f32
     let radius = radius.min(size[0].min(size[1]) * 0.5);
     let dx = local[0].abs() - (size[0] * 0.5 - radius);
     let dy = local[1].abs() - (size[1] * 0.5 - radius);
-    dx.max(0.0).hypot(dy.max(0.0)) + dx.max(dy).min(0.0) - radius
+    let (outside_x, outside_y) = (dx.max(0.0), dy.max(0.0));
+    let outside = if outside_x == 0.0 {
+        outside_y.abs()
+    } else if outside_y == 0.0 {
+        outside_x.abs()
+    } else {
+        outside_x.hypot(outside_y)
+    };
+    outside + dx.max(dy).min(0.0) - radius
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -75,6 +83,48 @@ impl Edges {
             right: value,
             bottom: value,
             left: value,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::rounded_rect_distance;
+
+    #[test]
+    fn rounded_rect_distance_matches_the_hypot_formula_bit_for_bit() {
+        let reference = |local: [f32; 2], size: [f32; 2], radius: f32| {
+            let radius = radius.min(size[0].min(size[1]) * 0.5);
+            let dx = local[0].abs() - (size[0] * 0.5 - radius);
+            let dy = local[1].abs() - (size[1] * 0.5 - radius);
+            dx.max(0.0).hypot(dy.max(0.0)) + dx.max(dy).min(0.0) - radius
+        };
+        for (size, radius) in [
+            ([200.0, 120.0], 26.0),
+            ([31.5, 9.0], 40.0),
+            ([64.0, 64.0], 0.0),
+        ] {
+            for y in -90..=90 {
+                for x in -130..=130 {
+                    let local = [x as f32 * 0.83 + 0.5, y as f32 * 0.71 - 0.25];
+                    assert_eq!(
+                        rounded_rect_distance(local, size, radius).to_bits(),
+                        reference(local, size, radius).to_bits(),
+                        "{local:?} {size:?} {radius}"
+                    );
+                }
+            }
+            for local in [
+                [0.0, 0.0],
+                [-0.0, 0.0],
+                [size[0] * 0.5, size[1] * 0.5],
+                [f32::INFINITY, 1.0],
+            ] {
+                assert_eq!(
+                    rounded_rect_distance(local, size, radius).to_bits(),
+                    reference(local, size, radius).to_bits()
+                );
+            }
         }
     }
 }

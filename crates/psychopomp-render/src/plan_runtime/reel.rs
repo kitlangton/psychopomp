@@ -63,6 +63,8 @@ pub(super) struct PreparedReel {
     reel: ReelPlan,
     segments: Vec<PreparedPlan>,
     media: Vec<MediaPlacement>,
+    /// Recent segment frames keyed by their visual sample key.
+    segment_frames: SegmentFrames,
 }
 
 #[derive(Debug, PartialEq)]
@@ -93,6 +95,7 @@ impl PreparedReel {
             reel,
             segments,
             media,
+            segment_frames: SegmentFrames::default(),
         })
     }
 
@@ -193,7 +196,7 @@ impl PreparedReel {
             }
             let prepared = &self.segments[layer.segment];
             renderer.set_file_name(prepared.file_name());
-            let pixels = prepared.render_sample(renderer, layer.local_seconds)?;
+            let pixels = self.segment_sample(renderer, layer.segment, layer.local_seconds)?;
             if let (Some(wipe), Some(below)) = (layer.wipe, blended.as_mut()) {
                 let labels = self.reel.segments[layer.segment]
                     .transition_wipe
@@ -238,6 +241,61 @@ impl PreparedReel {
             });
         }
         blended.context("reel has no visible segment at this time")
+    }
+
+    /// One segment's frame at its local time, reused when an earlier sample of
+    /// the same segment had an equal visual sample key: the key that already
+    /// merges equal shutter samples. A segment with ambient time (every Stage)
+    /// keys on its exact time, so it is rendered and never stored. Debug
+    /// builds re-render each hit and check it.
+    fn segment_sample(
+        &self,
+        renderer: &mut HeadlessRenderer,
+        segment: usize,
+        local_seconds: f64,
+    ) -> Result<Vec<u8>> {
+        let prepared = &self.segments[segment];
+        let key = prepared.visual_sample_key(local_seconds)?;
+        if key.ambient_time.is_some() {
+            return prepared.render_sample(renderer, local_seconds);
+        }
+        if let Some(hit) = self.segment_frames.get(segment, &key) {
+            if cfg!(debug_assertions) {
+                let fresh = prepared.render_sample(renderer, local_seconds)?;
+                assert!(
+                    fresh == hit,
+                    "segment {segment} at {local_seconds}s differs from its cached frame"
+                );
+            }
+            return Ok(hit);
+        }
+        let pixels = prepared.render_sample(renderer, local_seconds)?;
+        self.segment_frames.put(segment, key, pixels.clone());
+        Ok(pixels)
+    }
+}
+
+/// A small most-recent-first store of rendered segment frames. Entries are
+/// exact: a hit requires the same segment and an equal visual sample key.
+#[derive(Default)]
+struct SegmentFrames(std::sync::Mutex<Vec<(usize, VisualSampleKey, Vec<u8>)>>);
+
+impl SegmentFrames {
+    /// Enough for both sides of a transition, plus a few held poses.
+    const CAPACITY: usize = 4;
+
+    fn get(&self, segment: usize, key: &VisualSampleKey) -> Option<Vec<u8>> {
+        let entries = self.0.lock().unwrap_or_else(|e| e.into_inner());
+        entries
+            .iter()
+            .find(|(s, k, _)| *s == segment && k == key)
+            .map(|(_, _, pixels)| pixels.clone())
+    }
+
+    fn put(&self, segment: usize, key: VisualSampleKey, pixels: Vec<u8>) {
+        let mut entries = self.0.lock().unwrap_or_else(|e| e.into_inner());
+        entries.insert(0, (segment, key, pixels));
+        entries.truncate(Self::CAPACITY);
     }
 }
 
@@ -315,7 +373,49 @@ fn crossfade(below: &mut [u8], above: &[u8], weight: f32) {
 
 #[cfg(test)]
 mod tests {
-    use super::crossfade;
+    use super::{SegmentFrames, VisualSampleKey, crossfade};
+    use serde_json::json;
+
+    fn key() -> VisualSampleKey {
+        VisualSampleKey {
+            motion: vec![[1, 2, 3, 4]],
+            states: vec![json!("a")],
+            video_frames: vec![7],
+            ambient_time: None,
+            anchors: vec![[5, 6]],
+        }
+    }
+
+    #[test]
+    fn segment_frames_hit_only_on_equal_segment_and_key() {
+        let frames = SegmentFrames::default();
+        frames.put(0, key(), vec![9; 4]);
+        assert_eq!(frames.get(0, &key()), Some(vec![9; 4]));
+        assert_eq!(frames.get(1, &key()), None);
+        let changes: [fn(&mut VisualSampleKey); 6] = [
+            |k| k.motion[0][0] += 1,
+            |k| k.motion[0][3] += 1,
+            |k| k.states[0] = json!("b"),
+            |k| k.video_frames[0] += 1,
+            |k| k.ambient_time = Some(0),
+            |k| k.anchors[0][1] += 1,
+        ];
+        for change in changes {
+            let mut changed = key();
+            change(&mut changed);
+            assert_eq!(frames.get(0, &changed), None);
+        }
+    }
+
+    #[test]
+    fn segment_frames_keep_only_the_most_recent_entries() {
+        let frames = SegmentFrames::default();
+        for segment in 0..=SegmentFrames::CAPACITY {
+            frames.put(segment, key(), vec![segment as u8]);
+        }
+        assert_eq!(frames.get(0, &key()), None);
+        assert_eq!(frames.get(1, &key()), Some(vec![1]));
+    }
 
     #[test]
     fn crossfade_mixes_linearly_between_opaque_frames() {
