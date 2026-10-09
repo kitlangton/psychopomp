@@ -39,7 +39,7 @@ impl HeadlessRenderer {
             let key = format!("native-debug:{index}");
             let sprite = refresh_sprite(&mut self.part_sprites, &*key, fingerprint, || {
                 let attrs = Attrs::new()
-                    .family(fonts::MONO)
+                    .family(fonts::mono())
                     .color(Color::rgb(p.text[0], p.text[1], p.text[2]));
                 make_sprite(
                     &mut self.font_system,

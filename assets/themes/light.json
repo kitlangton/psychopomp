@@ -1,0 +1,19 @@
+{
+  "name": "Light",
+  "background": "#F6F7F9",
+  "surface": "#FFFFFF",
+  "raised": "#D9DDE3",
+  "text": "#1F2328",
+  "muted": "#6E7781",
+  "accent": "#0969DA",
+  "keyword": "#8250DF",
+  "types": "#0550AE",
+  "string": "#116329",
+  "tones": {
+    "request": "#0969DA",
+    "success": "#1A7F37",
+    "error": "#CF222E",
+    "warning": "#9A6700"
+  },
+  "shadow": 0.35
+}

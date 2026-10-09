@@ -724,7 +724,7 @@ fn label_sprite(
         }
         let mut rasterize = |size| {
             let attrs = Attrs::new()
-                .family(fonts::MONO)
+                .family(fonts::mono())
                 .color(Color::rgb(255, 255, 255));
             make_sprite(
                 fonts,

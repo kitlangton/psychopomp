@@ -59,7 +59,7 @@ impl PlainTextCache {
         let sprites = self.sprites.entry((face, spec.into())).or_default();
         if !sprites.contains_key(text) {
             let attrs = match face {
-                Face::Mono => Attrs::new().family(fonts::MONO).weight(if spec.semibold {
+                Face::Mono => Attrs::new().family(fonts::mono()).weight(if spec.semibold {
                     Weight::SEMIBOLD
                 } else {
                     Weight::NORMAL
@@ -153,7 +153,7 @@ mod tests {
                     .get(&mut fonts, &mut swash, Face::Mono, text, spec)
                     .clone();
                 let attrs = Attrs::new()
-                    .family(fonts::MONO)
+                    .family(fonts::mono())
                     .weight(if semibold {
                         Weight::SEMIBOLD
                     } else {

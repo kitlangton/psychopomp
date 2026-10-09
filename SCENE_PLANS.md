@@ -158,7 +158,7 @@ produce a warning, not a crash or silent overwrite. The window title names the
 active theme. Held/paused frames repaint without retargeting or advancing motion.
 **C** remains a temporary grid-line audition; changing theme restores its accent.
 
-`--theme original|evergreen|tokyo-night|black` overrides the starting presentation
+`--theme original|evergreen|tokyo-night|black|opencode|neutral` (or a theme file) overrides the starting presentation
 theme without saving it until T is used. File export ignores personal preferences
 and accepts the same explicit option:
 
@@ -166,6 +166,25 @@ and accepts the same explicit option:
 cargo run --release -- plan frame target/slideshow-components/rich-text-showcase.json 8 output/rich.png --theme tokyo-night
 cargo run --release -- plan render target/slideshow-components/venn-showcase.json output/venn.mp4 --range 3..4.2 --theme evergreen
 ```
+
+`--theme` also takes a theme file, any path ending in `.json`, so a reel can wear
+a product's palette and typeface without a new built-in theme
+([`assets/themes/light.json`](assets/themes/light.json)):
+
+```sh
+cargo run --release -- plan snapshot target/text-surfaces.json 10,24 output/light --theme assets/themes/light.json
+```
+
+A theme file sets every palette color as `#RRGGBB`: `background`, `surface`,
+`raised` (borders and chip outlines), `text`, `muted`, `accent`, `keyword`,
+`types`, and `string`. `tones` sets the `request`, `success`, `error`, and
+`warning` inks; plain, muted, and accent follow the palette. Optional fields:
+`name` (the window title; defaults to the file name), `shadow` (0 to 1, scaling
+card shadows, which a light page wants soft, such as `0.3`), and `font`:
+`{ "family": "Inter", "files": ["fonts/Inter-Regular.ttf", ...] }`, which replaces
+CommitMono for code, captions, callouts, and labels. Font files resolve beside the
+theme file; omit `files` for an installed family. Unknown fields, malformed colors,
+and a family its files do not provide are errors.
 
 Headers can fade/deblur, reveal across their measured width, or rise through a
 stationary clip. Separate Presentation Steps provide deliberate header-only

@@ -75,7 +75,9 @@ impl Options {
                 }
                 "--theme" => {
                     options.theme = Some(Theme::parse(
-                        flags.next().context("--theme requires a name")?,
+                        flags
+                            .next()
+                            .context("--theme requires a name or theme file")?,
                     )?)
                 }
                 "--speed" => {

@@ -93,11 +93,10 @@ pub(crate) async fn render_builtin_hero(output: &Path) -> Result<()> {
     loaded.render_video(&mut renderer, output, window)
 }
 
-const FRAME_USAGE: &str =
-    "psychopomp plan frame <plan-or-reel.json> <seconds> [output.png] [--shutter] [--theme NAME]";
-const SNAPSHOT_USAGE: &str = "psychopomp plan snapshot <plan-or-reel.json> <a,b,c | from:to:step> <dir> [--compare] [--shutter] [--theme NAME]";
-const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME]";
-const PRESENT_USAGE: &str = "psychopomp plan present <plan.json> [--theme NAME] [--speed 1|0.5|0.25|0.1] [--debug] [--reduced-motion] [--full-quality] [--fps FPS] [--benchmark | --benchmark-gpu]";
+const FRAME_USAGE: &str = "psychopomp plan frame <plan-or-reel.json> <seconds> [output.png] [--shutter] [--theme NAME | --theme FILE.json]";
+const SNAPSHOT_USAGE: &str = "psychopomp plan snapshot <plan-or-reel.json> <a,b,c | from:to:step> <dir> [--compare] [--shutter] [--theme NAME | --theme FILE.json]";
+const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME | --theme FILE.json]";
+const PRESENT_USAGE: &str = "psychopomp plan present <plan.json> [--theme NAME | --theme FILE.json] [--speed 1|0.5|0.25|0.1] [--debug] [--reduced-motion] [--full-quality] [--fps FPS] [--benchmark | --benchmark-gpu]";
 
 fn usage() -> String {
     [
@@ -215,7 +214,8 @@ fn delivery_theme(arguments: &[String]) -> Result<(Vec<String>, Theme)> {
         if arg == "--theme" {
             anyhow::ensure!(theme.is_none(), "--theme may be specified once");
             theme = Some(Theme::parse(
-                iter.next().context("--theme requires a name")?,
+                iter.next()
+                    .context("--theme requires a name or theme file")?,
             )?);
         } else {
             args.push(arg.clone());

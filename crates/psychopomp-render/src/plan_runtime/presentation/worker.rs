@@ -440,6 +440,60 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires headless GPU; a theme file repaints native recipes in its palette and restores the original"]
+    fn theme_files_paint_their_background_and_restore_original_pixels() {
+        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/themes/light.json");
+        let light = Theme::parse(path.to_str().unwrap()).unwrap();
+        let background = light.palette().background;
+        let plans = psychopomp_component_prototypes::build_slideshow_deck()
+            .unwrap()
+            .slides
+            .into_iter()
+            .map(|s| s.plan);
+        let mut renderer = pollster::block_on(new_renderer("theme-file-proof")).unwrap();
+        renderer.set_interactive_preview(true);
+        for plan in plans {
+            renderer.set_theme(Theme::Original);
+            let prepared = PreparedPlan::prepare(plan, Path::new("."), &mut renderer).unwrap();
+            let mut playback = prepared.playback(true).unwrap();
+            playback.command(
+                psychopomp::playback::PlaybackCommand::Last,
+                std::time::Duration::ZERO,
+            );
+            let mut request = RenderRequest {
+                stamp: RequestStamp {
+                    slide_index: 0,
+                    sample: playback.sample(std::time::Duration::ZERO),
+                    theme: Theme::Original,
+                    palette: GridLinePalette::Orange,
+                    debug: false,
+                },
+                debug: None,
+                timeline: playback.timeline(),
+                requested_at: Instant::now(),
+            };
+            let mut cache = FrameCache::default();
+            let original = cache.render(&mut renderer, &prepared, &request).unwrap();
+            request.stamp.theme = light;
+            let pixels = cache.render(&mut renderer, &prepared, &request).unwrap();
+            assert_ne!(pixels, original, "{}", prepared.plan.id);
+            assert_eq!(
+                &pixels[..4],
+                &[background[0], background[1], background[2], 255],
+                "{} paints the theme file's background",
+                prepared.plan.id
+            );
+            request.stamp.theme = Theme::Original;
+            assert_eq!(
+                original,
+                cache.render(&mut renderer, &prepared, &request).unwrap(),
+                "theme file round-trip {}",
+                prepared.plan.id
+            );
+        }
+    }
+
+    #[test]
     #[ignore = "requires a headless GPU; exercises the worker cache at an unchanged held sample"]
     fn grid_palette_changes_invalidate_held_pixels_not_motion() {
         let plan = psychopomp_keyed_grid::build_deck().unwrap().slides[1]

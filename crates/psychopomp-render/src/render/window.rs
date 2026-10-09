@@ -174,7 +174,7 @@ impl HeadlessRenderer {
                 border_color: UiColor::srgb8(br, bg, bb, 255),
                 shadow_offset: [0.0, 22.0],
                 shadow_blur: 34.0,
-                shadow_opacity: 0.5,
+                shadow_opacity: self.theme.shadow(0.5),
             },
             projection: CardProjection {
                 scale: pose.scale,

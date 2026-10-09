@@ -1,8 +1,12 @@
 //! Paint tokens shared by native presentation and file delivery. No geometry,
 //! clocks, recorded pixels, or semantic state changes live in a theme.
-use super::TextSprite;
+use super::{TextSprite, fonts::ThemeFont};
+use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
-use std::cell::{Ref, RefCell};
+use std::{
+    cell::{Ref, RefCell},
+    path::{Path, PathBuf},
+};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -18,9 +22,13 @@ pub enum Theme {
     /// The OpenCode blog's "clear neutral" diagrams: quiet frames and wires,
     /// warm ivory signals, and desaturated semantic inks used only for change.
     Neutral,
+    /// A palette, status inks, card shadow, and optional face loaded from a
+    /// theme file (`--theme path/to/theme.json`).
+    #[serde(skip)]
+    Custom(&'static CustomTheme),
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Palette {
     pub background: [u8; 3],
     pub surface: [u8; 3],
@@ -44,6 +52,7 @@ impl Theme {
     ];
     pub fn name(self) -> &'static str {
         match self {
+            Self::Custom(custom) => &custom.name,
             Self::Original => "Original",
             Self::Evergreen => "Evergreen",
             Self::TokyoNight => "Tokyo Night",
@@ -52,11 +61,29 @@ impl Theme {
             Self::Neutral => "Clear Neutral",
         }
     }
+    /// The next built-in theme. A theme file is not in the cycle; leaving it
+    /// starts from the first (or, in reverse, the last) built-in.
     pub fn cycle(self, reverse: bool) -> Self {
-        let index = Self::ALL.iter().position(|t| *t == self).unwrap();
+        let Some(index) = Self::ALL.iter().position(|t| *t == self) else {
+            return if reverse {
+                Self::ALL[Self::ALL.len() - 1]
+            } else {
+                Self::ALL[0]
+            };
+        };
         Self::ALL[(index + if reverse { Self::ALL.len() - 1 } else { 1 }) % Self::ALL.len()]
     }
+    /// A built-in theme by name, or a theme file by a path ending in `.json`.
+    /// A theme file's font becomes this run's monospace face.
     pub fn parse(value: &str) -> anyhow::Result<Self> {
+        if value.ends_with(".json") {
+            let custom: &'static CustomTheme =
+                Box::leak(Box::new(CustomTheme::load(Path::new(value))?));
+            if let Some(font) = &custom.font {
+                super::fonts::use_theme_font(font)?;
+            }
+            return Ok(Self::Custom(custom));
+        }
         match value {
             "original" => Ok(Self::Original),
             "evergreen" => Ok(Self::Evergreen),
@@ -65,12 +92,13 @@ impl Theme {
             "opencode" => Ok(Self::OpenCode),
             "neutral" => Ok(Self::Neutral),
             _ => anyhow::bail!(
-                "unknown theme '{value}'; use original, evergreen, tokyo-night, black, opencode, or neutral"
+                "unknown theme '{value}'; use original, evergreen, tokyo-night, black, opencode, neutral, or a theme file ending in .json"
             ),
         }
     }
     pub fn palette(self) -> Palette {
         match self {
+            Self::Custom(custom) => custom.palette,
             Self::Original => Palette {
                 background: [1, 2, 4],
                 surface: [13, 18, 27],
@@ -139,11 +167,24 @@ impl Theme {
             },
         }
     }
-    /// A semantic tone's color. Status tones are identical in every theme
-    /// except Neutral, whose desaturated inks are reserved for change.
+    /// A semantic tone's color. Status tones are identical in every built-in
+    /// theme except Neutral, whose desaturated inks are reserved for change;
+    /// a theme file names its own.
     pub fn tone(self, tone: psychopomp::tone::Tone) -> [u8; 3] {
         use psychopomp::tone::Tone;
         let palette = self.palette();
+        if let Self::Custom(custom) = self {
+            let tones = custom.tones;
+            return match tone {
+                Tone::Plain => palette.text,
+                Tone::Request => tones.request,
+                Tone::Success => tones.success,
+                Tone::Error => tones.error,
+                Tone::Warning => tones.warning,
+                Tone::Muted => palette.muted,
+                Tone::Accent => palette.accent,
+            };
+        }
         if self == Self::Neutral {
             return match tone {
                 Tone::Plain => palette.text,
@@ -163,6 +204,14 @@ impl Theme {
             Tone::Warning => [229, 192, 123],
             Tone::Muted => palette.muted,
             Tone::Accent => palette.accent,
+        }
+    }
+    /// A card shadow's opacity on this theme's page. A theme file may soften
+    /// shadows, which read as smudges on a light page.
+    pub fn shadow(self, opacity: f32) -> f32 {
+        match self {
+            Self::Custom(custom) => opacity * custom.shadow,
+            _ => opacity,
         }
     }
     pub fn background(self, original: [u8; 3]) -> [u8; 3] {
@@ -213,6 +262,149 @@ impl Theme {
                 p[..3].copy_from_slice(&rgb);
             }
         }
+    }
+}
+
+/// A theme loaded from a JSON file; see `assets/themes/light.json`.
+#[derive(Debug)]
+pub struct CustomTheme {
+    name: String,
+    palette: Palette,
+    tones: StatusTones,
+    shadow: f32,
+    font: Option<ThemeFont>,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct StatusTones {
+    request: [u8; 3],
+    success: [u8; 3],
+    error: [u8; 3],
+    warning: [u8; 3],
+}
+
+/// A loaded file is one theme: compared by identity, as only one is loaded per run.
+impl PartialEq for CustomTheme {
+    fn eq(&self, other: &Self) -> bool {
+        std::ptr::eq(self, other)
+    }
+}
+
+impl Eq for CustomTheme {}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ThemeFile {
+    name: Option<String>,
+    background: Rgb,
+    surface: Rgb,
+    raised: Rgb,
+    text: Rgb,
+    muted: Rgb,
+    accent: Rgb,
+    keyword: Rgb,
+    types: Rgb,
+    string: Rgb,
+    tones: ToneFile,
+    shadow: Option<f32>,
+    font: Option<FontFile>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ToneFile {
+    request: Rgb,
+    success: Rgb,
+    error: Rgb,
+    warning: Rgb,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FontFile {
+    family: String,
+    #[serde(default)]
+    files: Vec<PathBuf>,
+}
+
+/// An sRGB color written `#RRGGBB`.
+#[derive(Clone, Copy)]
+struct Rgb([u8; 3]);
+
+impl<'de> Deserialize<'de> for Rgb {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = String::deserialize(deserializer)?;
+        parse_rgb(&value).map(Rgb).ok_or_else(|| {
+            serde::de::Error::custom(format!(
+                "expected a color like \"#1A2B3C\", got \"{value}\""
+            ))
+        })
+    }
+}
+
+fn parse_rgb(value: &str) -> Option<[u8; 3]> {
+    let hex = value.strip_prefix('#')?;
+    if hex.len() != 6 || !hex.bytes().all(|b| b.is_ascii_hexdigit()) {
+        return None;
+    }
+    let channel = |i: usize| u8::from_str_radix(&hex[i..i + 2], 16).ok();
+    Some([channel(0)?, channel(2)?, channel(4)?])
+}
+
+impl CustomTheme {
+    /// Read and validate a theme file. Font files resolve beside it.
+    pub fn load(path: &Path) -> Result<Self> {
+        let bytes =
+            std::fs::read(path).with_context(|| format!("read theme {}", path.display()))?;
+        Self::from_json(&bytes, path).with_context(|| format!("invalid theme {}", path.display()))
+    }
+
+    fn from_json(bytes: &[u8], path: &Path) -> Result<Self> {
+        let file: ThemeFile = serde_json::from_slice(bytes)?;
+        let shadow = file.shadow.unwrap_or(1.0);
+        ensure!(
+            (0.0..=1.0).contains(&shadow),
+            "shadow scales the default card shadow and must be from 0 to 1, got {shadow}"
+        );
+        let name = match file.name {
+            Some(name) => name,
+            None => path.file_stem().map_or_else(
+                || "Custom".to_owned(),
+                |stem| stem.to_string_lossy().into_owned(),
+            ),
+        };
+        let font = file
+            .font
+            .map(|font| {
+                ThemeFont::load(
+                    font.family,
+                    &font.files,
+                    path.parent().unwrap_or(Path::new(".")),
+                )
+            })
+            .transpose()?;
+        Ok(Self {
+            name,
+            palette: Palette {
+                background: file.background.0,
+                surface: file.surface.0,
+                raised: file.raised.0,
+                text: file.text.0,
+                muted: file.muted.0,
+                accent: file.accent.0,
+                keyword: file.keyword.0,
+                types: file.types.0,
+                string: file.string.0,
+            },
+            tones: StatusTones {
+                request: file.tones.request.0,
+                success: file.tones.success.0,
+                error: file.tones.error.0,
+                warning: file.tones.warning.0,
+            },
+            shadow,
+            font,
+        })
     }
 }
 
@@ -284,5 +476,73 @@ mod tests {
             [127, 216, 143],
             "existing themes keep their status inks"
         );
+    }
+
+    const LIGHT: &str = r##"{
+        "name": "Paper",
+        "background": "#F9FAFA", "surface": "#FFFFFF", "raised": "#DADDE3",
+        "text": "#242525", "muted": "#72767E", "accent": "#418CFF",
+        "keyword": "#6667CD", "types": "#2E76E0", "string": "#308864",
+        "tones": { "request": "#2E76E0", "success": "#308864", "error": "#C64044", "warning": "#B3821F" },
+        "shadow": 0.3
+    }"##;
+
+    fn custom(json: &str) -> Result<CustomTheme> {
+        CustomTheme::from_json(json.as_bytes(), Path::new("themes/paper.json"))
+    }
+
+    #[test]
+    fn a_theme_file_paints_its_palette_tones_and_shadow() {
+        use psychopomp::tone::Tone;
+        let theme = Theme::Custom(Box::leak(Box::new(custom(LIGHT).unwrap())));
+        assert_eq!(theme.name(), "Paper");
+        assert_eq!(theme.palette().background, [0xF9, 0xFA, 0xFA]);
+        assert_eq!(theme.background([1, 2, 3]), [0xF9, 0xFA, 0xFA]);
+        assert_eq!(theme.tone(Tone::Error), [0xC6, 0x40, 0x44]);
+        assert_eq!(theme.tone(Tone::Accent), [0x41, 0x8C, 0xFF]);
+        assert_eq!(theme.tone(Tone::Plain), [0x24, 0x25, 0x25]);
+        assert_eq!(theme.shadow(0.5), 0.5 * 0.3);
+        // Authored light-on-dark ink takes the theme's text color.
+        assert_eq!(theme.ink([235, 233, 227]), [0x24, 0x25, 0x25]);
+        assert_eq!(theme.cycle(false), Theme::Original);
+        assert_eq!(theme.cycle(true), Theme::Neutral);
+        for builtin in Theme::ALL {
+            assert_eq!(builtin.shadow(0.55), 0.55, "built-in shadows are unchanged");
+            assert_ne!(builtin, theme);
+        }
+    }
+
+    #[test]
+    fn a_theme_file_defaults_its_name_and_shadow() {
+        let json = LIGHT
+            .replace(r#""name": "Paper","#, "")
+            .replace(",\n        \"shadow\": 0.3", "");
+        let theme = custom(&json).unwrap();
+        assert_eq!(theme.name, "paper", "the file's stem");
+        assert_eq!(theme.shadow, 1.0, "the default card shadow");
+    }
+
+    #[test]
+    fn invalid_theme_files_say_what_is_wrong() {
+        let error = |json: &str| format!("{:#}", custom(json).unwrap_err());
+        assert!(
+            error(&LIGHT.replace("#418CFF", "blue"))
+                .contains(r##"expected a color like "#1A2B3C", got "blue""##)
+        );
+        assert!(error(&LIGHT.replace("#418CFF", "#418CF")).contains("got \"#418CF\""));
+        assert!(
+            error(&LIGHT.replace("\"raised\"", "\"border\"")).contains("unknown field `border`")
+        );
+        assert!(
+            error(&LIGHT.replace(r##", "warning": "#B3821F""##, ""))
+                .contains("missing field `warning`")
+        );
+        assert!(error(&LIGHT.replace("0.3", "1.5")).contains("must be from 0 to 1, got 1.5"));
+        assert!(
+            error(&LIGHT.replace("0.3", r#"0.3, "font": { "family": "No Such Face" }"#))
+                .contains("font family 'No Such Face' is not installed")
+        );
+        let missing = Theme::parse("missing/theme.json").unwrap_err();
+        assert!(format!("{missing:#}").contains("read theme missing/theme.json"));
     }
 }

@@ -124,7 +124,7 @@ Renderer crate, pixels and delivery:
 
 - `crates/psychopomp-render/src/render.rs`: concrete headless `wgpu` renderer and sprite compositor
 - `crates/psychopomp-render/src/scene.wgsl`: editor geometry and focus shader
-- `crates/psychopomp-render/src/render/theme.rs`: named native/export paint palettes; no layout or motion
+- `crates/psychopomp-render/src/render/theme.rs`: named native/export paint palettes and validated theme files; no layout or motion
 - `crates/psychopomp-render/src/render/fonts.rs`: bundled CommitMono faces, and the installed faces a `Face` selects
 - `crates/psychopomp-render/src/render/text.rs` and `text/raster.rs`: typed plain-text cache and exact native glyph rasterization
 - `crates/psychopomp-render/src/render/rich_text.rs`: bounded Markdown shaping, decoration, and theme-aware glyph cache
@@ -378,6 +378,10 @@ syntax/showroom colors have a compatibility mapping; other literal art/status
 colors remain authored. This is not a final-frame color filter. Native appearance
 does not mutate plans. `plan frame` and `plan render --theme NAME` use the same
 renderer with an explicit theme; omitted export themes remain Original.
+`--theme path.json` loads a theme file into `Theme::Custom`, leaked for the run so
+the theme stays `Copy`; it is never saved as a preference and is outside the T
+cycle. Its optional font is chosen once, before any font system is built
+(`fonts::use_theme_font`), so theme changes still never change glyph metrics.
 
 The provisional `prototype-rich-text` adapter parses a bounded Markdown subset
 with `pulldown-cmark` and shapes bold/italic/monospace runs with `cosmic-text`.

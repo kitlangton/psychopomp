@@ -134,7 +134,7 @@ fn shape(
             let attrs = base.clone().color(Color::rgb(r, g, b));
             let attrs = if span.code {
                 attrs
-                    .family(fonts::MONO)
+                    .family(fonts::mono())
                     .metrics(Metrics::new(size * CODE_SCALE, geometry.line))
                     .metadata(1)
             } else {

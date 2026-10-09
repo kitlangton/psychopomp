@@ -159,7 +159,9 @@ TUI's dark tokens) can be selected during
 native playback without advancing its clock. The native preference is saved;
 file delivery selects a theme explicitly so a personal preference cannot silently
 change an export. Original preserves existing scene colors. Semantic status colors
-and explicit non-palette art colors are not indiscriminately tinted.
+and explicit non-palette art colors are not indiscriminately tinted. A **Theme File**
+is a JSON Presentation Theme: a palette, status inks, a card-shadow scale, and an
+optional font that replaces CommitMono for the whole run.
 
 ## Rich Text
 

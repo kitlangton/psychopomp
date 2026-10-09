@@ -214,7 +214,7 @@ impl HeadlessRenderer {
                 border_color: UiColor::srgb8(br, bg, bb, 255),
                 shadow_offset: [0.0, 18.0],
                 shadow_blur: 30.0,
-                shadow_opacity: 0.55,
+                shadow_opacity: self.theme.shadow(0.55),
             }
         } else {
             CardStyle {

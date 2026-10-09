@@ -246,7 +246,7 @@ impl HeadlessRenderer {
                 .map(|r| {
                     let attrs = base
                         .clone()
-                        .family(if r.code { fonts::MONO } else { fonts::SANS })
+                        .family(if r.code { fonts::mono() } else { fonts::SANS })
                         .weight(if r.bold || block.heading > 0 {
                             Weight::BOLD
                         } else {

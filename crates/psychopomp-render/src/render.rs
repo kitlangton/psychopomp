@@ -1262,7 +1262,7 @@ fn measure_code_spans(
             bail!("text byte range is outside the code line");
         }
     }
-    let base = Attrs::new().family(fonts::MONO);
+    let base = Attrs::new().family(fonts::mono());
     let spans: Vec<_> = spans
         .iter()
         .map(|span| (span.text.as_str(), attributes(base.clone(), span.style)))
@@ -1407,7 +1407,7 @@ fn make_title_sprite(
     file_name: &str,
 ) -> TextSprite {
     let attrs = Attrs::new()
-        .family(fonts::MONO)
+        .family(fonts::mono())
         .weight(Weight::NORMAL)
         .color(Color::rgb(161, 161, 170));
     make_sprite(
@@ -1520,7 +1520,7 @@ fn make_spans_sprite_at_size(
     font_size: f32,
     line_height: f32,
 ) -> TextSprite {
-    let base = Attrs::new().family(fonts::MONO);
+    let base = Attrs::new().family(fonts::mono());
     let spans: Vec<_> = if line_spans.is_empty() {
         vec![(" ", attributes(base.clone(), SyntaxStyle::Plain))]
     } else {
@@ -1983,7 +1983,7 @@ mod tests {
             {
                 bail!("text byte range is outside the code line");
             }
-            let base = Attrs::new().family(fonts::MONO);
+            let base = Attrs::new().family(fonts::mono());
             let spans = spans
                 .iter()
                 .map(|span| (span.text.as_str(), attributes(base.clone(), span.style)))
