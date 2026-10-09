@@ -1283,7 +1283,7 @@ The native preview is a deliberate quality profile, not a second choreography im
 
 The cheap overlay pass is limited to bounds safely inside the card body; overlays that can overlap title/border pixels or escape its clip use the full path. Two filename-keyed chrome images are retained, and each slide's initial resources are warmed before the native window opens. Frame deadlines retain their phase across late wakes rather than drifting relative to the previous request. Missed slots are skipped, not queued.
 
-`crates/psychopomp-render/src/encode.rs` owns the FFmpeg process, raw-frame protocol, audio placement filters, argument construction, and exit validation. The Interface accepts tightly packed RGBA frames plus compiled audio media placements. FFmpeg trims immutable source ranges, applies each clip's non-destructive gain, shifts clips onto the composition clock, mixes overlapping layers through a peak limiter, and encodes AAC beside H.264.
+`crates/psychopomp-render/src/encode.rs` owns the FFmpeg process, raw-frame protocol, audio placement filters, argument construction, and exit validation. The Interface accepts tightly packed RGBA frames plus compiled audio media placements. FFmpeg trims immutable source ranges, applies each clip's non-destructive gain, shifts clips onto the composition clock, mixes overlapping layers through a peak limiter, and encodes AAC beside H.264. Video is converted to 4:2:0 with the BT.709 matrix and tagged BT.709 (matrix, primaries, transfer, limited range), so players decode the rendered palette rather than guessing a matrix.
 
 FFmpeg remains a subprocess because it avoids unsafe bindings and codec linkage while preserving access to the installed encoder set. A second encoder is not currently justified.
 

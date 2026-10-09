@@ -12,6 +12,15 @@ use psychopomp::composition::MediaPlacement;
 
 static NEXT_TEMPORARY_OUTPUT: AtomicU64 = AtomicU64::new(0);
 
+/// Converts RGB frames to 4:2:0 with the BT.709 matrix and tags every frame as
+/// BT.709 limited range, so the H.264 stream declares the matrix, primaries,
+/// and transfer players must decode with. Untagged output is converted with
+/// BT.601 while players assume BT.709 for HD, which shifts saturated colors.
+/// The tags ride on the frames because FFmpeg lets frame properties override
+/// `-color_primaries` and `-color_trc`, which would otherwise stay unspecified.
+const BT709_FILTER: &str = "scale=out_color_matrix=bt709:out_range=tv,\
+setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv";
+
 #[derive(Clone, Copy)]
 pub struct VideoSpec {
     pub width: u32,
@@ -102,6 +111,8 @@ impl FfmpegEncoder {
                 "14M",
                 "-bufsize",
                 "28M",
+                "-vf",
+                BT709_FILTER,
                 "-pix_fmt",
                 "yuv420p",
                 "-movflags",
@@ -211,7 +222,77 @@ mod tests {
 
     use psychopomp::composition::{Asset, MediaPlacement, MediaRole, Time, TimeRange};
 
-    use super::{audio_clip_filter, temporary_output_path};
+    use super::{FfmpegEncoder, VideoSpec, audio_clip_filter, temporary_output_path};
+
+    #[test]
+    #[ignore = "requires FFmpeg; encodes a flat frame and decodes it with the tagged matrix"]
+    fn encoded_video_is_tagged_bt709_and_decodes_the_source_color() {
+        use std::process::Command;
+
+        const SOURCE: [u8; 3] = [0x41, 0x8C, 0xFF];
+        const SIZE: u32 = 64;
+        let output =
+            std::env::temp_dir().join(format!("psychopomp-bt709-{}.mp4", std::process::id()));
+        let spec = VideoSpec {
+            width: SIZE,
+            height: SIZE,
+            fps: 30,
+        };
+        let frame = [SOURCE[0], SOURCE[1], SOURCE[2], 255].repeat((SIZE * SIZE) as usize);
+        let mut encoder = FfmpegEncoder::start_with_media(&output, spec, &[]).unwrap();
+        for _ in 0..3 {
+            encoder.write_frame(&frame).unwrap();
+        }
+        encoder.finish().unwrap();
+
+        let probe = Command::new("ffprobe")
+            .args(["-v", "error", "-select_streams", "v:0", "-show_entries"])
+            .arg("stream=color_space,color_primaries,color_transfer,color_range")
+            .args(["-of", "default=noprint_wrappers=1"])
+            .arg(&output)
+            .output()
+            .unwrap();
+        assert_eq!(
+            String::from_utf8_lossy(&probe.stdout),
+            "color_range=tv\ncolor_space=bt709\ncolor_transfer=bt709\ncolor_primaries=bt709\n"
+        );
+
+        let yuv = Command::new("ffmpeg")
+            .args(["-v", "error", "-i"])
+            .arg(&output)
+            .args([
+                "-frames:v",
+                "1",
+                "-f",
+                "rawvideo",
+                "-pix_fmt",
+                "yuv420p",
+                "-",
+            ])
+            .output()
+            .unwrap()
+            .stdout;
+        let _ = std::fs::remove_file(&output);
+        let area = (SIZE * SIZE) as usize;
+        let center = (SIZE / 2) as usize;
+        let luma = yuv[center * SIZE as usize + center];
+        let chroma = (center / 2) * (SIZE as usize / 2) + center / 2;
+        let (cb, cr) = (yuv[area + chroma], yuv[area + area / 4 + chroma]);
+        // BT.709 limited range back to RGB.
+        let y = (f32::from(luma) - 16.0) / 219.0;
+        let cb = (f32::from(cb) - 128.0) / 224.0;
+        let cr = (f32::from(cr) - 128.0) / 224.0;
+        let r = y + 1.5748 * cr;
+        let b = y + 1.8556 * cb;
+        let g = (y - 0.2126 * r - 0.0722 * b) / 0.7152;
+        let decoded = [r, g, b].map(|c| (c * 255.0).round().clamp(0.0, 255.0) as u8);
+        for (decoded, source) in decoded.into_iter().zip(SOURCE) {
+            assert!(
+                decoded.abs_diff(source) <= 1,
+                "decoded {decoded:?} from {SOURCE:?}"
+            );
+        }
+    }
 
     #[test]
     fn audio_placement_uses_delay_instead_of_positive_pts_offsets() {
