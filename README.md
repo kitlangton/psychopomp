@@ -57,6 +57,22 @@ cargo run -p psychopomp-hello
 cargo run --release -- plan render target/hello.json output/hello.mp4 --theme neutral
 ```
 
+For quicker video exports, override the frame rate and shutter samples:
+
+```sh
+cargo run --release -- plan render target/hello.json output/preview.mp4 --fps 30 --samples 4 --theme neutral
+```
+
+`--fps` and `--samples` take positive integers and apply only to `plan render`,
+including reels and `--cue` / `--range` exports. Without them, exports keep 60 fps
+and the native sample schedule (24 for Stage scenes, 8 normally or 16 on entrances
+for other roots, and at least 16 during reel transitions). `--samples` overrides
+that schedule, including transitions; identical visual samples still merge.
+Lower values trade temporal smoothness and motion-blur quality for render speed.
+The 180-degree export shutter follows the selected fps; procedural shader effects
+retain their native calibration. Stills, snapshots, presentation and server
+requests are unchanged.
+
 Check frames without encoding a video:
 
 ```sh

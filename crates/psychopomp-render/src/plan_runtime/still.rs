@@ -12,7 +12,7 @@ use super::{
     DECK_UNSUPPORTED, PlanFile, PreparedPlan, Theme, delivery, new_renderer, preflight, reel,
 };
 use crate::{
-    exposure::{HEIGHT, WIDTH, exposure, merge_equal_samples},
+    exposure::{HEIGHT, RenderOptions, WIDTH, exposure, merge_equal_samples},
     render::HeadlessRenderer,
 };
 
@@ -86,10 +86,11 @@ impl Loaded {
         renderer: &mut HeadlessRenderer,
         output: &Path,
         window: TimeRange,
+        options: RenderOptions,
     ) -> Result<()> {
         match self {
-            Self::Plan(plan) => delivery::render_video(plan, renderer, output, window),
-            Self::Reel(reel) => delivery::render_reel(reel, renderer, output, window),
+            Self::Plan(plan) => delivery::render_video(plan, renderer, output, window, options),
+            Self::Reel(reel) => delivery::render_reel(reel, renderer, output, window, options),
         }
     }
 
