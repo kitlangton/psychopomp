@@ -1,0 +1,409 @@
+{
+ "wordTimings": [
+  {
+   "word": "but",
+   "start": 0,
+   "end": 0.1
+  },
+  {
+   "word": "plugin",
+   "start": 0.1,
+   "end": 0.38
+  },
+  {
+   "word": "loading",
+   "start": 0.38,
+   "end": 0.62
+  },
+  {
+   "word": "already",
+   "start": 0.62,
+   "end": 1.04
+  },
+  {
+   "word": "runs",
+   "start": 1.04,
+   "end": 1.42
+  },
+  {
+   "word": "inside",
+   "start": 1.42,
+   "end": 1.82
+  },
+  {
+   "word": "a",
+   "start": 1.82,
+   "end": 2.08
+  },
+  {
+   "word": "batch.",
+   "start": 2.08,
+   "end": 2.38
+  },
+  {
+   "word": "Isn't",
+   "start": 2.56,
+   "end": 3.06
+  },
+  {
+   "word": "that",
+   "start": 3.06,
+   "end": 3.14
+  },
+  {
+   "word": "supposed",
+   "start": 3.14,
+   "end": 3.4
+  },
+  {
+   "word": "to",
+   "start": 3.4,
+   "end": 3.8
+  },
+  {
+   "word": "stop",
+   "start": 3.8,
+   "end": 4.1
+  },
+  {
+   "word": "this?",
+   "start": 4.1,
+   "end": 4.34
+  },
+  {
+   "word": "It",
+   "start": 4.6,
+   "end": 4.86
+  },
+  {
+   "word": "does.",
+   "start": 4.86,
+   "end": 5.1
+  },
+  {
+   "word": "For",
+   "start": 5.32,
+   "end": 5.64
+  },
+  {
+   "word": "notifications.",
+   "start": 5.64,
+   "end": 6.2
+  },
+  {
+   "word": "The",
+   "start": 6.72,
+   "end": 7.02
+  },
+  {
+   "word": "batch",
+   "start": 7.02,
+   "end": 7.28
+  },
+  {
+   "word": "holds",
+   "start": 7.28,
+   "end": 7.6
+  },
+  {
+   "word": "them",
+   "start": 7.6,
+   "end": 7.82
+  },
+  {
+   "word": "back",
+   "start": 7.82,
+   "end": 8.02
+  },
+  {
+   "word": "until",
+   "start": 8.02,
+   "end": 8.28
+  },
+  {
+   "word": "the",
+   "start": 8.28,
+   "end": 8.5
+  },
+  {
+   "word": "last",
+   "start": 8.5,
+   "end": 8.74
+  },
+  {
+   "word": "plugin",
+   "start": 8.74,
+   "end": 9.12
+  },
+  {
+   "word": "loads.",
+   "start": 9.12,
+   "end": 9.44
+  },
+  {
+   "word": "It",
+   "start": 9.7,
+   "end": 10
+  },
+  {
+   "word": "doesn't",
+   "start": 10,
+   "end": 10.38
+  },
+  {
+   "word": "hold",
+   "start": 10.38,
+   "end": 10.56
+  },
+  {
+   "word": "back",
+   "start": 10.56,
+   "end": 10.78
+  },
+  {
+   "word": "reads.",
+   "start": 10.78,
+   "end": 11.14
+  },
+  {
+   "word": "Each",
+   "start": 11.4,
+   "end": 11.72
+  },
+  {
+   "word": "new",
+   "start": 11.72,
+   "end": 11.9
+  },
+  {
+   "word": "transform",
+   "start": 11.9,
+   "end": 12.3
+  },
+  {
+   "word": "marks",
+   "start": 12.3,
+   "end": 12.82
+  },
+  {
+   "word": "the",
+   "start": 12.82,
+   "end": 13.06
+  },
+  {
+   "word": "catalog",
+   "start": 13.06,
+   "end": 13.42
+  },
+  {
+   "word": "dirty,",
+   "start": 13.42,
+   "end": 13.84
+  },
+  {
+   "word": "and",
+   "start": 14.02,
+   "end": 14.32
+  },
+  {
+   "word": "the",
+   "start": 14.32,
+   "end": 14.42
+  },
+  {
+   "word": "next",
+   "start": 14.42,
+   "end": 14.68
+  },
+  {
+   "word": "read",
+   "start": 14.68,
+   "end": 14.96
+  },
+  {
+   "word": "rebuilds",
+   "start": 14.96,
+   "end": 15.48
+  },
+  {
+   "word": "all",
+   "start": 15.48,
+   "end": 15.6
+  },
+  {
+   "word": "of",
+   "start": 15.6,
+   "end": 15.72
+  },
+  {
+   "word": "it.",
+   "start": 15.72,
+   "end": 15.92
+  },
+  {
+   "word": "Model",
+   "start": 16.12,
+   "end": 16.46
+  },
+  {
+   "word": "transforms",
+   "start": 16.46,
+   "end": 16.82
+  },
+  {
+   "word": "take",
+   "start": 16.82,
+   "end": 17.34
+  },
+  {
+   "word": "a",
+   "start": 17.34,
+   "end": 17.58
+  },
+  {
+   "word": "provider",
+   "start": 17.58,
+   "end": 17.98
+  },
+  {
+   "word": "snapshot",
+   "start": 17.98,
+   "end": 18.34
+  },
+  {
+   "word": "first,",
+   "start": 18.34,
+   "end": 19.02
+  },
+  {
+   "word": "and",
+   "start": 19.28,
+   "end": 19.56
+  },
+  {
+   "word": "that's",
+   "start": 19.56,
+   "end": 19.82
+  },
+  {
+   "word": "a",
+   "start": 19.82,
+   "end": 19.84
+  },
+  {
+   "word": "read.",
+   "start": 19.84,
+   "end": 20.1
+  },
+  {
+   "word": "Plugins",
+   "start": 20.32,
+   "end": 20.84
+  },
+  {
+   "word": "that",
+   "start": 20.84,
+   "end": 21
+  },
+  {
+   "word": "check",
+   "start": 21,
+   "end": 21.26
+  },
+  {
+   "word": "provider",
+   "start": 21.26,
+   "end": 21.6
+  },
+  {
+   "word": "settings",
+   "start": 21.6,
+   "end": 22.1
+  },
+  {
+   "word": "read",
+   "start": 22.1,
+   "end": 22.5
+  },
+  {
+   "word": "too.",
+   "start": 22.5,
+   "end": 22.72
+  },
+  {
+   "word": "So",
+   "start": 22.92,
+   "end": 23.26
+  },
+  {
+   "word": "the",
+   "start": 23.26,
+   "end": 23.46
+  },
+  {
+   "word": "batch",
+   "start": 23.46,
+   "end": 23.72
+  },
+  {
+   "word": "saves",
+   "start": 23.72,
+   "end": 24.02
+  },
+  {
+   "word": "the",
+   "start": 24.02,
+   "end": 24.22
+  },
+  {
+   "word": "notifications,",
+   "start": 24.22,
+   "end": 24.72
+  },
+  {
+   "word": "and",
+   "start": 25.28,
+   "end": 25.58
+  },
+  {
+   "word": "every",
+   "start": 25.58,
+   "end": 25.84
+  },
+  {
+   "word": "read",
+   "start": 25.84,
+   "end": 26.1
+  },
+  {
+   "word": "still",
+   "start": 26.1,
+   "end": 26.34
+  },
+  {
+   "word": "pays",
+   "start": 26.34,
+   "end": 26.62
+  },
+  {
+   "word": "for",
+   "start": 26.62,
+   "end": 26.86
+  },
+  {
+   "word": "a",
+   "start": 26.86,
+   "end": 27
+  },
+  {
+   "word": "full",
+   "start": 27,
+   "end": 27.2
+  },
+  {
+   "word": "rebuild.",
+   "start": 27.2,
+   "end": 27.46
+  }
+ ]
+}

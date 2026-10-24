@@ -1,0 +1,249 @@
+{
+ "wordTimings": [
+  {
+   "word": "It",
+   "start": 0,
+   "end": 0.08
+  },
+  {
+   "word": "splits",
+   "start": 0.08,
+   "end": 0.28
+  },
+  {
+   "word": "into",
+   "start": 0.28,
+   "end": 0.58
+  },
+  {
+   "word": "three",
+   "start": 0.58,
+   "end": 0.86
+  },
+  {
+   "word": "pull",
+   "start": 0.86,
+   "end": 1.08
+  },
+  {
+   "word": "requests.",
+   "start": 1.08,
+   "end": 1.5
+  },
+  {
+   "word": "The",
+   "start": 1.98,
+   "end": 2.28
+  },
+  {
+   "word": "first",
+   "start": 2.28,
+   "end": 2.56
+  },
+  {
+   "word": "builds",
+   "start": 2.56,
+   "end": 2.8
+  },
+  {
+   "word": "once",
+   "start": 2.8,
+   "end": 3.06
+  },
+  {
+   "word": "per",
+   "start": 3.06,
+   "end": 3.32
+  },
+  {
+   "word": "batch,",
+   "start": 3.32,
+   "end": 3.76
+  },
+  {
+   "word": "with",
+   "start": 3.88,
+   "end": 4.18
+  },
+  {
+   "word": "copy",
+   "start": 4.18,
+   "end": 4.54
+  },
+  {
+   "word": "on",
+   "start": 4.54,
+   "end": 4.78
+  },
+  {
+   "word": "write,",
+   "start": 4.78,
+   "end": 5.04
+  },
+  {
+   "word": "and",
+   "start": 5.24,
+   "end": 5.5
+  },
+  {
+   "word": "carries",
+   "start": 5.5,
+   "end": 5.8
+  },
+  {
+   "word": "most",
+   "start": 5.8,
+   "end": 6.14
+  },
+  {
+   "word": "of",
+   "start": 6.14,
+   "end": 6.32
+  },
+  {
+   "word": "the",
+   "start": 6.32,
+   "end": 6.44
+  },
+  {
+   "word": "estimated",
+   "start": 6.44,
+   "end": 6.82
+  },
+  {
+   "word": "savings.",
+   "start": 6.82,
+   "end": 7.4
+  },
+  {
+   "word": "The",
+   "start": 7.72,
+   "end": 8.06
+  },
+  {
+   "word": "second",
+   "start": 8.06,
+   "end": 8.38
+  },
+  {
+   "word": "skips",
+   "start": 8.38,
+   "end": 8.78
+  },
+  {
+   "word": "a",
+   "start": 8.78,
+   "end": 8.88
+  },
+  {
+   "word": "few",
+   "start": 8.88,
+   "end": 9.06
+  },
+  {
+   "word": "reloads",
+   "start": 9.06,
+   "end": 9.58
+  },
+  {
+   "word": "right",
+   "start": 9.58,
+   "end": 9.72
+  },
+  {
+   "word": "after",
+   "start": 9.72,
+   "end": 10.04
+  },
+  {
+   "word": "boot",
+   "start": 10.04,
+   "end": 10.36
+  },
+  {
+   "word": "that",
+   "start": 10.36,
+   "end": 10.52
+  },
+  {
+   "word": "change",
+   "start": 10.52,
+   "end": 10.82
+  },
+  {
+   "word": "nothing.",
+   "start": 10.82,
+   "end": 11.16
+  },
+  {
+   "word": "The",
+   "start": 11.42,
+   "end": 11.74
+  },
+  {
+   "word": "third",
+   "start": 11.74,
+   "end": 11.94
+  },
+  {
+   "word": "skips",
+   "start": 11.94,
+   "end": 12.34
+  },
+  {
+   "word": "rereading",
+   "start": 12.34,
+   "end": 12.74
+  },
+  {
+   "word": "the",
+   "start": 12.74,
+   "end": 12.88
+  },
+  {
+   "word": "model's",
+   "start": 12.88,
+   "end": 13.3
+  },
+  {
+   "word": ".dev",
+   "start": 13.3,
+   "end": 13.74
+  },
+  {
+   "word": "cache",
+   "start": 13.74,
+   "end": 13.96
+  },
+  {
+   "word": "when",
+   "start": 13.96,
+   "end": 14.22
+  },
+  {
+   "word": "it",
+   "start": 14.22,
+   "end": 14.34
+  },
+  {
+   "word": "matches",
+   "start": 14.34,
+   "end": 14.72
+  },
+  {
+   "word": "the",
+   "start": 14.72,
+   "end": 14.92
+  },
+  {
+   "word": "bundled",
+   "start": 14.92,
+   "end": 15.34
+  },
+  {
+   "word": "snapshot.",
+   "start": 15.34,
+   "end": 15.56
+  }
+ ]
+}

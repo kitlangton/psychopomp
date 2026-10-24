@@ -1,0 +1,159 @@
+{
+ "wordTimings": [
+  {
+   "word": "Every",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "time",
+   "start": 0.14,
+   "end": 0.4
+  },
+  {
+   "word": "OpenCode",
+   "start": 0.4,
+   "end": 1.1
+  },
+  {
+   "word": "boots,",
+   "start": 1.1,
+   "end": 1.36
+  },
+  {
+   "word": "it",
+   "start": 1.64,
+   "end": 1.9
+  },
+  {
+   "word": "builds",
+   "start": 1.9,
+   "end": 2.18
+  },
+  {
+   "word": "a",
+   "start": 2.18,
+   "end": 2.32
+  },
+  {
+   "word": "catalog",
+   "start": 2.32,
+   "end": 2.66
+  },
+  {
+   "word": "of",
+   "start": 2.66,
+   "end": 2.98
+  },
+  {
+   "word": "providers",
+   "start": 2.98,
+   "end": 3.3
+  },
+  {
+   "word": "and",
+   "start": 3.3,
+   "end": 3.68
+  },
+  {
+   "word": "models.",
+   "start": 3.68,
+   "end": 4
+  },
+  {
+   "word": "About",
+   "start": 4.26,
+   "end": 4.68
+  },
+  {
+   "word": "230",
+   "start": 4.68,
+   "end": 5.22
+  },
+  {
+   "word": "providers",
+   "start": 5.22,
+   "end": 5.9
+  },
+  {
+   "word": "come",
+   "start": 5.9,
+   "end": 6.46
+  },
+  {
+   "word": "from",
+   "start": 6.46,
+   "end": 6.72
+  },
+  {
+   "word": "the",
+   "start": 6.72,
+   "end": 6.88
+  },
+  {
+   "word": "models",
+   "start": 6.88,
+   "end": 7.18
+  },
+  {
+   "word": ".dev",
+   "start": 7.18,
+   "end": 7.72
+  },
+  {
+   "word": "snapshot.",
+   "start": 7.72,
+   "end": 8.1
+  },
+  {
+   "word": "Then",
+   "start": 8.52,
+   "end": 8.88
+  },
+  {
+   "word": "90",
+   "start": 8.88,
+   "end": 9.2
+  },
+  {
+   "word": "plugins",
+   "start": 9.2,
+   "end": 9.62
+  },
+  {
+   "word": "each",
+   "start": 9.62,
+   "end": 9.88
+  },
+  {
+   "word": "get",
+   "start": 9.88,
+   "end": 10.12
+  },
+  {
+   "word": "a",
+   "start": 10.12,
+   "end": 10.26
+  },
+  {
+   "word": "turn",
+   "start": 10.26,
+   "end": 10.46
+  },
+  {
+   "word": "to",
+   "start": 10.46,
+   "end": 10.62
+  },
+  {
+   "word": "adjust",
+   "start": 10.62,
+   "end": 10.9
+  },
+  {
+   "word": "it.",
+   "start": 10.9,
+   "end": 11.18
+  }
+ ]
+}

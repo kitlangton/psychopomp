@@ -1,0 +1,324 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "fix",
+   "start": 0.12,
+   "end": 0.28
+  },
+  {
+   "word": "is",
+   "start": 0.28,
+   "end": 0.44
+  },
+  {
+   "word": "to",
+   "start": 0.44,
+   "end": 0.6
+  },
+  {
+   "word": "build",
+   "start": 0.6,
+   "end": 0.84
+  },
+  {
+   "word": "once",
+   "start": 0.84,
+   "end": 1.1
+  },
+  {
+   "word": "per",
+   "start": 1.1,
+   "end": 1.32
+  },
+  {
+   "word": "batch.",
+   "start": 1.32,
+   "end": 1.72
+  },
+  {
+   "word": "Model",
+   "start": 1.92,
+   "end": 2.34
+  },
+  {
+   "word": "transforms",
+   "start": 2.34,
+   "end": 2.82
+  },
+  {
+   "word": "stop",
+   "start": 2.82,
+   "end": 3.26
+  },
+  {
+   "word": "taking",
+   "start": 3.26,
+   "end": 3.68
+  },
+  {
+   "word": "a",
+   "start": 3.68,
+   "end": 3.94
+  },
+  {
+   "word": "snapshot",
+   "start": 3.94,
+   "end": 4.34
+  },
+  {
+   "word": "first.",
+   "start": 4.34,
+   "end": 4.78
+  },
+  {
+   "word": "So",
+   "start": 5.12,
+   "end": 5.42
+  },
+  {
+   "word": "plugins",
+   "start": 5.42,
+   "end": 5.82
+  },
+  {
+   "word": "just",
+   "start": 5.82,
+   "end": 6.18
+  },
+  {
+   "word": "register",
+   "start": 6.18,
+   "end": 6.84
+  },
+  {
+   "word": "their",
+   "start": 6.84,
+   "end": 7
+  },
+  {
+   "word": "changes.",
+   "start": 7,
+   "end": 7.42
+  },
+  {
+   "word": "And",
+   "start": 7.7,
+   "end": 7.96
+  },
+  {
+   "word": "the",
+   "start": 7.96,
+   "end": 8.06
+  },
+  {
+   "word": "catalog",
+   "start": 8.06,
+   "end": 8.42
+  },
+  {
+   "word": "builds",
+   "start": 8.42,
+   "end": 8.72
+  },
+  {
+   "word": "when",
+   "start": 8.72,
+   "end": 8.98
+  },
+  {
+   "word": "the",
+   "start": 8.98,
+   "end": 9.14
+  },
+  {
+   "word": "batch",
+   "start": 9.14,
+   "end": 9.38
+  },
+  {
+   "word": "closes.",
+   "start": 9.38,
+   "end": 9.74
+  },
+  {
+   "word": "Plugins",
+   "start": 10.18,
+   "end": 10.7
+  },
+  {
+   "word": "read",
+   "start": 10.7,
+   "end": 10.92
+  },
+  {
+   "word": "a",
+   "start": 10.92,
+   "end": 11.04
+  },
+  {
+   "word": "frozen",
+   "start": 11.04,
+   "end": 11.28
+  },
+  {
+   "word": "catalog.",
+   "start": 11.28,
+   "end": 11.78
+  },
+  {
+   "word": "One",
+   "start": 12.12,
+   "end": 12.44
+  },
+  {
+   "word": "that",
+   "start": 12.44,
+   "end": 12.6
+  },
+  {
+   "word": "changes",
+   "start": 12.6,
+   "end": 13.06
+  },
+  {
+   "word": "a",
+   "start": 13.06,
+   "end": 13.22
+  },
+  {
+   "word": "provider",
+   "start": 13.22,
+   "end": 13.56
+  },
+  {
+   "word": "copies",
+   "start": 13.56,
+   "end": 14.04
+  },
+  {
+   "word": "just",
+   "start": 14.04,
+   "end": 14.4
+  },
+  {
+   "word": "that",
+   "start": 14.4,
+   "end": 14.68
+  },
+  {
+   "word": "provider.",
+   "start": 14.68,
+   "end": 15
+  },
+  {
+   "word": "17",
+   "start": 15.38,
+   "end": 16
+  },
+  {
+   "word": "rebuilds",
+   "start": 16,
+   "end": 16.6
+  },
+  {
+   "word": "become",
+   "start": 16.6,
+   "end": 16.74
+  },
+  {
+   "word": "1",
+   "start": 16.74,
+   "end": 17.1
+  },
+  {
+   "word": "or",
+   "start": 17.1,
+   "end": 17.3
+  },
+  {
+   "word": "2.",
+   "start": 17.3,
+   "end": 17.52
+  },
+  {
+   "word": "The",
+   "start": 17.74,
+   "end": 18.06
+  },
+  {
+   "word": "proposal",
+   "start": 18.06,
+   "end": 18.38
+  },
+  {
+   "word": "estimates",
+   "start": 18.38,
+   "end": 18.84
+  },
+  {
+   "word": "activation",
+   "start": 18.84,
+   "end": 19.42
+  },
+  {
+   "word": "drops",
+   "start": 19.42,
+   "end": 20.08
+  },
+  {
+   "word": "to",
+   "start": 20.08,
+   "end": 20.32
+  },
+  {
+   "word": "about",
+   "start": 20.32,
+   "end": 20.56
+  },
+  {
+   "word": "85",
+   "start": 20.56,
+   "end": 20.96
+  },
+  {
+   "word": "milliseconds.",
+   "start": 20.96,
+   "end": 21.52
+  },
+  {
+   "word": "That's",
+   "start": 22.16,
+   "end": 22.56
+  },
+  {
+   "word": "an",
+   "start": 22.56,
+   "end": 22.64
+  },
+  {
+   "word": "estimate.",
+   "start": 22.64,
+   "end": 23
+  },
+  {
+   "word": "Not",
+   "start": 23.24,
+   "end": 23.54
+  },
+  {
+   "word": "a",
+   "start": 23.54,
+   "end": 23.7
+  },
+  {
+   "word": "measurement.",
+   "start": 23.7,
+   "end": 23.98
+  }
+ ]
+}

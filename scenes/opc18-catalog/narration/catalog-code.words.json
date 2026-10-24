@@ -1,0 +1,269 @@
+{
+ "wordTimings": [
+  {
+   "word": "Here's",
+   "start": 0,
+   "end": 0.24
+  },
+  {
+   "word": "the",
+   "start": 0.24,
+   "end": 0.3
+  },
+  {
+   "word": "proposed",
+   "start": 0.3,
+   "end": 0.64
+  },
+  {
+   "word": "change.",
+   "start": 0.64,
+   "end": 1.04
+  },
+  {
+   "word": "There's",
+   "start": 1.46,
+   "end": 1.86
+  },
+  {
+   "word": "no",
+   "start": 1.86,
+   "end": 1.96
+  },
+  {
+   "word": "pull",
+   "start": 1.96,
+   "end": 2.26
+  },
+  {
+   "word": "request",
+   "start": 2.26,
+   "end": 2.58
+  },
+  {
+   "word": "yet.",
+   "start": 2.58,
+   "end": 3.02
+  },
+  {
+   "word": "The",
+   "start": 3.26,
+   "end": 3.5
+  },
+  {
+   "word": "model",
+   "start": 3.5,
+   "end": 3.8
+  },
+  {
+   "word": "transform",
+   "start": 3.8,
+   "end": 4.08
+  },
+  {
+   "word": "drops",
+   "start": 4.08,
+   "end": 4.68
+  },
+  {
+   "word": "the",
+   "start": 4.68,
+   "end": 5
+  },
+  {
+   "word": "snapshot",
+   "start": 5,
+   "end": 5.44
+  },
+  {
+   "word": "it",
+   "start": 5.44,
+   "end": 5.78
+  },
+  {
+   "word": "took",
+   "start": 5.78,
+   "end": 5.94
+  },
+  {
+   "word": "first.",
+   "start": 5.94,
+   "end": 6.32
+  },
+  {
+   "word": "Instead,",
+   "start": 6.58,
+   "end": 7.02
+  },
+  {
+   "word": "notify",
+   "start": 7.3,
+   "end": 7.78
+  },
+  {
+   "word": "hands",
+   "start": 7.78,
+   "end": 8.18
+  },
+  {
+   "word": "the",
+   "start": 8.18,
+   "end": 8.48
+  },
+  {
+   "word": "model",
+   "start": 8.48,
+   "end": 8.76
+  },
+  {
+   "word": "a",
+   "start": 8.76,
+   "end": 8.88
+  },
+  {
+   "word": "getter,",
+   "start": 8.88,
+   "end": 9.22
+  },
+  {
+   "word": "so",
+   "start": 9.26,
+   "end": 9.62
+  },
+  {
+   "word": "it",
+   "start": 9.62,
+   "end": 9.84
+  },
+  {
+   "word": "reads",
+   "start": 9.84,
+   "end": 10.1
+  },
+  {
+   "word": "the",
+   "start": 10.1,
+   "end": 10.28
+  },
+  {
+   "word": "latest",
+   "start": 10.28,
+   "end": 10.52
+  },
+  {
+   "word": "snapshot",
+   "start": 10.52,
+   "end": 11.02
+  },
+  {
+   "word": "once.",
+   "start": 11.02,
+   "end": 11.46
+  },
+  {
+   "word": "In",
+   "start": 11.78,
+   "end": 12.06
+  },
+  {
+   "word": "the",
+   "start": 12.06,
+   "end": 12.14
+  },
+  {
+   "word": "provider",
+   "start": 12.14,
+   "end": 12.5
+  },
+  {
+   "word": "editor,",
+   "start": 12.5,
+   "end": 12.94
+  },
+  {
+   "word": "add",
+   "start": 13.18,
+   "end": 13.48
+  },
+  {
+   "word": "stops",
+   "start": 13.48,
+   "end": 13.74
+  },
+  {
+   "word": "cloning",
+   "start": 13.74,
+   "end": 14.3
+  },
+  {
+   "word": "every",
+   "start": 14.3,
+   "end": 14.58
+  },
+  {
+   "word": "provider",
+   "start": 14.58,
+   "end": 15.06
+  },
+  {
+   "word": "and",
+   "start": 15.06,
+   "end": 15.3
+  },
+  {
+   "word": "keeps",
+   "start": 15.3,
+   "end": 15.58
+  },
+  {
+   "word": "the",
+   "start": 15.58,
+   "end": 15.76
+  },
+  {
+   "word": "frozen",
+   "start": 15.76,
+   "end": 16.04
+  },
+  {
+   "word": "one.",
+   "start": 16.04,
+   "end": 16.38
+  },
+  {
+   "word": "Update",
+   "start": 16.66,
+   "end": 17.12
+  },
+  {
+   "word": "clones",
+   "start": 17.12,
+   "end": 17.46
+  },
+  {
+   "word": "only",
+   "start": 17.46,
+   "end": 17.82
+  },
+  {
+   "word": "the",
+   "start": 17.82,
+   "end": 18.04
+  },
+  {
+   "word": "provider",
+   "start": 18.04,
+   "end": 18.38
+  },
+  {
+   "word": "it",
+   "start": 18.38,
+   "end": 18.7
+  },
+  {
+   "word": "changes.",
+   "start": 18.7,
+   "end": 19.02
+  }
+ ]
+}
