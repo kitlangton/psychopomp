@@ -22,7 +22,7 @@ vibe-coded prototype, tested on macOS (Metal).
 - **Text surfaces**: a terminal, a Slack or iMessage thread, and a pull request's
   changed files, drawn natively so they follow the theme and re-time with the
   scene, plus lower thirds that introduce who or what is on screen.
-- **Narration and sound**: optional ElevenLabs or Fish Audio voice-over and
+- **Narration and sound**: optional ElevenLabs v4 voice-over and
   generated sound effects, declared in the Scene Program and generated once.
   Each beat waits for the word that triggers it, so re-voicing re-times the film.
 

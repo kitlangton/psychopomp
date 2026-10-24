@@ -1,15 +1,18 @@
-// Narration for a Scene Program: synthesize each clip with Fish Audio or ElevenLabs,
+// Narration for a Scene Program: synthesize each clip in Kit's voice on ElevenLabs v4,
 // loudness-normalize it, transcribe word timings with Whisper, and write a manifest
 // with exact durations. Only clips whose text changed are regenerated.
 //
 // Usage:
-//   FISH_AUDIO_API_KEY=... bun scripts/narrate.ts scenes/<scene>/narration/script.json
+//   ELEVENLABS_API_KEY=... bun scripts/narrate.ts scenes/<scene>/narration/script.json
 //   bun scripts/narrate.ts <script.json> --only intro,outro   # force selected clips
 //   bun scripts/narrate.ts <script.json> --draft               # macOS `say`, no credentials
 //
-// script.json: { "engine"?: "fish" | "elevenlabs", "voice"?: string, "speed"?: number,
+// script.json: { "engine"?: "elevenlabs" | "fish", "voice"?: string, "speed"?: number,
 //   "model"?: string, "settings"?: { "stability": number, "similarity": number },
 //   "loudness"?: "dynamic" | "linear", "clips": [{ "id": string, "text": string }] }
+// The default is `eleven_v4` through Text to Dialogue with Kit's Professional Voice
+// Clone at stability 0.5 and similarity 0.75. "fish" is retired; it remains only so
+// old Fish narration can still be adopted.
 // Writes next to the script: <id>.mp3, <id>.words.json ({ wordTimings: [...] }), narration.json.
 // Bracketed delivery cues such as "[confident]" are spoken as direction, not words.
 // "dynamic" loudness (the default) evens the level within each clip; "linear" applies
@@ -46,10 +49,14 @@ const whisperModel = process.env.WHISPER_MODEL ?? "mlx-community/whisper-large-v
 
 const dir = path.dirname(path.resolve(scriptPath))
 const script: Script = await Bun.file(scriptPath).json()
-const engine = args.includes("--draft") ? "say" : script.engine ?? "fish"
+const engine = args.includes("--draft") ? "say" : script.engine ?? "elevenlabs"
 if (!["say", "fish", "elevenlabs"].includes(engine)) throw new Error(`unknown narration engine '${engine}'`)
-if (engine === "elevenlabs" && (!script.voice || !process.env.ELEVENLABS_API_KEY))
-  throw new Error("ElevenLabs requires script.voice and ELEVENLABS_API_KEY")
+if (engine === "elevenlabs") {
+  // Kit's Professional Voice Clone; psychopomp-media's adopt.rs resolves the same defaults.
+  script.voice ??= "8olojUk4IXpvKgaOCHXj"
+  script.settings ??= { stability: 0.5, similarity: 0.75 }
+}
+if (engine === "elevenlabs" && !process.env.ELEVENLABS_API_KEY) throw new Error("ElevenLabs requires ELEVENLABS_API_KEY")
 if (engine === "elevenlabs" && script.speed !== undefined)
   throw new Error("Eleven v4 uses text directions for pace; speed is not supported")
 const model = engine === "elevenlabs" ? script.model ?? "eleven_v4" : undefined

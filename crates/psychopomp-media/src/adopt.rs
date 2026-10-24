@@ -22,8 +22,8 @@ use sha2::{Digest, Sha256};
 use crate::{
     lock::{Entry, Lock, Word},
     spec::{
-        Backend, ELEVEN_FORMAT, ELEVEN_V4, FISH_FORMAT, FISH_FREE, Route, SAY_DEFAULT, SAY_FORMAT,
-        SPEECH_POST, Said, Settings, Spec, SpeechSpec, whisper_align,
+        Backend, ELEVEN_FORMAT, ELEVEN_KIT, ELEVEN_V4, FISH_FORMAT, FISH_FREE, Route, SAY_DEFAULT,
+        SAY_FORMAT, SPEECH_POST, Said, Settings, Spec, SpeechSpec, whisper_align,
     },
 };
 
@@ -63,7 +63,29 @@ struct ManifestClip {
     request_id: Option<String>,
 }
 
+impl Script {
+    /// The voice narrate.ts used: ElevenLabs defaults to Kit's clone.
+    fn voice(&self, engine: &str) -> Option<&str> {
+        self.voice
+            .as_deref()
+            .or((engine == "elevenlabs").then_some(ELEVEN_KIT))
+    }
+
+    /// The Dialogue settings narrate.ts used, in its default's key order.
+    fn settings(&self, engine: &str) -> Option<Ordered> {
+        self.settings.clone().or_else(|| {
+            (engine == "elevenlabs").then(|| {
+                Ordered(vec![
+                    ("stability".to_owned(), Value::from(0.5)),
+                    ("similarity".to_owned(), Value::from(0.75)),
+                ])
+            })
+        })
+    }
+}
+
 /// A JSON object in document order, as JavaScript's `JSON.stringify` sees it.
+#[derive(Clone)]
 struct Ordered(Vec<(String, Value)>);
 
 impl<'de> Deserialize<'de> for Ordered {
@@ -178,7 +200,7 @@ fn recipe(script: &Script, engine: &str, text: &str) -> Result<SpeechSpec> {
     Ok(match engine {
         "elevenlabs" => {
             let mut settings = Settings::default();
-            if let Some(ordered) = &script.settings {
+            if let Some(ordered) = &script.settings(engine) {
                 if let Some((unknown, _)) = ordered
                     .0
                     .iter()
@@ -193,12 +215,7 @@ fn recipe(script: &Script, engine: &str, text: &str) -> Result<SpeechSpec> {
                 backend: Backend::ElevenLabs,
                 model: Some(script.model.clone().unwrap_or_else(|| ELEVEN_V4.to_owned())),
                 route: Route::Dialogue,
-                lines: line(
-                    script
-                        .voice
-                        .as_deref()
-                        .context("ElevenLabs needs script.voice")?,
-                ),
+                lines: line(script.voice(engine).unwrap_or(ELEVEN_KIT)),
                 settings,
                 previous: Vec::new(),
                 format: ELEVEN_FORMAT.to_owned(),
@@ -240,13 +257,13 @@ fn recipe(script: &Script, engine: &str, text: &str) -> Result<SpeechSpec> {
 pub(crate) fn narrate_hash(script: &Script, engine: &str, text: &str) -> String {
     let mut hashed = format!(
         "{engine}|{}|{}|{text}",
-        script.voice.as_deref().unwrap_or(""),
+        script.voice(engine).unwrap_or(""),
         js_number(script.speed.unwrap_or(1.0))
     );
     if engine == "elevenlabs" {
         let model = script.model.as_deref().unwrap_or(ELEVEN_V4);
         write!(hashed, "{{\"model\":{}", Value::from(model)).unwrap();
-        if let Some(settings) = &script.settings {
+        if let Some(settings) = &script.settings(engine) {
             hashed.push_str(",\"settings\":{");
             for (index, (name, value)) in settings.0.iter().enumerate() {
                 if index > 0 {
@@ -308,6 +325,15 @@ mod tests {
             narrate_hash(&reordered, "elevenlabs", HUSH),
             "73a05e9b7cd9c5e7",
             "JSON.stringify keeps document order"
+        );
+        let defaulted = script(r#"{ "clips": [] }"#);
+        let explicit = script(
+            r#"{ "voice": "8olojUk4IXpvKgaOCHXj", "settings": { "stability": 0.5, "similarity": 0.75 }, "clips": [] }"#,
+        );
+        assert_eq!(
+            narrate_hash(&defaulted, "elevenlabs", HUSH),
+            narrate_hash(&explicit, "elevenlabs", HUSH),
+            "narrate.ts fills in Kit's voice and settings before hashing"
         );
         assert_eq!(js_number(1.0), "1");
         assert_eq!(js_number(0.65), "0.65");

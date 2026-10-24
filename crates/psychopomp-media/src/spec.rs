@@ -10,6 +10,8 @@ use crate::{media::Audio, words};
 
 /// ElevenLabs' model for finished narration.
 pub const ELEVEN_V4: &str = "eleven_v4";
+/// Kit's Professional Voice Clone, the default narrator on `eleven_v4`.
+pub const ELEVEN_KIT: &str = "8olojUk4IXpvKgaOCHXj";
 /// ElevenLabs' sound-effect model.
 pub const ELEVEN_SOUND: &str = "eleven_text_to_sound_v2";
 /// Fish Audio's free S2.1 model, the `fish-say` default.

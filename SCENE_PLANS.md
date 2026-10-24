@@ -431,14 +431,14 @@ what you want; the first run generates it, every run times the choreography to
 the real words, and later runs call nothing until a declaration changes:
 
 ```rust
-use psychopomp_media::{Effect, FISH_KIT, Line, Media, Sound, Voice};
+use psychopomp_media::{ELEVEN_KIT, Effect, Line, Media, Sound, Voice};
 
 let media = Media::open(env!("CARGO_MANIFEST_DIR"))?; // media.lock.json + media/
-let kit = Voice::eleven(KIT).v4().stability(0.2).similarity(0.65);
+let kit = Voice::eleven(ELEVEN_KIT).v4().stability(0.5).similarity(0.75);
 let guest = Voice::eleven(GUEST).v4().stability(0.2).similarity(0.65);
 let intro = media.say("intro", &kit, "[warm, conversational] When a client reconnects...")?;
 let fix = media.say("fix", &kit, Line::new("[relieved] Nothing gets killed.").after(&intro))?;
-let chant = media.say("chant", &Voice::fish(FISH_KIT), "Balls! Balls! BALLS!")?;
+let chant = media.say("chant", &kit, "[chanting, building] Balls! Balls! BALLS!")?;
 let duet = media.dialogue("duet", [(&kit, "You first."), (&guest, "No, you.")])?;
 let pop = media.sfx("pop", "a single soft glassy pop, tiny and dry", seconds(0.5))?;
 let bed = media.sfx("bed", Sound::new("light rain on a tin roof").looping(), seconds(8.0))?;
@@ -450,12 +450,15 @@ for at in said.at_every("balls") { pop.play(&mut scene, at, -18.0); } // Layer C
 scene.cue("intro-end", said.end(), said.end());
 ```
 
-- **Voices.** `Voice::eleven(id)` uses `eleven_v4`; `.stability`, `.similarity`,
+- **Voices.** Narrate in Kit's voice: `Voice::eleven(ELEVEN_KIT)` (his
+  Professional Voice Clone) at stability 0.5 and similarity 0.75.
+  `Voice::eleven(id)` uses `eleven_v4`; `.stability`, `.similarity`,
   `.seed`, `.language`, `.ivc()` (`use_pvc_as_ivc`), and `.whisper()` (time with
   Whisper instead of ElevenLabs' character alignment). v4 has no speed or style:
   direct performance with bracketed tags in the text, and `/IPA/` for
-  pronunciation. `Voice::fish(id)` uses `s2.1-pro-free` with `.speed`;
-  `Voice::say(name)` is a free macOS voice.
+  pronunciation. `Voice::say(name)` is a free macOS voice for drafts.
+  `Voice::fish(id)` is retired: it exists only for old Fish narration; don't
+  declare new Fish lines.
 - **Lines.** `media.say` is one Text to Speech request; `Line::new(text).after(&previous)`
   stitches it to an earlier ElevenLabs line with `previous_request_ids` (the
   predecessor's key joins this line's, so re-voicing it re-voices this one).
@@ -482,8 +485,8 @@ PSYCHOPOMP_MEDIA=prune cargo run -p <scene>  # zero calls; delete orphans and su
 cargo run -p psychopomp-media -- show scenes/<scene>
 ```
 
-Credentials come from `ELEVENLABS_API_KEY` and `FISH_AUDIO_API_KEY`, or the
-nearest `.env` above the scene; only a run that generates needs them. Commit
+Credentials come from `ELEVENLABS_API_KEY`, or the nearest `.env` above the
+scene; only a run that generates needs them. Commit
 `media.lock.json` and `media/` with the scene. Media paths are relative to the
 scene directory, so write the plan there. Each id names one role: give a new
 line a new id, keep the id when rewording a line, and prune orphans when done.
@@ -533,8 +536,8 @@ reusable for any code explainer:
   for a `Pr`, `behavior`, `code`); `scenes/config-migration` reuses it.
 
 ```sh
-# 1. Voice the script (Fish Audio via 1Password; --draft uses macOS `say`).
-2password run --env 'FISH_AUDIO_API_KEY=op://…' -- \
+# 1. Voice the script (Kit's voice on Eleven v4 via 1Password; --draft uses macOS `say`).
+2password run --env 'ELEVENLABS_API_KEY=op://…' -- \
   bun scripts/narrate.ts scenes/pr-walkthrough/narration/script.json
 # 2. Emit the reel; phrase lookups fail loudly if narration changed.
 cargo run -p psychopomp-pr-walkthrough
@@ -550,9 +553,12 @@ cargo run --release -- plan render scenes/pr-walkthrough/pr-walkthrough.reel.jso
 `narration.json` with exact decoded durations. Draft and final clips share file
 names, so switching voices re-times the reel without touching the Scene Program.
 
-For ElevenLabs v4, use `"engine": "elevenlabs"`, `"model": "eleven_v4"`, the
-voice ID, and optional `"settings": { "stability": 0.5, "similarity": 0.7 }` in
-the script. Inject `ELEVENLABS_API_KEY`; `speed` is unsupported. Directions in
+narrate.ts defaults to ElevenLabs v4 in Kit's voice: `"engine": "elevenlabs"`,
+`"model": "eleven_v4"`, `"voice": "8olojUk4IXpvKgaOCHXj"` (his Professional Voice
+Clone, `use_pvc_as_ivc: false`), and `"settings": { "stability": 0.5,
+"similarity": 0.75 }`. Write them in the script anyway so it says what it
+used. Inject `ELEVENLABS_API_KEY`; `speed` is unsupported. Fish Audio
+(`"engine": "fish"`) is retired. Directions in
 square brackets guide performance; Whisper timestamps the resulting speech.
 The script records model/request IDs and checkpoints completed clips. Clips are
 normalized to -16 LUFS; the default evens the level within each clip, while

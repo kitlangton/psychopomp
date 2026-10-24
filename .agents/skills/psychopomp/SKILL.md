@@ -4,7 +4,7 @@ description: >
   Make explainer reels and deterministic motion graphics with Psychopomp:
   walkthrough videos of pull requests, code changes, protocols, or lifecycles,
   with GPU Stage choreography, callouts, rolling numbers, sequence diagrams,
-  animated diffs, and optional ElevenLabs or Fish Audio narration.
+  animated diffs, and optional ElevenLabs v4 narration in Kit's voice.
 ---
 
 # Psychopomp explainer reels
@@ -38,14 +38,17 @@ authoring. Engineering rules are in [`AGENTS.md`](https://github.com/kitlangton/
    seconds spoken and every planned visual beat has a distinct anchor phrase in it.
 
 3. **Voice it (optional).** Draft first with no credentials (`--draft` uses macOS
-   `say`), or synthesize final narration with **ElevenLabs** (`engine: "elevenlabs"`,
-   default model `eleven_v4`) or **Fish Audio** (`engine: "fish"`):
+   `say`), then synthesize final narration with **ElevenLabs v4 in Kit's voice**:
+   `eleven_v4` through Text to Dialogue with Kit's Professional Voice Clone
+   `8olojUk4IXpvKgaOCHXj` (`use_pvc_as_ivc: false`, stability 0.5, similarity
+   0.75). That is narrate.ts's default; spell it out in the script anyway. Fish
+   Audio is retired: never use it.
    ```json
    {
      "engine": "elevenlabs",
      "model": "eleven_v4",
-     "voice": "<elevenlabs-voice-id>",
-     "settings": { "stability": 0.5, "similarity": 0.7 },
+     "voice": "8olojUk4IXpvKgaOCHXj",
+     "settings": { "stability": 0.5, "similarity": 0.75 },
      "clips": [
        { "id": "change-before", "text": "[warm, conversational voice] ..." }
      ]
@@ -55,11 +58,9 @@ authoring. Engineering rules are in [`AGENTS.md`](https://github.com/kitlangton/
    # Draft (no API key required)
    bun scripts/narrate.ts scenes/<name>/narration/script.json --draft
 
-   # ElevenLabs (requires ELEVENLABS_API_KEY and script.voice)
-   ELEVENLABS_API_KEY=... bun scripts/narrate.ts scenes/<name>/narration/script.json
-
-   # Fish Audio (requires FISH_AUDIO_API_KEY)
-   FISH_AUDIO_API_KEY=... bun scripts/narrate.ts scenes/<name>/narration/script.json
+   # Final: Kit's voice on Eleven v4 (requires ELEVENLABS_API_KEY)
+   2password run --env 'ELEVENLABS_API_KEY=op://…' -- \
+     bun scripts/narrate.ts scenes/<name>/narration/script.json
    ```
    [`scripts/narrate.ts`](https://github.com/kitlangton/psychopomp/blob/main/scripts/narrate.ts) normalizes loudness, transcribes word timings with Whisper,
    and writes `<id>.mp3`, `<id>.words.json`, and `narration.json`. When switching
