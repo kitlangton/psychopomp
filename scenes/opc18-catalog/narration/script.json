@@ -1,32 +1,36 @@
 {
+  "engine": "elevenlabs",
+  "model": "eleven_v4",
+  "voice": "8olojUk4IXpvKgaOCHXj",
+  "settings": { "stability": 0.5, "similarity": 0.75 },
   "clips": [
     {
       "id": "intro",
-      "text": "[calm, conversational] Every time OpenCode boots, it builds a catalog of providers and models. About two hundred thirty providers come from the models dot dev snapshot. Then ninety plugins each get a turn to adjust it."
+      "text": "[warm, conversational] Every time OpenCode boots, it builds a catalog of providers and models. About two hundred thirty providers come from the models dot dev snapshot. Then ninety plugins each get a turn to adjust it."
     },
     {
       "id": "catalog-before",
-      "text": "[calm, conversational] Here's what we measured. That catalog isn't built once. During plugin activation, it gets rebuilt seventeen times. Each rebuild starts over from the snapshot and copies about two hundred thirty providers. Activation takes about two hundred fifty milliseconds on a warm boot. The rebuilds are about forty of that, and the cascade at the end of the batch is about seventy more."
+      "text": "[measured, matter-of-fact] Here's what we measured. That catalog isn't built once. During plugin activation, it gets rebuilt... seventeen times. Each rebuild starts over from the snapshot and copies about two hundred thirty providers. Activation takes about two hundred fifty milliseconds on a warm boot. The rebuilds are about forty of that, and the cascade at the end of the batch is about seventy more."
     },
     {
       "id": "catalog-twist",
-      "text": "[calm, conversational] But plugin loading already runs inside a batch. Isn't that supposed to stop this? It does, for notifications. The batch holds them back until the last plugin loads. It doesn't hold back reads. Each new transform marks the catalog dirty, and the next read rebuilds all of it. Model transforms take a provider snapshot first, and that's a read. Plugins that check provider settings read too. So the batch saves the notifications, and every read still pays for a full rebuild."
+      "text": "[curious, thinking it through] But plugin loading already runs inside a batch. Isn't that supposed to stop this? [precise, deliberate] It does, for notifications. The batch holds them back until the last plugin loads. It doesn't hold back reads. Each new transform marks the catalog dirty, and the next read rebuilds all of it. Model transforms take a provider snapshot first, and that's a read. Plugins that check provider settings read too. So the batch saves the notifications, and every read still pays for a full rebuild."
     },
     {
       "id": "catalog-after",
-      "text": "[calm, conversational] The fix is to build once per batch. Model transforms stop taking a snapshot first, so plugins just register their changes, and the catalog builds when the batch closes. Plugins read a frozen catalog. One that changes a provider copies just that provider. Seventeen rebuilds become one or two. The proposal estimates activation drops to about eighty five milliseconds. That's an estimate, not a measurement."
+      "text": "[relieved, understated] The fix is to build once per batch. Model transforms stop taking a snapshot first, so plugins just register their changes, and the catalog builds when the batch closes. Plugins read a frozen catalog. One that changes a provider copies just that provider. Seventeen rebuilds become one or two. [careful, honest] The proposal estimates activation drops to about eighty five milliseconds. That's an estimate, not a measurement."
     },
     {
       "id": "catalog-code",
-      "text": "[calm, conversational] Here's the proposed change. There's no pull request yet. The model transform drops the snapshot it took first. Instead, notify hands the model a getter, so it reads the latest snapshot once. In the provider editor, add stops cloning every provider and keeps the frozen one. Update clones only the provider it changes."
+      "text": "[clear, walking through code] Here's the proposed change. There's no pull request yet. The model transform drops the snapshot it took first. Instead, notify hands the model a getter, so it reads the latest snapshot once. In the provider editor, add stops cloning every provider and keeps the frozen one. Update clones only the provider it changes."
     },
     {
       "id": "catalog-plan",
-      "text": "[calm, conversational] It splits into three pull requests. The first builds once per batch, with copy on write, and carries most of the estimated savings. The second skips a few reloads right after boot that change nothing. The third skips re-reading the models dot dev cache when it matches the bundled snapshot."
+      "text": "[steady, conversational] It splits into three pull requests. The first builds once per batch, with copy on write, and carries most of the estimated savings. The second skips a few reloads right after boot that change nothing. The third skips re-reading the models dot dev cache when it matches the bundled snapshot."
     },
     {
       "id": "outro",
-      "text": "[calm, conversational] That leaves decision D seven. Two open pull requests already quiet the reloads that change nothing. Five six nine nine four targets beta. Aiden's, five seven three one five, targets dev. Both overlap with the first pull request here. Whether to fold one in and close the others is a call for me and Aiden."
+      "text": "[warm, direct] That leaves decision D seven. Two open pull requests already quiet the reloads that change nothing. Five six nine nine four targets beta. Aiden's, five seven three one five, targets dev. Both overlap with the first pull request here. Whether to fold one in and close the others is a call for me and Aiden."
     }
   ]
 }

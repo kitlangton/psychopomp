@@ -3,267 +3,267 @@
   {
    "word": "Here's",
    "start": 0,
-   "end": 0.24
+   "end": 0.34
   },
   {
    "word": "the",
-   "start": 0.24,
-   "end": 0.3
+   "start": 0.34,
+   "end": 0.46
   },
   {
    "word": "proposed",
-   "start": 0.3,
-   "end": 0.64
+   "start": 0.46,
+   "end": 0.76
   },
   {
    "word": "change.",
-   "start": 0.64,
-   "end": 1.04
+   "start": 0.76,
+   "end": 1.32
   },
   {
    "word": "There's",
-   "start": 1.46,
-   "end": 1.86
+   "start": 1.78,
+   "end": 2.42
   },
   {
    "word": "no",
-   "start": 1.86,
-   "end": 1.96
+   "start": 2.42,
+   "end": 2.52
   },
   {
    "word": "pull",
-   "start": 1.96,
-   "end": 2.26
+   "start": 2.52,
+   "end": 2.76
   },
   {
    "word": "request",
-   "start": 2.26,
-   "end": 2.58
+   "start": 2.76,
+   "end": 3
   },
   {
    "word": "yet.",
-   "start": 2.58,
-   "end": 3.02
+   "start": 3,
+   "end": 3.42
   },
   {
    "word": "The",
-   "start": 3.26,
-   "end": 3.5
+   "start": 3.72,
+   "end": 4.26
   },
   {
    "word": "model",
-   "start": 3.5,
-   "end": 3.8
+   "start": 4.26,
+   "end": 4.5
   },
   {
    "word": "transform",
-   "start": 3.8,
-   "end": 4.08
+   "start": 4.5,
+   "end": 4.86
   },
   {
    "word": "drops",
-   "start": 4.08,
-   "end": 4.68
+   "start": 4.86,
+   "end": 5.34
   },
   {
    "word": "the",
-   "start": 4.68,
-   "end": 5
+   "start": 5.34,
+   "end": 5.64
   },
   {
    "word": "snapshot",
-   "start": 5,
-   "end": 5.44
+   "start": 5.64,
+   "end": 6.08
   },
   {
    "word": "it",
-   "start": 5.44,
-   "end": 5.78
+   "start": 6.08,
+   "end": 6.36
   },
   {
    "word": "took",
-   "start": 5.78,
-   "end": 5.94
+   "start": 6.36,
+   "end": 6.52
   },
   {
    "word": "first.",
-   "start": 5.94,
-   "end": 6.32
+   "start": 6.52,
+   "end": 6.86
   },
   {
    "word": "Instead,",
-   "start": 6.58,
-   "end": 7.02
+   "start": 7.42,
+   "end": 8.06
   },
   {
-   "word": "notify",
-   "start": 7.3,
-   "end": 7.78
+   "word": "Notify",
+   "start": 8.4,
+   "end": 9.1
   },
   {
    "word": "hands",
-   "start": 7.78,
-   "end": 8.18
+   "start": 9.1,
+   "end": 9.38
   },
   {
    "word": "the",
-   "start": 8.18,
-   "end": 8.48
+   "start": 9.38,
+   "end": 9.7
   },
   {
    "word": "model",
-   "start": 8.48,
-   "end": 8.76
+   "start": 9.7,
+   "end": 9.96
   },
   {
    "word": "a",
-   "start": 8.76,
-   "end": 8.88
+   "start": 9.96,
+   "end": 10.16
   },
   {
    "word": "getter,",
-   "start": 8.88,
-   "end": 9.22
-  },
-  {
-   "word": "so",
-   "start": 9.26,
-   "end": 9.62
-  },
-  {
-   "word": "it",
-   "start": 9.62,
-   "end": 9.84
-  },
-  {
-   "word": "reads",
-   "start": 9.84,
-   "end": 10.1
-  },
-  {
-   "word": "the",
-   "start": 10.1,
-   "end": 10.28
-  },
-  {
-   "word": "latest",
-   "start": 10.28,
+   "start": 10.16,
    "end": 10.52
   },
   {
-   "word": "snapshot",
-   "start": 10.52,
-   "end": 11.02
-  },
-  {
-   "word": "once.",
-   "start": 11.02,
-   "end": 11.46
-  },
-  {
-   "word": "In",
-   "start": 11.78,
-   "end": 12.06
-  },
-  {
-   "word": "the",
-   "start": 12.06,
-   "end": 12.14
-  },
-  {
-   "word": "provider",
-   "start": 12.14,
-   "end": 12.5
-  },
-  {
-   "word": "editor,",
-   "start": 12.5,
-   "end": 12.94
-  },
-  {
-   "word": "add",
-   "start": 13.18,
-   "end": 13.48
-  },
-  {
-   "word": "stops",
-   "start": 13.48,
-   "end": 13.74
-  },
-  {
-   "word": "cloning",
-   "start": 13.74,
-   "end": 14.3
-  },
-  {
-   "word": "every",
-   "start": 14.3,
-   "end": 14.58
-  },
-  {
-   "word": "provider",
-   "start": 14.58,
-   "end": 15.06
-  },
-  {
-   "word": "and",
-   "start": 15.06,
-   "end": 15.3
-  },
-  {
-   "word": "keeps",
-   "start": 15.3,
-   "end": 15.58
-  },
-  {
-   "word": "the",
-   "start": 15.58,
-   "end": 15.76
-  },
-  {
-   "word": "frozen",
-   "start": 15.76,
-   "end": 16.04
-  },
-  {
-   "word": "one.",
-   "start": 16.04,
-   "end": 16.38
-  },
-  {
-   "word": "Update",
-   "start": 16.66,
-   "end": 17.12
-  },
-  {
-   "word": "clones",
-   "start": 17.12,
-   "end": 17.46
-  },
-  {
-   "word": "only",
-   "start": 17.46,
-   "end": 17.82
-  },
-  {
-   "word": "the",
-   "start": 17.82,
-   "end": 18.04
-  },
-  {
-   "word": "provider",
-   "start": 18.04,
-   "end": 18.38
+   "word": "so",
+   "start": 10.56,
+   "end": 11.26
   },
   {
    "word": "it",
-   "start": 18.38,
-   "end": 18.7
+   "start": 11.26,
+   "end": 11.4
+  },
+  {
+   "word": "reads",
+   "start": 11.4,
+   "end": 11.66
+  },
+  {
+   "word": "the",
+   "start": 11.66,
+   "end": 11.82
+  },
+  {
+   "word": "latest",
+   "start": 11.82,
+   "end": 12.06
+  },
+  {
+   "word": "snapshot",
+   "start": 12.06,
+   "end": 12.46
+  },
+  {
+   "word": "once.",
+   "start": 12.46,
+   "end": 13
+  },
+  {
+   "word": "In",
+   "start": 13.36,
+   "end": 13.92
+  },
+  {
+   "word": "the",
+   "start": 13.92,
+   "end": 14
+  },
+  {
+   "word": "Provider",
+   "start": 14,
+   "end": 14.4
+  },
+  {
+   "word": "Editor,",
+   "start": 14.4,
+   "end": 14.64
+  },
+  {
+   "word": "Add",
+   "start": 14.92,
+   "end": 15.56
+  },
+  {
+   "word": "stops",
+   "start": 15.56,
+   "end": 15.78
+  },
+  {
+   "word": "cloning",
+   "start": 15.78,
+   "end": 16.28
+  },
+  {
+   "word": "every",
+   "start": 16.28,
+   "end": 16.52
+  },
+  {
+   "word": "provider",
+   "start": 16.52,
+   "end": 16.96
+  },
+  {
+   "word": "and",
+   "start": 16.96,
+   "end": 17.18
+  },
+  {
+   "word": "keeps",
+   "start": 17.18,
+   "end": 17.4
+  },
+  {
+   "word": "the",
+   "start": 17.4,
+   "end": 17.58
+  },
+  {
+   "word": "frozen",
+   "start": 17.58,
+   "end": 17.86
+  },
+  {
+   "word": "one.",
+   "start": 17.86,
+   "end": 18.18
+  },
+  {
+   "word": "Update",
+   "start": 18.52,
+   "end": 19.16
+  },
+  {
+   "word": "clones",
+   "start": 19.16,
+   "end": 19.58
+  },
+  {
+   "word": "only",
+   "start": 19.58,
+   "end": 20.08
+  },
+  {
+   "word": "the",
+   "start": 20.08,
+   "end": 20.26
+  },
+  {
+   "word": "provider",
+   "start": 20.26,
+   "end": 20.66
+  },
+  {
+   "word": "it",
+   "start": 20.66,
+   "end": 20.82
   },
   {
    "word": "changes.",
-   "start": 18.7,
-   "end": 19.02
+   "start": 20.82,
+   "end": 21.12
   }
  ]
 }

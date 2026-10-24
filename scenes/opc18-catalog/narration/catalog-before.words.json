@@ -3,292 +3,292 @@
   {
    "word": "Here's",
    "start": 0,
-   "end": 0.24
+   "end": 0.34
   },
   {
    "word": "what",
-   "start": 0.24,
-   "end": 0.36
-  },
-  {
-   "word": "we",
-   "start": 0.36,
+   "start": 0.34,
    "end": 0.5
   },
   {
-   "word": "measured.",
+   "word": "we",
    "start": 0.5,
-   "end": 0.84
+   "end": 0.66
+  },
+  {
+   "word": "measured.",
+   "start": 0.66,
+   "end": 1
   },
   {
    "word": "That",
-   "start": 1.06,
-   "end": 1.32
+   "start": 1.16,
+   "end": 1.44
   },
   {
    "word": "catalog",
-   "start": 1.32,
-   "end": 1.74
+   "start": 1.44,
+   "end": 1.9
   },
   {
    "word": "isn't",
-   "start": 1.74,
-   "end": 2.24
+   "start": 1.9,
+   "end": 2.62
   },
   {
    "word": "built",
-   "start": 2.24,
-   "end": 2.38
+   "start": 2.62,
+   "end": 2.78
   },
   {
    "word": "once.",
-   "start": 2.38,
-   "end": 2.76
+   "start": 2.78,
+   "end": 3.24
   },
   {
    "word": "During",
-   "start": 2.98,
-   "end": 3.4
+   "start": 3.48,
+   "end": 3.94
   },
   {
    "word": "plugin",
-   "start": 3.4,
-   "end": 3.8
+   "start": 3.94,
+   "end": 4.36
   },
   {
-   "word": "activation,",
-   "start": 3.8,
-   "end": 4.16
+   "word": "activation",
+   "start": 4.36,
+   "end": 4.74
   },
   {
    "word": "it",
-   "start": 4.66,
-   "end": 4.96
+   "start": 4.74,
+   "end": 5.2
   },
   {
    "word": "gets",
-   "start": 4.96,
-   "end": 5.22
+   "start": 5.2,
+   "end": 5.44
   },
   {
    "word": "rebuilt",
-   "start": 5.22,
-   "end": 5.52
+   "start": 5.44,
+   "end": 5.82
   },
   {
    "word": "17",
-   "start": 5.52,
-   "end": 5.9
+   "start": 5.82,
+   "end": 6.58
   },
   {
    "word": "times.",
-   "start": 5.9,
-   "end": 6.5
+   "start": 6.58,
+   "end": 7.26
   },
   {
    "word": "Each",
-   "start": 6.86,
-   "end": 7.18
+   "start": 7.76,
+   "end": 8.14
   },
   {
    "word": "rebuild",
-   "start": 7.18,
-   "end": 7.48
+   "start": 8.14,
+   "end": 8.54
   },
   {
    "word": "starts",
-   "start": 7.48,
-   "end": 7.78
+   "start": 8.54,
+   "end": 8.9
   },
   {
    "word": "over",
-   "start": 7.78,
-   "end": 8.2
+   "start": 8.9,
+   "end": 9.36
   },
   {
    "word": "from",
-   "start": 8.2,
-   "end": 8.42
+   "start": 9.36,
+   "end": 9.58
   },
   {
    "word": "the",
-   "start": 8.42,
-   "end": 8.56
+   "start": 9.58,
+   "end": 9.68
   },
   {
    "word": "snapshot",
-   "start": 8.56,
-   "end": 8.98
+   "start": 9.68,
+   "end": 10.08
   },
   {
    "word": "and",
-   "start": 8.98,
-   "end": 9.34
+   "start": 10.08,
+   "end": 10.46
   },
   {
    "word": "copies",
-   "start": 9.34,
-   "end": 9.74
+   "start": 10.46,
+   "end": 10.86
   },
   {
    "word": "about",
-   "start": 9.74,
-   "end": 10.02
+   "start": 10.86,
+   "end": 11.1
   },
   {
    "word": "230",
-   "start": 10.02,
-   "end": 10.64
+   "start": 11.1,
+   "end": 11.6
   },
   {
    "word": "providers.",
-   "start": 10.64,
-   "end": 11.4
+   "start": 11.6,
+   "end": 12.42
   },
   {
    "word": "Activation",
-   "start": 12.08,
-   "end": 12.64
+   "start": 12.94,
+   "end": 13.62
   },
   {
    "word": "takes",
-   "start": 12.64,
-   "end": 12.84
+   "start": 13.62,
+   "end": 13.84
   },
   {
    "word": "about",
-   "start": 12.84,
-   "end": 13.26
+   "start": 13.84,
+   "end": 14.2
   },
   {
    "word": "250",
-   "start": 13.26,
-   "end": 13.92
+   "start": 14.2,
+   "end": 14.72
   },
   {
    "word": "milliseconds",
-   "start": 13.92,
-   "end": 14.64
+   "start": 14.72,
+   "end": 15.34
   },
   {
    "word": "on",
-   "start": 14.64,
-   "end": 15.18
+   "start": 15.34,
+   "end": 15.9
   },
   {
    "word": "a",
-   "start": 15.18,
-   "end": 15.3
+   "start": 15.9,
+   "end": 16
   },
   {
    "word": "warm",
-   "start": 15.3,
-   "end": 15.54
+   "start": 16,
+   "end": 16.2
   },
   {
    "word": "boot.",
-   "start": 15.54,
-   "end": 15.76
+   "start": 16.2,
+   "end": 16.46
   },
   {
    "word": "The",
-   "start": 16.02,
-   "end": 16.3
+   "start": 16.7,
+   "end": 17.02
   },
   {
    "word": "rebuilds",
-   "start": 16.3,
-   "end": 16.74
+   "start": 17.02,
+   "end": 17.6
   },
   {
    "word": "are",
-   "start": 16.74,
-   "end": 16.78
+   "start": 17.6,
+   "end": 17.64
   },
   {
    "word": "about",
-   "start": 16.78,
-   "end": 17.04
+   "start": 17.64,
+   "end": 17.86
   },
   {
    "word": "40",
-   "start": 17.04,
-   "end": 17.44
+   "start": 17.86,
+   "end": 18.3
   },
   {
    "word": "of",
-   "start": 17.44,
-   "end": 17.62
+   "start": 18.3,
+   "end": 18.46
   },
   {
-   "word": "that.",
-   "start": 17.62,
-   "end": 17.8
+   "word": "that,",
+   "start": 18.46,
+   "end": 18.66
   },
   {
-   "word": "And",
-   "start": 17.98,
-   "end": 18.26
+   "word": "and",
+   "start": 18.84,
+   "end": 19.18
   },
   {
    "word": "the",
-   "start": 18.26,
-   "end": 18.36
+   "start": 19.18,
+   "end": 19.26
   },
   {
    "word": "cascade",
-   "start": 18.36,
-   "end": 18.7
+   "start": 19.26,
+   "end": 19.64
   },
   {
    "word": "at",
-   "start": 18.7,
-   "end": 18.98
-  },
-  {
-   "word": "the",
-   "start": 18.98,
-   "end": 19.06
-  },
-  {
-   "word": "end",
-   "start": 19.06,
-   "end": 19.32
-  },
-  {
-   "word": "of",
-   "start": 19.32,
-   "end": 19.42
-  },
-  {
-   "word": "the",
-   "start": 19.42,
-   "end": 19.52
-  },
-  {
-   "word": "batch",
-   "start": 19.52,
-   "end": 19.78
-  },
-  {
-   "word": "is",
-   "start": 19.78,
+   "start": 19.64,
    "end": 19.98
   },
   {
-   "word": "about",
+   "word": "the",
    "start": 19.98,
-   "end": 20.2
+   "end": 20.04
+  },
+  {
+   "word": "end",
+   "start": 20.04,
+   "end": 20.24
+  },
+  {
+   "word": "of",
+   "start": 20.24,
+   "end": 20.34
+  },
+  {
+   "word": "the",
+   "start": 20.34,
+   "end": 20.4
+  },
+  {
+   "word": "batch",
+   "start": 20.4,
+   "end": 20.68
+  },
+  {
+   "word": "is",
+   "start": 20.68,
+   "end": 20.88
+  },
+  {
+   "word": "about",
+   "start": 20.88,
+   "end": 21.08
   },
   {
    "word": "70",
-   "start": 20.2,
-   "end": 20.6
+   "start": 21.08,
+   "end": 21.48
   },
   {
    "word": "more.",
-   "start": 20.6,
-   "end": 20.86
+   "start": 21.48,
+   "end": 21.72
   }
  ]
 }

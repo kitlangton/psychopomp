@@ -3,247 +3,247 @@
   {
    "word": "It",
    "start": 0,
-   "end": 0.08
+   "end": 0.18
   },
   {
    "word": "splits",
-   "start": 0.08,
-   "end": 0.28
+   "start": 0.18,
+   "end": 0.44
   },
   {
    "word": "into",
-   "start": 0.28,
-   "end": 0.58
+   "start": 0.44,
+   "end": 0.72
   },
   {
    "word": "three",
-   "start": 0.58,
-   "end": 0.86
+   "start": 0.72,
+   "end": 1.04
   },
   {
    "word": "pull",
-   "start": 0.86,
-   "end": 1.08
+   "start": 1.04,
+   "end": 1.34
   },
   {
    "word": "requests.",
-   "start": 1.08,
-   "end": 1.5
+   "start": 1.34,
+   "end": 1.68
   },
   {
    "word": "The",
-   "start": 1.98,
-   "end": 2.28
+   "start": 2.12,
+   "end": 2.48
   },
   {
    "word": "first",
-   "start": 2.28,
-   "end": 2.56
-  },
-  {
-   "word": "builds",
-   "start": 2.56,
+   "start": 2.48,
    "end": 2.8
   },
   {
-   "word": "once",
+   "word": "builds",
    "start": 2.8,
-   "end": 3.06
+   "end": 3.1
+  },
+  {
+   "word": "once",
+   "start": 3.1,
+   "end": 3.54
   },
   {
    "word": "per",
-   "start": 3.06,
-   "end": 3.32
+   "start": 3.54,
+   "end": 3.86
   },
   {
    "word": "batch,",
-   "start": 3.32,
-   "end": 3.76
+   "start": 3.86,
+   "end": 4.34
   },
   {
    "word": "with",
-   "start": 3.88,
-   "end": 4.18
+   "start": 4.46,
+   "end": 4.82
   },
   {
    "word": "copy",
-   "start": 4.18,
-   "end": 4.54
+   "start": 4.82,
+   "end": 5.12
   },
   {
    "word": "on",
-   "start": 4.54,
-   "end": 4.78
+   "start": 5.12,
+   "end": 5.36
   },
   {
    "word": "write,",
-   "start": 4.78,
-   "end": 5.04
+   "start": 5.36,
+   "end": 5.66
   },
   {
    "word": "and",
-   "start": 5.24,
-   "end": 5.5
+   "start": 5.82,
+   "end": 6.2
   },
   {
    "word": "carries",
-   "start": 5.5,
-   "end": 5.8
+   "start": 6.2,
+   "end": 6.52
   },
   {
    "word": "most",
-   "start": 5.8,
-   "end": 6.14
+   "start": 6.52,
+   "end": 6.86
   },
   {
    "word": "of",
-   "start": 6.14,
-   "end": 6.32
+   "start": 6.86,
+   "end": 7.12
   },
   {
    "word": "the",
-   "start": 6.32,
-   "end": 6.44
+   "start": 7.12,
+   "end": 7.22
   },
   {
    "word": "estimated",
-   "start": 6.44,
-   "end": 6.82
+   "start": 7.22,
+   "end": 7.6
   },
   {
    "word": "savings.",
-   "start": 6.82,
-   "end": 7.4
+   "start": 7.6,
+   "end": 8.16
   },
   {
    "word": "The",
-   "start": 7.72,
-   "end": 8.06
+   "start": 8.52,
+   "end": 8.92
   },
   {
    "word": "second",
-   "start": 8.06,
-   "end": 8.38
+   "start": 8.92,
+   "end": 9.26
   },
   {
    "word": "skips",
-   "start": 8.38,
-   "end": 8.78
+   "start": 9.26,
+   "end": 9.76
   },
   {
    "word": "a",
-   "start": 8.78,
-   "end": 8.88
+   "start": 9.76,
+   "end": 9.82
   },
   {
    "word": "few",
-   "start": 8.88,
-   "end": 9.06
+   "start": 9.82,
+   "end": 10
   },
   {
    "word": "reloads",
-   "start": 9.06,
-   "end": 9.58
+   "start": 10,
+   "end": 10.62
   },
   {
    "word": "right",
-   "start": 9.58,
-   "end": 9.72
+   "start": 10.62,
+   "end": 10.78
   },
   {
    "word": "after",
-   "start": 9.72,
-   "end": 10.04
+   "start": 10.78,
+   "end": 11.02
   },
   {
    "word": "boot",
-   "start": 10.04,
-   "end": 10.36
+   "start": 11.02,
+   "end": 11.34
   },
   {
    "word": "that",
-   "start": 10.36,
-   "end": 10.52
+   "start": 11.34,
+   "end": 11.54
   },
   {
    "word": "change",
-   "start": 10.52,
-   "end": 10.82
+   "start": 11.54,
+   "end": 11.8
   },
   {
    "word": "nothing.",
-   "start": 10.82,
-   "end": 11.16
+   "start": 11.8,
+   "end": 12.18
   },
   {
    "word": "The",
-   "start": 11.42,
-   "end": 11.74
+   "start": 12.46,
+   "end": 12.86
   },
   {
    "word": "third",
-   "start": 11.74,
-   "end": 11.94
+   "start": 12.86,
+   "end": 13.06
   },
   {
    "word": "skips",
-   "start": 11.94,
-   "end": 12.34
+   "start": 13.06,
+   "end": 13.56
   },
   {
    "word": "rereading",
-   "start": 12.34,
-   "end": 12.74
+   "start": 13.56,
+   "end": 14.06
   },
   {
    "word": "the",
-   "start": 12.74,
-   "end": 12.88
-  },
-  {
-   "word": "model's",
-   "start": 12.88,
-   "end": 13.3
-  },
-  {
-   "word": ".dev",
-   "start": 13.3,
-   "end": 13.74
-  },
-  {
-   "word": "cache",
-   "start": 13.74,
-   "end": 13.96
-  },
-  {
-   "word": "when",
-   "start": 13.96,
+   "start": 14.06,
    "end": 14.22
   },
   {
-   "word": "it",
+   "word": "model's",
    "start": 14.22,
-   "end": 14.34
+   "end": 14.66
+  },
+  {
+   "word": ".dev",
+   "start": 14.66,
+   "end": 15.06
+  },
+  {
+   "word": "cache",
+   "start": 15.06,
+   "end": 15.36
+  },
+  {
+   "word": "when",
+   "start": 15.36,
+   "end": 15.76
+  },
+  {
+   "word": "it",
+   "start": 15.76,
+   "end": 15.86
   },
   {
    "word": "matches",
-   "start": 14.34,
-   "end": 14.72
+   "start": 15.86,
+   "end": 16.22
   },
   {
    "word": "the",
-   "start": 14.72,
-   "end": 14.92
+   "start": 16.22,
+   "end": 16.42
   },
   {
    "word": "bundled",
-   "start": 14.92,
-   "end": 15.34
+   "start": 16.42,
+   "end": 16.84
   },
   {
    "word": "snapshot.",
-   "start": 15.34,
-   "end": 15.56
+   "start": 16.84,
+   "end": 17.08
   }
  ]
 }

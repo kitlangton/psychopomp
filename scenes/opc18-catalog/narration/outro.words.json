@@ -3,232 +3,232 @@
   {
    "word": "That",
    "start": 0,
-   "end": 0.08
+   "end": 0.22
   },
   {
-   "word": "leaves",
-   "start": 0.08,
-   "end": 0.3
+   "word": "leads",
+   "start": 0.22,
+   "end": 0.46
   },
   {
    "word": "decision",
-   "start": 0.3,
-   "end": 0.72
+   "start": 0.46,
+   "end": 0.92
   },
   {
    "word": "D7.",
-   "start": 0.72,
-   "end": 1.34
+   "start": 0.92,
+   "end": 1.76
   },
   {
    "word": "Two",
-   "start": 1.62,
-   "end": 1.92
+   "start": 2.04,
+   "end": 2.4
   },
   {
    "word": "open",
-   "start": 1.92,
-   "end": 2.28
+   "start": 2.4,
+   "end": 2.74
   },
   {
    "word": "pull",
-   "start": 2.28,
-   "end": 2.5
+   "start": 2.74,
+   "end": 2.98
   },
   {
    "word": "requests",
-   "start": 2.5,
-   "end": 2.92
+   "start": 2.98,
+   "end": 3.32
   },
   {
    "word": "already",
-   "start": 2.92,
-   "end": 3.34
+   "start": 3.32,
+   "end": 3.78
   },
   {
    "word": "quiet",
-   "start": 3.34,
-   "end": 3.82
+   "start": 3.78,
+   "end": 4.16
   },
   {
    "word": "the",
-   "start": 3.82,
-   "end": 4.1
+   "start": 4.16,
+   "end": 4.38
   },
   {
    "word": "reloads",
-   "start": 4.1,
-   "end": 4.58
+   "start": 4.38,
+   "end": 4.92
   },
   {
    "word": "that",
-   "start": 4.58,
-   "end": 4.62
+   "start": 4.92,
+   "end": 4.96
   },
   {
    "word": "change",
-   "start": 4.62,
-   "end": 5
+   "start": 4.96,
+   "end": 5.22
   },
   {
    "word": "nothing.",
-   "start": 5,
-   "end": 5.36
+   "start": 5.22,
+   "end": 5.6
   },
   {
    "word": "56994",
-   "start": 6.520000000000003,
-   "end": 7.08
+   "start": 6.86,
+   "end": 7.36
   },
   {
    "word": "targets",
-   "start": 7.08,
-   "end": 7.54
+   "start": 7.36,
+   "end": 7.86
   },
   {
    "word": "beta.",
-   "start": 7.54,
-   "end": 7.92
+   "start": 7.86,
+   "end": 8.22
   },
   {
-   "word": "Aiden's.",
-   "start": 8.22,
-   "end": 8.78
+   "word": "Aiden's",
+   "start": 8.58,
+   "end": 9.08
   },
   {
-   "word": "57315.",
-   "start": 9.700000000000003,
-   "end": 10.26
+   "word": "57315",
+   "start": 9.08,
+   "end": 10.46
   },
   {
-   "word": "Targets",
-   "start": 10.8,
-   "end": 11.36
+   "word": "targets",
+   "start": 10.46,
+   "end": 11.3
   },
   {
    "word": "dev.",
-   "start": 11.36,
-   "end": 11.58
+   "start": 11.3,
+   "end": 11.64
   },
   {
    "word": "Both",
-   "start": 11.8,
-   "end": 12.12
+   "start": 11.84,
+   "end": 12.22
   },
   {
    "word": "overlap",
-   "start": 12.12,
-   "end": 12.54
+   "start": 12.22,
+   "end": 12.64
   },
   {
    "word": "with",
-   "start": 12.54,
-   "end": 12.82
+   "start": 12.64,
+   "end": 12.88
   },
   {
    "word": "the",
-   "start": 12.82,
-   "end": 12.96
+   "start": 12.88,
+   "end": 12.98
   },
   {
    "word": "first",
-   "start": 12.96,
-   "end": 13.22
+   "start": 12.98,
+   "end": 13.16
   },
   {
    "word": "pull",
-   "start": 13.22,
-   "end": 13.42
+   "start": 13.16,
+   "end": 13.38
   },
   {
    "word": "request",
-   "start": 13.42,
-   "end": 13.86
+   "start": 13.38,
+   "end": 13.72
   },
   {
    "word": "here.",
-   "start": 13.86,
-   "end": 14.18
+   "start": 13.72,
+   "end": 14.02
   },
   {
    "word": "Whether",
-   "start": 14.4,
-   "end": 14.76
+   "start": 14.22,
+   "end": 14.6
   },
   {
    "word": "to",
-   "start": 14.76,
-   "end": 14.96
+   "start": 14.6,
+   "end": 14.74
   },
   {
    "word": "fold",
-   "start": 14.96,
-   "end": 15.26
+   "start": 14.74,
+   "end": 14.98
   },
   {
    "word": "one",
-   "start": 15.26,
-   "end": 15.46
+   "start": 14.98,
+   "end": 15.16
   },
   {
    "word": "in",
-   "start": 15.46,
-   "end": 15.66
+   "start": 15.16,
+   "end": 15.38
   },
   {
    "word": "and",
-   "start": 15.66,
-   "end": 15.76
+   "start": 15.38,
+   "end": 15.54
   },
   {
    "word": "close",
-   "start": 15.76,
-   "end": 16.02
+   "start": 15.54,
+   "end": 15.8
   },
   {
    "word": "the",
+   "start": 15.8,
+   "end": 16.02
+  },
+  {
+   "word": "others",
    "start": 16.02,
    "end": 16.28
   },
   {
-   "word": "others",
-   "start": 16.28,
-   "end": 16.56
-  },
-  {
    "word": "is",
-   "start": 16.56,
-   "end": 16.72
+   "start": 16.28,
+   "end": 16.46
   },
   {
    "word": "a",
-   "start": 16.72,
-   "end": 16.82
+   "start": 16.46,
+   "end": 16.56
   },
   {
    "word": "call",
-   "start": 16.82,
-   "end": 17.06
+   "start": 16.56,
+   "end": 16.8
   },
   {
    "word": "for",
-   "start": 17.06,
-   "end": 17.26
+   "start": 16.8,
+   "end": 16.98
   },
   {
    "word": "me",
-   "start": 17.26,
-   "end": 17.42
+   "start": 16.98,
+   "end": 17.14
   },
   {
    "word": "and",
-   "start": 17.42,
-   "end": 17.56
+   "start": 17.14,
+   "end": 17.28
   },
   {
    "word": "Aiden.",
-   "start": 17.56,
-   "end": 17.82
+   "start": 17.28,
+   "end": 17.6
   }
  ]
 }
