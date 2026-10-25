@@ -976,7 +976,7 @@ their fuller documentation elsewhere.
 - Text surfaces (`terminal`, `chat`, `changed-files`) share the Window
   channels `opacity`, `x`, `y` (offsets), `scale`, and `content` (everything
   inside, 0 to 1). Each handle's `show` settles the window in like a Stage card
-  (16 px drift, 1.035 scale, content 65 ms behind) and `hide` fades it.
+  (12 px rise from 0.96 scale with no bounce, content 65 ms behind) and `hide` fades it.
   Sub-channel IDs are letters, digits, `-`, and `_`. Lines, messages, and rows
   already in a recipe are shown from time zero; the handles append them as the
   scene is authored and reveal them with channels.
@@ -1209,11 +1209,11 @@ their fuller documentation elsewhere.
   dispatch, -1 before) and `flight`; the renderer derives its gather, flight, trail,
   landing ring, and light from them. Beams choose their own ports and curve; leave
   `bend` at 0 unless two beams need separating.
-- `StageActor` implements the `explainer-motion` beats: `settle_in` (a panel drifts
-  16 px into place, scales from 1.035, and sharpens; its content follows 65 ms later),
+- `StageActor` implements the `explainer-motion` beats: `settle_in` (a panel rises
+  12 px into place from 0.96 scale with no bounce and sharpens; its content follows 65 ms later),
   `connect` (soft fixed-size port reveal, eased wire draw, then a quiet hold),
-  `send` (gather, flight, landing), `hit` (instant attack, convex decay),
-  `kick` (a two-frame shove that springs back past rest), `jolt` (an impact: the
+  `send` (gather, flight, landing), `hit` (three-frame attack, convex decay),
+  `kick` (a two-frame shove that springs back to rest without overshoot), `jolt` (an impact: the
   camera kicks along the blow, a squared-trauma noise rumble with slight roll
   decays, and the frame punches in about 2%),
   `twang`, and `land`. `glide` is the minimum-jerk (smootherstep) move of
@@ -1229,7 +1229,7 @@ their fuller documentation elsewhere.
   end for effect rigs such as the card spinner (`clock_for` stops it after a fixed
   lifetime, as for `burst` or `post.rewind`). Use a `Smootherstep` ease for staged
   camera moves with exact timing, springs for responsive camera/panel settling,
-  and instant-attack fades for light.
+  and quick-attack fades for light.
   Composed beats return when they settle: `orb_in(orb, at, OrbEntrance::HERO)`
   (the hero entrance: scale, blur, and angular offset gather in while it fades
   in), `glitch(card, at, seeds)` (three layouts 27 ms apart, then still),
@@ -1584,7 +1584,7 @@ scene.at(at, s.spring("camera.x", -110.0, SpringPlan::CAMERA));
 - **Spatial envelopes (`psychopomp::layout::Placement`)**: `Placement::card(at, size)`, `Placement::orb(at, radius)`, `Placement::of(&stage_plan, id)`, with relative anchors `.below(gap)`, `.above(gap)`, `.beside_right(gap, size)`, `.beside_left(gap, size)`, `.stack_below(gap, size)`, `.align_left(inset, y_offset)`, and distributions `layout::row`, `layout::column`, `layout::spread_x`.
 - **Sound effects (`psychopomp::sfx`)**: `TICK`, `SEND`, `FAILURE`, `LAUNCH`, `IMPACT`, `DEATH`, `GLITCH`, `MARK`, `BLOOM`, `SEVER`, `RESET`, `SUCCESS`, `CONFIRM`, `RISER`, `BOOM`, `WHOOSH`, `SPARKLE` with exact 48 kHz sample lengths. Use `sfx::IMPACT.beat("kill-impact", -5.0)` inside a score (or `sfx::IMPACT.play(&mut scene, "kill-impact", arrival, -5.0)` imperatively). Generated `psychopomp_media::Audio` resources also expose `audio.beat(gain_db)`.
 - **`CueTime::reply()` / `reply_after(arrival)`**: a reply's gather begins once its request has landed (`340 ms` gather + `80 ms` reaction).
-- **Named spring feels (`SpringPlan` / `score::Feel`) and timing tokens (`author`)**: `PANEL` (0.6 s, bounce 0.12), `CONTENT` (0.36 s, no bounce), `ENTER` (0.45 s, no bounce), `EXIT` (0.24 s, no bounce), `MOVE` (0.6 s, no bounce; `.with_thresholds(1e-5, 1e-5)` for weights), `SNAP` (0.3 s, no bounce), `POP` (0.32 s, bounce 0.18), `CAMERA` (1.6 s, critically damped), `LIVELY` (0.85 s, bounce 0.2), `Ease::DRAW` (`cubic-bezier(0.45, 0, 0.2, 1)`), `Ease::GLIDE` (`smootherstep`), `author::STAGGER` (120 ms), `author::CONTENT_LAG` (65 ms), and `author::DRAW_SECONDS` (0.42 s).
+- **Named spring feels (`SpringPlan` / `score::Feel`) and timing tokens (`author`)**: Kit's palette first, in knobs' and SwiftUI's terms (ω = 2π / duration, ζ = 1 − bounce): `INSTANT` (0.1 s), `SNAPPY` (0.25 s), `DEFAULT` (0.3 s), `CALM` (0.4 s), `SMOOTH` (0.45 s), `MORPH_OPEN` (0.42 s, bounce 0.16), `MORPH_CLOSE` (0.38 s, bounce 0.08), `PLAYFUL` (0.3 s, bounce 0.3; rare delight only), `SLOW` (0.85 s), `CAMERA_QUICK` (1.0 s), `FOLLOW_LEAD` (ω 34, ζ 0.86), `FOLLOW_TRAIL` (ω 25, ζ 1); then the explainer roles, all with no bounce: `PANEL` (0.6 s), `CONTENT` (0.36 s), `ENTER` (0.45 s), `EXIT` (0.24 s), `MOVE` (0.6 s; `.with_thresholds(1e-5, 1e-5)` for weights), `SNAP` (0.3 s), `POP` (0.32 s), `CAMERA` (1.6 s), `LIVELY` (0.85 s), `Ease::DRAW` (`cubic-bezier(0.45, 0, 0.2, 1)`), `Ease::GLIDE` (`smootherstep`), `author::STAGGER` (120 ms), `author::CONTENT_LAG` (65 ms), and `author::DRAW_SECONDS` (0.42 s).
 
 Scene Plan v2 scalar values may reference a component of a stable Semantic Target. The target's selector remains recipe-owned; for the hero, the editor recipe resolves logical code range IDs through `cosmic-text` before compiling highlight and pointer channels into the shared Timeline.
 

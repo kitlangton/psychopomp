@@ -5,6 +5,7 @@
 use crate::{
     author::{ActorHandle, PlanBuilder},
     math::easing::Ease,
+    plan::SpringPlan,
 };
 
 /// Channels every window takes: body `opacity`, `x`/`y` offsets, `scale`,
@@ -18,16 +19,16 @@ pub fn is_window_property(property: &str) -> bool {
     WINDOW_PROPERTIES.contains(&property)
 }
 
-/// Settle in: the body drifts 16 px up into place from a 1.035 scale and
-/// fades in, and its content follows 65 ms later. A window with a `show`
-/// starts hidden. Returns when the entrance reads as finished.
+/// Settle in: the body rises 12 px into place from a 0.96 scale with no
+/// bounce and fades in, and its content follows 65 ms later. A window with a
+/// `show` starts hidden. Returns when the entrance reads as finished.
 pub(crate) fn settle_in(scene: &mut PlanBuilder, actor: &ActorHandle, at_nanos: u64) -> u64 {
-    let scale = scene.channel(actor, "scale", 1.035);
-    scene.set(&scale, at_nanos, 1.035);
-    scene.spring(&scale, at_nanos, 1.0, 0.6, 0.12);
-    let y = scene.channel(actor, "y", 16.0);
-    scene.set(&y, at_nanos, 16.0);
-    scene.spring(&y, at_nanos, 0.0, 0.55, 0.16);
+    let scale = scene.channel(actor, "scale", crate::stage::ENTER_SCALE);
+    scene.set(&scale, at_nanos, crate::stage::ENTER_SCALE);
+    scene.spring_with(&scale, at_nanos, 1.0, SpringPlan::SMOOTH);
+    let y = scene.channel(actor, "y", 12.0);
+    scene.set(&y, at_nanos, 12.0);
+    scene.spring_with(&y, at_nanos, 0.0, SpringPlan::SMOOTH);
     let opacity = scene.channel(actor, "opacity", 0.0);
     scene.set(&opacity, at_nanos, 0.0);
     scene.ease(&opacity, at_nanos, 1.0, 0.2, Ease::Smootherstep);

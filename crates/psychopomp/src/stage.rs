@@ -1886,7 +1886,7 @@ impl StageActor {
     }
 
     /// Spring `property` to `target` with a named feel, such as
-    /// [`SpringPlan::CAMERA`] or [`SpringPlan::PANEL`].
+    /// [`SpringPlan::CAMERA`] or [`SpringPlan::SMOOTH`].
     pub fn spring(
         &mut self,
         scene: &mut PlanBuilder,
@@ -2011,8 +2011,10 @@ impl StageActor {
         }
     }
 
-    /// Light `property` to `peak` at once, then let it decay to `rest`, fast
-    /// and then with a long tail: how a flash, a hit, or a pulse behaves.
+    /// Light `property` to `peak` over three frames, then let it decay to
+    /// `rest`, fast and then with a long tail: how a flash, a hit, or a pulse
+    /// behaves. The rise is quick enough to read as a strike but never a
+    /// one-frame jump.
     pub fn hit(
         &mut self,
         scene: &mut PlanBuilder,
@@ -2022,12 +2024,17 @@ impl StageActor {
         rest: f32,
     ) {
         let channel = self.channel(scene, property, rest);
-        scene.set(&channel, at_nanos, peak);
-        scene.ease(&channel, at_nanos, rest, 0.8, Ease::CubicOut);
+        scene.ease(&channel, at_nanos, peak, HIT_RISE_SECONDS, Ease::CubicOut);
+        let decay = at_nanos + whole_millis(HIT_RISE_SECONDS);
+        // A hit in a segment's last frames is still rising when it cuts.
+        if decay <= scene.duration_nanos() {
+            scene.ease(&channel, decay, rest, 0.8, Ease::CubicOut);
+        }
     }
 
     /// Shove the `x`/`y` channel pair by `offset` in about two frames, then let
-    /// it spring back past rest and settle: a hit with weight.
+    /// it carry that momentum back to rest without overshooting: a hit with
+    /// weight, whose punch comes from the shove rather than a wobble.
     pub fn kick(
         &mut self,
         scene: &mut PlanBuilder,
@@ -2037,7 +2044,13 @@ impl StageActor {
     ) {
         for (property, amount) in [(x, offset[0]), (y, offset[1])] {
             self.to(scene, property, at_nanos, amount, 0.04);
-            self.bounce(scene, property, at_nanos + 40_000_000, 0.0, 0.6, 0.35);
+            self.spring(
+                scene,
+                property,
+                at_nanos + 40_000_000,
+                0.0,
+                SpringPlan::SLOW,
+            );
         }
     }
 
@@ -2064,21 +2077,21 @@ impl StageActor {
         self.hit(scene, "camera.punch", at_nanos, 0.022 * strength, 0.0);
     }
 
-    /// A rigid panel settles with a small vertical drift and restrained scale.
-    /// Its content follows 65 ms later, so the body leads and the ink settles.
-    /// Returns the time the panel is ready to connect.
+    /// A rigid panel enters in place: it rises a little from 0.96 scale out of
+    /// a 4 px blur and settles with no bounce. Its content follows 65 ms later,
+    /// so the body leads and the ink settles. Returns the time the panel is
+    /// ready to connect.
     pub fn settle_in(&mut self, scene: &mut PlanBuilder, card: &str, at_nanos: u64) -> u64 {
-        let scale = self.channel(scene, &format!("{card}.scale"), 1.035);
-        scene.set(&scale, at_nanos, 1.035);
-        scene.spring(&scale, at_nanos, 1.0, 0.6, 0.12);
-        let y = self.channel(scene, &format!("{card}.y"), 16.0);
-        scene.set(&y, at_nanos, 16.0);
-        scene.spring(&y, at_nanos, 0.0, 0.55, 0.16);
+        let scale = self.channel(scene, &format!("{card}.scale"), ENTER_SCALE);
+        scene.set(&scale, at_nanos, ENTER_SCALE);
+        scene.spring_with(&scale, at_nanos, 1.0, SpringPlan::SMOOTH);
+        let y = self.channel(scene, &format!("{card}.y"), 12.0);
+        scene.set(&y, at_nanos, 12.0);
+        scene.spring_with(&y, at_nanos, 0.0, SpringPlan::SMOOTH);
         let content = self.channel(scene, &format!("{card}.content"), 0.0);
         scene.set(&content, at_nanos, 0.0);
         scene.spring(&content, at_nanos + 65_000_000, 1.0, 0.36, 0.0);
-        for (property, from, to, seconds) in [("opacity", 0.0, 1.0, 0.18), ("blur", 3.0, 0.0, 0.3)]
-        {
+        for (property, from, to, seconds) in [("opacity", 0.0, 1.0, 0.2), ("blur", 4.0, 0.0, 0.3)] {
             let channel = self.channel(scene, &format!("{card}.{property}"), from);
             scene.set(&channel, at_nanos, from);
             scene.ease(&channel, at_nanos, to, seconds, Ease::Smootherstep);
@@ -2435,8 +2448,9 @@ fn leg_arrival(dispatch: u64, leg: usize, legs: usize, seconds: f32) -> u64 {
         + whole_millis(seconds / legs as f32)
 }
 
-/// How an orb gathers out of a blur while turning into place: it scales up on
-/// a lively spring, sharpens, turns its last angular offset away, and fades in.
+/// How an orb gathers out of a blur while turning into place: it grows the last
+/// few percent on a spring with no bounce, sharpens, turns its last angular
+/// offset away, and fades in.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct OrbEntrance {
     pub scale: f32,
@@ -2450,10 +2464,10 @@ pub struct OrbEntrance {
 }
 
 impl OrbEntrance {
-    /// The calibrated hero entrance (TECHNIQUES.md): scale 0.58 on a 0.85 s /
-    /// 0.2-bounce spring, blur 11 over 0.7 s, −1.8 rad over 1.25 s cubic-out.
+    /// The hero entrance: scale 0.9 on a 0.85 s spring, blur 11 over 0.7 s,
+    /// −1.8 rad over 1.25 s cubic-out. Nothing scales up from nothing.
     pub const HERO: Self = Self {
-        scale: 0.58,
+        scale: 0.9,
         scale_seconds: 0.85,
         blur: 11.0,
         blur_seconds: 0.7,
@@ -2462,6 +2476,13 @@ impl OrbEntrance {
         fade_seconds: 0.6,
     };
 }
+
+/// Where something entering in place starts its scale (Kit's motion rules:
+/// about 0.96, with opacity and a 3–4 px blur; never from 0).
+pub const ENTER_SCALE: f32 = 0.96;
+
+/// How long [`StageActor::hit`] takes to reach its peak: three frames at 60 fps.
+pub const HIT_RISE_SECONDS: f32 = 0.05;
 
 /// A card's VHS-style glitch steps through layouts this far apart (about a
 /// frame and a half at 60 fps).
@@ -2481,14 +2502,7 @@ impl StageActor {
         self.channel(scene, &property("scale"), entrance.scale);
         self.channel(scene, &property("blur"), entrance.blur);
         self.channel(scene, &property("rotation"), entrance.rotation);
-        self.bounce(
-            scene,
-            &property("scale"),
-            at,
-            1.0,
-            entrance.scale_seconds,
-            0.2,
-        );
+        self.to(scene, &property("scale"), at, 1.0, entrance.scale_seconds);
         self.to(scene, &property("blur"), at, 0.0, entrance.blur_seconds);
         let turn = entrance.turn_seconds;
         self.ease(scene, &property("rotation"), at, 0.0, turn, Ease::CubicOut);
@@ -3184,7 +3198,7 @@ mod tests {
                 initial(&plan, "service.rotation"),
                 initial(&plan, "service.opacity")
             ],
-            [0.58, 11.0, -1.8, 0.0]
+            [0.9, 11.0, -1.8, 0.0]
         );
         let glitch = events(&plan, "client.glitch");
         assert_eq!(
@@ -3200,7 +3214,7 @@ mod tests {
             ]
         );
         assert_eq!(initial(&plan, "post.rewind"), -1.0);
-        assert_eq!(events(&plan, "post.chroma")[0], (3 * S, "set", 0.12));
+        assert_eq!(events(&plan, "post.chroma")[0], (3 * S, "ease", 0.12));
         assert_eq!(
             events(&plan, "service.burst"),
             [(3 * S, "ease", 0.0), (4 * S + 300_000_000, "set", -1.0)]
@@ -3714,7 +3728,7 @@ mod tests {
     }
 
     #[test]
-    fn hits_strike_at_once_and_decay() {
+    fn hits_strike_in_three_frames_and_decay() {
         let mut scene = PlanBuilder::new("stage-demo", 5_000_000_000);
         let mut stage = StageActor::declare(&mut scene, "stage", &plan()).unwrap();
         stage.hit(&mut scene, "client.flash", 1_000_000_000, 1.0, 0.0);
@@ -3728,14 +3742,17 @@ mod tests {
             .unwrap();
         assert!(matches!(
             flash.events[0],
-            crate::plan::TrackEventPlan::Set {
+            crate::plan::TrackEventPlan::Ease {
                 at_nanos: 1_000_000_000,
+                duration_nanos: 50_000_000,
+                curve: Ease::CubicOut,
                 ..
             }
         ));
         assert!(matches!(
             flash.events[1],
             crate::plan::TrackEventPlan::Ease {
+                at_nanos: 1_050_000_000,
                 curve: Ease::CubicOut,
                 ..
             }

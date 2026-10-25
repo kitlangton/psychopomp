@@ -75,12 +75,43 @@ pub fn spread(count: u64, from: u64, to: u64) -> impl Iterator<Item = u64> {
     })
 }
 
-/// Named spring feels from the explainer-motion calibrations
-/// (`.agents/skills/explainer-motion/TECHNIQUES.md`), for
-/// [`PlanBuilder::spring_with`] and `StageActor::spring`.
+/// Named springs. Kit's palette (the `kit-motion` skill) comes first; its
+/// numbers mean what they mean in knobs and SwiftUI's
+/// `.spring(duration:bounce:)` (ω = 2π / duration, ζ = 1 − bounce), so a
+/// preset feels the same in a reel as in an app. Everything rests on bounce 0;
+/// only [`SpringPlan::MORPH_OPEN`], [`SpringPlan::MORPH_CLOSE`] and the rare
+/// [`SpringPlan::PLAYFUL`] overshoot. The older role names after them keep
+/// their explainer-motion durations ([`SpringPlan::visual`]'s 1.2× response)
+/// and, since this palette, no bounce.
 impl SpringPlan {
-    /// A rigid panel settling into place: 0.6 s, bounce 0.12.
-    pub const PANEL: Self = Self::feel(0.6, 0.12);
+    /// Zoom, scrub, anything tied to a pointer: 0.1 s.
+    pub const INSTANT: Self = Self::palette(0.1, 0.0);
+    /// Small controls, menus, exits: 0.25 s.
+    pub const SNAPPY: Self = Self::palette(0.25, 0.0);
+    /// The default for a state change: 0.3 s.
+    pub const DEFAULT: Self = Self::palette(0.3, 0.0);
+    /// Layout moves and list reflow: 0.4 s.
+    pub const CALM: Self = Self::palette(0.4, 0.0);
+    /// Drawers and panels: 0.45 s.
+    pub const SMOOTH: Self = Self::palette(0.45, 0.0);
+    /// A chip opening into its panel: 0.42 s, bounce 0.16.
+    pub const MORPH_OPEN: Self = Self::palette(0.42, 0.16);
+    /// A panel closing back into its chip: 0.38 s, bounce 0.08.
+    pub const MORPH_CLOSE: Self = Self::palette(0.38, 0.08);
+    /// Rare delight only: 0.3 s, bounce 0.3.
+    pub const PLAYFUL: Self = Self::palette(0.3, 0.3);
+    /// Reveals and wipes: 0.85 s.
+    pub const SLOW: Self = Self::palette(0.85, 0.0);
+    /// The quickest explainer camera move: 1.0 s. [`SpringPlan::CAMERA`] is
+    /// the long end of the camera range.
+    pub const CAMERA_QUICK: Self = Self::palette(1.0, 0.0);
+    /// A dragged element's lead follower: ω 34, ζ 0.86.
+    pub const FOLLOW_LEAD: Self = Self::angular(34.0, 0.86);
+    /// What trails the lead follower: ω 25, ζ 1.
+    pub const FOLLOW_TRAIL: Self = Self::angular(25.0, 1.0);
+
+    /// A rigid panel settling into place: 0.6 s, no bounce.
+    pub const PANEL: Self = Self::feel(0.6, 0.0);
     /// Ink following its panel, or an overlay fading in: 0.36 s, no bounce.
     pub const CONTENT: Self = Self::feel(0.36, 0.0);
     /// Spatial entrance and persistent layout room opening (caption/text rise,
@@ -92,13 +123,13 @@ impl SpringPlan {
     pub const MOVE: Self = Self::feel(0.6, 0.0);
     /// A quick state change, focus shift, or status cross-fade: 0.3 s, no bounce.
     pub const SNAP: Self = Self::feel(0.3, 0.0);
-    /// A small floating UI pop with restrained overshoot (hover card, reaction
-    /// pill, delta chip): 0.32 s, bounce 0.18.
-    pub const POP: Self = Self::feel(0.32, 0.18);
+    /// A small floating UI appearing in place (hover card, reaction pill,
+    /// delta chip): 0.32 s, no bounce.
+    pub const POP: Self = Self::feel(0.32, 0.0);
     /// A camera move with weight and a natural tail: 1.6 s, critically damped.
     pub const CAMERA: Self = Self::feel(1.6, 0.0);
-    /// A hero landing with a little overshoot: 0.85 s, bounce 0.2.
-    pub const LIVELY: Self = Self::feel(0.85, 0.2);
+    /// A hero landing: 0.85 s, no bounce.
+    pub const LIVELY: Self = Self::feel(0.85, 0.0);
 
     /// Override settling thresholds, as when a dimensionless weight needs
     /// tighter bounds than a pixel channel.
@@ -107,6 +138,26 @@ impl SpringPlan {
             position_threshold,
             velocity_threshold,
             ..self
+        }
+    }
+
+    /// A palette spring: knobs' and SwiftUI's duration and bounce.
+    const fn palette(duration: f32, bounce: f32) -> Self {
+        Self {
+            response_seconds: duration,
+            damping_ratio: 1. - bounce,
+            position_threshold: 0.001,
+            velocity_threshold: 0.001,
+        }
+    }
+
+    /// A spring by angular frequency (rad/s) and damping ratio.
+    const fn angular(omega: f32, damping_ratio: f32) -> Self {
+        Self {
+            response_seconds: std::f32::consts::TAU / omega,
+            damping_ratio,
+            position_threshold: 0.001,
+            velocity_threshold: 0.001,
         }
     }
 
@@ -869,18 +920,37 @@ mod timing_tests {
     #[test]
     fn named_feels_match_their_literal_springs() {
         for (feel, duration, bounce) in [
-            (SpringPlan::PANEL, 0.6, 0.12),
+            (SpringPlan::PANEL, 0.6, 0.0),
             (SpringPlan::CONTENT, 0.36, 0.0),
             (SpringPlan::ENTER, 0.45, 0.0),
             (SpringPlan::EXIT, 0.24, 0.0),
             (SpringPlan::MOVE, 0.6, 0.0),
             (SpringPlan::SNAP, 0.3, 0.0),
-            (SpringPlan::POP, 0.32, 0.18),
+            (SpringPlan::POP, 0.32, 0.0),
             (SpringPlan::CAMERA, 1.6, 0.0),
-            (SpringPlan::LIVELY, 0.85, 0.2),
+            (SpringPlan::LIVELY, 0.85, 0.0),
         ] {
             assert_eq!(feel, SpringPlan::visual(duration, bounce));
         }
+        // Kit's palette, in knobs' terms: ω = 2π / duration, ζ = 1 − bounce.
+        for (feel, duration, bounce) in [
+            (SpringPlan::INSTANT, 0.1, 0.0),
+            (SpringPlan::SNAPPY, 0.25, 0.0),
+            (SpringPlan::DEFAULT, 0.3, 0.0),
+            (SpringPlan::CALM, 0.4, 0.0),
+            (SpringPlan::SMOOTH, 0.45, 0.0),
+            (SpringPlan::MORPH_OPEN, 0.42, 0.16),
+            (SpringPlan::MORPH_CLOSE, 0.38, 0.08),
+            (SpringPlan::PLAYFUL, 0.3, 0.3),
+            (SpringPlan::SLOW, 0.85, 0.0),
+            (SpringPlan::CAMERA_QUICK, 1.0, 0.0),
+        ] {
+            assert_eq!(feel.response_seconds, duration);
+            assert_eq!(feel.damping_ratio, 1.0 - bounce);
+        }
+        let lead = SpringPlan::FOLLOW_LEAD;
+        assert!((std::f32::consts::TAU / lead.response_seconds - 34.0).abs() < 1e-4);
+        assert_eq!(lead.damping_ratio, 0.86);
         let tight = SpringPlan::MOVE.with_thresholds(1e-5, 1e-5);
         assert_eq!(tight.position_threshold, 1e-5);
         assert_eq!(tight.velocity_threshold, 1e-5);

@@ -43,7 +43,7 @@ This document records the public API coherence audit after merging all parallel 
 
 3. **Timing & Feel Deduplication (`author.rs`, `score.rs`):**
    - `score` re-exports `MILLISECOND`, `millis`, and `spread` from `author`.
-   - `score::Feel` aliases `SpringPlan::{PANEL, CONTENT, SNAP, CAMERA, LIVELY}` directly.
+   - `score::Feel` aliases every named `SpringPlan` (Kit's palette and the explainer roles) directly.
    - `score::CueTime` covers `PlanTime::not_before` plus `.after`, `.early`, and `.reply` (`stage::reply_after`) for both `u64` and `Span`.
 
 ---
