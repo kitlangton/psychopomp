@@ -2028,6 +2028,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-type-and-motion"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-video"
 version = "0.1.0"
 dependencies = [
