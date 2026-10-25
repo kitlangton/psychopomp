@@ -31,7 +31,7 @@ const TYPING_SECONDS: f32 = 0.32;
 const SAY_SECONDS: f32 = 0.5;
 const SAY_BOUNCE: f32 = 0.0;
 const REACT_SECONDS: f32 = 0.36;
-const REACT_BOUNCE: f32 = 0.2;
+const REACT_BOUNCE: f32 = 0.0;
 const HIGHLIGHT_IN_SECONDS: f32 = 0.18;
 const HIGHLIGHT_OUT_SECONDS: f32 = 0.4;
 

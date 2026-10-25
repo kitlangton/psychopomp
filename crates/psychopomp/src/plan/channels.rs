@@ -16,6 +16,8 @@ pub struct SpringPlan {
 }
 
 impl SpringPlan {
+    /// A spring in knobs' and SwiftUI's terms, like Kit's palette:
+    /// ω = 2π / duration, ζ = 1 − bounce.
     pub fn visual(duration: f32, bounce: f32) -> Self {
         assert!(
             duration.is_finite() && duration > 0.,
@@ -23,10 +25,19 @@ impl SpringPlan {
         );
         assert!((0.0..1.0).contains(&bounce), "bounce must be in [0, 1)");
         Self {
-            response_seconds: duration * 1.2,
+            response_seconds: duration,
             damping_ratio: 1. - bounce,
             position_threshold: 0.001,
             velocity_threshold: 0.001,
+        }
+    }
+
+    /// A spring in Motion's terms, for ports of Motion code: its
+    /// `visualDuration` is 1.2× shorter than the response.
+    pub fn motion(visual_duration: f32, bounce: f32) -> Self {
+        Self {
+            response_seconds: visual_duration * 1.2,
+            ..Self::visual(visual_duration, bounce)
         }
     }
 
@@ -253,7 +264,7 @@ mod tests {
         assert_eq!(channel.events[1].at_nanos(), 4);
         assert_eq!(
             channel.events[1].spring_plan().unwrap().response_seconds,
-            0.2 * 1.2
+            0.2
         );
         let source = [(1, "phantom"), (1, "final"), (2, "later")];
         assert_eq!(

@@ -81,8 +81,8 @@ pub fn spread(count: u64, from: u64, to: u64) -> impl Iterator<Item = u64> {
 /// preset feels the same in a reel as in an app. Everything rests on bounce 0;
 /// only [`SpringPlan::MORPH_OPEN`], [`SpringPlan::MORPH_CLOSE`] and the rare
 /// [`SpringPlan::PLAYFUL`] overshoot. The older role names after them keep
-/// their explainer-motion durations ([`SpringPlan::visual`]'s 1.2× response)
-/// and, since this palette, no bounce.
+/// their durations, in the same terms, and no bounce: ENTER is SMOOTH and
+/// LIVELY is SLOW.
 impl SpringPlan {
     /// Zoom, scrub, anything tied to a pointer: 0.1 s.
     pub const INSTANT: Self = Self::palette(0.1, 0.0);
@@ -111,25 +111,25 @@ impl SpringPlan {
     pub const FOLLOW_TRAIL: Self = Self::angular(25.0, 1.0);
 
     /// A rigid panel settling into place: 0.6 s, no bounce.
-    pub const PANEL: Self = Self::feel(0.6, 0.0);
+    pub const PANEL: Self = Self::palette(0.6, 0.0);
     /// Ink following its panel, or an overlay fading in: 0.36 s, no bounce.
-    pub const CONTENT: Self = Self::feel(0.36, 0.0);
+    pub const CONTENT: Self = Self::palette(0.36, 0.0);
     /// Spatial entrance and persistent layout room opening (caption/text rise,
     /// tree fold/scroll, code line motion, chat message slot): 0.45 s, no bounce.
-    pub const ENTER: Self = Self::feel(0.45, 0.0);
+    pub const ENTER: Self = Self::palette(0.45, 0.0);
     /// Clean exit fade in place, faster and simpler than entry: 0.24 s, no bounce.
-    pub const EXIT: Self = Self::feel(0.24, 0.0);
+    pub const EXIT: Self = Self::palette(0.24, 0.0);
     /// Point-to-point spatial translation or anchor weight glide: 0.6 s, no bounce.
-    pub const MOVE: Self = Self::feel(0.6, 0.0);
+    pub const MOVE: Self = Self::palette(0.6, 0.0);
     /// A quick state change, focus shift, or status cross-fade: 0.3 s, no bounce.
-    pub const SNAP: Self = Self::feel(0.3, 0.0);
+    pub const SNAP: Self = Self::palette(0.3, 0.0);
     /// A small floating UI appearing in place (hover card, reaction pill,
     /// delta chip): 0.32 s, no bounce.
-    pub const POP: Self = Self::feel(0.32, 0.0);
+    pub const POP: Self = Self::palette(0.32, 0.0);
     /// A camera move with weight and a natural tail: 1.6 s, critically damped.
-    pub const CAMERA: Self = Self::feel(1.6, 0.0);
+    pub const CAMERA: Self = Self::palette(1.6, 0.0);
     /// A hero landing: 0.85 s, no bounce.
-    pub const LIVELY: Self = Self::feel(0.85, 0.0);
+    pub const LIVELY: Self = Self::palette(0.85, 0.0);
 
     /// Override settling thresholds, as when a dimensionless weight needs
     /// tighter bounds than a pixel channel.
@@ -141,7 +141,9 @@ impl SpringPlan {
         }
     }
 
-    /// A palette spring: knobs' and SwiftUI's duration and bounce.
+    /// A palette spring: knobs' and SwiftUI's duration and bounce, the same
+    /// arithmetic as [`SpringPlan::visual`], so a named feel and its literal
+    /// duration and bounce emit identical plans.
     const fn palette(duration: f32, bounce: f32) -> Self {
         Self {
             response_seconds: duration,
@@ -156,17 +158,6 @@ impl SpringPlan {
         Self {
             response_seconds: std::f32::consts::TAU / omega,
             damping_ratio,
-            position_threshold: 0.001,
-            velocity_threshold: 0.001,
-        }
-    }
-
-    /// [`SpringPlan::visual`] in a constant: the same arithmetic, so a named
-    /// feel and its literal duration and bounce emit identical plans.
-    const fn feel(duration: f32, bounce: f32) -> Self {
-        Self {
-            response_seconds: duration * 1.2,
-            damping_ratio: 1. - bounce,
             position_threshold: 0.001,
             velocity_threshold: 0.001,
         }

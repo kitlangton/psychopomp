@@ -63,7 +63,7 @@ fn channel(id: &str, p: &HeaderPlan, index: usize, duration: u64) -> Result<Cont
     let name = format!("{id}.__header.{index}.reveal");
     let property = PropertyId::new(&name);
     let initial = f32::from(p.visible);
-    let response = p.duration_seconds * 1.2;
+    let response = p.duration_seconds;
     let profile = SpringProfile::new(response, 1., 0.00001, 0.00001);
     let mut schedule = RetargetSchedule::new(vec![(property.clone(), initial)])?;
     for e in psychopomp::plan::effective_snapshots(&p.events, |e| e.at_nanos) {

@@ -506,7 +506,7 @@ mod tests {
                         ..
                     } = event
                     {
-                        assert!((response_seconds - 0.192).abs() < 0.00001);
+                        assert!((response_seconds - 0.16).abs() < 0.00001);
                         assert_eq!(*damping_ratio, 1.);
                     }
                 }
@@ -527,7 +527,7 @@ mod tests {
                     response_seconds, ..
                 } = event
                 {
-                    assert!((response_seconds - 0.48).abs() < 0.00001);
+                    assert!((response_seconds - 0.4).abs() < 0.00001);
                 }
             }
         }

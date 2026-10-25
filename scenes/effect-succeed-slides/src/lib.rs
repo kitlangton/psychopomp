@@ -62,8 +62,9 @@ pub fn build_plan() -> Result<ScenePlan> {
         let start = at * SECOND;
         let hold = start + 1_500_000_000;
         for channel in channels {
-            // Published inline motion: 0.4-second visual duration, no bounce.
-            scene.spring(channel, start, target, 0.4, 0.0);
+            // Published inline motion: Motion's 0.4-second visual duration
+            // (a 0.48 s response), no bounce.
+            scene.spring(channel, start, target, 0.4 * 1.2, 0.0);
         }
         scene.cue(id, start, hold);
         scene.presentation_step(id, title, start, hold);

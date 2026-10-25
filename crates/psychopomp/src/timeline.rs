@@ -54,7 +54,8 @@ impl SpringProfile {
         }
     }
 
-    /// Matches Motion's `visualDuration` and `bounce` spring parameterization.
+    /// Matches knobs' and SwiftUI's `duration` and `bounce`: ω = 2π / duration,
+    /// ζ = 1 − bounce.
     pub fn from_visual_duration(
         visual_duration_seconds: f32,
         bounce: f32,
@@ -539,7 +540,7 @@ mod tests {
         .unwrap();
         let state = timeline.sample(&x, 0.25).unwrap();
 
-        assert!((state.position - 0.9668).abs() < 0.0001);
+        assert!((state.position - 0.9864).abs() < 0.0001);
         assert!(state.position < 1.0);
     }
 

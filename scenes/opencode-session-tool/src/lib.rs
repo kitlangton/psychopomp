@@ -250,7 +250,7 @@ mod tests {
                 panic!("{property} entrance must be a spring");
             };
             assert_eq!(*at_nanos, 0);
-            assert!((*response_seconds - 0.84).abs() < f32::EPSILON * 2.0);
+            assert!((*response_seconds - 0.7).abs() < f32::EPSILON * 2.0);
             assert_eq!(*damping_ratio, 1.0);
         }
     }
