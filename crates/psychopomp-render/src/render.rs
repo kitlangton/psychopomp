@@ -1722,11 +1722,26 @@ fn composite_text(canvas: &mut [u8], [canvas_width, canvas_height]: [u32; 2], dr
                             }
                         }
                     }
+                    // The last pixel of blur hands over to the sharp sampler, so
+                    // text doesn't snap crisp on the frame it settles.
+                    let sharpness = (1.0 - blur).max(0.0);
+                    if sharpness > 0.0 {
+                        let sharp =
+                            sample_text_sprite_sharp(sprite, source_x, source_y, source_clip);
+                        for channel in 0..4 {
+                            color[channel] += (sharp[channel] - color[channel]) * sharpness;
+                        }
+                    }
                 }
                 TextFilter::Smear { .. } if !smear.is_empty() => {
                     for &(offset, weight) in &smear {
-                        let sample =
-                            sample_text_sprite(sprite, source_x, source_y + offset, source_clip);
+                        // The centre tap carries the unsmeared glyph; it uses the
+                        // same sampler as resting text.
+                        let sample = if offset == 0.0 {
+                            sample_text_sprite_sharp(sprite, source_x, source_y, source_clip)
+                        } else {
+                            sample_text_sprite(sprite, source_x, source_y + offset, source_clip)
+                        };
                         for channel in 0..4 {
                             color[channel] += sample[channel] * weight;
                         }

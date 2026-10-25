@@ -44,6 +44,16 @@ const BLOOM_LEVELS: usize = 5;
 /// and the shader averages each pixel's footprint, so coverage is close to
 /// exact at any subpixel position and the weight holds steady in motion.
 const TEXT_RASTER: f32 = 4.0;
+
+/// The shader's `text_weight` exponent for Stage text whose line is `line`
+/// screen pixels tall (1.35 em). The atlas holds linear coverage; macOS
+/// browsers set display sizes heavier, so the lift grows past 32 px. Fitted to
+/// Brave's stems from 24 to 72 px (within 0.035 px per edge).
+fn stage_lift(line: f32) -> f32 {
+    let em = line / 1.35;
+    (2.0 + (em - 32.0).max(0.0) * 0.2).min(5.5)
+}
+
 /// Widest sprite the atlas packs, in texels.
 const ATLAS_WIDTH: u32 = 4096;
 
@@ -5090,6 +5100,7 @@ impl<'a> StageFrame<'a> {
         self.prims.push(Prim {
             bbox: around(center, size * 0.5 + 2.0),
             a: [4.0, left, top, blur * 0.5],
+            b: [size.x, size.y, reveal, stage_lift(size.y)],
             fill,
             ..backing
         });

@@ -12,7 +12,7 @@ pub(crate) struct TextSprite {
 /// How far a glyph's edge coverage `a` is lifted, as the exponent of
 /// `1 - (1 - a)^lift`, for text set at `em` pixels. macOS browsers embolden
 /// text a little more as it grows; this matches Brave's stems from 24 to
-/// 72 px. The Stage shader's `text_weight` uses the same curve.
+/// 72 px. The Stage blends in linear light and fits its own (`stage_lift`).
 pub(crate) fn ink_lift(em: f32) -> f32 {
     1.0 + ((em - 16.0) * 0.06).clamp(0.3, 2.0)
 }
@@ -50,13 +50,12 @@ pub(crate) fn make_sprite<'a>(
         base,
         metrics,
         [width, height],
-        lift,
+        Some(lift),
     )
 }
 
-/// One line of text with its coverage unlifted (still gamma-2 encoded, as
-/// [`glyph_ink`] does), for a supersampled atlas whose shader filters it and
-/// then sets the weight.
+/// One line of text with its exact, linear coverage, for a supersampled
+/// atlas whose shader filters it and then sets the weight.
 pub(crate) fn make_coverage_sprite<'a>(
     font_system: &mut FontSystem,
     swash_cache: &mut SwashCache,
@@ -73,7 +72,7 @@ pub(crate) fn make_coverage_sprite<'a>(
         base,
         metrics,
         [width, height],
-        1.0,
+        None,
     )
 }
 
@@ -84,7 +83,7 @@ fn rasterize<'a>(
     base: Attrs<'a>,
     metrics: Metrics,
     [width, height]: [u32; 2],
-    lift: f32,
+    lift: Option<f32>,
 ) -> TextSprite {
     let mut buffer = Buffer::new(font_system, metrics);
     buffer.set_size(Some(width as f32), Some(height as f32));
@@ -106,7 +105,10 @@ fn rasterize<'a>(
                 y,
                 rect_width,
                 rect_height,
-                glyph_ink(color, lift),
+                lift.map_or_else(
+                    || [color.r(), color.g(), color.b(), color.a()],
+                    |lift| glyph_ink(color, lift),
+                ),
             );
         },
     );

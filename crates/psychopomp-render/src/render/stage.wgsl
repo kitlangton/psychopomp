@@ -209,13 +209,15 @@ fn text_footprint(uv: vec2<f32>, pixel: vec2<f32>, taps: i32) -> f32 {
     return sum / f32(taps * taps);
 }
 
-/// Glyph weight matched to macOS browsers, which embolden text a little more
-/// as it grows: the edge ramp's coverage lifts by the power curve of the CPU's
-/// `ink_lift`, fitted to Brave's stems from 24 to 72 px. `line` is the
-/// sprite's on-screen height, 1.35 em.
-fn text_weight(cov: f32, line: f32) -> f32 {
-    let lift = 1.0 + clamp((line / 1.35 - 16.0) * 0.06, 0.3, 2.0);
-    return 1.0 - pow(1.0 - clamp(cov, 0.0, 1.0), lift);
+/// Glyph weight matched to macOS browsers: linear coverage lifted to
+/// `1 - (1 - cov)^lift`, with `lift` from the CPU's `stage_lift` (fitted to
+/// Brave's stems). A lift of 0 leaves coverage alone, for icons and backings.
+fn text_weight(cov: f32, lift: f32) -> f32 {
+    let c = clamp(cov, 0.0, 1.0);
+    if lift <= 0.0 {
+        return c;
+    }
+    return 1.0 - pow(1.0 - c, lift);
 }
 
 @fragment
@@ -327,7 +329,7 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                 color += prim.light_color.rgb * prim.light.w * reflection(r) * coverage(d, prim.a.w) * strength * 0.6;
             }
         }
-        // Text: a = (kind, left, top, blur), b = (width, height, revealed width, 0)
+        // Text: a = (kind, left, top, blur), b = (width, height, revealed width, lift)
         // uv = atlas rectangle in texels. light = (shimmer phase, strength, 0, 0).
         case 4u: {
             let local = (px - prim.a.yz) / prim.b.xy;
@@ -339,21 +341,26 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                 let density = (prim.uv.zw - prim.uv.xy) / prim.b.xy;
                 let pixel = density / globals.viewport.zw;
                 let taps = clamp(i32(ceil(max(density.x, density.y) - 0.01)), 1, 8);
-                var cov = text_footprint(uv, pixel, taps);
+                let lift = prim.b.w;
+                // The weight lifts each unblurred sample, so a blur spreads the
+                // glyph's ink rather than fattening its halo.
+                var cov = text_weight(text_footprint(uv, pixel, taps), lift);
                 let blur = prim.a.w;
                 if blur > 0.25 {
-                    // A 3x3 tent (4-2-1 weights): round where a cross goes boxy.
-                    let step = vec2<f32>(blur, blur) / globals.viewport.zw * 1.5;
+                    // A 3x3 tent (4-2-1 weights) `blur` screen pixels across:
+                    // round where a cross goes boxy. The outer taps are single
+                    // samples; the tent already averages their footprints.
+                    let step = vec2<f32>(blur, blur) * pixel * 0.75;
                     var sum = cov * 4.0;
                     for (var i = 0; i < 8; i = i + 1) {
                         let angle = f32(i) * 0.7853982;
                         let offset = vec2<f32>(round(cos(angle)), round(sin(angle)));
                         let weight = select(1.0, 2.0, abs(offset.x) + abs(offset.y) < 1.5);
-                        sum = sum + weight * text_footprint(uv + offset * step, pixel, taps);
+                        let tap = textureSampleLevel(atlas, atlas_sampler, uv + offset * step, 0.0).r;
+                        sum = sum + weight * text_weight(tap, lift);
                     }
                     cov = sum / 16.0;
                 }
-                cov = text_weight(cov, prim.b.y);
                 alpha = prim.fill.a * cov;
                 color = prim.fill.rgb * alpha;
                 if prim.light.y > 0.0 {
