@@ -512,7 +512,7 @@
                 "operation": "spring",
                 "atNanos": 0,
                 "target": 0.0,
-                "responseSeconds": 3.1200001,
+                "responseSeconds": 2.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -521,7 +521,7 @@
                 "operation": "spring",
                 "atNanos": 13649000000,
                 "target": -60.0,
-                "responseSeconds": 2.16,
+                "responseSeconds": 1.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -530,7 +530,7 @@
                 "operation": "spring",
                 "atNanos": 19009000000,
                 "target": 30.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -539,7 +539,7 @@
                 "operation": "spring",
                 "atNanos": 21109000000,
                 "target": 240.0,
-                "responseSeconds": 3.1200001,
+                "responseSeconds": 2.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -548,7 +548,7 @@
                 "operation": "spring",
                 "atNanos": 24669000000,
                 "target": -90.0,
-                "responseSeconds": 1.32,
+                "responseSeconds": 1.1,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -557,7 +557,7 @@
                 "operation": "spring",
                 "atNanos": 25859000000,
                 "target": -40.0,
-                "responseSeconds": 2.16,
+                "responseSeconds": 1.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -566,7 +566,7 @@
                 "operation": "spring",
                 "atNanos": 28558000000,
                 "target": 20.0,
-                "responseSeconds": 4.8,
+                "responseSeconds": 4.0,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -575,7 +575,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": -30.0,
-                "responseSeconds": 2.88,
+                "responseSeconds": 2.4,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -599,8 +599,8 @@
                 "operation": "spring",
                 "atNanos": 200000000,
                 "target": 1.0,
-                "responseSeconds": 1.32,
-                "dampingRatio": 0.8,
+                "responseSeconds": 1.1,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -616,7 +616,7 @@
                 "operation": "spring",
                 "atNanos": 200000000,
                 "target": 0.0,
-                "responseSeconds": 1.08,
+                "responseSeconds": 0.9,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -671,7 +671,7 @@
                 "operation": "spring",
                 "atNanos": 21109000000,
                 "target": 0.62,
-                "responseSeconds": 1.9200001,
+                "responseSeconds": 1.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -680,7 +680,7 @@
                 "operation": "spring",
                 "atNanos": 24669000000,
                 "target": 0.3,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -689,7 +689,7 @@
                 "operation": "spring",
                 "atNanos": 25859000000,
                 "target": 0.22,
-                "responseSeconds": 1.2,
+                "responseSeconds": 1.0,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -703,49 +703,57 @@
             "initial": 1.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 9860000000,
-                "value": 1.7
-              },
-              {
                 "operation": "ease",
                 "atNanos": 9860000000,
-                "target": 1.0,
-                "durationNanos": 800000000,
+                "target": 1.7,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 10780000000,
-                "value": 1.7
+                "operation": "ease",
+                "atNanos": 9910000000,
+                "target": 1.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 10780000000,
+                "target": 1.7,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 10830000000,
                 "target": 1.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 24669000000,
-                "value": 2.6
+                "target": 2.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 24669000000,
+                "atNanos": 24719000000,
                 "target": 1.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 3.4
+                "target": 3.4,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 1.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -759,37 +767,43 @@
             "initial": 0.18,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 24669000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 24669000000,
+                "atNanos": 24719000000,
                 "target": 0.18,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 32158000000,
-                "value": 1.4
+                "target": 1.4,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 32158000000,
+                "atNanos": 32208000000,
                 "target": 0.18,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 1.2
+                "target": 1.2,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.18,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -806,7 +820,7 @@
                 "operation": "spring",
                 "atNanos": 1860000000,
                 "target": 1.0,
-                "responseSeconds": 1.2,
+                "responseSeconds": 1.0,
                 "dampingRatio": 0.85,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -820,7 +834,7 @@
                 "operation": "spring",
                 "atNanos": 37898000000,
                 "target": 1.0,
-                "responseSeconds": 1.08,
+                "responseSeconds": 0.9,
                 "dampingRatio": 0.8,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -837,7 +851,7 @@
                 "operation": "spring",
                 "atNanos": 9860000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 0.7,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -846,7 +860,7 @@
                 "operation": "spring",
                 "atNanos": 12420000000,
                 "target": 0.9,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -863,7 +877,7 @@
                 "operation": "spring",
                 "atNanos": 10780000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 0.7,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -872,7 +886,7 @@
                 "operation": "spring",
                 "atNanos": 12420000000,
                 "target": 0.9,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -889,7 +903,7 @@
                 "operation": "spring",
                 "atNanos": 200000000,
                 "target": 1.0,
-                "responseSeconds": 0.96000004,
+                "responseSeconds": 0.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -903,241 +917,281 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 1300000000,
-                "value": 0.4
-              },
-              {
                 "operation": "ease",
                 "atNanos": 1300000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.4,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 9860000000,
-                "value": 1.0
+                "operation": "ease",
+                "atNanos": 1350000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 9860000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 1.0,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 10780000000,
-                "value": 1.0
+                "operation": "ease",
+                "atNanos": 9910000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 10780000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 1.0,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 12520000000,
-                "value": 0.35
+                "operation": "ease",
+                "atNanos": 10830000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 12520000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.35,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19329000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 12570000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19329000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19585000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 19379000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19585000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19841000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 19635000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19841000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20097000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 19891000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20097000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20353000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 20147000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20353000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20609000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 20403000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20609000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 27089000000,
-                "value": 0.4
+                "operation": "ease",
+                "atNanos": 20659000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 27089000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.4,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 31298000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 27139000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 31298000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 31418000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 31348000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 31418000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 32158000000,
-                "value": 1.2
+                "operation": "ease",
+                "atNanos": 31468000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 32158000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 1.2,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 34718000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 32208000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 34718000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 34808000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 34768000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 34808000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 34898000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 34858000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 34898000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 34988000000,
-                "value": 0.6
+                "operation": "ease",
+                "atNanos": 34948000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 34988000000,
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 35038000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 37898000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 37898000000,
+                "atNanos": 37948000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 40598000000,
-                "value": 0.7
+                "target": 0.7,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 40598000000,
+                "atNanos": 40648000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -1154,7 +1208,7 @@
                 "operation": "spring",
                 "atNanos": 1860000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1163,7 +1217,7 @@
                 "operation": "spring",
                 "atNanos": 9860000000,
                 "target": 0.0,
-                "responseSeconds": 0.14400001,
+                "responseSeconds": 0.12,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1172,7 +1226,7 @@
                 "operation": "spring",
                 "atNanos": 12870000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1181,7 +1235,7 @@
                 "operation": "spring",
                 "atNanos": 13649000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1190,7 +1244,7 @@
                 "operation": "spring",
                 "atNanos": 37898000000,
                 "target": 1.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1212,7 +1266,7 @@
                 "operation": "spring",
                 "atNanos": 9860000000,
                 "target": 0.0,
-                "responseSeconds": 0.14400001,
+                "responseSeconds": 0.12,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1221,7 +1275,7 @@
                 "operation": "spring",
                 "atNanos": 12870000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1230,7 +1284,7 @@
                 "operation": "spring",
                 "atNanos": 13649000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1370,7 +1424,7 @@
                 "operation": "spring",
                 "atNanos": 6800000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1379,7 +1433,7 @@
                 "operation": "spring",
                 "atNanos": 13649000000,
                 "target": 0.0,
-                "responseSeconds": 0.28800002,
+                "responseSeconds": 0.24,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1396,7 +1450,7 @@
                 "operation": "spring",
                 "atNanos": 6800000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1418,7 +1472,7 @@
                 "operation": "spring",
                 "atNanos": 12420000000,
                 "target": 0.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1435,7 +1489,7 @@
                 "operation": "spring",
                 "atNanos": 9860000000,
                 "target": -15.32522,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1444,8 +1498,8 @@
                 "operation": "spring",
                 "atNanos": 9900000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1453,7 +1507,7 @@
                 "operation": "spring",
                 "atNanos": 10780000000,
                 "target": 14.855628,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1462,8 +1516,8 @@
                 "operation": "spring",
                 "atNanos": 10820000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1471,7 +1525,7 @@
                 "operation": "spring",
                 "atNanos": 19329000000,
                 "target": -7.8446455,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1480,8 +1534,8 @@
                 "operation": "spring",
                 "atNanos": 19369000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1489,7 +1543,7 @@
                 "operation": "spring",
                 "atNanos": 19585000000,
                 "target": 7.8446455,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1498,8 +1552,8 @@
                 "operation": "spring",
                 "atNanos": 19625000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1507,7 +1561,7 @@
                 "operation": "spring",
                 "atNanos": 19841000000,
                 "target": -7.8446455,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1516,8 +1570,8 @@
                 "operation": "spring",
                 "atNanos": 19881000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1525,7 +1579,7 @@
                 "operation": "spring",
                 "atNanos": 20097000000,
                 "target": 7.8446455,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1534,8 +1588,8 @@
                 "operation": "spring",
                 "atNanos": 20137000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1543,7 +1597,7 @@
                 "operation": "spring",
                 "atNanos": 20353000000,
                 "target": -7.8446455,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1552,8 +1606,8 @@
                 "operation": "spring",
                 "atNanos": 20393000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1561,7 +1615,7 @@
                 "operation": "spring",
                 "atNanos": 20609000000,
                 "target": 7.8446455,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1570,8 +1624,8 @@
                 "operation": "spring",
                 "atNanos": 20649000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1579,7 +1633,7 @@
                 "operation": "spring",
                 "atNanos": 24669000000,
                 "target": -0.0,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1588,8 +1642,8 @@
                 "operation": "spring",
                 "atNanos": 24709000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1597,7 +1651,7 @@
                 "operation": "spring",
                 "atNanos": 32818000000,
                 "target": -9.175398,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1606,8 +1660,8 @@
                 "operation": "spring",
                 "atNanos": 32858000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1615,7 +1669,7 @@
                 "operation": "spring",
                 "atNanos": 34938000000,
                 "target": 7.1554174,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1624,8 +1678,8 @@
                 "operation": "spring",
                 "atNanos": 34978000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -1641,7 +1695,7 @@
                 "operation": "spring",
                 "atNanos": 9860000000,
                 "target": -4.597566,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1650,8 +1704,8 @@
                 "operation": "spring",
                 "atNanos": 9900000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1659,7 +1713,7 @@
                 "operation": "spring",
                 "atNanos": 10780000000,
                 "target": 5.942251,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1668,8 +1722,8 @@
                 "operation": "spring",
                 "atNanos": 10820000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1677,7 +1731,7 @@
                 "operation": "spring",
                 "atNanos": 19329000000,
                 "target": -1.5689291,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1686,8 +1740,8 @@
                 "operation": "spring",
                 "atNanos": 19369000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1695,7 +1749,7 @@
                 "operation": "spring",
                 "atNanos": 19585000000,
                 "target": -1.5689291,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1704,8 +1758,8 @@
                 "operation": "spring",
                 "atNanos": 19625000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1713,7 +1767,7 @@
                 "operation": "spring",
                 "atNanos": 19841000000,
                 "target": -1.5689291,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1722,8 +1776,8 @@
                 "operation": "spring",
                 "atNanos": 19881000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1731,7 +1785,7 @@
                 "operation": "spring",
                 "atNanos": 20097000000,
                 "target": -1.5689291,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1740,8 +1794,8 @@
                 "operation": "spring",
                 "atNanos": 20137000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1749,7 +1803,7 @@
                 "operation": "spring",
                 "atNanos": 20353000000,
                 "target": -1.5689291,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1758,8 +1812,8 @@
                 "operation": "spring",
                 "atNanos": 20393000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1767,7 +1821,7 @@
                 "operation": "spring",
                 "atNanos": 20609000000,
                 "target": -1.5689291,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1776,8 +1830,8 @@
                 "operation": "spring",
                 "atNanos": 20649000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1785,7 +1839,7 @@
                 "operation": "spring",
                 "atNanos": 24669000000,
                 "target": -16.0,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1794,8 +1848,8 @@
                 "operation": "spring",
                 "atNanos": 24709000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1803,7 +1857,7 @@
                 "operation": "spring",
                 "atNanos": 32818000000,
                 "target": -13.107711,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1812,8 +1866,8 @@
                 "operation": "spring",
                 "atNanos": 32858000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -1821,7 +1875,7 @@
                 "operation": "spring",
                 "atNanos": 34938000000,
                 "target": -14.310835,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1830,8 +1884,8 @@
                 "operation": "spring",
                 "atNanos": 34978000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -1844,133 +1898,155 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 9860000000,
-                "value": 1.0
-              },
-              {
                 "operation": "ease",
                 "atNanos": 9860000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 1.0,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 10780000000,
-                "value": 1.0
+                "operation": "ease",
+                "atNanos": 9910000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 10780000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 1.0,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19329000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 10830000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19329000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19585000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 19379000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19585000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19841000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 19635000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19841000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20097000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 19891000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20097000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20353000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 20147000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20353000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20609000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 20403000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20609000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 24669000000,
-                "value": 1.0
+                "operation": "ease",
+                "atNanos": 20659000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 24669000000,
+                "target": 1.0,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 24719000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 32818000000,
-                "value": 1.0
+                "target": 1.0,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 32818000000,
+                "atNanos": 32868000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 1.0
+                "target": 1.0,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -1984,133 +2060,155 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 9860000000,
-                "value": 0.022
-              },
-              {
                 "operation": "ease",
                 "atNanos": 9860000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.022,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 10780000000,
-                "value": 0.022
+                "operation": "ease",
+                "atNanos": 9910000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 10780000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.022,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19329000000,
-                "value": 0.011
+                "operation": "ease",
+                "atNanos": 10830000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19329000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.011,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19585000000,
-                "value": 0.011
+                "operation": "ease",
+                "atNanos": 19379000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19585000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.011,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 19841000000,
-                "value": 0.011
+                "operation": "ease",
+                "atNanos": 19635000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 19841000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.011,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20097000000,
-                "value": 0.011
+                "operation": "ease",
+                "atNanos": 19891000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20097000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.011,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20353000000,
-                "value": 0.011
+                "operation": "ease",
+                "atNanos": 20147000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20353000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.011,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20609000000,
-                "value": 0.011
+                "operation": "ease",
+                "atNanos": 20403000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20609000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.011,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 24669000000,
-                "value": 0.022
+                "operation": "ease",
+                "atNanos": 20659000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 24669000000,
+                "target": 0.022,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 24719000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 32818000000,
-                "value": 0.022
+                "target": 0.022,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 32818000000,
+                "atNanos": 32868000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 0.022
+                "target": 0.022,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -2124,73 +2222,85 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 9860000000,
-                "value": 0.35
-              },
-              {
                 "operation": "ease",
                 "atNanos": 9860000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.35,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 10780000000,
-                "value": 0.35
+                "operation": "ease",
+                "atNanos": 9910000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 10780000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.35,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 24669000000,
-                "value": 0.5
+                "operation": "ease",
+                "atNanos": 10830000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 24669000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.5,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 25859000000,
-                "value": 0.15
+                "operation": "ease",
+                "atNanos": 24719000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 25859000000,
+                "target": 0.15,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 25909000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 32818000000,
-                "value": 0.35
+                "target": 0.35,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 32818000000,
+                "atNanos": 32868000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -2204,73 +2314,85 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 9860000000,
-                "value": 0.14
-              },
-              {
                 "operation": "ease",
                 "atNanos": 9860000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.14,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 10780000000,
-                "value": 0.14
+                "operation": "ease",
+                "atNanos": 9910000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 10780000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.14,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 20289000000,
-                "value": 0.12
+                "operation": "ease",
+                "atNanos": 10830000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 20289000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
+                "target": 0.12,
+                "durationNanos": 50000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
-                "atNanos": 24669000000,
-                "value": 0.28
+                "operation": "ease",
+                "atNanos": 20339000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
                 "atNanos": 24669000000,
+                "target": 0.28,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 24719000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 31138000000,
-                "value": 0.22
+                "target": 0.22,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 31138000000,
+                "atNanos": 31188000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 0.34
+                "target": 0.34,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -2348,7 +2470,7 @@
                 "operation": "spring",
                 "atNanos": 12420000000,
                 "target": 0.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2359,19 +2481,19 @@
             "id": "stage.terminal.scale",
             "actorId": "stage",
             "property": "terminal.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 14049000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 14049000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -2381,19 +2503,19 @@
             "id": "stage.terminal.y",
             "actorId": "stage",
             "property": "terminal.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 14049000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 14049000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -2401,7 +2523,7 @@
                 "operation": "spring",
                 "atNanos": 25430865258,
                 "target": 0.0,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2410,8 +2532,8 @@
                 "operation": "spring",
                 "atNanos": 25470865258,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -2432,7 +2554,7 @@
                 "operation": "spring",
                 "atNanos": 14114000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2454,14 +2576,14 @@
                 "operation": "ease",
                 "atNanos": 14049000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               },
               {
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2472,12 +2594,12 @@
             "id": "stage.terminal.blur",
             "actorId": "stage",
             "property": "terminal.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 14049000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -2492,19 +2614,19 @@
             "id": "stage.desktop.scale",
             "actorId": "stage",
             "property": "desktop.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 15269000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 15269000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -2514,19 +2636,19 @@
             "id": "stage.desktop.y",
             "actorId": "stage",
             "property": "desktop.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 15269000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 15269000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               },
@@ -2534,7 +2656,7 @@
                 "operation": "spring",
                 "atNanos": 25430865258,
                 "target": 0.0,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2543,8 +2665,8 @@
                 "operation": "spring",
                 "atNanos": 25470865258,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -2565,7 +2687,7 @@
                 "operation": "spring",
                 "atNanos": 15334000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2587,14 +2709,14 @@
                 "operation": "ease",
                 "atNanos": 15269000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               },
               {
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2605,12 +2727,12 @@
             "id": "stage.desktop.blur",
             "actorId": "stage",
             "property": "desktop.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 15269000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -2715,7 +2837,7 @@
                 "operation": "spring",
                 "atNanos": 19009000000,
                 "target": 0.7,
-                "responseSeconds": 0.3,
+                "responseSeconds": 0.25,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2724,7 +2846,7 @@
                 "operation": "spring",
                 "atNanos": 21109000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2816,37 +2938,43 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 19009000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 19009000000,
+                "atNanos": 19059000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 19521000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 19521000000,
+                "atNanos": 19571000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 20033000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 20033000000,
+                "atNanos": 20083000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -2893,37 +3021,43 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 19265000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 19265000000,
+                "atNanos": 19315000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 19777000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 19777000000,
+                "atNanos": 19827000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 20289000000,
-                "value": 0.5
+                "target": 0.5,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 20289000000,
+                "atNanos": 20339000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -3072,7 +3206,7 @@
                 "operation": "spring",
                 "atNanos": 21109000000,
                 "target": 0.0,
-                "responseSeconds": 1.2,
+                "responseSeconds": 1.0,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3089,7 +3223,7 @@
                 "operation": "spring",
                 "atNanos": 22229000000,
                 "target": 0.7,
-                "responseSeconds": 1.44,
+                "responseSeconds": 1.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3098,7 +3232,7 @@
                 "operation": "spring",
                 "atNanos": 24669000000,
                 "target": 1.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3107,7 +3241,7 @@
                 "operation": "spring",
                 "atNanos": 26459000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3124,7 +3258,7 @@
                 "operation": "spring",
                 "atNanos": 21109000000,
                 "target": 0.5,
-                "responseSeconds": 1.2,
+                "responseSeconds": 1.0,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3133,7 +3267,7 @@
                 "operation": "spring",
                 "atNanos": 26259000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3150,7 +3284,7 @@
                 "operation": "spring",
                 "atNanos": 21109000000,
                 "target": 0.5,
-                "responseSeconds": 1.2,
+                "responseSeconds": 1.0,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3159,7 +3293,7 @@
                 "operation": "spring",
                 "atNanos": 26359000000,
                 "target": 0.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3208,7 +3342,7 @@
                 "operation": "spring",
                 "atNanos": 25430865258,
                 "target": -14.0,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3217,8 +3351,8 @@
                 "operation": "spring",
                 "atNanos": 25470865258,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -3234,7 +3368,7 @@
                 "operation": "spring",
                 "atNanos": 24769000000,
                 "target": 1.0,
-                "responseSeconds": 0.96000004,
+                "responseSeconds": 0.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3243,7 +3377,7 @@
                 "operation": "spring",
                 "atNanos": 26259000000,
                 "target": 0.0,
-                "responseSeconds": 0.96000004,
+                "responseSeconds": 0.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3366,7 +3500,7 @@
                 "operation": "spring",
                 "atNanos": 25430865258,
                 "target": 1.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3375,7 +3509,7 @@
                 "operation": "spring",
                 "atNanos": 26639000000,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3392,7 +3526,7 @@
                 "operation": "spring",
                 "atNanos": 25430865258,
                 "target": 14.0,
-                "responseSeconds": 0.048,
+                "responseSeconds": 0.04,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3401,8 +3535,8 @@
                 "operation": "spring",
                 "atNanos": 25470865258,
                 "target": 0.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.65,
+                "responseSeconds": 0.85,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -3418,7 +3552,7 @@
                 "operation": "spring",
                 "atNanos": 24849000000,
                 "target": 1.0,
-                "responseSeconds": 0.96000004,
+                "responseSeconds": 0.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3427,7 +3561,7 @@
                 "operation": "spring",
                 "atNanos": 26359000000,
                 "target": 0.0,
-                "responseSeconds": 0.96000004,
+                "responseSeconds": 0.8,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3550,7 +3684,7 @@
                 "operation": "spring",
                 "atNanos": 25430865258,
                 "target": 1.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3559,7 +3693,7 @@
                 "operation": "spring",
                 "atNanos": 26739000000,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3596,7 +3730,7 @@
                 "operation": "spring",
                 "atNanos": 28558000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3605,7 +3739,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.28800002,
+                "responseSeconds": 0.24,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3622,7 +3756,7 @@
                 "operation": "spring",
                 "atNanos": 28558000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3668,7 +3802,7 @@
                 "operation": "spring",
                 "atNanos": 29638000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3677,7 +3811,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3723,7 +3857,7 @@
                 "operation": "spring",
                 "atNanos": 29818000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3732,7 +3866,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3754,7 +3888,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -3894,7 +4028,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4034,7 +4168,7 @@
                 "operation": "spring",
                 "atNanos": 31138000000,
                 "target": -170.0,
-                "responseSeconds": 0.3,
+                "responseSeconds": 0.25,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4043,7 +4177,7 @@
                 "operation": "spring",
                 "atNanos": 31908000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 0.75,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4052,7 +4186,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 1.44,
+                "responseSeconds": 1.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4323,7 +4457,7 @@
                 "operation": "spring",
                 "atNanos": 34498000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4332,7 +4466,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.48000002,
+                "responseSeconds": 0.4,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4346,13 +4480,15 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 1.0
+                "target": 1.0,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -4369,7 +4505,7 @@
                 "operation": "spring",
                 "atNanos": 34498000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4378,7 +4514,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.48000002,
+                "responseSeconds": 0.4,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4392,13 +4528,15 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 34938000000,
-                "value": 1.0
+                "target": 1.0,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 34938000000,
+                "atNanos": 34988000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -4455,7 +4593,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4472,7 +4610,7 @@
                 "operation": "spring",
                 "atNanos": 35258000000,
                 "target": 0.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4670,7 +4808,7 @@
                 "operation": "spring",
                 "atNanos": 40598000000,
                 "target": 0.35,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -4687,7 +4825,7 @@
                 "operation": "spring",
                 "atNanos": 40658000000,
                 "target": 0.5,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001

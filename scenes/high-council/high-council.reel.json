@@ -27884,19 +27884,19 @@
             "id": "stage.schedule.scale",
             "actorId": "stage",
             "property": "schedule.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 3340000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 3340000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -27906,19 +27906,19 @@
             "id": "stage.schedule.y",
             "actorId": "stage",
             "property": "schedule.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 3340000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 3340000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -27939,7 +27939,7 @@
                 "operation": "spring",
                 "atNanos": 3405000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -27961,7 +27961,7 @@
                 "operation": "ease",
                 "atNanos": 3340000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               }
             ]
@@ -27970,12 +27970,12 @@
             "id": "stage.schedule.blur",
             "actorId": "stage",
             "property": "schedule.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 3340000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -28016,7 +28016,7 @@
                 "operation": "spring",
                 "atNanos": 5980000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28033,7 +28033,7 @@
                 "operation": "spring",
                 "atNanos": 5980000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28050,7 +28050,7 @@
                 "operation": "spring",
                 "atNanos": 6100000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28067,7 +28067,7 @@
                 "operation": "spring",
                 "atNanos": 6100000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28084,7 +28084,7 @@
                 "operation": "spring",
                 "atNanos": 6220000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28101,7 +28101,7 @@
                 "operation": "spring",
                 "atNanos": 6220000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28118,7 +28118,7 @@
                 "operation": "spring",
                 "atNanos": 6340000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28135,7 +28135,7 @@
                 "operation": "spring",
                 "atNanos": 6340000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28152,7 +28152,7 @@
                 "operation": "spring",
                 "atNanos": 6460000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28169,7 +28169,7 @@
                 "operation": "spring",
                 "atNanos": 6460000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28186,7 +28186,7 @@
                 "operation": "spring",
                 "atNanos": 6580000000,
                 "target": 1.0,
-                "responseSeconds": 0.36,
+                "responseSeconds": 0.3,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28203,7 +28203,7 @@
                 "operation": "spring",
                 "atNanos": 6580000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28289,19 +28289,19 @@
             "id": "stage.advisors.scale",
             "actorId": "stage",
             "property": "advisors.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 5980000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 5980000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28311,19 +28311,19 @@
             "id": "stage.advisors.y",
             "actorId": "stage",
             "property": "advisors.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 5980000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 5980000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28344,7 +28344,7 @@
                 "operation": "spring",
                 "atNanos": 6045000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28366,7 +28366,7 @@
                 "operation": "ease",
                 "atNanos": 5980000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               }
             ]
@@ -28375,12 +28375,12 @@
             "id": "stage.advisors.blur",
             "actorId": "stage",
             "property": "advisors.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 5980000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -28398,25 +28398,29 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 7180000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 7180000000,
+                "atNanos": 7230000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 9820000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 9820000000,
+                "atNanos": 9870000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -28427,19 +28431,19 @@
             "id": "stage.repo.scale",
             "actorId": "stage",
             "property": "repo.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 7820000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 7820000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28449,19 +28453,19 @@
             "id": "stage.repo.y",
             "actorId": "stage",
             "property": "repo.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 7820000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 7820000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28482,7 +28486,7 @@
                 "operation": "spring",
                 "atNanos": 7885000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28504,7 +28508,7 @@
                 "operation": "ease",
                 "atNanos": 7820000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               }
             ]
@@ -28513,12 +28517,12 @@
             "id": "stage.repo.blur",
             "actorId": "stage",
             "property": "repo.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 7820000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -28770,19 +28774,19 @@
             "id": "stage.pitches.scale",
             "actorId": "stage",
             "property": "pitches.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 11580000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 11580000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28792,19 +28796,19 @@
             "id": "stage.pitches.y",
             "actorId": "stage",
             "property": "pitches.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 11580000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 11580000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28825,7 +28829,7 @@
                 "operation": "spring",
                 "atNanos": 11645000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -28847,7 +28851,7 @@
                 "operation": "ease",
                 "atNanos": 11580000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               }
             ]
@@ -28856,12 +28860,12 @@
             "id": "stage.pitches.blur",
             "actorId": "stage",
             "property": "pitches.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 11580000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -28954,13 +28958,15 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 12280000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 12280000000,
+                "atNanos": 12330000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -28971,19 +28977,19 @@
             "id": "stage.voices.scale",
             "actorId": "stage",
             "property": "voices.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 16039000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 16039000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -28993,19 +28999,19 @@
             "id": "stage.voices.y",
             "actorId": "stage",
             "property": "voices.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 16039000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 16039000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -29026,7 +29032,7 @@
                 "operation": "spring",
                 "atNanos": 16104000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -29048,7 +29054,7 @@
                 "operation": "ease",
                 "atNanos": 16039000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               }
             ]
@@ -29057,12 +29063,12 @@
             "id": "stage.voices.blur",
             "actorId": "stage",
             "property": "voices.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 16039000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -29155,13 +29161,15 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 16739000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 16739000000,
+                "atNanos": 16789000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
@@ -29223,19 +29231,19 @@
             "id": "stage.council.scale",
             "actorId": "stage",
             "property": "council.scale",
-            "initial": 1.035,
+            "initial": 0.96,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 19879000000,
-                "value": 1.035
+                "value": 0.96
               },
               {
                 "operation": "spring",
                 "atNanos": 19879000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -29245,19 +29253,19 @@
             "id": "stage.council.y",
             "actorId": "stage",
             "property": "council.y",
-            "initial": 16.0,
+            "initial": 12.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 19879000000,
-                "value": 16.0
+                "value": 12.0
               },
               {
                 "operation": "spring",
                 "atNanos": 19879000000,
                 "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.84000003,
+                "responseSeconds": 0.45,
+                "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -29278,7 +29286,7 @@
                 "operation": "spring",
                 "atNanos": 19944000000,
                 "target": 1.0,
-                "responseSeconds": 0.43200004,
+                "responseSeconds": 0.36,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -29300,7 +29308,7 @@
                 "operation": "ease",
                 "atNanos": 19879000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
+                "durationNanos": 200000000,
                 "curve": "smootherstep"
               }
             ]
@@ -29309,12 +29317,12 @@
             "id": "stage.council.blur",
             "actorId": "stage",
             "property": "council.blur",
-            "initial": 3.0,
+            "initial": 4.0,
             "events": [
               {
                 "operation": "set",
                 "atNanos": 19879000000,
-                "value": 3.0
+                "value": 4.0
               },
               {
                 "operation": "ease",
@@ -29407,25 +29415,29 @@
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 20579000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 20579000000,
+                "atNanos": 20629000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"
               },
               {
-                "operation": "set",
+                "operation": "ease",
                 "atNanos": 24559000000,
-                "value": 0.6
+                "target": 0.6,
+                "durationNanos": 50000000,
+                "curve": "cubic-out"
               },
               {
                 "operation": "ease",
-                "atNanos": 24559000000,
+                "atNanos": 24609000000,
                 "target": 0.0,
                 "durationNanos": 800000000,
                 "curve": "cubic-out"

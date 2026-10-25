@@ -532,7 +532,7 @@
                 "operation": "spring",
                 "atNanos": 1831818195,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -549,7 +549,7 @@
                 "operation": "spring",
                 "atNanos": 500000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -558,7 +558,7 @@
                 "operation": "spring",
                 "atNanos": 28312541666,
                 "target": 0.0,
-                "responseSeconds": 0.28800002,
+                "responseSeconds": 0.24,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -575,7 +575,7 @@
                 "operation": "spring",
                 "atNanos": 500000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -592,7 +592,7 @@
                 "operation": "spring",
                 "atNanos": 28562541666,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -609,7 +609,7 @@
                 "operation": "spring",
                 "atNanos": 28562541666,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -626,7 +626,7 @@
                 "operation": "spring",
                 "atNanos": 200000000,
                 "target": 1.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -643,7 +643,7 @@
                 "operation": "spring",
                 "atNanos": 350000000,
                 "target": 1.0,
-                "responseSeconds": 1.08,
+                "responseSeconds": 0.9,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -660,7 +660,7 @@
                 "operation": "spring",
                 "atNanos": 13700000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -677,7 +677,7 @@
                 "operation": "spring",
                 "atNanos": 16940000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -694,7 +694,7 @@
                 "operation": "spring",
                 "atNanos": 19480000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -711,7 +711,7 @@
                 "operation": "spring",
                 "atNanos": 21580000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -728,7 +728,7 @@
                 "operation": "spring",
                 "atNanos": 26260000000,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -745,7 +745,7 @@
                 "operation": "spring",
                 "atNanos": 34252541666,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -762,7 +762,7 @@
                 "operation": "spring",
                 "atNanos": 37952541666,
                 "target": 1.0,
-                "responseSeconds": 0.72,
+                "responseSeconds": 0.6,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -779,7 +779,7 @@
                 "operation": "spring",
                 "atNanos": 28312541666,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -796,7 +796,7 @@
                 "operation": "spring",
                 "atNanos": 28312541666,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -813,7 +813,7 @@
                 "operation": "spring",
                 "atNanos": 18400000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -822,7 +822,7 @@
                 "operation": "spring",
                 "atNanos": 22380000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -844,7 +844,7 @@
                 "operation": "spring",
                 "atNanos": 28312541666,
                 "target": 0.0,
-                "responseSeconds": 0.28800002,
+                "responseSeconds": 0.24,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1104,7 +1104,7 @@
                 "operation": "spring",
                 "atNanos": 25215238069,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1307,7 +1307,7 @@
                 "operation": "spring",
                 "atNanos": 35814446413,
                 "target": 0.0,
-                "responseSeconds": 0.24000001,
+                "responseSeconds": 0.2,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1947,7 +1947,7 @@
                 "operation": "spring",
                 "atNanos": 200000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1964,7 +1964,7 @@
                 "operation": "spring",
                 "atNanos": 200000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1981,7 +1981,7 @@
                 "operation": "spring",
                 "atNanos": 3380000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -1998,7 +1998,7 @@
                 "operation": "spring",
                 "atNanos": 0,
                 "target": 0.0,
-                "responseSeconds": 0.84000003,
+                "responseSeconds": 0.7,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2015,7 +2015,7 @@
                 "operation": "spring",
                 "atNanos": 0,
                 "target": 1.0,
-                "responseSeconds": 0.6,
+                "responseSeconds": 0.5,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2032,7 +2032,7 @@
                 "operation": "spring",
                 "atNanos": 600000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
+                "responseSeconds": 0.35,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2049,7 +2049,7 @@
                 "operation": "spring",
                 "atNanos": 600000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
+                "responseSeconds": 0.45,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
