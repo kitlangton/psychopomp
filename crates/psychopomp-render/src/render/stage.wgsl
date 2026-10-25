@@ -196,6 +196,28 @@ fn footage_sample(at: vec2<f32>, slot: vec4<f32>, radius: f32) -> vec4<f32> {
     return sum / 16.0;
 }
 
+/// Mean atlas coverage over one screen pixel (`pixel`, in uv) centred on
+/// `uv`, from `taps` × `taps` bilinear samples.
+fn text_footprint(uv: vec2<f32>, pixel: vec2<f32>, taps: i32) -> f32 {
+    var sum = 0.0;
+    for (var j = 0; j < taps; j = j + 1) {
+        for (var i = 0; i < taps; i = i + 1) {
+            let offset = (vec2<f32>(f32(i), f32(j)) + 0.5) / f32(taps) - 0.5;
+            sum = sum + textureSampleLevel(atlas, atlas_sampler, uv + offset * pixel, 0.0).r;
+        }
+    }
+    return sum / f32(taps * taps);
+}
+
+/// Glyph weight matched to macOS browsers, which embolden text a little more
+/// as it grows: the edge ramp's coverage lifts by the power curve of the CPU's
+/// `ink_lift`, fitted to Brave's stems from 24 to 72 px. `line` is the
+/// sprite's on-screen height, 1.35 em.
+fn text_weight(cov: f32, line: f32) -> f32 {
+    let lift = 1.0 + clamp((line / 1.35 - 16.0) * 0.06, 0.3, 2.0);
+    return 1.0 - pow(1.0 - clamp(cov, 0.0, 1.0), lift);
+}
+
 @fragment
 fn fs(in: VOut) -> @location(0) vec4<f32> {
     let prim = prims[in.index];
@@ -311,7 +333,13 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
             let local = (px - prim.a.yz) / prim.b.xy;
             if all(local >= vec2<f32>(0.0)) && all(local <= vec2<f32>(1.0)) && px.x <= prim.a.y + prim.b.z {
                 let uv = mix(prim.uv.xy, prim.uv.zw, local) / globals.viewport.zw;
-                var cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
+                // Texels per screen pixel: the atlas is supersampled, so each
+                // pixel averages its whole footprint. One bilinear tap would
+                // pulse the weight every half pixel of motion.
+                let density = (prim.uv.zw - prim.uv.xy) / prim.b.xy;
+                let pixel = density / globals.viewport.zw;
+                let taps = clamp(i32(ceil(max(density.x, density.y) - 0.01)), 1, 8);
+                var cov = text_footprint(uv, pixel, taps);
                 let blur = prim.a.w;
                 if blur > 0.25 {
                     // A 3x3 tent (4-2-1 weights): round where a cross goes boxy.
@@ -321,10 +349,11 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                         let angle = f32(i) * 0.7853982;
                         let offset = vec2<f32>(round(cos(angle)), round(sin(angle)));
                         let weight = select(1.0, 2.0, abs(offset.x) + abs(offset.y) < 1.5);
-                        sum = sum + weight * textureSampleLevel(atlas, atlas_sampler, uv + offset * step, 0.0).r;
+                        sum = sum + weight * text_footprint(uv + offset * step, pixel, taps);
                     }
                     cov = sum / 16.0;
                 }
+                cov = text_weight(cov, prim.b.y);
                 alpha = prim.fill.a * cov;
                 color = prim.fill.rgb * alpha;
                 if prim.light.y > 0.0 {

@@ -45,7 +45,10 @@ mod venn;
 mod viz;
 mod window;
 mod wipe;
-use text::{PlainTextSpec, TextSprite, blend_pixel, blend_pixel_at, make_sprite, paint_rect};
+use text::{
+    PlainTextSpec, TextSprite, blend_pixel, blend_pixel_at, glyph_ink, ink_lift,
+    make_coverage_sprite, make_sprite, paint_rect,
+};
 
 pub(crate) use callout::CalloutPose;
 pub(crate) use changed_files::ChangedFilesLayout;
@@ -1729,7 +1732,7 @@ fn composite_text(canvas: &mut [u8], [canvas_width, canvas_height]: [u32; 2], dr
                         }
                     }
                 }
-                _ => color = sample_text_sprite(sprite, source_x, source_y, source_clip),
+                _ => color = sample_text_sprite_sharp(sprite, source_x, source_y, source_clip),
             }
             if color[3] <= 0.0 {
                 continue;
@@ -1744,6 +1747,63 @@ fn composite_text(canvas: &mut [u8], [canvas_width, canvas_height]: [u32; 2], dr
             blend_pixel(&mut canvas[target_index..target_index + 4], source, opacity);
         }
     }
+}
+
+/// Catmull-Rom weights for the four texels around a sample `t` past the
+/// second one.
+fn catmull_rom(t: f32) -> [f32; 4] {
+    let (t2, t3) = (t * t, t * t * t);
+    [
+        (-t3 + 2.0 * t2 - t) * 0.5,
+        (3.0 * t3 - 5.0 * t2 + 2.0) * 0.5,
+        (-3.0 * t3 + 4.0 * t2 + t) * 0.5,
+        (t3 - t2) * 0.5,
+    ]
+}
+
+/// Like [`sample_text_sprite`], but Catmull-Rom: a glyph between pixels keeps
+/// nearly the sharpness it has on them, so slow drifts don't pulse soft and
+/// crisp every half pixel, and text resting off the grid isn't smeared.
+fn sample_text_sprite_sharp(sprite: &TextSprite, x: f32, y: f32, clip: [f32; 2]) -> [f32; 4] {
+    let left = x.floor() as i32;
+    let top = y.floor() as i32;
+    let (dx, dy) = (x - left as f32, y - top as f32);
+    if dx == 0.0 && dy == 0.0 {
+        return sample_text_sprite(sprite, x, y, clip);
+    }
+    let (wx, wy) = (catmull_rom(dx), catmull_rom(dy));
+    let mut color = [0.0_f32; 4];
+    for (j, weight_y) in wy.iter().enumerate() {
+        let row = top - 1 + j as i32;
+        if row < 0 || row >= sprite.height as i32 {
+            continue;
+        }
+        for (i, weight_x) in wx.iter().enumerate() {
+            let column = left - 1 + i as i32;
+            if column < 0 || column >= sprite.width as i32 {
+                continue;
+            }
+            let offset = (row as usize * sprite.width as usize + column as usize) * 4;
+            let coverage =
+                ((column as f32 + 1.0).min(clip[1]) - (column as f32).max(clip[0])).clamp(0.0, 1.0);
+            let alpha = f32::from(sprite.pixels[offset + 3]) * weight_x * weight_y * coverage;
+            for (channel, value) in color[..3].iter_mut().enumerate() {
+                *value += f32::from(sprite.pixels[offset + channel]) * alpha;
+            }
+            color[3] += alpha;
+        }
+    }
+    // The negative lobes ring past the glyph's edges; keep coverage in range.
+    let alpha = color[3].clamp(0.0, 255.0);
+    if alpha <= 0.0 {
+        return [0.0; 4];
+    }
+    let scale = alpha / color[3];
+    for value in &mut color[..3] {
+        *value = (*value * scale).clamp(0.0, 255.0 * alpha);
+    }
+    color[3] = alpha;
+    color
 }
 
 /// Premultiplied RGBA interpolation avoids dark fringes around transparent glyphs.
@@ -2481,19 +2541,21 @@ mod tests {
 
     #[test]
     fn fractional_raster_edges_conserve_alpha_and_color() {
+        // A stem-sized block: the sharp filter's ringing clips symmetrically
+        // across its edges, so a glyph's ink holds as it drifts off the grid.
         let sprite = super::TextSprite {
-            width: 1,
-            height: 1,
-            advance: 1.,
-            pixels: vec![255, 32, 0, 255],
+            width: 4,
+            height: 4,
+            advance: 4.,
+            pixels: [255, 32, 0, 255].repeat(16),
         };
         for origin in [[2., 2.], [2.5, 2.], [2.5, 2.5], [2.25, 2.75]] {
-            let mut pixels = vec![0; 8 * 8 * 4];
+            let mut pixels = vec![0; 10 * 10 * 4];
             super::composite_text(
                 &mut pixels,
-                [8, 8],
+                [10, 10],
                 TextDraw {
-                    clip_width: 1.,
+                    clip_width: 4.,
                     ..TextDraw::new(&sprite, origin)
                 },
             );
@@ -2503,7 +2565,11 @@ mod tests {
                 .iter()
                 .map(|pixel| u32::from(pixel[3]))
                 .sum::<u32>();
-            assert!(alpha.abs_diff(255) <= 1, "{origin:?}: alpha={alpha}");
+            // Within 2%: the clipped lobes add a little ink at the corners.
+            assert!(
+                alpha.abs_diff(16 * 255) <= 16 * 255 / 50,
+                "{origin:?}: alpha={alpha}"
+            );
             for pixel in pixels
                 .as_chunks::<4>()
                 .0

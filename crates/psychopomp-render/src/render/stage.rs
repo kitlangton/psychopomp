@@ -40,8 +40,19 @@ const HDR_FORMAT: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const MAX_PRIMS: usize = 24_000;
 const MAX_POINTS: usize = 48_000;
 const BLOOM_LEVELS: usize = 5;
-/// Text rasterizes at twice its size so camera push-ins stay crisp.
-const TEXT_RASTER: f32 = 2.0;
+/// Text rasterizes at up to four times its size: camera push-ins stay crisp,
+/// and the shader averages each pixel's footprint, so coverage is close to
+/// exact at any subpixel position and the weight holds steady in motion.
+const TEXT_RASTER: f32 = 4.0;
+/// Widest sprite the atlas packs, in texels.
+const ATLAS_WIDTH: u32 = 4096;
+
+/// The supersampling for `chars` characters at `size`: [`TEXT_RASTER`], or
+/// less for a line too long to fit the atlas at that density.
+fn text_raster(size: f32, chars: usize) -> f32 {
+    let widest = chars.max(1) as f32 * size * 0.75;
+    ((ATLAS_WIDTH - 72) as f32 / widest).clamp(1.0, TEXT_RASTER)
+}
 const BEAM_SAMPLES: usize = 48;
 
 #[repr(C)]
@@ -89,6 +100,8 @@ struct PostUniform {
 struct AtlasText {
     /// x, y, width, height in atlas texels.
     rect: [f32; 4],
+    /// Atlas texels per layout pixel.
+    raster: f32,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -799,14 +812,28 @@ impl HeadlessRenderer {
                 _ => {}
             }
         }
-        let mut sprites = strings
+        let limit = self.device.limits().max_texture_dimension_2d;
+        let mut keys = strings
             .iter()
-            .map(|(_, text, size, face)| {
-                let raster = size * TEXT_RASTER;
+            .map(|(key, ..)| key.clone())
+            .collect::<Vec<_>>();
+        for element in &plan.elements {
+            if let StageElement::Icon { id, .. } = element {
+                keys.push(text_key(id, "icon"));
+            }
+        }
+        // A plan with a great deal of text halves its density until it fits.
+        let mut cap = TEXT_RASTER;
+        let (sprites, placements, atlas_width, atlas_height) = loop {
+            let mut sprites = Vec::with_capacity(keys.len());
+            for (_, text, size, face) in &strings {
+                let chars = text.chars().count();
+                let density = text_raster(*size, chars).min(cap);
+                let raster = size * density;
                 let line = (raster * 1.35).ceil();
                 let attrs = fonts::attrs(*face).color(Color::rgb(255, 255, 255));
-                let width = ((text.chars().count() as f32 * raster * 0.7) as u32 + 64).min(4096);
-                make_sprite(
+                let width = ((chars as f32 * raster * 0.75) as u32 + 64).min(ATLAS_WIDTH);
+                let sprite = make_coverage_sprite(
                     &mut self.font_system,
                     &mut self.swash_cache,
                     vec![(text.as_str(), attrs.clone())],
@@ -814,50 +841,54 @@ impl HeadlessRenderer {
                     Metrics::new(raster, line),
                     width,
                     line as u32,
-                )
-            })
-            .collect::<Vec<_>>();
-        // Icons follow the text, rasterized at the same density.
-        let mut keys = strings.into_iter().map(|(key, ..)| key).collect::<Vec<_>>();
-        for element in &plan.elements {
-            if let StageElement::Icon {
-                id,
-                size,
-                icon,
-                path,
-                view,
-                ..
-            } = element
-            {
-                let svg = icon_svg(icon, path, *view)
-                    .with_context(|| format!("icon '{id}' names no bundled icon"))?;
-                let pixels = ((size * TEXT_RASTER).ceil() as u32).clamp(4, 2048);
-                sprites
-                    .push(icon_sprite(&svg, pixels).with_context(|| format!("icon '{id}' SVG"))?);
-                keys.push(text_key(id, "icon"));
+                );
+                sprites.push((sprite, density));
             }
-        }
-        // Shelf packing, rows of the tallest sprite.
-        let atlas_width = 4096_u32;
-        let mut placements = Vec::with_capacity(sprites.len());
-        let (mut x, mut y, mut row) = (1_u32, 1_u32, 0_u32);
-        for sprite in &sprites {
-            let w = (sprite.advance.ceil() as u32 + 4).min(sprite.width);
-            if x + w + 1 > atlas_width {
-                x = 1;
-                y += row + 2;
-                row = 0;
+            // Icons follow the text, rasterized at the same density.
+            for element in &plan.elements {
+                if let StageElement::Icon {
+                    id,
+                    size,
+                    icon,
+                    path,
+                    view,
+                    ..
+                } = element
+                {
+                    let svg = icon_svg(icon, path, *view)
+                        .with_context(|| format!("icon '{id}' names no bundled icon"))?;
+                    let pixels = ((size * cap).ceil() as u32).clamp(4, 2048);
+                    let sprite =
+                        icon_sprite(&svg, pixels).with_context(|| format!("icon '{id}' SVG"))?;
+                    sprites.push((sprite, pixels as f32 / size.max(1e-3)));
+                }
             }
-            placements.push((x, y, w, sprite.height));
-            x += w + 2;
-            row = row.max(sprite.height);
-        }
-        let atlas_height = (y + row + 2).max(4).next_power_of_two();
-        if atlas_height > self.device.limits().max_texture_dimension_2d {
-            bail!("stage text atlas exceeds device limits");
-        }
+            // Shelf packing, rows of the tallest sprite.
+            let atlas_width = ATLAS_WIDTH;
+            let mut placements = Vec::with_capacity(sprites.len());
+            let (mut x, mut y, mut row) = (1_u32, 1_u32, 0_u32);
+            for (sprite, _) in &sprites {
+                let w = (sprite.advance.ceil() as u32 + 4).min(sprite.width);
+                if x + w + 1 > atlas_width {
+                    x = 1;
+                    y += row + 2;
+                    row = 0;
+                }
+                placements.push((x, y, w, sprite.height));
+                x += w + 2;
+                row = row.max(sprite.height);
+            }
+            let atlas_height = (y + row + 2).max(4).next_power_of_two();
+            if atlas_height <= limit {
+                break (sprites, placements, atlas_width, atlas_height);
+            }
+            if cap <= 1.0 {
+                bail!("stage text atlas exceeds device limits");
+            }
+            cap *= 0.5;
+        };
         let mut pixels = vec![0_u8; (atlas_width * atlas_height) as usize];
-        for (sprite, &(px, py, w, h)) in sprites.iter().zip(&placements) {
+        for ((sprite, _), &(px, py, w, h)) in sprites.iter().zip(&placements) {
             for row in 0..h {
                 for column in 0..w {
                     pixels[((py + row) * atlas_width + px + column) as usize] =
@@ -875,11 +906,13 @@ impl HeadlessRenderer {
         let rects = keys
             .into_iter()
             .zip(placements)
-            .map(|(key, (x, y, w, h))| {
+            .zip(&sprites)
+            .map(|((key, (x, y, w, h)), &(_, raster))| {
                 (
                     key,
                     AtlasText {
                         rect: [x as f32, y as f32, w as f32, h as f32],
+                        raster,
                     },
                 )
             })
@@ -4993,7 +5026,7 @@ impl<'a> StageFrame<'a> {
     /// On-screen width of an atlas string's ink at `scale`.
     fn width(&self, key: &str, scale: f32) -> f32 {
         self.texts.get(key).map_or(0.0, |text| {
-            (text.rect[2] - 4.0).max(0.0) * scale / TEXT_RASTER
+            (text.rect[2] - 4.0).max(0.0) * scale / text.raster
         })
     }
 
@@ -5001,7 +5034,7 @@ impl<'a> StageFrame<'a> {
     /// in the open corridor. Depth sorting still keeps the packet behind bodies.
     fn packet_label_at(&self, key: &str, at: Vec2, scale: f32, ports: [Port; 2]) -> Option<Vec2> {
         let text = self.texts.get(key)?;
-        let size = vec2(text.rect[2], text.rect[3]) * (scale / TEXT_RASTER);
+        let size = vec2(text.rect[2], text.rect[3]) * (scale / text.raster);
         // Center alignment uses ink width; the atlas also contains transparent
         // raster padding. Include it, plus clearance for the soft backing.
         let offset = vec2((size.x - self.width(key, scale)) * 0.5, 0.0);
@@ -5027,7 +5060,7 @@ impl<'a> StageFrame<'a> {
         if fill[3] <= 0.001 {
             return None;
         }
-        let size = vec2(text.rect[2], text.rect[3]) * (scale / TEXT_RASTER);
+        let size = vec2(text.rect[2], text.rect[3]) * (scale / text.raster);
         let ink = self.width(key, scale);
         let left = at.x
             - match align {
@@ -5096,6 +5129,7 @@ mod tests {
             "request#label".into(),
             super::AtlasText {
                 rect: [0.0, 0.0, 220.0, 48.0],
+                raster: 3.0,
             },
         )]);
         let mut frame = super::StageFrame::new(&texts, super::Vec3::ZERO);
@@ -5255,7 +5289,7 @@ mod tests {
                             .packet_label_at(key, desired, scale, link.label_ports)
                             .unwrap();
                         let text = &gpu.texts[key];
-                        let size = vec2(text.rect[2], text.rect[3]) * (scale / super::TEXT_RASTER);
+                        let size = vec2(text.rect[2], text.rect[3]) * (scale / text.raster);
                         let bounds = super::Box2::from_center_size(
                             at + vec2((size.x - frame.width(key, scale)) * 0.5, 0.0),
                             size,

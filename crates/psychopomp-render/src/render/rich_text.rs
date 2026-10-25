@@ -410,6 +410,7 @@ impl HeadlessRenderer {
                     }
                     // Metadata keeps styles through shaping and wrapping, then colors
                     // glyphs before coverage blending rather than tinting final pixels.
+                    let lift = ink_lift(buffer.metrics().font_size);
                     buffer.draw(
                         &mut self.font_system,
                         &mut self.swash_cache,
@@ -423,7 +424,7 @@ impl HeadlessRenderer {
                                 y,
                                 w,
                                 h,
-                                [c.r(), c.g(), c.b(), c.a()],
+                                glyph_ink(c, lift),
                             );
                         },
                     );

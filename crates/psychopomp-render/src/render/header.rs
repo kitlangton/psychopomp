@@ -107,22 +107,12 @@ impl HeadlessRenderer {
             })
             .collect();
         let mut pixels = vec![0; (width * height * 4) as usize];
+        let lift = ink_lift(buffer.metrics().font_size);
         buffer.draw(
             &mut self.font_system,
             &mut self.swash_cache,
             Color::rgb(235, 233, 227),
-            |x, y, w, h, c| {
-                paint_rect(
-                    &mut pixels,
-                    width,
-                    height,
-                    x,
-                    y,
-                    w,
-                    h,
-                    [c.r(), c.g(), c.b(), c.a()],
-                )
-            },
+            |x, y, w, h, c| paint_rect(&mut pixels, width, height, x, y, w, h, glyph_ink(c, lift)),
         );
         let ink_bottom = pixels
             .chunks_exact(width as usize * 4)
