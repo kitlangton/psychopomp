@@ -450,11 +450,11 @@ impl LensActor {
     }
 
     /// The glass condenses: it grows a little as its rim thickens and its
-    /// magnification rises, settling with a slight liquid overshoot. A lens
-    /// with a `show` starts absent.
+    /// magnification rises, settling with the palette's morph overshoot. A
+    /// lens with a `show` starts absent.
     pub fn show(&mut self, scene: &mut PlanBuilder, at_nanos: u64) {
         let presence = self.channel(scene, "presence", 0.0);
-        scene.spring(&presence, at_nanos, 1.0, 0.5, 0.14);
+        scene.spring_with(&presence, at_nanos, 1.0, SpringPlan::MORPH_OPEN);
     }
 
     /// The glass thins and shrinks away.

@@ -493,7 +493,7 @@ impl HeadlessRenderer {
                 Block::Removed => removed,
                 Block::Neutral => neutral,
             };
-            let pop = 0.7 + 0.3 * a.min(1.0);
+            let pop = 0.9 + 0.1 * a.min(1.0);
             ui.fill(
                 Bounds::from_center(
                     [

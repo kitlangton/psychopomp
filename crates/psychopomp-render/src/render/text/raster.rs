@@ -9,6 +9,30 @@ pub(crate) struct TextSprite {
     pub(crate) pixels: Vec<u8>,
 }
 
+/// How far a glyph's edge coverage `a` is lifted, as the exponent of
+/// `1 - (1 - a)^lift`, for text set at `em` pixels. macOS browsers embolden
+/// text a little more as it grows; this matches Brave's stems from 24 to
+/// 72 px. The Stage blends in linear light and fits its own (`stage_lift`).
+pub(crate) fn ink_lift(em: f32) -> f32 {
+    1.0 + ((em - 16.0) * 0.06).clamp(0.3, 2.0)
+}
+
+/// A glyph pixel from cosmic-text with its coverage set to a browser's
+/// weight. The CPU composites in sRGB bytes, so the square root first stands
+/// in for the GPU's linear-light blend of light ink on a dark ground.
+pub(crate) fn glyph_ink(color: Color, lift: f32) -> [u8; 4] {
+    let alpha = match color.a() {
+        0 => 0,
+        255 => 255,
+        a => {
+            let coverage = (f32::from(a) / 255.0).sqrt();
+            ((1.0 - (1.0 - coverage).powf(lift)) * 255.0).round() as u8
+        }
+    };
+    [color.r(), color.g(), color.b(), alpha]
+}
+
+/// One line of text, its edges lifted to a browser's weight ([`ink_lift`]).
 pub(crate) fn make_sprite<'a>(
     font_system: &mut FontSystem,
     swash_cache: &mut SwashCache,
@@ -17,6 +41,49 @@ pub(crate) fn make_sprite<'a>(
     metrics: Metrics,
     width: u32,
     height: u32,
+) -> TextSprite {
+    let lift = ink_lift(metrics.font_size);
+    rasterize(
+        font_system,
+        swash_cache,
+        spans,
+        base,
+        metrics,
+        [width, height],
+        Some(lift),
+    )
+}
+
+/// One line of text with its exact, linear coverage, for a supersampled
+/// atlas whose shader filters it and then sets the weight.
+pub(crate) fn make_coverage_sprite<'a>(
+    font_system: &mut FontSystem,
+    swash_cache: &mut SwashCache,
+    spans: Vec<(&'a str, Attrs<'a>)>,
+    base: Attrs<'a>,
+    metrics: Metrics,
+    width: u32,
+    height: u32,
+) -> TextSprite {
+    rasterize(
+        font_system,
+        swash_cache,
+        spans,
+        base,
+        metrics,
+        [width, height],
+        None,
+    )
+}
+
+fn rasterize<'a>(
+    font_system: &mut FontSystem,
+    swash_cache: &mut SwashCache,
+    spans: Vec<(&'a str, Attrs<'a>)>,
+    base: Attrs<'a>,
+    metrics: Metrics,
+    [width, height]: [u32; 2],
+    lift: Option<f32>,
 ) -> TextSprite {
     let mut buffer = Buffer::new(font_system, metrics);
     buffer.set_size(Some(width as f32), Some(height as f32));
@@ -38,7 +105,10 @@ pub(crate) fn make_sprite<'a>(
                 y,
                 rect_width,
                 rect_height,
-                [color.r(), color.g(), color.b(), color.a()],
+                lift.map_or_else(
+                    || [color.r(), color.g(), color.b(), color.a()],
+                    |lift| glyph_ink(color, lift),
+                ),
             );
         },
     );

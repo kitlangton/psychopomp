@@ -5,7 +5,10 @@ use cosmic_text::{Attrs, Color, FontSystem, Metrics, SwashCache, Weight};
 use psychopomp::face::Face;
 use std::collections::HashMap;
 mod raster;
-pub(super) use raster::{TextSprite, blend_pixel, blend_pixel_at, make_sprite, paint_rect};
+pub(super) use raster::{
+    TextSprite, blend_pixel, blend_pixel_at, glyph_ink, ink_lift, make_coverage_sprite,
+    make_sprite, paint_rect,
+};
 
 #[derive(Clone, Copy)]
 pub(super) struct PlainTextSpec {

@@ -126,7 +126,7 @@ impl PreparedTask {
             value(&self.recipe.initial),
             psychopomp::plan::effective_snapshots(&self.recipe.events, |e| e.at_nanos)
                 .map(|e| (e.at_nanos, value(&e.state))),
-            |_, _| psychopomp::plan::SpringPlan::visual(duration, bounce),
+            |_, _| psychopomp::plan::SpringPlan::motion(duration, bounce),
         )
     }
 

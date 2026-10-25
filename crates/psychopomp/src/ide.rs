@@ -642,8 +642,8 @@ impl HoverActor {
         self.actor.id()
     }
 
-    /// The card pops in: it fades up and rises into place with a slight
-    /// overshoot. A hover with a `show` starts hidden.
+    /// The card appears: it fades up and rises into place with no bounce. A
+    /// hover with a `show` starts hidden.
     pub fn show(&self, scene: &mut PlanBuilder, at_nanos: u64) {
         let presence = scene.channel(&self.actor, "presence", 0.0);
         scene.spring_with(&presence, at_nanos, 1.0, SpringPlan::POP);

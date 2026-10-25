@@ -234,7 +234,7 @@ impl HeadlessRenderer {
                 continue;
             }
             let center = vec2(sign_x, top.y + LINE_HEIGHT * 0.5);
-            let radius = GUTTER_RADIUS * lerp(0.55, 1.0, pop);
+            let radius = GUTTER_RADIUS * lerp(0.9, 1.0, pop);
             let _ = canvas.clipped(clip, |canvas| {
                 canvas.fill(
                     Bounds::from_center(center.to_array(), [radius * 2.0; 2]),
@@ -445,7 +445,7 @@ impl HeadlessRenderer {
             max: top + vec2(hover.width, LINE_HEIGHT - 2.0),
         };
         let placed = hover_layout(range, size, hover.plan.side, 4.0, bounds);
-        // It rises into place away from its range, overshooting slightly.
+        // It rises into place away from its range.
         let away = if placed.below { 1.0 } else { -1.0 };
         let shift = vec2(0.0, away * (presence - 1.0) * HOVER_RISE);
         let card = Box2 {

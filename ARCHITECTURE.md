@@ -652,7 +652,7 @@ only from channels, so they are native-presentable.
 Cards, beneath diagrams and text) that stand in for familiar interfaces where
 scenes used to fake them with Stage cards and cycled statuses. Each lives in a
 Window: the lightweight `window.rs` owns its five channels and `settle_in` (the
-Stage card entrance: 16 px drift, 1.035 scale, content 65 ms behind), and
+Stage card entrance: 12 px rise from 0.96 scale with no bounce, content 65 ms behind), and
 `render/window.rs` draws the shell through the shared projected card
 (`FrameUi::card_source` with an empty source, plus `card_layer` for the title
 bar). Composing that shell costs tens of milliseconds, and a window holds still

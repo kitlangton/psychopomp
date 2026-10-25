@@ -17,7 +17,8 @@ use psychopomp::{
 };
 
 use super::{
-    HeadlessRenderer, TextDraw, TextSprite, composite_text, fonts, make_sprite, paint_rect,
+    HeadlessRenderer, TextDraw, TextSprite, composite_text, fonts, glyph_ink, ink_lift,
+    make_sprite, paint_rect,
     theme::{Palette, ThemedCache, mix},
     ui::{
         Bounds,
@@ -345,6 +346,7 @@ impl HeadlessRenderer {
                     }
                 }
                 let [r, g, b] = ink;
+                let lift = ink_lift(buffer.metrics().font_size);
                 buffer.draw(
                     &mut self.font_system,
                     &mut self.swash_cache,
@@ -358,7 +360,7 @@ impl HeadlessRenderer {
                             y,
                             w,
                             h,
-                            [color.r(), color.g(), color.b(), color.a()],
+                            glyph_ink(color, lift),
                         );
                     },
                 );
@@ -952,7 +954,7 @@ impl Frame<'_> {
                 origin: [if mine { x - width } else { x }, top],
                 size: [width, height],
             };
-            let scale = lerp(0.55, 1.0, pop.max(0.0));
+            let scale = lerp(0.9, 1.0, pop.max(0.0));
             let shown = Bounds::from_center(pill.center(), [width * scale, height * scale]);
             let presence = smoothstep(pop.clamp(0.0, 1.0) / 0.4) * message.alpha;
             let radius = shown.size[1] * 0.5;

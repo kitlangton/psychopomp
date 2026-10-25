@@ -102,6 +102,12 @@ impl FfmpegEncoder {
                 "14M",
                 "-bufsize",
                 "28M",
+                // HD players decode with BT.709; FFmpeg's default RGB→YUV
+                // matrix is BT.601, which shifts every hue unless both agree.
+                // `setparams` tags the frames, which the encoder now trusts
+                // over `-color_primaries` and `-color_trc`.
+                "-vf",
+                "scale=out_color_matrix=bt709:out_range=tv:flags=lanczos+accurate_rnd+full_chroma_int,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv",
                 "-pix_fmt",
                 "yuv420p",
                 "-movflags",

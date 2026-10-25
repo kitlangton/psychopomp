@@ -60,12 +60,37 @@ use crate::{
 
 pub use crate::author::{CONTENT_LAG, DRAW_SECONDS, MILLISECOND, STAGGER, millis, spread};
 
-/// Calibrated spring motion profiles from `explainer-motion/TECHNIQUES.md`
-/// (re-exposing [`SpringPlan`] constants).
+/// Named springs (re-exposing [`SpringPlan`] constants): Kit's palette, then
+/// the older explainer-motion roles. Everything rests on bounce 0 except the
+/// morphs and the rare playful.
 pub struct Feel;
 
 impl Feel {
-    /// A rigid panel settling into place: 0.6 s, bounce 0.12.
+    /// Zoom, scrub, anything tied to a pointer: 0.1 s.
+    pub const INSTANT: SpringPlan = SpringPlan::INSTANT;
+    /// Small controls, menus, exits: 0.25 s.
+    pub const SNAPPY: SpringPlan = SpringPlan::SNAPPY;
+    /// The default for a state change: 0.3 s.
+    pub const DEFAULT: SpringPlan = SpringPlan::DEFAULT;
+    /// Layout moves and list reflow: 0.4 s.
+    pub const CALM: SpringPlan = SpringPlan::CALM;
+    /// Drawers and panels: 0.45 s.
+    pub const SMOOTH: SpringPlan = SpringPlan::SMOOTH;
+    /// A chip opening into its panel: 0.42 s, bounce 0.16.
+    pub const MORPH_OPEN: SpringPlan = SpringPlan::MORPH_OPEN;
+    /// A panel closing back into its chip: 0.38 s, bounce 0.08.
+    pub const MORPH_CLOSE: SpringPlan = SpringPlan::MORPH_CLOSE;
+    /// Rare delight only: 0.3 s, bounce 0.3.
+    pub const PLAYFUL: SpringPlan = SpringPlan::PLAYFUL;
+    /// Reveals and wipes: 0.85 s.
+    pub const SLOW: SpringPlan = SpringPlan::SLOW;
+    /// The quickest explainer camera move: 1.0 s.
+    pub const CAMERA_QUICK: SpringPlan = SpringPlan::CAMERA_QUICK;
+    /// A dragged element's lead follower: ω 34, ζ 0.86.
+    pub const FOLLOW_LEAD: SpringPlan = SpringPlan::FOLLOW_LEAD;
+    /// What trails the lead follower: ω 25, ζ 1.
+    pub const FOLLOW_TRAIL: SpringPlan = SpringPlan::FOLLOW_TRAIL;
+    /// A rigid panel settling into place: 0.6 s, no bounce.
     pub const PANEL: SpringPlan = SpringPlan::PANEL;
     /// Ink following its panel, or an overlay fading in: 0.36 s, no bounce.
     pub const CONTENT: SpringPlan = SpringPlan::CONTENT;
@@ -77,11 +102,11 @@ impl Feel {
     pub const MOVE: SpringPlan = SpringPlan::MOVE;
     /// A quick state change, focus shift, or status cross-fade: 0.3 s, no bounce.
     pub const SNAP: SpringPlan = SpringPlan::SNAP;
-    /// A small floating UI pop with restrained overshoot: 0.32 s, bounce 0.18.
+    /// A small floating UI appearing in place: 0.32 s, no bounce.
     pub const POP: SpringPlan = SpringPlan::POP;
     /// A camera move with weight and a natural tail: 1.6 s, critically damped.
     pub const CAMERA: SpringPlan = SpringPlan::CAMERA;
-    /// A hero landing with a little overshoot: 0.85 s, bounce 0.2.
+    /// A hero landing: 0.85 s, no bounce.
     pub const LIVELY: SpringPlan = SpringPlan::LIVELY;
 }
 
