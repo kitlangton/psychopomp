@@ -1,160 +1,128 @@
 ---
 name: psychopomp
 description: >
-  Make explainer reels and deterministic motion graphics with Psychopomp:
-  walkthrough videos of pull requests, code changes, protocols, or lifecycles,
-  with GPU Stage choreography, callouts, rolling numbers, sequence diagrams,
-  animated diffs, and optional ElevenLabs v4 narration in Kit's voice.
+  Make videos, explainer reels, architecture breakdowns, PR walkthroughs, product demos,
+  and deterministic motion graphics in Rust with Psychopomp: wgpu linear-HDR Stage, 24x
+  shutter motion blur, keyed code diffs with IDE diagnostics, native chat/terminal
+  surfaces, ElevenLabs v4 narration, and headless layout, pop, strip, and LUFS checks.
+  Use whenever asked to generate, edit, check, or render a programmatic video or extend
+  Psychopomp's recipes.
 ---
 
-# Psychopomp explainer reels
+# Psychopomp Video Playbook
 
-An **explainer reel** is several independently authored Scene Plans joined on one
-clock: behavior stories on the GPU Stage (orbs, cards, beams, packets, camera,
-bloom), pinned Callouts, Rolling Numbers, changes as animated Stepped Diffs,
-captions in a terminal voice, and optional spoken narration. When narrated,
-every visual beat waits for a phrase in the transcript, so re-voicing re-times
-the film automatically.
+Psychopomp compiles lightweight, GPU-free Rust **Scene Programs** (`scenes/<name>`)
+in under a second into declarative JSON **Scene Plans** and **Reels**, then renders
+`Time -> Pixels` on `wgpu` in linear HDR (`Rgba16Float`) with 24-sample shutter
+motion blur, `cosmic-text` shaping (bundled `CommitMono`), and FFmpeg H.264/AAC
+delivery. Every visual beat is a pure function of `u64` nanosecond time; interrupted
+springs carry both position and velocity.
 
-The working examples are in [`scenes/pr-walkthrough`](https://github.com/kitlangton/psychopomp/tree/main/scenes/pr-walkthrough): [`src/flagship.rs`](https://github.com/kitlangton/psychopomp/blob/main/scenes/pr-walkthrough/src/flagship.rs) (#50825 as a
-Stage film that zooms into its code), [`src/stop_stage.rs`](https://github.com/kitlangton/psychopomp/blob/main/scenes/pr-walkthrough/src/stop_stage.rs) (#50042 combining Stage,
-Callouts, Rolling Number, and a Zoom into an annotated code diff), and [`src/lib.rs`](https://github.com/kitlangton/psychopomp/blob/main/scenes/pr-walkthrough/src/lib.rs)
-(the five-PR reel with sequence diagrams). Copy their shape; do not start from a
-blank crate. Component payloads, channels, and commands live in [`SCENE_PLANS.md`](https://github.com/kitlangton/psychopomp/blob/main/SCENE_PLANS.md#make-a-narrated-explainer-reel)
-("Make A Narrated Explainer Reel") and terms in [`CONTEXT.md`](https://github.com/kitlangton/psychopomp/blob/main/CONTEXT.md); read both before
-authoring. Engineering rules are in [`AGENTS.md`](https://github.com/kitlangton/psychopomp/blob/main/AGENTS.md).
+Before authoring, load `explainer-motion` and read [STORY.md](STORY.md) for
+narrative structure, visual form selection, and anti-slop rules. Canonical
+reference scenes in the repo:
+- `scenes/opc18-catalog`: measured performance story with card-clone decks,
+  `RollingNumberActor`, `MeterActor`, and stepped `Diff`.
+- `scenes/pr-walkthrough/src/flagship.rs`: service orb + client topology zooming
+  into stable inline code transitions.
+- `scenes/diagnostics` & `scenes/text-surfaces`: IDE error waves, hover cards,
+  inlay hints, native chat threads, terminals, and diffstats.
 
 ## Steps
 
-1. **Establish the facts.** For each change, read the actual diff and PR description
-   (`gh pr diff`, `gh pr view`) and write one sentence each for the broken behavior,
-   the fixed behavior, and the change. Done when every claim you will narrate is
-   traceable to code, a test, or a reproduced run; mark anything you could not verify
-   and keep it out of the script.
+1. **Pin down facts and receipts.** Read the actual source files, diffs, or
+   measurements (`gh pr diff`, `gh pr view`). Write down the exact identifiers,
+   line numbers, and numbers you will show on screen.
+   *Done when:* every narrated claim and code line traces to real source or a
+   reproduced measurement, with zero invented identifiers or placeholder metrics.
 
-2. **Write the script** as `scenes/<name>/narration/script.json`, one clip per part:
-   intro, then per change `<slug>-before`, `<slug>-after`, `<slug>-code`, then outro.
-   Follow [STORY.md](STORY.md) when writing it. Done when each clip is under about 30
-   seconds spoken and every planned visual beat has a distinct anchor phrase in it.
-
-3. **Voice it (optional).** Draft first with no credentials (`--draft` uses macOS
-   `say`), then synthesize final narration with **ElevenLabs v4 in Kit's voice**:
-   `eleven_v4` through Text to Dialogue with Kit's Professional Voice Clone
-   `8olojUk4IXpvKgaOCHXj` (`use_pvc_as_ivc: false`, stability 0.5, similarity
-   0.75). That is narrate.ts's default; spell it out in the script anyway. Fish
-   Audio is retired: never use it.
-   ```json
-   {
-     "engine": "elevenlabs",
-     "model": "eleven_v4",
-     "voice": "8olojUk4IXpvKgaOCHXj",
-     "settings": { "stability": 0.5, "similarity": 0.75 },
-     "clips": [
-       { "id": "change-before", "text": "[warm, conversational voice] ..." }
-     ]
-   }
+2. **Author and reconcile voice first (`psychopomp-media`).** When narrated,
+   declare speech inside `scenes/<name>/src/main.rs` with `psychopomp-media` so
+   ElevenLabs `eleven_v4` (`stability(0.45..0.5)`, `similarity(0.75)`) returns
+   character-aligned word timestamps directly into `media.lock.json` (`PROVIDER_ALIGN`):
+   ```rust
+   let media = Media::open(&root)?;
+   let voice = Voice::eleven(VOICE_ID).v4().stability(0.45).similarity(0.75);
+   let intro = media.dialogue("intro", [(&voice, "[calm, conversational] ...")])?;
+   media.finish()?;
    ```
+   Dry-run character cost with zero API calls, then synthesize with
+   `ELEVENLABS_API_KEY` in the environment:
    ```sh
-   # Draft (no API key required)
-   bun scripts/narrate.ts scenes/<name>/narration/script.json --draft
-
-   # Final: Kit's voice on Eleven v4 (requires ELEVENLABS_API_KEY)
-   2password run --env 'ELEVENLABS_API_KEY=op://…' -- \
-     bun scripts/narrate.ts scenes/<name>/narration/script.json
+   PSYCHOPOMP_MEDIA=plan cargo run -p psychopomp-<name>
+   ELEVENLABS_API_KEY=... cargo run -p psychopomp-<name>
    ```
-   [`scripts/narrate.ts`](https://github.com/kitlangton/psychopomp/blob/main/scripts/narrate.ts) normalizes loudness, transcribes word timings with Whisper,
-   and writes `<id>.mp3`, `<id>.words.json`, and `narration.json`. When switching
-   voices or engines, rebuild the Scene Plan against the new word timings.
+   Later edits to choreography reuse `media.lock.json` (`=`) with zero API calls.
+   *Done when:* `media.lock.json` is up to date (`=`) and `words` contains no
+   spoken `[direction]` bracket tags.
 
-   **Or declare the narration in the Scene Program** with `psychopomp-media`
-   ([`SCENE_PLANS.md`](https://github.com/kitlangton/psychopomp/blob/main/SCENE_PLANS.md#declare-narration-and-sound), "Declare Narration And Sound"): `media.say(id, &voice, text)`,
-   `media.dialogue`, `media.sfx`, and `audio.derive(Effect::pitch(..))`, then
-   `media.finish()?`. Each line is generated once and recorded in
-   `media.lock.json`; later runs call nothing unless a declaration changed, and
-   ElevenLabs words come from its character alignment with the script's spelling.
-   Check the cost first with `PSYCHOPOMP_MEDIA=plan cargo run -p <crate>` (zero
-   API calls), time with `PSYCHOPOMP_MEDIA=draft`, and clean up with
-   `PSYCHOPOMP_MEDIA=prune`. Move a narrate.ts scene with
-   `cargo run -p psychopomp-media -- adopt scenes/<name>/narration` (no
-   regeneration). Done when a plain run reports every resource `=`.
+3. **Build the Scene Program (`scenes/<name>`).** The workspace globs `scenes/*`
+   automatically (`psychopomp` + `psychopomp-media` deps only; compiles in <1s).
+   Choose the concrete recipe that matches each act instead of defaulting to
+   generic node boxes:
+   - **Chat / Slack / messaging context:** `ChatActor` (`ChatPlan::new`,
+     `.titled("#channel", None)` or `ChatStyle::Bubbles`, `.say`, `.stream`,
+     `.highlight`, `.react`).
+   - **Code receipts and fixes:** `editor::diff::Diff` (`keep`, `remove`, `add`,
+     `<= 76` cols, `<= 14` rows) with `.range(id, text)` + `.inlay(id, range, ghost)`,
+     paired with `DiagnosticActor` (`DiagnosticPlan::error`), `HoverActor`, or
+     `CalloutActor`.
+   - **Systems, pipelines, and physical metaphors:** `StageActor` on
+     `StagePost::RESTRAINED` (`card`, `orb`, `Form` 3D shapes, `beam`, `Path`,
+     `packet`, `Bolt` + `zap`, `dissolve` / `materialize`, `burst` + `rewind` +
+     `unburst`, `CameraRig` moves).
+   - **UI and hit-testing bugs:** magnified control anatomy (`Material::Well`,
+     `Material::Raised`, cursor icons `"cursor"`, `"hand-pointing"`) +
+     `VideoActor` + `ReelSegmentPlan::wiped`.
+   - **Benchmarks, checks, and counters:** `ChecklistActor`, `BarsActor`,
+     `MeterActor`, `RollingNumberActor`, `ConfettiActor`, `TerminalActor`,
+     `ChangedFilesActor`.
+   Key every beat to spoken phrases with `spoken.at_any(&["phrase", "fallback"])`
+   and causal guards (`.not_before(send.reply())`), frame segments with
+   `chrome::{header, chip, footer}`, and Layer SFX (`sfx::TICK`, `MARK`,
+   `CONFIRM`, `WHOOSH`, `GLITCH`, `IMPACT`, `BOOM`, `SPARKLE`) at `-10..-18 dB`.
+   *Done when:* `cargo run -p psychopomp-<name>` emits `<name>.reel.json` and
+   `plan validate` reports `"valid": true`.
 
-4. **Author the Scene Program** in `scenes/<name>` (the workspace picks it up; add
-   it to [`verify.json`](https://github.com/kitlangton/psychopomp/blob/main/verify.json) with a few key times).
-   Use `psychopomp::score` ([`SCENE_PLANS.md`](https://github.com/kitlangton/psychopomp/blob/main/SCENE_PLANS.md#author-with-the-score-dsl), "Author With The Score DSL") so
-   `PlanBuilder` is the only `mut` binding and every actor (`Stage`, `Camera`,
-   `Caption`, `Callout`, `RollingNumber`, `Checklist`, `Meter`, `Bars`,
-   `Subtitles`, `Confetti`, `Terminal`, `Chat`, `ChangedFiles`, `LowerThird`,
-   `Lens`) is an immutable value whose methods return composable `Beat`s
-   (`.then`, `.also`, `.with`, `.on_end`, `.after`, `.early`, `stagger`, `each`,
-   `at!(scene, time => ...)`). Schedule clips with `Narration::reading`, build
-   elements with `StageElement::card|orb|beam|packet|label|ring|rect|icon` and relative
-   `psychopomp::layout::Placement` envelopes on `StagePost::RESTRAINED`, frame
-   with `Caption::header|chip|footer`, and play sounds with `sfx::*.beat(id, gain_db)`
-   (or `audio.beat(gain_db)` for `psychopomp-media`). Do not turn UI, interaction,
-   or geometry stories into abstract node diagrams of cards and beams: draw the
-   actual control anatomy on Stage (`StageElement::rect` with `width`/`height`
-   channels and `dash` hit-box outlines, plus `StageElement::icon` cursor shapes
-   `"cursor"`, `"hand-pointing"`, `"cursor-text"`), and pair with `VideoActor` +
-   `ReelSegmentPlan::wiped` (`BEFORE` / `AFTER` held wipe) for real screen
-   recordings. Load the `explainer-motion`
-   skill and apply it to every beat: cards `settle_in`, beams `connect`,
-   messages `send`, replies wait for `.reply()`, impacts `hit`, the hero `orb_in`,
-   the fix's `rewind`; use `Callout` to pin annotations to Stage elements or
-   Editor code ranges and `RollingNumber` for live counters/timers; drive camera
-   moves through `stage.camera()` (`establish`, `frame`, `follow`, `release`,
-   `orbit`, `whip`, `dolly_zoom`). Reach for the visualization and text overlays
-   instead of hand-building them from Stage labels and rings: `Checklist` for
-   checks that run and resolve, `Meter` (`MeterPlan::countdown`) for a timeout
-   ring, `Bars` for before/after numbers, `Confetti` for a success beat, and
-   `Subtitles` (`SubtitlesPlan::from_spoken`) to burn in word-timed captions.
-   Changes are `Diff`s of `keep`, `add(step)`, and `remove(step)` lines, each step
-   keyed to a phrase. Done when `cargo run -p <crate>` writes the reel and
-   `cargo run --release -- plan validate <reel>` reports valid. A missing phrase panics
-   with its clip: change the anchor to words the transcript actually contains.
-
-5. **Review before rendering.** Get segment spans from `plan inspect <reel>`, then
-   contact-sheet each segment at its before, switch, after, and code beats, and use
-   `plan onion` over key motion windows to inspect trajectories, spacing, and
-   cursor/shape morphs in one composite image:
+4. **Run the headless check loop before encoding video.** Address any point or
+   segment with `psychopomp::time_spec` (`3.2s`, `500ms`, `120f`, `50%`, `intro`,
+   `intro@1.5s`, `intro..outro`):
    ```sh
-   bun scripts/sheet.ts <reel> t1,t2,... --theme neutral --shutter --out output/sheet.jpg
-   cargo run --release -- plan onion <reel> from:to:step output/onion.png --theme neutral
+   cargo run --release -- plan check scenes/<name>/<name>.reel.json --pops --audio --theme neutral
+   cargo run --release -- plan strip scenes/<name>/<name>.reel.json all output/strip.png -n 16 --cols 4 --shutter --theme neutral
+   cargo run --release -- plan frame scenes/<name>/<name>.reel.json "intro@2s,receipts@50%,verdict@end" output/stills --shutter --theme neutral
    ```
-   When tuning the look, set `PSYCHOPOMP_SHADER_DIR=crates/psychopomp-render/src/render`
-   and edit [`stage.wgsl`](https://github.com/kitlangton/psychopomp/blob/main/crates/psychopomp-render/src/render/stage.wgsl)/[`stage_post.wgsl`](https://github.com/kitlangton/psychopomp/blob/main/crates/psychopomp-render/src/render/stage_post.wgsl): every frame and sheet picks up shader edits
-   without a Rust rebuild.
-   Then render one behavior segment with audio (`plan render <reel> out.mp4 --cue <scene-id>`)
-   or a 2–3 second window (`--range a..b`; pass `--draft` for a fast single-sample
-   timing/audio check before the full-shutter render) and inspect frames extracted
-   during motion. Done when every segment has been looked at and no text overlaps,
-   clips, or reads against the wrong chip.
+   - `plan check [--pops] [--audio]` verifies projected canvas bounds
+     (`clipped_by_canvas`, `off_canvas`, `nan_pose`), **Stage card text fit**
+     (`card_text_overflow`), 1-frame step/flash discontinuities (`--pops`),
+     missing audio files, digital clipping, and ITU-R BS.1770-4 loudness (aim
+     for `-14..-18 LUFS` integrated, true peak `< -1 dBTP`, segments within `2 LU`).
+   - `plan audio <reel.json> --at "intro@2s,verdict@8s"` lists active clips,
+     offsets, and gains at exact instants.
+   - Inspect `output/strip.png` and full-resolution stills (or sharp crops via
+     `plan frame ... --crop x,y,w,h` and motion trails via `plan onion`). Fix
+     cramped margins, blank frame-0 starts, scroll-clipped chat rows, or
+     overlapping labels before encoding MP4.
+   *Done when:* `plan check --pops --audio` reports `0` errors and `0` unintended
+   warnings, and you have visually inspected the contact sheet and key stills.
 
-6. **Render and verify** the whole reel once, after the sheets and short windows
-   pass. Run it in the foreground with a long timeout and never end a turn while it
-   is still running:
+5. **Render and probe.** Encode the full-shutter 1080p60 MP4 once after sheets
+   and checks pass (`--draft` is for fast single-sample timing checks only):
    ```sh
-   cargo run --release -- plan render <reel> output/<name>.mp4 --theme neutral
+   cargo run --release -- plan render scenes/<name>/<name>.reel.json output/<name>.mp4 --theme neutral
+   ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,r_frame_rate,duration -of json output/<name>.mp4
    ```
-   Done when `ffprobe` shows 1920x1080, 60 fps, AAC audio, and a duration matching
-   `plan inspect`, and loudness is near -16 LUFS with peaks under -1 dBFS.
+   *Done when:* `ffprobe` confirms `1920x1080`, `60/1` fps, and `h264` + `aac`
+   matching the reel duration.
 
-7. **Deliver** the MP4 path. Commit the scene, narration assets, and any engine
-   changes in Psychopomp with conventional messages.
+## Extending Psychopomp
 
-## Improving Psychopomp
-
-When a reel needs something the engine cannot do, add it to Psychopomp rather than
-working around it in one scene: plan types and validation in [`crates/psychopomp`](https://github.com/kitlangton/psychopomp/tree/main/crates/psychopomp),
-strict-channel preflight in `plan_runtime`, pixels in `render`, GPU-free tests plus
-an `#[ignore]` GPU test, and the docs [`AGENTS.md`](https://github.com/kitlangton/psychopomp/blob/main/AGENTS.md) asks you to keep current. Run
-`cargo run --release -- verify baseline` before the change and `verify compare
---expect <scenes you changed>` after it to prove every other showroom and film is
-untouched.
-
-Build from small reusable pieces. Interpolation, easing, curves, shape ports, and
-connectors belong in `psychopomp::math` (organized like pmndrs `math`: core `lerp`/
-`remap`/`smoothstep`, `easing`, `curve`, `shapes`, `random`; glam vectors). Extend it
-instead of inlining math in a renderer or scene, and split renderers into one small
-helper per element, as [`render/stage.rs`](https://github.com/kitlangton/psychopomp/blob/main/crates/psychopomp-render/src/render/stage.rs) does. Keep
-`cargo fmt --check`, `cargo clippy --workspace --all-targets --all-features -- -D warnings`,
-and `cargo test --workspace` green.
+When a film needs a capability the engine lacks, build it cleanly in Psychopomp
+rather than hacking around it in one scene:
+- Pure types, validation, and math in `crates/psychopomp` (`psychopomp::math`,
+  zero GPU deps; Stage defaults in `StagePlan::channel_default`).
+- Strict preflight in `crates/psychopomp-render/src/plan_runtime/` and pixels in
+  `src/render/` (hot-reload WGSL via `PSYCHOPOMP_SHADER_DIR`).
+- Focused unit tests (`cargo test -p psychopomp ...`, `cargo test -p psychopomp-render ...`)
+  and `verify baseline` / `verify compare --expect <scenes>` when touching shared
+  rendering paths.

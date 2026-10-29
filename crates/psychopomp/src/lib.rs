@@ -44,6 +44,7 @@ pub mod subtitles;
 pub mod task;
 pub mod terminal;
 pub mod text;
+pub mod time_spec;
 pub mod timeline;
 pub mod tone;
 pub mod transcript;

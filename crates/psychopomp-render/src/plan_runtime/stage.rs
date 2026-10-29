@@ -11,7 +11,7 @@ use psychopomp::{
 use super::preflight::{decode, strict_channels};
 use crate::{
     footage::StageFootageFrame,
-    render::{HeadlessRenderer, StageGpu, icon_svg},
+    render::{HeadlessRenderer, StageBoundsItem, StageGpu, icon_svg, stage_bounds},
 };
 
 pub(super) fn audit_stage_rune_cards(plan: &StagePlan, duration_secs: f64) -> Result<()> {
@@ -161,6 +161,21 @@ impl PreparedStage {
             &[(time, 1.0)],
             |_, property, default| value(&self.id, property, default),
             footage,
+        )
+    }
+
+    pub(super) fn bounds(
+        &self,
+        time: f64,
+        size: [u32; 2],
+        value: impl Fn(&str, &str, f32) -> f32,
+    ) -> Vec<StageBoundsItem> {
+        stage_bounds(
+            &self.plan,
+            &self.gpu,
+            &|property, default| value(&self.id, property, default),
+            time,
+            psychopomp::math::vec2(size[0] as f32, size[1] as f32),
         )
     }
 }

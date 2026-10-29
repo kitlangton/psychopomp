@@ -90,6 +90,60 @@ impl HeadlessRenderer {
         self.plain_text_sprite_in(Face::Mono, text, spec)
     }
 
+    /// Paint a single-line CommitMono label onto an arbitrary `canvas_w × canvas_h` RGBA buffer.
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn draw_mono_label(
+        &mut self,
+        pixels: &mut [u8],
+        canvas_w: u32,
+        canvas_h: u32,
+        origin: [i32; 2],
+        font_size: f32,
+        color: [u8; 3],
+        max_width: u32,
+        text: &str,
+    ) {
+        if text.is_empty() || max_width == 0 {
+            return;
+        }
+        let line_h = (font_size * 1.45).ceil().max(1.0) as u32;
+        let sprite = self
+            .plain_text_sprite(
+                text,
+                PlainTextSpec {
+                    font_size,
+                    color,
+                    size: [max_width, line_h],
+                    semibold: false,
+                    crop_to_advance: true,
+                },
+            )
+            .clone();
+        let draw_w = sprite.width.min(max_width);
+        for row in 0..sprite.height {
+            for col in 0..draw_w {
+                let src = ((row * sprite.width + col) * 4) as usize;
+                let rgba = [
+                    sprite.pixels[src],
+                    sprite.pixels[src + 1],
+                    sprite.pixels[src + 2],
+                    sprite.pixels[src + 3],
+                ];
+                if rgba[3] > 0 {
+                    blend_pixel_at(
+                        pixels,
+                        canvas_w,
+                        canvas_h,
+                        origin[0] + col as i32,
+                        origin[1] + row as i32,
+                        rgba,
+                        1.0,
+                    );
+                }
+            }
+        }
+    }
+
     /// `text` set in `face` rather than CommitMono.
     pub(super) fn plain_text_sprite_in(
         &mut self,
