@@ -397,6 +397,13 @@ fn footprint(element: &StageElement, at: Vec3, scale: f32) -> Option<Footprint> 
         StageElement::Footage { size, .. } | StageElement::RuneCard { size, .. } => {
             (Vec2::from(*size) * 0.5, Vec2::ZERO)
         }
+        StageElement::Type { spec, .. } => {
+            let lines = spec.text.split('\n').collect::<Vec<_>>();
+            let max_chars = lines.iter().map(|l| l.chars().count()).max().unwrap_or(1) as f32;
+            let w = max_chars * spec.size * (0.58 + spec.tracking.max(-0.08));
+            let h = lines.len().max(1) as f32 * spec.size * spec.line_height;
+            (vec2(w * 0.5, h * 0.5), Vec2::ZERO)
+        }
         StageElement::Beam { .. }
         | StageElement::Packet { .. }
         | StageElement::Path { .. }

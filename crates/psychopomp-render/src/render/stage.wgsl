@@ -337,11 +337,27 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                 color += prim.light_color.rgb * prim.light.w * reflection(r) * coverage(d, prim.a.w) * strength * 0.6;
             }
         }
-        // Text: a = (kind, left, top, blur), b = (width, height, revealed width, 0)
-        // uv = atlas rectangle in texels. light = (shimmer phase, strength, 0, 0).
+        // Text: a = (kind, left, top, blur), b = (width, height, revealed width, rotation_rad)
+        // uv = atlas rectangle in texels.
+        // light = (shimmer phase, shimmer strength, glyph_gamma, 0).
+        // pool = optional stationary clip box (min_x, min_y, max_x, max_y) when pool.z > pool.x.
         case 4u: {
-            let local = (px - prim.a.yz) / prim.b.xy;
-            if all(local >= vec2<f32>(0.0)) && all(local <= vec2<f32>(1.0)) && px.x <= prim.a.y + prim.b.z {
+            var sample_px = px;
+            if abs(prim.b.w) > 1.0e-5 {
+                let center = prim.a.yz + prim.b.xy * 0.5;
+                let rel = px - center;
+                let c = cos(-prim.b.w);
+                let s = sin(-prim.b.w);
+                sample_px = center + vec2<f32>(rel.x * c - rel.y * s, rel.x * s + rel.y * c);
+            }
+            var slit = 1.0;
+            if prim.pool.z > prim.pool.x && prim.pool.w > prim.pool.y {
+                let dx = min(px.x - prim.pool.x, prim.pool.z - px.x);
+                let dy = min(px.y - prim.pool.y, prim.pool.w - px.y);
+                slit = clamp(min(dx, dy) + 0.5, 0.0, 1.0);
+            }
+            let local = (sample_px - prim.a.yz) / prim.b.xy;
+            if slit > 0.0 && all(local >= vec2<f32>(0.0)) && all(local <= vec2<f32>(1.0)) && sample_px.x <= prim.a.y + prim.b.z {
                 let uv = mix(prim.uv.xy, prim.uv.zw, local) / globals.viewport.zw;
                 var cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
                 let blur = prim.a.w;
@@ -357,18 +373,19 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                     }
                     cov = sum / 16.0;
                 }
-                alpha = prim.fill.a * cov;
-                color = prim.fill.rgb * alpha;
+                if prim.light.z > 0.0 {
+                    cov = pow(clamp(cov, 0.0, 1.0), prim.light.z);
+                }
+                let fcol = eval_fill(prim, px);
+                alpha = fcol.a * cov * slit;
+                color = fcol.rgb * alpha;
                 if prim.light.y > 0.0 {
-                    // The blog's "broad" ShimmerText: the ink dims by 40% and a
-                    // raised-cosine sheen 0.84 text widths wide sweeps left to
-                    // right once per phase unit.
                     let strength = prim.light.y;
                     let band = (fract(local.x - prim.light.x) - 0.5) / 0.84 + 0.5;
                     let sheen = select(0.0, 0.5 - 0.5 * cos(band * 6.2831853), band > 0.0 && band < 1.0);
                     let base = 1.0 - 0.4 * strength;
                     let lit = 0.85 * strength * sheen;
-                    color = alpha * (prim.fill.rgb * base * (1.0 - lit) + vec3<f32>(0.8) * lit);
+                    color = alpha * (fcol.rgb * base * (1.0 - lit) + vec3<f32>(0.8) * lit);
                     alpha = alpha * (base + lit * (1.0 - base));
                 }
             }

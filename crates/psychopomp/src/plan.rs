@@ -9,6 +9,7 @@ use serde_json::Value;
 
 use crate::{
     canvas::CanvasPlan,
+    face::FontFacePlan,
     math::{
         easing::{Ease, cubic_in_out},
         smoothstep, vec2,
@@ -664,6 +665,8 @@ pub struct ScenePlan {
     pub canvas: CanvasPlan,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub palette: Option<PalettePlan>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub fonts: Vec<FontFacePlan>,
     #[serde(default)]
     pub actors: Vec<ActorPlan>,
     #[serde(default)]
@@ -688,6 +691,7 @@ impl ScenePlan {
             duration_nanos,
             canvas: CanvasPlan::default(),
             palette: None,
+            fonts: Vec::new(),
             actors: Vec::new(),
             semantic_targets: Vec::new(),
             continuous_channels: Vec::new(),
@@ -724,6 +728,15 @@ impl ScenePlan {
                 "canvas",
                 err.to_string(),
             ));
+        }
+        for (index, font) in self.fonts.iter().enumerate() {
+            if let Err(err) = font.validate() {
+                diagnostics.push(PlanDiagnostic::new(
+                    "invalid-font",
+                    format!("fonts[{index}]"),
+                    err.to_string(),
+                ));
+            }
         }
 
         let mut actor_ids = HashSet::new();
