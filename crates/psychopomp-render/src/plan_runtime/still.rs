@@ -7,15 +7,17 @@ use anyhow::{Context, Result, bail, ensure};
 use serde_json::json;
 
 use psychopomp::{
+    canvas::CanvasPlan,
     composition::{MediaPlacement, TimeRange},
     time_spec::TimeIndex,
 };
 
 use super::{
-    DECK_UNSUPPORTED, PlanFile, PreparedPlan, Theme, check, delivery, new_renderer, preflight, reel,
+    DECK_UNSUPPORTED, PlanFile, PreparedPlan, Theme, check, delivery, new_renderer_sized,
+    preflight, reel,
 };
 use crate::{
-    exposure::{HEIGHT, WIDTH, exposure, merge_equal_samples},
+    exposure::{HEIGHT, WIDTH, exposure_with_shutter, merge_equal_samples},
     render::HeadlessRenderer,
 };
 
@@ -38,15 +40,17 @@ impl Loaded {
     ) -> Result<(Self, HeadlessRenderer)> {
         match file {
             PlanFile::Reel(plan) => {
-                let mut renderer = new_renderer(&plan.id).await?;
+                let mut renderer = new_renderer_sized(&plan.id, plan.canvas().size()).await?;
                 renderer.set_theme(theme);
                 let prepared = reel::PreparedReel::prepare(plan, base, &mut renderer)?;
                 Ok((Self::Reel(prepared), renderer))
             }
             PlanFile::Plan(plan) => {
                 let input = preflight::Plan::new(plan)?;
-                let mut renderer = new_renderer(&input.plan.id).await?;
+                let mut renderer =
+                    new_renderer_sized(&input.plan.id, input.plan.canvas.size()).await?;
                 renderer.set_theme(theme);
+                renderer.set_palette_override(input.plan.palette);
                 let prepared = PreparedPlan::prepare_preflight(input, base, &mut renderer)?;
                 renderer.set_file_name(prepared.file_name());
                 Ok((Self::Plan(Box::new(prepared)), renderer))
@@ -122,6 +126,13 @@ impl Loaded {
         }
     }
 
+    pub(super) fn canvas(&self) -> CanvasPlan {
+        match self {
+            Self::Plan(plan) => plan.plan.canvas,
+            Self::Reel(reel) => reel.reel().canvas(),
+        }
+    }
+
     pub(super) fn time_index(&self) -> TimeIndex {
         match self {
             Self::Plan(plan) => TimeIndex::from_plan(&plan.plan),
@@ -165,15 +176,19 @@ impl Loaded {
             "frame time {at}s is outside 0..{:.3}s",
             self.duration_seconds()
         );
-        let span = 1.0 / 60.0;
+        let canvas = self.canvas();
+        let span = 1.0 / f64::from(canvas.fps.max(1));
+        let shutter_sec = canvas.shutter_seconds();
         match self {
             Self::Plan(plan) if shutter => {
-                let samples = exposure(at, span, plan.temporal_samples(at));
+                let samples =
+                    exposure_with_shutter(at, span, shutter_sec, plan.temporal_samples(at));
                 let samples = merge_equal_samples(samples, |time| plan.visual_sample_key(time))?;
                 plan.render_exposure(renderer, &samples)
             }
             Self::Reel(reel) if shutter => {
-                let samples = exposure(at, span, reel.temporal_samples(at));
+                let samples =
+                    exposure_with_shutter(at, span, shutter_sec, reel.temporal_samples(at));
                 let samples = merge_equal_samples(samples, |time| reel.visual_sample_key(time))?;
                 reel.render_exposure(renderer, &samples)
             }
@@ -225,18 +240,19 @@ pub(super) fn snapshot(
     if !compare {
         fs::create_dir_all(dir).with_context(|| format!("create {}", dir.display()))?;
     }
+    let [cw, ch] = loaded.canvas().size();
     let mut reports = Vec::new();
     let mut differing = 0;
     for &at in &times {
         let pixels = loaded.still(&mut renderer, at, shutter)?;
         let file = dir.join(frame_name(at));
         if !compare {
-            delivery::write_png(&file, &pixels)?;
+            delivery::write_rgba_png(&file, cw, ch, &pixels)?;
             reports.push(json!({ "time": at, "path": file }));
             continue;
         }
-        let baseline = read_png(&file)?;
-        let change = Change::between(&baseline, &pixels);
+        let baseline = read_png_sized(&file, cw, ch)?;
+        let change = Change::between_in(&baseline, &pixels, cw);
         if change.pixels > 0 {
             differing += 1;
         }
@@ -270,6 +286,10 @@ pub(super) struct Change {
 
 impl Change {
     pub(super) fn between(before: &[u8], after: &[u8]) -> Self {
+        Self::between_in(before, after, WIDTH)
+    }
+
+    pub(super) fn between_in(before: &[u8], after: &[u8], width: u32) -> Self {
         let mut change = Self {
             pixels: 0,
             max: 0,
@@ -286,7 +306,7 @@ impl Change {
             if delta == 0 {
                 continue;
             }
-            let (x, y) = (index % WIDTH as usize, index / WIDTH as usize);
+            let (x, y) = (index % width as usize, index / width as usize);
             change.pixels += 1;
             change.max = change.max.max(delta);
             change.bounds = Some(match change.bounds {
@@ -309,6 +329,10 @@ impl Change {
 }
 
 pub(super) fn read_png(path: &Path) -> Result<Vec<u8>> {
+    read_png_sized(path, WIDTH, HEIGHT)
+}
+
+pub(super) fn read_png_sized(path: &Path, width: u32, height: u32) -> Result<Vec<u8>> {
     let file = fs::File::open(path).with_context(|| format!("open baseline {}", path.display()))?;
     let mut reader = png::Decoder::new(std::io::BufReader::new(file))
         .read_info()
@@ -316,8 +340,8 @@ pub(super) fn read_png(path: &Path) -> Result<Vec<u8>> {
     let mut pixels = vec![0; reader.output_buffer_size().context("baseline PNG size")?];
     let info = reader.next_frame(&mut pixels)?;
     ensure!(
-        info.width == WIDTH && info.height == HEIGHT && info.color_type == png::ColorType::Rgba,
-        "{} is not a {WIDTH}x{HEIGHT} RGBA frame",
+        info.width == width && info.height == height && info.color_type == png::ColorType::Rgba,
+        "{} is not a {width}x{height} RGBA frame",
         path.display()
     );
     pixels.truncate(info.buffer_size());
@@ -350,7 +374,8 @@ pub(super) fn onion(
         .map(|&at| loaded.still(&mut renderer, at, shutter))
         .collect::<Result<Vec<_>>>()?;
     let blended = blend_onion(&frames);
-    delivery::write_png(output, &blended)?;
+    let [cw, ch] = loaded.canvas().size();
+    delivery::write_rgba_png(output, cw, ch, &blended)?;
     println!(
         "{}",
         serde_json::to_string_pretty(&json!({

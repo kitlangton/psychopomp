@@ -17,10 +17,7 @@ use super::{
     still::Loaded,
     strip::downscale_rgba,
 };
-use crate::{
-    exposure::{HEIGHT, WIDTH},
-    render::HeadlessRenderer,
-};
+use crate::render::HeadlessRenderer;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -286,24 +283,27 @@ pub(crate) fn run_check(options: CheckOptions<'_>) -> Result<()> {
 
     let mut pop_findings = Vec::new();
     if options.pops {
-        let small_w = WIDTH / POP_SCALE_DIV;
-        let small_h = HEIGHT / POP_SCALE_DIV;
+        let canvas = loaded.canvas();
+        let fps = canvas.fps.max(1) as f64;
+        let [cw, ch] = canvas.size();
+        let small_w = (cw / POP_SCALE_DIV).max(16);
+        let small_h = (ch / POP_SCALE_DIV).max(16);
         let mut detector = PopDetector::new(small_w, small_h);
-        let start_frame = (range.start().as_seconds() * 60.0).round() as usize;
-        let end_frame = (range.end().as_seconds() * 60.0).round() as usize;
+        let start_frame = (range.start().as_seconds() * fps).round() as usize;
+        let end_frame = (range.end().as_seconds() * fps).round() as usize;
         for f in start_frame..end_frame {
-            let t = ((f as f64 + 0.5) / 60.0).min(loaded.duration_seconds());
+            let t = ((f as f64 + 0.5) / fps).min(loaded.duration_seconds());
             let full = loaded.still(&mut renderer, t, false)?;
-            detector.push(downscale_rgba(&full, WIDTH, HEIGHT, small_w, small_h));
+            detector.push(downscale_rgba(&full, cw, ch, small_w, small_h));
         }
         for (rel_frame, kind, [sx, sy, sw, sh], strength) in detector.finish() {
             let frame_idx = start_frame + rel_frame;
-            let sec = (frame_idx as f64 / 60.0 * 1000.0).round() / 1000.0;
+            let sec = (frame_idx as f64 / fps * 1000.0).round() / 1000.0;
             let [vx, vy, vw, vh] = [
                 (sx * POP_SCALE_DIV).saturating_sub(16),
                 (sy * POP_SCALE_DIV).saturating_sub(16),
-                (sw * POP_SCALE_DIV + 32).min(WIDTH),
-                (sh * POP_SCALE_DIV + 32).min(HEIGHT),
+                (sw * POP_SCALE_DIV + 32).min(cw),
+                (sh * POP_SCALE_DIV + 32).min(ch),
             ];
             pop_findings.push(PopFinding {
                 frame: frame_idx,
@@ -436,8 +436,9 @@ pub(crate) fn inspect_prepared_plan(
     segment_id: Option<&str>,
     plan_path: &Path,
 ) -> Vec<Finding> {
+    renderer.set_palette_override(plan.plan.palette);
     let mut out = Vec::new();
-    let size = [WIDTH, HEIGHT];
+    let size = plan.plan.canvas.size();
     let timeline = &plan.timeline;
     let value = |actor: &str, property: &str, default: f32| {
         plan.property_value(timeline, actor, property, local_time, default)
@@ -479,13 +480,14 @@ pub(crate) fn inspect_prepared_plan(
                     first_seconds: round_sec,
                     last_seconds: round_sec,
                     bbox: Some(ibox),
-                    inspect_hint: Some(crop_cmd(plan_path, round_sec, ibox)),
+                    inspect_hint: Some(crop_cmd(plan_path, round_sec, ibox, size)),
                 });
             }
             // Check text-bearing Stage items (`card`, `label`) against canvas edges.
             if matches!(item.kind, "card" | "label")
                 && let Some(finding) = classify_canvas_box(
                     item.bbox,
+                    size,
                     &target,
                     item.text.as_deref().unwrap_or(&item.id),
                     seg.clone(),
@@ -517,6 +519,7 @@ pub(crate) fn inspect_prepared_plan(
             let label = caption.text();
             if let Some(finding) = classify_canvas_box(
                 bbox,
+                size,
                 caption.id(),
                 &label,
                 seg.clone(),
@@ -540,6 +543,7 @@ pub(crate) fn inspect_prepared_plan(
             ];
             if let Some(finding) = classify_canvas_box(
                 bbox,
+                size,
                 callout.id(),
                 callout.id(),
                 seg.clone(),
@@ -587,6 +591,7 @@ pub(crate) fn inspect_reel_at(
 
 fn classify_canvas_box(
     bbox: [f32; 4],
+    [cw, ch]: [u32; 2],
     target: &str,
     label: &str,
     segment: Option<String>,
@@ -599,8 +604,8 @@ fn classify_canvas_box(
     }
     let right = x + w;
     let bottom = y + h;
-    let fw = WIDTH as f32;
-    let fh = HEIGHT as f32;
+    let fw = cw as f32;
+    let fh = ch as f32;
     let disjoint = right <= 0.0 || bottom <= 0.0 || x >= fw || y >= fh;
     let inside = x >= -2.0 && y >= -2.0 && right <= fw + 2.0 && bottom <= fh + 2.0;
     let ibox = to_ibox(bbox);
@@ -611,7 +616,7 @@ fn classify_canvas_box(
             segment,
             target: target.to_owned(),
             message: format!(
-                "'{target}' (\"{label}\") is completely outside {WIDTH}x{HEIGHT} (x={x:.0} y={y:.0} w={w:.0} h={h:.0})"
+                "'{target}' (\"{label}\") is completely outside {cw}x{ch} (x={x:.0} y={y:.0} w={w:.0} h={h:.0})"
             ),
             first_seconds: sec,
             last_seconds: sec,
@@ -630,7 +635,7 @@ fn classify_canvas_box(
             first_seconds: sec,
             last_seconds: sec,
             bbox: Some(ibox),
-            inspect_hint: Some(crop_cmd(plan_path, sec, ibox)),
+            inspect_hint: Some(crop_cmd(plan_path, sec, ibox, [cw, ch])),
         })
     } else {
         None
@@ -646,13 +651,13 @@ fn to_ibox([x, y, w, h]: [f32; 4]) -> [i32; 4] {
     ]
 }
 
-fn crop_cmd(plan_path: &Path, sec: f64, [x, y, w, h]: [i32; 4]) -> String {
-    let cx = (x - 16).clamp(0, WIDTH as i32 - 32) as u32;
-    let cy = (y - 16).clamp(0, HEIGHT as i32 - 32) as u32;
-    let cw = ((w + 32).max(64) as u32).min(WIDTH - cx);
-    let ch = ((h + 32).max(64) as u32).min(HEIGHT - cy);
+fn crop_cmd(plan_path: &Path, sec: f64, [x, y, w, h]: [i32; 4], [cw, ch]: [u32; 2]) -> String {
+    let cx = (x - 16).clamp(0, cw as i32 - 32) as u32;
+    let cy = (y - 16).clamp(0, ch as i32 - 32) as u32;
+    let rw = ((w + 32).max(64) as u32).min(cw - cx);
+    let rh = ((h + 32).max(64) as u32).min(ch - cy);
     format!(
-        "psychopomp plan frame {} {sec:.3}s --crop {cx},{cy},{cw},{ch}",
+        "psychopomp plan frame {} {sec:.3}s --crop {cx},{cy},{rw},{rh}",
         plan_path.display()
     )
 }

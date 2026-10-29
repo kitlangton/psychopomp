@@ -22,7 +22,6 @@ use crate::{
 };
 
 const NANOS_PER_SEC: f64 = 1_000_000_000.0;
-const DEFAULT_FPS: u32 = 60;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SectionKind {
@@ -80,7 +79,7 @@ impl TimeIndex {
                 end_nanos: cue.end_nanos,
             })
             .collect();
-        Self::new(plan.duration_nanos, DEFAULT_FPS, sections)
+        Self::new(plan.duration_nanos, plan.canvas.fps, sections)
     }
 
     pub fn from_reel(reel: &ReelPlan) -> Self {
@@ -104,7 +103,7 @@ impl TimeIndex {
                 });
             }
         }
-        Self::new(reel.duration_nanos(), DEFAULT_FPS, sections)
+        Self::new(reel.duration_nanos(), reel.canvas().fps, sections)
     }
 
     pub fn duration_nanos(&self) -> u64 {
