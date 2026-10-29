@@ -1,0 +1,354 @@
+{
+ "wordTimings": [
+  {
+   "word": "While",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "testing",
+   "start": 0.12,
+   "end": 0.54
+  },
+  {
+   "word": "this,",
+   "start": 0.54,
+   "end": 0.84
+  },
+  {
+   "word": "we",
+   "start": 1.04,
+   "end": 1.56
+  },
+  {
+   "word": "noticed",
+   "start": 1.56,
+   "end": 1.9
+  },
+  {
+   "word": "the",
+   "start": 1.9,
+   "end": 2.12
+  },
+  {
+   "word": "cursor",
+   "start": 2.12,
+   "end": 2.4
+  },
+  {
+   "word": "strobing",
+   "start": 2.4,
+   "end": 3.04
+  },
+  {
+   "word": "over",
+   "start": 3.04,
+   "end": 3.42
+  },
+  {
+   "word": "button",
+   "start": 3.42,
+   "end": 3.82
+  },
+  {
+   "word": "text.",
+   "start": 3.82,
+   "end": 4.18
+  },
+  {
+   "word": "Tailwind",
+   "start": 5.04,
+   "end": 5.72
+  },
+  {
+   "word": "4",
+   "start": 5.72,
+   "end": 5.98
+  },
+  {
+   "word": "dropped",
+   "start": 5.98,
+   "end": 6.56
+  },
+  {
+   "word": "User",
+   "start": 6.56,
+   "end": 6.96
+  },
+  {
+   "word": "Select",
+   "start": 6.96,
+   "end": 7.34
+  },
+  {
+   "word": "None",
+   "start": 7.34,
+   "end": 7.66
+  },
+  {
+   "word": "from",
+   "start": 7.66,
+   "end": 8.08
+  },
+  {
+   "word": "buttons,",
+   "start": 8.08,
+   "end": 8.44
+  },
+  {
+   "word": "and",
+   "start": 8.68,
+   "end": 9.52
+  },
+  {
+   "word": "the",
+   "start": 9.52,
+   "end": 9.68
+  },
+  {
+   "word": "inner",
+   "start": 9.68,
+   "end": 9.86
+  },
+  {
+   "word": "label",
+   "start": 9.86,
+   "end": 10.14
+  },
+  {
+   "word": "spans",
+   "start": 10.14,
+   "end": 10.5
+  },
+  {
+   "word": "still",
+   "start": 10.5,
+   "end": 11.22
+  },
+  {
+   "word": "had",
+   "start": 11.22,
+   "end": 11.44
+  },
+  {
+   "word": "pointer",
+   "start": 11.44,
+   "end": 11.78
+  },
+  {
+   "word": "events",
+   "start": 11.78,
+   "end": 12.08
+  },
+  {
+   "word": "enabled.",
+   "start": 12.08,
+   "end": 12.64
+  },
+  {
+   "word": "Every",
+   "start": 12.9,
+   "end": 13.2
+  },
+  {
+   "word": "time",
+   "start": 13.2,
+   "end": 13.48
+  },
+  {
+   "word": "the",
+   "start": 13.48,
+   "end": 13.7
+  },
+  {
+   "word": "pointer",
+   "start": 13.7,
+   "end": 13.94
+  },
+  {
+   "word": "crossed",
+   "start": 13.94,
+   "end": 14.32
+  },
+  {
+   "word": "onto",
+   "start": 14.32,
+   "end": 14.74
+  },
+  {
+   "word": "the",
+   "start": 14.74,
+   "end": 14.94
+  },
+  {
+   "word": "label",
+   "start": 14.94,
+   "end": 15.16
+  },
+  {
+   "word": "text,",
+   "start": 15.16,
+   "end": 15.46
+  },
+  {
+   "word": "the",
+   "start": 15.8,
+   "end": 16.28
+  },
+  {
+   "word": "hit",
+   "start": 16.28,
+   "end": 16.44
+  },
+  {
+   "word": "target",
+   "start": 16.44,
+   "end": 16.72
+  },
+  {
+   "word": "flipped",
+   "start": 16.72,
+   "end": 17.26
+  },
+  {
+   "word": "from",
+   "start": 17.26,
+   "end": 17.56
+  },
+  {
+   "word": "the",
+   "start": 17.56,
+   "end": 17.7
+  },
+  {
+   "word": "button",
+   "start": 17.7,
+   "end": 17.98
+  },
+  {
+   "word": "to",
+   "start": 18.3,
+   "end": 18.64
+  },
+  {
+   "word": "the",
+   "start": 18.64,
+   "end": 18.74
+  },
+  {
+   "word": "inner",
+   "start": 18.74,
+   "end": 18.98
+  },
+  {
+   "word": "span",
+   "start": 18.98,
+   "end": 19.34
+  },
+  {
+   "word": "and",
+   "start": 19.34,
+   "end": 19.78
+  },
+  {
+   "word": "back.",
+   "start": 19.78,
+   "end": 20.06
+  },
+  {
+   "word": "On",
+   "start": 20.38,
+   "end": 20.94
+  },
+  {
+   "word": "top",
+   "start": 20.94,
+   "end": 21.14
+  },
+  {
+   "word": "of",
+   "start": 21.14,
+   "end": 21.3
+  },
+  {
+   "word": "that,",
+   "start": 21.3,
+   "end": 21.5
+  },
+  {
+   "word": "our",
+   "start": 21.7,
+   "end": 22.3
+  },
+  {
+   "word": "cursor",
+   "start": 22.3,
+   "end": 22.7
+  },
+  {
+   "word": "pointer",
+   "start": 22.7,
+   "end": 23
+  },
+  {
+   "word": "rule",
+   "start": 23,
+   "end": 23.38
+  },
+  {
+   "word": "used",
+   "start": 23.38,
+   "end": 23.9
+  },
+  {
+   "word": "a",
+   "start": 23.9,
+   "end": 24.08
+  },
+  {
+   "word": "zero",
+   "start": 24.08,
+   "end": 24.5
+  },
+  {
+   "word": "specificity",
+   "start": 24.5,
+   "end": 25.5
+  },
+  {
+   "word": "where",
+   "start": 25.5,
+   "end": 26.04
+  },
+  {
+   "word": "Selector,",
+   "start": 26.04,
+   "end": 26.64
+  },
+  {
+   "word": "so",
+   "start": 26.8,
+   "end": 27.16
+  },
+  {
+   "word": "component",
+   "start": 27.16,
+   "end": 27.64
+  },
+  {
+   "word": "styles,",
+   "start": 28.68,
+   "end": 28.84
+  },
+  {
+   "word": "overrode",
+   "start": 28.84,
+   "end": 29
+  },
+  {
+   "word": "it.",
+   "start": 29,
+   "end": 29.06
+  }
+ ]
+}

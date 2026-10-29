@@ -71,6 +71,7 @@ pub(crate) use terminal::TerminalNames;
 pub use theme::Theme;
 pub(crate) use tree::TreeNames;
 pub(crate) use venn::validate as validate_venn;
+pub(crate) use viz::confetti_bounds;
 
 const FORMAT: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8UnormSrgb;
 const BYTES_PER_PIXEL: u32 = 4;

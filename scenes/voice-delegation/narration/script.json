@@ -1,0 +1,28 @@
+{
+  "clips": [
+    {
+      "id": "intro",
+      "text": "[calm, conversational] When you start a voice call in the OpenCode iOS app, you're talking to two agents. The first is the voice agent. It's GPT Live, a full duplex speech model, so it hears you and talks back in real time. It can't do the work, though. So it delegates to the second one, the delegation agent. That's the OpenCode session you're in, and it has the tools."
+    },
+    {
+      "id": "turn",
+      "text": "[calm, conversational] Say I ask it to check why the upload test keeps failing on staging. The voice agent answers right away, and then it hands off. That handoff carries no text. GPT Live only signals that it's delegating. So the app sends the session my exact words, along with the call transcript. The session runs the tests, finds a race in the retry code, adds a lock, and runs them again. Progress goes back to the voice agent quietly. The result goes back to be spoken, and the voice agent tells me in its own words."
+    },
+    {
+      "id": "replies",
+      "text": "[calm, conversational] So every turn has two replies. What I heard is fast and paraphrased. What happened is the session's real reply, and the two can differ. I heard that the tests pass now. The session's reply says one test is still flaky on CI."
+    },
+    {
+      "id": "opaque",
+      "text": "[calm, conversational] The open question is what the session should show. The first option is opaque. That's how voice works in the ChatGPT app and in Codex. The voice agent and the delegation are hidden, so it looks like you're talking to one assistant, and your words show up as your own messages. It's arguably the nicest ideal. But it isn't the architecture, so it always leaks a little. I slowly figured out from the seams that there had to be a delegation agent behind it. It was confusing, because what I heard didn't match what was written, and I couldn't see why."
+    },
+    {
+      "id": "transparent",
+      "text": "[calm, conversational] The second option is transparent. The session shows that you're talking to a voice agent, and that it delegates to this session. Its request appears as a Voice message. That's a normal message bubble with a Voice label above it, prompting the session on your behalf. The session's real reply comes after it. This matches how it actually works, so when the spoken and written replies differ, the difference makes sense."
+    },
+    {
+      "id": "outro",
+      "text": "[calm, conversational] This is the part of the design where we can experiment the most and go on intuition. We're starting with transparent. It's one of several open choices. Others are whether a request should steer or queue, one session per call or a coordinator over many, what gets saved in the session, and whether the call runs on the phone or on the OpenCode server."
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+ "wordTimings": [
+  {
+   "word": "That",
+   "start": 0,
+   "end": 0.22
+  },
+  {
+   "word": "leads",
+   "start": 0.22,
+   "end": 0.46
+  },
+  {
+   "word": "decision",
+   "start": 0.46,
+   "end": 0.92
+  },
+  {
+   "word": "D7.",
+   "start": 0.92,
+   "end": 1.76
+  },
+  {
+   "word": "Two",
+   "start": 2.04,
+   "end": 2.4
+  },
+  {
+   "word": "open",
+   "start": 2.4,
+   "end": 2.74
+  },
+  {
+   "word": "pull",
+   "start": 2.74,
+   "end": 2.98
+  },
+  {
+   "word": "requests",
+   "start": 2.98,
+   "end": 3.32
+  },
+  {
+   "word": "already",
+   "start": 3.32,
+   "end": 3.78
+  },
+  {
+   "word": "quiet",
+   "start": 3.78,
+   "end": 4.16
+  },
+  {
+   "word": "the",
+   "start": 4.16,
+   "end": 4.38
+  },
+  {
+   "word": "reloads",
+   "start": 4.38,
+   "end": 4.92
+  },
+  {
+   "word": "that",
+   "start": 4.92,
+   "end": 4.96
+  },
+  {
+   "word": "change",
+   "start": 4.96,
+   "end": 5.22
+  },
+  {
+   "word": "nothing.",
+   "start": 5.22,
+   "end": 5.6
+  },
+  {
+   "word": "56994",
+   "start": 6.86,
+   "end": 7.36
+  },
+  {
+   "word": "targets",
+   "start": 7.36,
+   "end": 7.86
+  },
+  {
+   "word": "beta.",
+   "start": 7.86,
+   "end": 8.22
+  },
+  {
+   "word": "Aiden's",
+   "start": 8.58,
+   "end": 9.08
+  },
+  {
+   "word": "57315",
+   "start": 9.08,
+   "end": 10.46
+  },
+  {
+   "word": "targets",
+   "start": 10.46,
+   "end": 11.3
+  },
+  {
+   "word": "dev.",
+   "start": 11.3,
+   "end": 11.64
+  },
+  {
+   "word": "Both",
+   "start": 11.84,
+   "end": 12.22
+  },
+  {
+   "word": "overlap",
+   "start": 12.22,
+   "end": 12.64
+  },
+  {
+   "word": "with",
+   "start": 12.64,
+   "end": 12.88
+  },
+  {
+   "word": "the",
+   "start": 12.88,
+   "end": 12.98
+  },
+  {
+   "word": "first",
+   "start": 12.98,
+   "end": 13.16
+  },
+  {
+   "word": "pull",
+   "start": 13.16,
+   "end": 13.38
+  },
+  {
+   "word": "request",
+   "start": 13.38,
+   "end": 13.72
+  },
+  {
+   "word": "here.",
+   "start": 13.72,
+   "end": 14.02
+  },
+  {
+   "word": "Whether",
+   "start": 14.22,
+   "end": 14.6
+  },
+  {
+   "word": "to",
+   "start": 14.6,
+   "end": 14.74
+  },
+  {
+   "word": "fold",
+   "start": 14.74,
+   "end": 14.98
+  },
+  {
+   "word": "one",
+   "start": 14.98,
+   "end": 15.16
+  },
+  {
+   "word": "in",
+   "start": 15.16,
+   "end": 15.38
+  },
+  {
+   "word": "and",
+   "start": 15.38,
+   "end": 15.54
+  },
+  {
+   "word": "close",
+   "start": 15.54,
+   "end": 15.8
+  },
+  {
+   "word": "the",
+   "start": 15.8,
+   "end": 16.02
+  },
+  {
+   "word": "others",
+   "start": 16.02,
+   "end": 16.28
+  },
+  {
+   "word": "is",
+   "start": 16.28,
+   "end": 16.46
+  },
+  {
+   "word": "a",
+   "start": 16.46,
+   "end": 16.56
+  },
+  {
+   "word": "call",
+   "start": 16.56,
+   "end": 16.8
+  },
+  {
+   "word": "for",
+   "start": 16.8,
+   "end": 16.98
+  },
+  {
+   "word": "me",
+   "start": 16.98,
+   "end": 17.14
+  },
+  {
+   "word": "and",
+   "start": 17.14,
+   "end": 17.28
+  },
+  {
+   "word": "Aiden.",
+   "start": 17.28,
+   "end": 17.6
+  }
+ ]
+}

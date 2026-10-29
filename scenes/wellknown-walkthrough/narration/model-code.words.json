@@ -1,0 +1,149 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "diff",
+   "start": 0.12,
+   "end": 0.3
+  },
+  {
+   "word": "in",
+   "start": 0.3,
+   "end": 0.46
+  },
+  {
+   "word": "local",
+   "start": 0.46,
+   "end": 0.62
+  },
+  {
+   "word": "context",
+   "start": 0.62,
+   "end": 1.18
+  },
+  {
+   "word": "is",
+   "start": 1.18,
+   "end": 1.54
+  },
+  {
+   "word": "three",
+   "start": 1.54,
+   "end": 1.84
+  },
+  {
+   "word": "lines.",
+   "start": 1.84,
+   "end": 2.34
+  },
+  {
+   "word": "Session",
+   "start": 2.9,
+   "end": 3.58
+  },
+  {
+   "word": "Selection",
+   "start": 3.58,
+   "end": 3.96
+  },
+  {
+   "word": "drops",
+   "start": 3.96,
+   "end": 4.3
+  },
+  {
+   "word": "the",
+   "start": 4.3,
+   "end": 4.62
+  },
+  {
+   "word": "model",
+   "start": 4.62,
+   "end": 4.88
+  },
+  {
+   "word": "validity",
+   "start": 4.88,
+   "end": 5.22
+  },
+  {
+   "word": "filter",
+   "start": 5.22,
+   "end": 5.64
+  },
+  {
+   "word": "on",
+   "start": 5.64,
+   "end": 5.94
+  },
+  {
+   "word": "saved",
+   "start": 5.94,
+   "end": 6.36
+  },
+  {
+   "word": "session",
+   "start": 6.36,
+   "end": 6.68
+  },
+  {
+   "word": "selections",
+   "start": 6.68,
+   "end": 7.24
+  },
+  {
+   "word": "and",
+   "start": 7.24,
+   "end": 7.72
+  },
+  {
+   "word": "preserves",
+   "start": 7.72,
+   "end": 8.38
+  },
+  {
+   "word": "the",
+   "start": 8.38,
+   "end": 8.5
+  },
+  {
+   "word": "saved",
+   "start": 8.5,
+   "end": 8.8
+  },
+  {
+   "word": "variant",
+   "start": 8.8,
+   "end": 9.18
+  },
+  {
+   "word": "until",
+   "start": 9.18,
+   "end": 9.6
+  },
+  {
+   "word": "the",
+   "start": 9.6,
+   "end": 9.8
+  },
+  {
+   "word": "catalog",
+   "start": 9.8,
+   "end": 10.08
+  },
+  {
+   "word": "entry",
+   "start": 10.08,
+   "end": 10.38
+  },
+  {
+   "word": "returns.",
+   "start": 10.38,
+   "end": 10.78
+  }
+ ]
+}

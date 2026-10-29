@@ -1,0 +1,16 @@
+{
+  "clips": [
+    {
+      "id": "ubereats-before",
+      "text": "[warm and conversational] Say you want your agent to put an Espresso Nut smoothie from Karma Cafe into your Uber Eats cart. If the agent clicks through the website every time, it has to open the feed, type into the search box, wait for results, dismiss a closed store dialog, and scroll through a hundred menu items. That takes twenty five seconds and four model turns just to add one drink."
+    },
+    {
+      "id": "ubereats-after",
+      "text": "[confident] Instead, use the browser once to discover the API, and turn it into a command line tool. Start network capture in your Karma Cafe session, add the smoothie once, and stop capture. Browser Control hands back a clean digest of the three JSON endpoints that fired, with your cookies redacted as secret references. Now your CLI calls Uber Eats directly through that live browser tab in sixty milliseconds. And if your login ever expires and returns a four oh one, Browser Control pauses, shows a continue pill right on the tab so you can sign in once, and retries the request automatically."
+    },
+    {
+      "id": "ubereats-code",
+      "text": "[warm and conversational] The entire tool is fifteen lines of code. First, point Browser Control Client at Uber Eats with your Karma Cafe session, the C S R F header, and handoff on auth failure turned on. Next, post to get store to read the smoothie menu. Finally, post to create draft order to drop the Espresso Nut smoothie straight into your cart, without placing the order."
+    }
+  ]
+}

@@ -1,0 +1,314 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "console",
+   "start": 0.12,
+   "end": 0.46
+  },
+  {
+   "word": "already",
+   "start": 0.46,
+   "end": 0.84
+  },
+  {
+   "word": "treats",
+   "start": 0.84,
+   "end": 1.28
+  },
+  {
+   "word": "Go",
+   "start": 1.28,
+   "end": 1.5
+  },
+  {
+   "word": "as",
+   "start": 1.5,
+   "end": 1.72
+  },
+  {
+   "word": "part",
+   "start": 1.72,
+   "end": 1.92
+  },
+  {
+   "word": "of",
+   "start": 1.92,
+   "end": 2.08
+  },
+  {
+   "word": "your",
+   "start": 2.08,
+   "end": 2.18
+  },
+  {
+   "word": "account.",
+   "start": 2.18,
+   "end": 2.46
+  },
+  {
+   "word": "Its",
+   "start": 2.8,
+   "end": 3.14
+  },
+  {
+   "word": "Go",
+   "start": 3.14,
+   "end": 3.28
+  },
+  {
+   "word": "page",
+   "start": 3.28,
+   "end": 3.5
+  },
+  {
+   "word": "tells",
+   "start": 3.5,
+   "end": 3.82
+  },
+  {
+   "word": "you",
+   "start": 3.82,
+   "end": 3.98
+  },
+  {
+   "word": "to",
+   "start": 3.98,
+   "end": 4.1
+  },
+  {
+   "word": "sign",
+   "start": 4.1,
+   "end": 4.32
+  },
+  {
+   "word": "in",
+   "start": 4.32,
+   "end": 4.5
+  },
+  {
+   "word": "to",
+   "start": 4.5,
+   "end": 4.62
+  },
+  {
+   "word": "OpenCode,",
+   "start": 4.62,
+   "end": 5.2
+  },
+  {
+   "word": "the",
+   "start": 5.26,
+   "end": 5.5
+  },
+  {
+   "word": "same",
+   "start": 5.5,
+   "end": 5.7
+  },
+  {
+   "word": "login",
+   "start": 5.7,
+   "end": 5.98
+  },
+  {
+   "word": "as",
+   "start": 5.98,
+   "end": 6.2
+  },
+  {
+   "word": "everything",
+   "start": 6.2,
+   "end": 6.38
+  },
+  {
+   "word": "else.",
+   "start": 6.38,
+   "end": 6.74
+  },
+  {
+   "word": "The",
+   "start": 6.98,
+   "end": 7.34
+  },
+  {
+   "word": "second",
+   "start": 7.34,
+   "end": 7.58
+  },
+  {
+   "word": "row",
+   "start": 7.58,
+   "end": 7.78
+  },
+  {
+   "word": "here,",
+   "start": 7.78,
+   "end": 8.02
+  },
+  {
+   "word": "OpenCodeConsole,",
+   "start": 8.22,
+   "end": 9.28
+  },
+  {
+   "word": "does",
+   "start": 9.44,
+   "end": 9.76
+  },
+  {
+   "word": "that",
+   "start": 9.76,
+   "end": 9.94
+  },
+  {
+   "word": "sign",
+   "start": 9.94,
+   "end": 10.2
+  },
+  {
+   "word": "in",
+   "start": 10.2,
+   "end": 10.4
+  },
+  {
+   "word": "today.",
+   "start": 10.4,
+   "end": 10.6
+  },
+  {
+   "word": "Once",
+   "start": 10.98,
+   "end": 11.42
+  },
+  {
+   "word": "you're",
+   "start": 11.42,
+   "end": 11.62
+  },
+  {
+   "word": "in,",
+   "start": 11.62,
+   "end": 11.8
+  },
+  {
+   "word": "the",
+   "start": 11.94,
+   "end": 12.12
+  },
+  {
+   "word": "console",
+   "start": 12.12,
+   "end": 12.42
+  },
+  {
+   "word": "adds",
+   "start": 12.42,
+   "end": 12.74
+  },
+  {
+   "word": "the",
+   "start": 12.74,
+   "end": 12.96
+  },
+  {
+   "word": "Go",
+   "start": 12.96,
+   "end": 13.12
+  },
+  {
+   "word": "models,",
+   "start": 13.12,
+   "end": 13.46
+  },
+  {
+   "word": "as",
+   "start": 13.66,
+   "end": 13.92
+  },
+  {
+   "word": "long",
+   "start": 13.92,
+   "end": 14.04
+  },
+  {
+   "word": "as",
+   "start": 14.04,
+   "end": 14.2
+  },
+  {
+   "word": "your",
+   "start": 14.2,
+   "end": 14.28
+  },
+  {
+   "word": "workspace",
+   "start": 14.28,
+   "end": 14.6
+  },
+  {
+   "word": "is",
+   "start": 14.6,
+   "end": 14.92
+  },
+  {
+   "word": "subscribed.",
+   "start": 14.92,
+   "end": 15.24
+  },
+  {
+   "word": "You'd",
+   "start": 15.64,
+   "end": 16.02
+  },
+  {
+   "word": "just",
+   "start": 16.02,
+   "end": 16.16
+  },
+  {
+   "word": "have",
+   "start": 16.16,
+   "end": 16.32
+  },
+  {
+   "word": "to",
+   "start": 16.32,
+   "end": 16.48
+  },
+  {
+   "word": "know",
+   "start": 16.48,
+   "end": 16.72
+  },
+  {
+   "word": "to",
+   "start": 16.72,
+   "end": 16.96
+  },
+  {
+   "word": "skip",
+   "start": 16.96,
+   "end": 17.22
+  },
+  {
+   "word": "the",
+   "start": 17.22,
+   "end": 17.36
+  },
+  {
+   "word": "Go",
+   "start": 17.36,
+   "end": 17.56
+  },
+  {
+   "word": "row.",
+   "start": 17.56,
+   "end": 17.7
+  }
+ ]
+}

@@ -12,7 +12,7 @@
 //!
 //! ```ignore
 //! let media = Media::open(env!("CARGO_MANIFEST_DIR"))?;
-//! let kit = Voice::eleven(KIT).v4().stability(0.2);
+//! let kit = Voice::eleven(ELEVEN_KIT).v4().stability(0.2);
 //! let hush = media.say("hush", &kit, "[extremely soft ASMR whisper] Oh... I hear you like... balls.")?;
 //! let pop = media.sfx("pop", "a single soft glassy pop, tiny and dry", seconds(0.5))?;
 //! let demon = hush.derive(Effect::pitch(-6.0))?;
@@ -27,7 +27,8 @@
 //! `PSYCHOPOMP_MEDIA` selects a [`Mode`]: `apply` (default), `plan` (report
 //! the delta and its cost, call nothing), `draft` (stand-ins from macOS
 //! `say`), or `prune` (delete orphans). Credentials come from
-//! `ELEVENLABS_API_KEY` and `FISH_AUDIO_API_KEY`, or the nearest `.env`.
+//! `ELEVENLABS_API_KEY` (and, for retired Fish voices, `FISH_AUDIO_API_KEY`),
+//! or the nearest `.env`.
 mod adopt;
 mod eleven;
 mod ffmpeg;
@@ -41,8 +42,8 @@ mod words;
 pub use adopt::{FISH_KIT, adopt};
 pub use media::{Audio, Change, Media, Mode, Report};
 pub use spec::{
-    Backend, ELEVEN_SOUND, ELEVEN_V4, Effect, FISH_FREE, Line, Route, SAY_DEFAULT, Sound, Voice,
-    WHISPER,
+    Backend, ELEVEN_KIT, ELEVEN_SOUND, ELEVEN_V4, Effect, FISH_FREE, Line, Route, SAY_DEFAULT,
+    Sound, Voice, WHISPER,
 };
 
 /// Print the lock in `root`: one line per resource.

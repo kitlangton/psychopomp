@@ -1,0 +1,28 @@
+{
+  "clips": [
+    {
+      "id": "ubereats-before",
+      "file": "ubereats-before.mp3",
+      "words": "ubereats-before.words.json",
+      "durationNanos": 25283875000,
+      "textHash": "9543f8146b16523e",
+      "engine": "fish"
+    },
+    {
+      "id": "ubereats-after",
+      "file": "ubereats-after.mp3",
+      "words": "ubereats-after.words.json",
+      "durationNanos": 44139375000,
+      "textHash": "08a551d94ffdef7b",
+      "engine": "fish"
+    },
+    {
+      "id": "ubereats-code",
+      "file": "ubereats-code.mp3",
+      "words": "ubereats-code.words.json",
+      "durationNanos": 27040708333,
+      "textHash": "9daa005768ef4c80",
+      "engine": "fish"
+    }
+  ]
+}

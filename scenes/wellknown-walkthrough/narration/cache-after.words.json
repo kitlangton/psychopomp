@@ -1,0 +1,209 @@
+{
+ "wordTimings": [
+  {
+   "word": "With",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "the",
+   "start": 0.14,
+   "end": 0.28
+  },
+  {
+   "word": "fix,",
+   "start": 0.28,
+   "end": 0.58
+  },
+  {
+   "word": "Config",
+   "start": 0.8,
+   "end": 1.26
+  },
+  {
+   "word": "validates",
+   "start": 1.26,
+   "end": 2.12
+  },
+  {
+   "word": "and",
+   "start": 2.12,
+   "end": 2.22
+  },
+  {
+   "word": "normalizes",
+   "start": 2.22,
+   "end": 2.94
+  },
+  {
+   "word": "remote",
+   "start": 2.94,
+   "end": 3.18
+  },
+  {
+   "word": "documents",
+   "start": 3.18,
+   "end": 3.66
+  },
+  {
+   "word": "before",
+   "start": 3.66,
+   "end": 4.12
+  },
+  {
+   "word": "Wellknown",
+   "start": 4.12,
+   "end": 4.66
+  },
+  {
+   "word": "caches",
+   "start": 4.66,
+   "end": 5.06
+  },
+  {
+   "word": "the",
+   "start": 5.06,
+   "end": 5.3
+  },
+  {
+   "word": "last",
+   "start": 5.3,
+   "end": 5.58
+  },
+  {
+   "word": "good",
+   "start": 5.58,
+   "end": 5.82
+  },
+  {
+   "word": "snapshot",
+   "start": 5.82,
+   "end": 6.22
+  },
+  {
+   "word": "for",
+   "start": 6.22,
+   "end": 6.54
+  },
+  {
+   "word": "that",
+   "start": 6.54,
+   "end": 6.7
+  },
+  {
+   "word": "origin",
+   "start": 6.7,
+   "end": 7.06
+  },
+  {
+   "word": "and",
+   "start": 7.06,
+   "end": 7.32
+  },
+  {
+   "word": "credential.",
+   "start": 7.32,
+   "end": 7.62
+  },
+  {
+   "word": "Transient",
+   "start": 8,
+   "end": 8.7
+  },
+  {
+   "word": "503s",
+   "start": 8.7,
+   "end": 9.48
+  },
+  {
+   "word": "and",
+   "start": 9.48,
+   "end": 9.6
+  },
+  {
+   "word": "invalid",
+   "start": 9.6,
+   "end": 10
+  },
+  {
+   "word": "payloads",
+   "start": 10,
+   "end": 10.72
+  },
+  {
+   "word": "keep",
+   "start": 10.72,
+   "end": 10.9
+  },
+  {
+   "word": "the",
+   "start": 10.9,
+   "end": 11.08
+  },
+  {
+   "word": "previous",
+   "start": 11.08,
+   "end": 11.42
+  },
+  {
+   "word": "validated",
+   "start": 11.42,
+   "end": 11.94
+  },
+  {
+   "word": "config",
+   "start": 11.94,
+   "end": 12.28
+  },
+  {
+   "word": "intact,",
+   "start": 12.28,
+   "end": 12.88
+  },
+  {
+   "word": "and",
+   "start": 13.28,
+   "end": 13.78
+  },
+  {
+   "word": "manifest",
+   "start": 13.78,
+   "end": 14.12
+  },
+  {
+   "word": "updates",
+   "start": 14.12,
+   "end": 14.56
+  },
+  {
+   "word": "broadcast",
+   "start": 14.56,
+   "end": 14.98
+  },
+  {
+   "word": "globally",
+   "start": 14.98,
+   "end": 15.78
+  },
+  {
+   "word": "to",
+   "start": 15.78,
+   "end": 16.1
+  },
+  {
+   "word": "every",
+   "start": 16.1,
+   "end": 16.48
+  },
+  {
+   "word": "open",
+   "start": 16.48,
+   "end": 16.84
+  },
+  {
+   "word": "project.",
+   "start": 16.84,
+   "end": 17.26
+  }
+ ]
+}

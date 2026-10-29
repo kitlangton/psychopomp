@@ -236,6 +236,8 @@ fn bundled_icon(name: &str) -> Option<&'static str> {
         "code",
         "cpu",
         "cube",
+        "cursor",
+        "cursor-text",
         "database",
         "desktop",
         "device-mobile",
@@ -246,6 +248,7 @@ fn bundled_icon(name: &str) -> Option<&'static str> {
         "gear",
         "git-branch",
         "globe",
+        "hand-pointing",
         "hard-drives",
         "hourglass",
         "key",
@@ -799,22 +802,29 @@ impl HeadlessRenderer {
                 _ => {}
             }
         }
+        let mut cache: HashMap<(&str, u32, Face), TextSprite> = HashMap::new();
         let mut sprites = strings
             .iter()
             .map(|(_, text, size, face)| {
-                let raster = size * TEXT_RASTER;
-                let line = (raster * 1.35).ceil();
-                let attrs = fonts::attrs(*face).color(Color::rgb(255, 255, 255));
-                let width = ((text.chars().count() as f32 * raster * 0.7) as u32 + 64).min(4096);
-                make_sprite(
-                    &mut self.font_system,
-                    &mut self.swash_cache,
-                    vec![(text.as_str(), attrs.clone())],
-                    attrs,
-                    Metrics::new(raster, line),
-                    width,
-                    line as u32,
-                )
+                cache
+                    .entry((text.as_str(), size.to_bits(), *face))
+                    .or_insert_with(|| {
+                        let raster = size * TEXT_RASTER;
+                        let line = (raster * 1.35).ceil();
+                        let attrs = fonts::attrs(*face).color(Color::rgb(255, 255, 255));
+                        let width =
+                            ((text.chars().count() as f32 * raster * 0.7) as u32 + 64).min(4096);
+                        make_sprite(
+                            &mut self.font_system,
+                            &mut self.swash_cache,
+                            vec![(text.as_str(), attrs.clone())],
+                            attrs,
+                            Metrics::new(raster, line),
+                            width,
+                            line as u32,
+                        )
+                    })
+                    .clone()
             })
             .collect::<Vec<_>>();
         // Icons follow the text, rasterized at the same density.
@@ -1752,17 +1762,31 @@ impl<'a> Scene<'a> {
             _ => 1.0,
         };
         let scale = perspective * self.v(id, "scale").max(0.01) * breath;
-        let outline = match element {
-            // A turned figure attaches to its turned corners.
+        let sized = match element {
             StageElement::Shape {
-                shape: shape @ (Figure::Rect(_) | Figure::Polygon(_)),
+                shape: Figure::Rect(size),
                 ..
-            } if self.v(id, "rotation") != 0.0 => Shape::Polygon(Polygon::hull(
+            } => Some(Figure::Rect([
+                (size[0] + self.v(id, "width")).max(1.0),
+                (size[1] + self.v(id, "height")).max(1.0),
+            ])),
+            _ => None,
+        };
+        let outline = match (element, &sized) {
+            // A turned figure attaches to its turned corners.
+            (
+                StageElement::Shape {
+                    shape: shape @ (Figure::Rect(_) | Figure::Polygon(_)),
+                    ..
+                },
+                sized,
+            ) if self.v(id, "rotation") != 0.0 => Shape::Polygon(Polygon::hull(
                 center,
-                figure_outline(shape, 0.0, self.v(id, "rotation"))
+                figure_outline(sized.as_ref().unwrap_or(shape), 0.0, self.v(id, "rotation"))
                     .into_iter()
                     .map(|point| center + point * scale),
             )),
+            (_, Some(rect)) => rect.outline(center, scale),
             _ => element.outline(center, scale),
         };
         Some(Placement {
@@ -2726,10 +2750,14 @@ impl<'a> Painter<'a> {
             }
             (
                 StageElement::Icon {
-                    size, tone, ink, ..
+                    icon,
+                    size,
+                    tone,
+                    ink,
+                    ..
                 },
                 Some(place),
-            ) => self.icon(order, id, *size, *tone, *ink, place),
+            ) => self.icon(order, id, icon, *size, *tone, *ink, place),
             (
                 StageElement::Footage {
                     size,
@@ -4206,11 +4234,19 @@ impl Painter<'_> {
         let draw = scene.unit(id, "draw");
         let emphasis = scene.unit(id, "emphasis");
         let flash = scene.v(id, "flash").clamp(0.0, 1.5);
-        let outline = figure_outline(style.figure, style.corner, scene.v(id, "rotation"))
+        let sized_rect = match style.figure {
+            Figure::Rect(size) => Some(Figure::Rect([
+                (size[0] + scene.v(id, "width")).max(1.0),
+                (size[1] + scene.v(id, "height")).max(1.0),
+            ])),
+            _ => None,
+        };
+        let figure = sized_rect.as_ref().unwrap_or(style.figure);
+        let outline = figure_outline(figure, style.corner, scene.v(id, "rotation"))
             .into_iter()
             .map(|point| place.center + point * scale)
             .collect::<Vec<_>>();
-        let closed = !matches!(style.figure, Figure::Arc { .. });
+        let closed = !matches!(figure, Figure::Arc { .. });
         // Like a card: the strongest reflection rides the outline, and the
         // strongest pool floods the fill from where an arrival entered.
         let strongest = |pool: bool| {
@@ -4222,13 +4258,102 @@ impl Painter<'_> {
         };
         let (light, light_color) = strongest(false);
         let (pool, pool_color) = strongest(true);
-        if let Some(fill) = style.fill
+        if let (
+            Figure::Rect(size),
+            Some(Fill::Material(material @ (Material::Raised | Material::Well))),
+        ) = (figure, style.fill)
+            && scene.v(id, "rotation") == 0.0
+            && style.dash.is_none()
+            && style.arrow == Arrow::None
+        {
+            let half = Vec2::from(*size) * 0.5 * scale;
+            let corner = style.corner * scale;
+            let amount = scene.unit(id, "fill") * style.fill_opacity * opacity;
+            let own = look.tone(style.stroke.unwrap_or(Tone::Muted));
+            let gray = look.raised.lerp(
+                look.muted,
+                if material == Material::Raised {
+                    0.38
+                } else {
+                    0.22
+                },
+            );
+            let edge = gray.lerp(own, (0.55 * emphasis + 0.65 * flash).min(1.0));
+            let settled_border = draw >= 0.999 && style.stroke.is_some();
+            let border = if settled_border {
+                style.width.max(1.0) * scale
+            } else {
+                0.0
+            };
+            if material == Material::Raised && amount > 0.001 {
+                self.frame.rounded_rect(
+                    place.center + vec2(0.0, 5.0 * scale),
+                    half + Vec2::splat(2.0 * scale),
+                    [corner + 2.0 * scale, 0.0],
+                    blur + 7.0 * scale,
+                    Paint {
+                        fill: rgba(look.background, 0.68 * amount),
+                        ..Default::default()
+                    },
+                );
+            }
+            let surface = match material {
+                Material::Raised => look.surface.lerp(look.raised, 0.44 + 0.16 * emphasis),
+                Material::Well => look.background.lerp(look.surface, 0.48),
+                _ => look.surface,
+            };
+            self.frame.rounded_rect(
+                place.center,
+                half,
+                [corner, border],
+                blur,
+                Paint {
+                    fill: rgba(surface, amount),
+                    stroke: rgba(edge, opacity * (0.9 + 0.1 * emphasis)),
+                    glow: glow4(
+                        own * ((0.018 * emphasis + 0.05 * flash) * opacity),
+                        6.0 * scale,
+                    ),
+                    light,
+                    light_color,
+                    pool,
+                    pool_color,
+                },
+            );
+            if settled_border {
+                if material == Material::Raised && size[0].min(size[1]) >= 48.0 {
+                    self.frame.rounded_rect(
+                        place.center,
+                        half - 3.0 * scale,
+                        [(style.corner - 3.0).max(2.0) * scale, 1.0],
+                        blur,
+                        Paint {
+                            stroke: rgba(look.raised.lerp(look.muted, 0.08), opacity * 0.85),
+                            ..Default::default()
+                        },
+                    );
+                } else if material == Material::Well {
+                    self.frame.rounded_rect(
+                        place.center,
+                        half - 2.0 * scale,
+                        [(style.corner - 2.0).max(2.0) * scale, 1.5 * scale],
+                        blur,
+                        Paint {
+                            stroke: rgba(look.background, 0.65 * amount),
+                            ..Default::default()
+                        },
+                    );
+                }
+                self.frame.close(place.depth, order);
+                return;
+            }
+        } else if let Some(fill) = style.fill
             && closed
         {
             let color = match fill {
                 Fill::Tone(tone) => look.tone(tone),
-                Fill::Material(Material::Surface) => look.surface,
-                Fill::Material(Material::Background) => look.background,
+                Fill::Material(Material::Surface | Material::Raised) => look.surface,
+                Fill::Material(Material::Background | Material::Well) => look.background,
             };
             let amount = scene.unit(id, "fill") * style.fill_opacity * opacity;
             self.frame.polygon(
@@ -4426,10 +4551,12 @@ impl Painter<'_> {
 
     /// An icon: its atlas coverage tinted by its tone, `size` world pixels
     /// square through the camera. A flash lifts its ink toward white.
+    #[allow(clippy::too_many_arguments)]
     fn icon(
         &mut self,
         order: usize,
         id: &str,
+        icon: &str,
         size: f32,
         tone: Tone,
         ink: Option<[u8; 3]>,
@@ -4453,12 +4580,47 @@ impl Painter<'_> {
         let color = own.lerp(Vec3::ONE, (0.4 * flash).min(1.0));
         let side = size * place.scale;
         let top_left = place.center - Vec2::splat(side * 0.5);
+        let uv = [rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]];
+        if matches!(icon, "cursor" | "hand-pointing" | "cursor-text") {
+            let shadow = top_left + vec2(2.0, 4.5) * place.scale;
+            self.frame.prims.push(Prim {
+                bbox: around(
+                    place.center + vec2(2.0, 4.5) * place.scale,
+                    Vec2::splat(side * 0.5 + 8.0 * place.scale),
+                ),
+                a: [4.0, shadow.x, shadow.y, blur * 0.5 + 3.2 * place.scale],
+                b: [side, side, f32::MAX, 0.0],
+                fill: rgba(look.background, 0.78 * opacity),
+                uv,
+                ..Default::default()
+            });
+            for offset in [
+                vec2(-1.8, 0.0),
+                vec2(1.8, 0.0),
+                vec2(0.0, -1.8),
+                vec2(0.0, 1.8),
+                vec2(-1.3, -1.3),
+                vec2(1.3, -1.3),
+                vec2(-1.3, 1.3),
+                vec2(1.3, 1.3),
+            ] {
+                let rim = top_left + offset * place.scale;
+                self.frame.prims.push(Prim {
+                    bbox: around(place.center, Vec2::splat(side * 0.5 + 4.0 * place.scale)),
+                    a: [4.0, rim.x, rim.y, blur * 0.5 + 0.35 * place.scale],
+                    b: [side, side, f32::MAX, 0.0],
+                    fill: rgba(look.background, 0.94 * opacity),
+                    uv,
+                    ..Default::default()
+                });
+            }
+        }
         self.frame.prims.push(Prim {
             bbox: around(place.center, Vec2::splat(side * 0.5 + 2.0)),
             a: [4.0, top_left.x, top_left.y, blur * 0.5],
             b: [side, side, f32::MAX, 0.0],
             fill: rgba(color, opacity),
-            uv: [rect[0], rect[1], rect[0] + rect[2], rect[1] + rect[3]],
+            uv,
             ..Default::default()
         });
         if flash > 0.001 {
@@ -4938,6 +5100,17 @@ impl<'a> StageFrame<'a> {
             .fold((Vec2::MAX, Vec2::MIN), |(low, high), point| {
                 (low.min(*point), high.max(*point))
             });
+        let p0 = points[0];
+        let pn = points[points.len() - 1];
+        let perp = (pn - p0).normalize_or(Vec2::X).perp();
+        let (min_perp, max_perp) =
+            points
+                .iter()
+                .fold((f32::INFINITY, f32::NEG_INFINITY), |(lo, hi), &p| {
+                    let d = (p - p0).dot(perp);
+                    (lo.min(d), hi.max(d))
+                });
+        let strip_pad = reach + 2.0;
         self.prims.push(Prim {
             bbox: [low.x - reach, low.y - reach, high.x + reach, high.y + reach],
             a: [10.0, style.half, total * drawn.min(1.0), style.taper],
@@ -4945,6 +5118,8 @@ impl<'a> StageFrame<'a> {
             fill: style.core.extend(0.0).to_array(),
             stroke: style.corona.extend(0.0).to_array(),
             uv: [first as f32, points.len() as f32, 0.0, 0.0],
+            light: [p0.x, p0.y, perp.x, perp.y],
+            light_color: [min_perp - strip_pad, max_perp + strip_pad, 0.0, 0.0],
             ..Default::default()
         });
     }

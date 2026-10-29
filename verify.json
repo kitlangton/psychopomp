@@ -1,6 +1,7 @@
 {
   "theme": "neutral",
   "scenes": [
+    { "name": "weekly-ten", "package": "psychopomp-weekly-ten", "plan": "output/weekly-ten/plan.json", "times": [1, 3.5, 4.4, 5.2, 6.8, 9.4], "shutter": [4.3] },
     { "name": "hello", "package": "psychopomp-hello", "plan": "target/hello.json", "theme": "original", "times": [0.3, 1.2, 2.0, 2.6, 3.8], "shutter": [2.2] },
     { "name": "camera", "package": "psychopomp-camera", "plan": "target/camera.json", "times": [1, 5, 9, 13, 17, 21, 25, 30], "shutter": [11] },
     { "name": "effects-showroom", "package": "psychopomp-effects-showroom", "plan": "target/effects-showroom.json", "times": [2, 4, 8.5, 11, 15, 18, 23], "shutter": [3] },
@@ -31,6 +32,7 @@
     { "name": "amdahl", "package": "psychopomp-amdahl", "plan": "scenes/amdahl/amdahl.reel.json", "times": [3, 10, 17, 20.3, 30, 42, 55, 68, 80, 88], "shutter": [45] },
     { "name": "good-morning-dmitriy", "package": "psychopomp-good-morning-dmitriy", "plan": "scenes/good-morning-dmitriy/good-morning-dmitriy.reel.json", "times": [2, 8, 9.05, 13.4, 20, 34, 45.8, 50.8, 57.4, 60.5, 69], "shutter": [50.8] },
     { "name": "high-council", "package": "psychopomp-high-council", "plan": "scenes/high-council/high-council.reel.json", "requires": ["output/high-council/sprites"], "times": [5, 25, 50, 75, 100, 125, 134, 142, 152, 162, 170, 178] },
-    { "name": "shape-of-openness", "package": "psychopomp-shape-of-openness", "plan": "target/shape-of-openness/reel.json", "requires": ["output/shape-of-openness/assets", "output/shape-of-openness/narration"], "times": [4.5, 13.7, 26.6, 32.9, 46.5, 73, 93, 110, 114.6, 129, 145.6, 170.4, 188.2, 210.8, 232.6, 256, 262], "shutter": [28.35, 257.2] }
+    { "name": "shape-of-openness", "package": "psychopomp-shape-of-openness", "plan": "target/shape-of-openness/reel.json", "requires": ["output/shape-of-openness/assets", "output/shape-of-openness/narration"], "times": [4.5, 13.7, 26.6, 32.9, 46.5, 73, 93, 110, 114.6, 129, 145.6, 170.4, 188.2, 210.8, 232.6, 256, 262], "shutter": [28.35, 257.2] },
+    { "name": "voice-delegation", "package": "psychopomp-voice-delegation", "plan": "scenes/voice-delegation/voice-delegation.reel.json", "times": [9, 23, 41, 58.5, 80, 105.5, 117, 123.5, 139.5, 155, 170, 186], "shutter": [113.5] }
   ]
 }

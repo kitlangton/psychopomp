@@ -1,0 +1,44 @@
+{
+  "clips": [
+    {
+      "id": "compare-before",
+      "file": "compare-before.mp3",
+      "words": "compare-before.words.json",
+      "durationNanos": 15417062500,
+      "textHash": "7c8dabf48e8043ca",
+      "engine": "fish"
+    },
+    {
+      "id": "compare-after",
+      "file": "compare-after.mp3",
+      "words": "compare-after.words.json",
+      "durationNanos": 15556375000,
+      "textHash": "56d6594dad16c626",
+      "engine": "fish"
+    },
+    {
+      "id": "cursor-before",
+      "file": "cursor-before.mp3",
+      "words": "cursor-before.words.json",
+      "durationNanos": 29360249999,
+      "textHash": "0b5aaec0a3a6aff9",
+      "engine": "fish"
+    },
+    {
+      "id": "cursor-after",
+      "file": "cursor-after.mp3",
+      "words": "cursor-after.words.json",
+      "durationNanos": 19735958333,
+      "textHash": "37726d44e9b58d12",
+      "engine": "fish"
+    },
+    {
+      "id": "cursor-code",
+      "file": "cursor-code.mp3",
+      "words": "cursor-code.words.json",
+      "durationNanos": 12119979166,
+      "textHash": "0e53055ab7ec133c",
+      "engine": "fish"
+    }
+  ]
+}

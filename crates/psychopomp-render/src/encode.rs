@@ -92,6 +92,8 @@ impl FfmpegEncoder {
             [
                 "-c:v",
                 "libx264",
+                "-threads",
+                "4",
                 "-preset",
                 "medium",
                 "-crf",

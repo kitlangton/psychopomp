@@ -1,0 +1,234 @@
+{
+ "wordTimings": [
+  {
+   "word": "Setting",
+   "start": 0,
+   "end": 0.26
+  },
+  {
+   "word": "pointer",
+   "start": 0.26,
+   "end": 0.62
+  },
+  {
+   "word": "events",
+   "start": 0.62,
+   "end": 1
+  },
+  {
+   "word": "None",
+   "start": 1,
+   "end": 1.52
+  },
+  {
+   "word": "and",
+   "start": 1.52,
+   "end": 2.3
+  },
+  {
+   "word": "User",
+   "start": 2.3,
+   "end": 2.6
+  },
+  {
+   "word": "Select",
+   "start": 2.6,
+   "end": 3.04
+  },
+  {
+   "word": "None",
+   "start": 3.04,
+   "end": 3.5
+  },
+  {
+   "word": "on",
+   "start": 3.5,
+   "end": 3.84
+  },
+  {
+   "word": "the",
+   "start": 3.84,
+   "end": 3.98
+  },
+  {
+   "word": "inner",
+   "start": 3.98,
+   "end": 4.22
+  },
+  {
+   "word": "spans",
+   "start": 4.22,
+   "end": 4.54
+  },
+  {
+   "word": "keeps",
+   "start": 4.54,
+   "end": 5.52
+  },
+  {
+   "word": "the",
+   "start": 5.52,
+   "end": 5.82
+  },
+  {
+   "word": "button",
+   "start": 5.82,
+   "end": 6.12
+  },
+  {
+   "word": "as",
+   "start": 6.12,
+   "end": 6.38
+  },
+  {
+   "word": "one",
+   "start": 6.38,
+   "end": 6.66
+  },
+  {
+   "word": "atomic",
+   "start": 6.66,
+   "end": 7.14
+  },
+  {
+   "word": "hit",
+   "start": 7.14,
+   "end": 7.54
+  },
+  {
+   "word": "target.",
+   "start": 7.54,
+   "end": 7.96
+  },
+  {
+   "word": "We",
+   "start": 8.34,
+   "end": 9.06
+  },
+  {
+   "word": "verified",
+   "start": 9.06,
+   "end": 9.5
+  },
+  {
+   "word": "this",
+   "start": 9.5,
+   "end": 9.88
+  },
+  {
+   "word": "with",
+   "start": 9.88,
+   "end": 10.18
+  },
+  {
+   "word": "a",
+   "start": 10.18,
+   "end": 10.36
+  },
+  {
+   "word": "120",
+   "start": 10.36,
+   "end": 10.94
+  },
+  {
+   "word": "Hz",
+   "start": 10.94,
+   "end": 11.46
+  },
+  {
+   "word": "Windows",
+   "start": 11.46,
+   "end": 11.94
+  },
+  {
+   "word": "Server",
+   "start": 11.94,
+   "end": 12.34
+  },
+  {
+   "word": "cursor",
+   "start": 12.34,
+   "end": 12.7
+  },
+  {
+   "word": "trace",
+   "start": 12.7,
+   "end": 13.2
+  },
+  {
+   "word": "on",
+   "start": 13.2,
+   "end": 13.48
+  },
+  {
+   "word": "macOS,",
+   "start": 13.48,
+   "end": 13.96
+  },
+  {
+   "word": "and",
+   "start": 14.26,
+   "end": 15.04
+  },
+  {
+   "word": "the",
+   "start": 15.04,
+   "end": 15.16
+  },
+  {
+   "word": "pointing",
+   "start": 15.16,
+   "end": 15.44
+  },
+  {
+   "word": "hand",
+   "start": 15.44,
+   "end": 15.76
+  },
+  {
+   "word": "seed",
+   "start": 15.76,
+   "end": 16.08
+  },
+  {
+   "word": "stays",
+   "start": 16.08,
+   "end": 16.88
+  },
+  {
+   "word": "locked",
+   "start": 16.88,
+   "end": 17.42
+  },
+  {
+   "word": "across",
+   "start": 17.42,
+   "end": 17.78
+  },
+  {
+   "word": "every",
+   "start": 17.78,
+   "end": 18.24
+  },
+  {
+   "word": "pixel",
+   "start": 18.24,
+   "end": 18.7
+  },
+  {
+   "word": "of",
+   "start": 18.7,
+   "end": 18.96
+  },
+  {
+   "word": "the",
+   "start": 18.96,
+   "end": 19.02
+  },
+  {
+   "word": "text.",
+   "start": 19.02,
+   "end": 19.28
+  }
+ ]
+}

@@ -1,0 +1,3932 @@
+{
+  "version": 1,
+  "id": "pr-53821",
+  "segments": [
+    {
+      "transitionNanos": 0,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "cache-stage",
+        "durationNanos": 42598000000,
+        "actors": [
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    1510.0,
+                    380.0,
+                    0.0
+                  ],
+                  "id": "remote",
+                  "kind": "orb",
+                  "points": 800,
+                  "radius": 118.0,
+                  "tone": "plain"
+                },
+                {
+                  "at": [
+                    1510.0,
+                    380.0,
+                    0.0
+                  ],
+                  "id": "remote-ring",
+                  "kind": "ring",
+                  "radius": 130.0,
+                  "thickness": 1.5,
+                  "tone": "success"
+                },
+                {
+                  "at": [
+                    1510.0,
+                    535.0,
+                    0.0
+                  ],
+                  "id": "remote-name",
+                  "kind": "label",
+                  "size": 22.0,
+                  "spans": [
+                    {
+                      "text": "remote_config /config"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1510.0,
+                    566.0,
+                    0.0
+                  ],
+                  "id": "remote-ok",
+                  "kind": "label",
+                  "size": 18.0,
+                  "spans": [
+                    {
+                      "text": "●",
+                      "tone": "success"
+                    },
+                    {
+                      "text": " 200 · valid policy",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1510.0,
+                    566.0,
+                    0.0
+                  ],
+                  "id": "remote-fault",
+                  "kind": "label",
+                  "size": 18.0,
+                  "spans": [
+                    {
+                      "text": "●",
+                      "tone": "error"
+                    },
+                    {
+                      "text": " 503 / invalid 200",
+                      "tone": "error"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    390.0,
+                    500.0,
+                    -40.0
+                  ],
+                  "id": "config",
+                  "kind": "card",
+                  "size": [
+                    340.0,
+                    124.0
+                  ],
+                  "status": [
+                    {
+                      "text": "providers + allowlist",
+                      "tone": "success"
+                    },
+                    {
+                      "text": "dropped → []",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "strict parseRemote",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "retained last-good",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "Config.load",
+                  "tone": "request"
+                },
+                {
+                  "at": [
+                    960.0,
+                    500.0,
+                    0.0
+                  ],
+                  "id": "wk",
+                  "kind": "card",
+                  "size": [
+                    340.0,
+                    124.0
+                  ],
+                  "status": [
+                    {
+                      "text": "no last-good cache",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "resolve failed",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "validated cache",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "serves last-good",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "WellKnown.resolve",
+                  "tone": "accent"
+                },
+                {
+                  "at": [
+                    960.0,
+                    215.0,
+                    -20.0
+                  ],
+                  "id": "loc-b",
+                  "kind": "card",
+                  "size": [
+                    310.0,
+                    104.0
+                  ],
+                  "status": [
+                    {
+                      "text": "open project",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "missed update · stale",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "global update · synced",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "Location B"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "config",
+                  "id": "cfg-wk",
+                  "kind": "beam",
+                  "to": "wk",
+                  "tone": "request"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "wk",
+                  "id": "wk-remote",
+                  "kind": "beam",
+                  "to": "remote",
+                  "tone": "request"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "wk",
+                  "id": "wk-locb",
+                  "kind": "beam",
+                  "to": "loc-b",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "wk-remote",
+                  "id": "req-1",
+                  "kind": "packet",
+                  "label": "GET /config",
+                  "tone": "request"
+                },
+                {
+                  "beam": "wk-remote",
+                  "id": "err-503",
+                  "kind": "packet",
+                  "label": "503 / invalid",
+                  "reverse": true,
+                  "tone": "error"
+                },
+                {
+                  "beam": "cfg-wk",
+                  "id": "drop-pkt",
+                  "kind": "packet",
+                  "label": "[] dropped",
+                  "reverse": true,
+                  "tone": "error"
+                },
+                {
+                  "beam": "wk-remote",
+                  "id": "req-2",
+                  "kind": "packet",
+                  "label": "GET /config",
+                  "tone": "request"
+                },
+                {
+                  "beam": "wk-remote",
+                  "id": "err-503-2",
+                  "kind": "packet",
+                  "label": "503 / invalid",
+                  "reverse": true,
+                  "tone": "warning"
+                },
+                {
+                  "beam": "cfg-wk",
+                  "id": "cached-pkt",
+                  "kind": "packet",
+                  "label": "last-good config",
+                  "reverse": true,
+                  "tone": "success"
+                },
+                {
+                  "beam": "wk-locb",
+                  "id": "fanout-pkt",
+                  "kind": "packet",
+                  "label": "global: true",
+                  "tone": "success"
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "#53821",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "retain validated wellknown remote config"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip-before",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "before"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "cache-note",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "edge": "bottom",
+                  "element": "wk",
+                  "id": "wk",
+                  "kind": "stage",
+                  "side": "bottom"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "keyed by ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "origin · credentialID · vars",
+                    "tone": "accent"
+                  }
+                ]
+              ],
+              "reach": 58.0,
+              "side": "bottom",
+              "size": 24.0
+            }
+          },
+          {
+            "id": "footer-before",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "transient fault → "
+                  },
+                  {
+                    "text": "providers & policies dropped",
+                    "tone": "error"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          },
+          {
+            "id": "chip-rewind",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "◀◀ rewind"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "chip-after",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "after the fix"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "footer-after",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "validated "
+                  },
+                  {
+                    "text": "last-good config retained",
+                    "tone": "success"
+                  },
+                  {
+                    "text": " · global manifest fan-out",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -140.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 2.4,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 60.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.dof",
+            "actorId": "stage",
+            "property": "camera.dof",
+            "initial": 0.38,
+            "events": []
+          },
+          {
+            "id": "stage.remote.scale",
+            "actorId": "stage",
+            "property": "remote.scale",
+            "initial": 0.58,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 0.8,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.remote.blur",
+            "actorId": "stage",
+            "property": "remote.blur",
+            "initial": 11.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "responseSeconds": 0.84000003,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.remote.rotation",
+            "actorId": "stage",
+            "property": "remote.rotation",
+            "initial": -1.8,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "durationNanos": 1250000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.remote.opacity",
+            "actorId": "stage",
+            "property": "remote.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.remote-name.opacity",
+            "actorId": "stage",
+            "property": "remote-name.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.remote-ok.opacity",
+            "actorId": "stage",
+            "property": "remote-ok.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 800000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 3960000000,
+                "target": 0.0,
+                "responseSeconds": 0.18,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.config.scale",
+            "actorId": "stage",
+            "property": "config.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 300000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.config.y",
+            "actorId": "stage",
+            "property": "config.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 300000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.config.content",
+            "actorId": "stage",
+            "property": "config.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 365000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.config.opacity",
+            "actorId": "stage",
+            "property": "config.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 300000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.config.blur",
+            "actorId": "stage",
+            "property": "config.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 300000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.scale",
+            "actorId": "stage",
+            "property": "wk.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 440000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 440000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.y",
+            "actorId": "stage",
+            "property": "wk.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 440000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 440000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.content",
+            "actorId": "stage",
+            "property": "wk.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 440000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 505000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.opacity",
+            "actorId": "stage",
+            "property": "wk.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 440000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 440000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.blur",
+            "actorId": "stage",
+            "property": "wk.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 440000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 440000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.scale",
+            "actorId": "stage",
+            "property": "loc-b.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 580000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 580000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.y",
+            "actorId": "stage",
+            "property": "loc-b.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 580000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 580000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.content",
+            "actorId": "stage",
+            "property": "loc-b.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 580000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 645000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.opacity",
+            "actorId": "stage",
+            "property": "loc-b.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 580000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 580000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.blur",
+            "actorId": "stage",
+            "property": "loc-b.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 580000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 580000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.cfg-wk.port",
+            "actorId": "stage",
+            "property": "cfg-wk.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 920000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.cfg-wk.draw",
+            "actorId": "stage",
+            "property": "cfg-wk.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1220000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1220000000,
+                "target": 1.0,
+                "durationNanos": 480000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.wk-remote.port",
+            "actorId": "stage",
+            "property": "wk-remote.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1060000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.wk-remote.draw",
+            "actorId": "stage",
+            "property": "wk-remote.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1360000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1360000000,
+                "target": 1.0,
+                "durationNanos": 480000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.wk-locb.port",
+            "actorId": "stage",
+            "property": "wk-locb.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1200000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.wk-locb.draw",
+            "actorId": "stage",
+            "property": "wk-locb.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1500000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1500000000,
+                "target": 1.0,
+                "durationNanos": 480000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "header.opacity",
+            "actorId": "header",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "header.typed",
+            "actorId": "header",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 318181818,
+                "value": 0.020833334
+              },
+              {
+                "operation": "set",
+                "atNanos": 336363636,
+                "value": 0.041666668
+              },
+              {
+                "operation": "set",
+                "atNanos": 354545454,
+                "value": 0.0625
+              },
+              {
+                "operation": "set",
+                "atNanos": 372727272,
+                "value": 0.083333336
+              },
+              {
+                "operation": "set",
+                "atNanos": 390909090,
+                "value": 0.104166664
+              },
+              {
+                "operation": "set",
+                "atNanos": 409090908,
+                "value": 0.125
+              },
+              {
+                "operation": "set",
+                "atNanos": 427272726,
+                "value": 0.14583333
+              },
+              {
+                "operation": "set",
+                "atNanos": 445454544,
+                "value": 0.16666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 463636362,
+                "value": 0.1875
+              },
+              {
+                "operation": "set",
+                "atNanos": 481818180,
+                "value": 0.20833333
+              },
+              {
+                "operation": "set",
+                "atNanos": 499999998,
+                "value": 0.22916667
+              },
+              {
+                "operation": "set",
+                "atNanos": 518181816,
+                "value": 0.25
+              },
+              {
+                "operation": "set",
+                "atNanos": 536363634,
+                "value": 0.27083334
+              },
+              {
+                "operation": "set",
+                "atNanos": 554545452,
+                "value": 0.29166666
+              },
+              {
+                "operation": "set",
+                "atNanos": 572727270,
+                "value": 0.3125
+              },
+              {
+                "operation": "set",
+                "atNanos": 590909088,
+                "value": 0.33333334
+              },
+              {
+                "operation": "set",
+                "atNanos": 609090906,
+                "value": 0.35416666
+              },
+              {
+                "operation": "set",
+                "atNanos": 627272724,
+                "value": 0.375
+              },
+              {
+                "operation": "set",
+                "atNanos": 645454542,
+                "value": 0.39583334
+              },
+              {
+                "operation": "set",
+                "atNanos": 663636360,
+                "value": 0.41666666
+              },
+              {
+                "operation": "set",
+                "atNanos": 681818178,
+                "value": 0.4375
+              },
+              {
+                "operation": "set",
+                "atNanos": 699999996,
+                "value": 0.45833334
+              },
+              {
+                "operation": "set",
+                "atNanos": 718181814,
+                "value": 0.47916666
+              },
+              {
+                "operation": "set",
+                "atNanos": 736363632,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 754545450,
+                "value": 0.5208333
+              },
+              {
+                "operation": "set",
+                "atNanos": 772727268,
+                "value": 0.5416667
+              },
+              {
+                "operation": "set",
+                "atNanos": 790909086,
+                "value": 0.5625
+              },
+              {
+                "operation": "set",
+                "atNanos": 809090904,
+                "value": 0.5833333
+              },
+              {
+                "operation": "set",
+                "atNanos": 827272722,
+                "value": 0.6041667
+              },
+              {
+                "operation": "set",
+                "atNanos": 845454540,
+                "value": 0.625
+              },
+              {
+                "operation": "set",
+                "atNanos": 863636358,
+                "value": 0.6458333
+              },
+              {
+                "operation": "set",
+                "atNanos": 881818176,
+                "value": 0.6666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 899999994,
+                "value": 0.6875
+              },
+              {
+                "operation": "set",
+                "atNanos": 918181812,
+                "value": 0.7083333
+              },
+              {
+                "operation": "set",
+                "atNanos": 936363630,
+                "value": 0.7291667
+              },
+              {
+                "operation": "set",
+                "atNanos": 954545448,
+                "value": 0.75
+              },
+              {
+                "operation": "set",
+                "atNanos": 972727266,
+                "value": 0.7708333
+              },
+              {
+                "operation": "set",
+                "atNanos": 990909084,
+                "value": 0.7916667
+              },
+              {
+                "operation": "set",
+                "atNanos": 1009090902,
+                "value": 0.8125
+              },
+              {
+                "operation": "set",
+                "atNanos": 1027272720,
+                "value": 0.8333333
+              },
+              {
+                "operation": "set",
+                "atNanos": 1045454538,
+                "value": 0.8541667
+              },
+              {
+                "operation": "set",
+                "atNanos": 1063636356,
+                "value": 0.875
+              },
+              {
+                "operation": "set",
+                "atNanos": 1081818174,
+                "value": 0.8958333
+              },
+              {
+                "operation": "set",
+                "atNanos": 1099999992,
+                "value": 0.9166667
+              },
+              {
+                "operation": "set",
+                "atNanos": 1118181810,
+                "value": 0.9375
+              },
+              {
+                "operation": "set",
+                "atNanos": 1136363628,
+                "value": 0.9583333
+              },
+              {
+                "operation": "set",
+                "atNanos": 1154545446,
+                "value": 0.9791667
+              },
+              {
+                "operation": "set",
+                "atNanos": 1172727264,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "header.caret",
+            "actorId": "header",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 1772727287,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-before.opacity",
+            "actorId": "chip-before",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 550000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21209000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-before.y",
+            "actorId": "chip-before",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 550000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.spinner",
+            "actorId": "stage",
+            "property": "wk.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 2180000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 2180000000,
+                "target": 40.418,
+                "durationNanos": 40418000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 24219000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 24219000000,
+                "target": 18.379,
+                "durationNanos": 18379000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.req-1.age",
+            "actorId": "stage",
+            "property": "req-1.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1840000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1840000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.req-1.flight",
+            "actorId": "stage",
+            "property": "req-1.flight",
+            "initial": 0.48,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1840000000,
+                "value": 0.48
+              }
+            ]
+          },
+          {
+            "id": "stage.remote-fault.opacity",
+            "actorId": "stage",
+            "property": "remote-fault.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 4180000000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.remote.hurt",
+            "actorId": "stage",
+            "property": "remote.hurt",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 3960000000,
+                "target": 0.7,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.err-503.age",
+            "actorId": "stage",
+            "property": "err-503.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3620000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 3620000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.err-503.flight",
+            "actorId": "stage",
+            "property": "err-503.flight",
+            "initial": 0.48,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3620000000,
+                "value": 0.48
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.alarm",
+            "actorId": "stage",
+            "property": "wk.alarm",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 4440000000,
+                "value": 0.25
+              },
+              {
+                "operation": "ease",
+                "atNanos": 4440000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.status",
+            "actorId": "stage",
+            "property": "wk.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 4440000000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21609000000,
+                "target": 2.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 31499000000,
+                "target": 3.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.release",
+            "actorId": "stage",
+            "property": "wk.release",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 4440000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 4440000000,
+                "target": 38.158,
+                "durationNanos": 38158000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.drop-pkt.age",
+            "actorId": "stage",
+            "property": "drop-pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8960000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 8960000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.drop-pkt.flight",
+            "actorId": "stage",
+            "property": "drop-pkt.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8960000000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.config.alarm",
+            "actorId": "stage",
+            "property": "config.alarm",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 9750000000,
+                "value": 0.28
+              },
+              {
+                "operation": "ease",
+                "atNanos": 9750000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.config.damage",
+            "actorId": "stage",
+            "property": "config.damage",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 9750000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "stage.config.glitch",
+            "actorId": "stage",
+            "property": "config.glitch",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 9750000000,
+                "value": 7.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 9777000000,
+                "value": 9.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 9804000000,
+                "value": 8.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 9831000000,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "stage.config.status",
+            "actorId": "stage",
+            "property": "config.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 9750000000,
+                "target": 1.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21609000000,
+                "target": 2.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 33929000000,
+                "target": 3.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk-locb.break",
+            "actorId": "stage",
+            "property": "wk-locb.break",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 17770000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21609000000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.status",
+            "actorId": "stage",
+            "property": "loc-b.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18020000000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21609000000,
+                "target": 0.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 37769000000,
+                "target": 2.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.dim",
+            "actorId": "stage",
+            "property": "loc-b.dim",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18020000000,
+                "target": 0.45,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21609000000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-before.opacity",
+            "actorId": "footer-before",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18020000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 21209000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-before.typed",
+            "actorId": "footer-before",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18041739130,
+                "value": 0.02173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 18063478260,
+                "value": 0.04347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 18085217390,
+                "value": 0.06521739
+              },
+              {
+                "operation": "set",
+                "atNanos": 18106956520,
+                "value": 0.08695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 18128695650,
+                "value": 0.10869565
+              },
+              {
+                "operation": "set",
+                "atNanos": 18150434780,
+                "value": 0.13043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 18172173910,
+                "value": 0.1521739
+              },
+              {
+                "operation": "set",
+                "atNanos": 18193913040,
+                "value": 0.17391305
+              },
+              {
+                "operation": "set",
+                "atNanos": 18215652170,
+                "value": 0.19565217
+              },
+              {
+                "operation": "set",
+                "atNanos": 18237391300,
+                "value": 0.2173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 18259130430,
+                "value": 0.23913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 18280869560,
+                "value": 0.26086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 18302608690,
+                "value": 0.2826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 18324347820,
+                "value": 0.3043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 18346086950,
+                "value": 0.32608697
+              },
+              {
+                "operation": "set",
+                "atNanos": 18367826080,
+                "value": 0.3478261
+              },
+              {
+                "operation": "set",
+                "atNanos": 18389565210,
+                "value": 0.36956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 18411304340,
+                "value": 0.39130434
+              },
+              {
+                "operation": "set",
+                "atNanos": 18433043470,
+                "value": 0.41304347
+              },
+              {
+                "operation": "set",
+                "atNanos": 18454782600,
+                "value": 0.4347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 18476521730,
+                "value": 0.45652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 18498260860,
+                "value": 0.47826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 18519999990,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 18541739120,
+                "value": 0.5217391
+              },
+              {
+                "operation": "set",
+                "atNanos": 18563478250,
+                "value": 0.54347825
+              },
+              {
+                "operation": "set",
+                "atNanos": 18585217380,
+                "value": 0.5652174
+              },
+              {
+                "operation": "set",
+                "atNanos": 18606956510,
+                "value": 0.5869565
+              },
+              {
+                "operation": "set",
+                "atNanos": 18628695640,
+                "value": 0.6086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 18650434770,
+                "value": 0.6304348
+              },
+              {
+                "operation": "set",
+                "atNanos": 18672173900,
+                "value": 0.65217394
+              },
+              {
+                "operation": "set",
+                "atNanos": 18693913030,
+                "value": 0.67391306
+              },
+              {
+                "operation": "set",
+                "atNanos": 18715652160,
+                "value": 0.6956522
+              },
+              {
+                "operation": "set",
+                "atNanos": 18737391290,
+                "value": 0.7173913
+              },
+              {
+                "operation": "set",
+                "atNanos": 18759130420,
+                "value": 0.73913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 18780869550,
+                "value": 0.76086956
+              },
+              {
+                "operation": "set",
+                "atNanos": 18802608680,
+                "value": 0.7826087
+              },
+              {
+                "operation": "set",
+                "atNanos": 18824347810,
+                "value": 0.8043478
+              },
+              {
+                "operation": "set",
+                "atNanos": 18846086940,
+                "value": 0.82608694
+              },
+              {
+                "operation": "set",
+                "atNanos": 18867826070,
+                "value": 0.84782606
+              },
+              {
+                "operation": "set",
+                "atNanos": 18889565200,
+                "value": 0.8695652
+              },
+              {
+                "operation": "set",
+                "atNanos": 18911304330,
+                "value": 0.8913044
+              },
+              {
+                "operation": "set",
+                "atNanos": 18933043460,
+                "value": 0.9130435
+              },
+              {
+                "operation": "set",
+                "atNanos": 18954782590,
+                "value": 0.9347826
+              },
+              {
+                "operation": "set",
+                "atNanos": 18976521720,
+                "value": 0.95652175
+              },
+              {
+                "operation": "set",
+                "atNanos": 18998260850,
+                "value": 0.9782609
+              },
+              {
+                "operation": "set",
+                "atNanos": 19019999980,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "footer-before.caret",
+            "actorId": "footer-before",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18020000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19719999968,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.post.rewind",
+            "actorId": "stage",
+            "property": "post.rewind",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 21209000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 21209000000,
+                "target": 1.35,
+                "durationNanos": 1350000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "chip-rewind.opacity",
+            "actorId": "chip-rewind",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 21429000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22609000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-rewind.y",
+            "actorId": "chip-rewind",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 21429000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-after.opacity",
+            "actorId": "chip-after",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22759000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-after.y",
+            "actorId": "chip-after",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22759000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.config.spinner",
+            "actorId": "stage",
+            "property": "config.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.config.release",
+            "actorId": "stage",
+            "property": "config.release",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.mark",
+            "actorId": "stage",
+            "property": "wk.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 31712432045,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 31712432045,
+                "target": 10.885,
+                "durationNanos": 10885000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.config.mark",
+            "actorId": "stage",
+            "property": "config.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 21609000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "cache-note.draw",
+            "actorId": "cache-note",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24019000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              },
+              {
+                "operation": "ease",
+                "atNanos": 40978000000,
+                "target": 0.0,
+                "durationNanos": 280000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "cache-note.label",
+            "actorId": "cache-note",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 24199000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.req-2.age",
+            "actorId": "stage",
+            "property": "req-2.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30069000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 30069000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.req-2.flight",
+            "actorId": "stage",
+            "property": "req-2.flight",
+            "initial": 0.42,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30069000000,
+                "value": 0.42
+              }
+            ]
+          },
+          {
+            "id": "stage.err-503-2.age",
+            "actorId": "stage",
+            "property": "err-503-2.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30739000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 30739000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.err-503-2.flight",
+            "actorId": "stage",
+            "property": "err-503-2.flight",
+            "initial": 0.42,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30739000000,
+                "value": 0.42
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.flash",
+            "actorId": "stage",
+            "property": "wk.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 31499000000,
+                "value": 0.3
+              },
+              {
+                "operation": "ease",
+                "atNanos": 31499000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.cached-pkt.age",
+            "actorId": "stage",
+            "property": "cached-pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 33139000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 33139000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.cached-pkt.flight",
+            "actorId": "stage",
+            "property": "cached-pkt.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 33139000000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.config.flash",
+            "actorId": "stage",
+            "property": "config.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 33929000000,
+                "value": 0.35
+              },
+              {
+                "operation": "ease",
+                "atNanos": 33929000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.config.glow",
+            "actorId": "stage",
+            "property": "config.glow",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 33929000000,
+                "target": 0.5,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.fanout-pkt.age",
+            "actorId": "stage",
+            "property": "fanout-pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36979000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 36979000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.fanout-pkt.flight",
+            "actorId": "stage",
+            "property": "fanout-pkt.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36979000000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.loc-b.flash",
+            "actorId": "stage",
+            "property": "loc-b.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 37769000000,
+                "value": 0.35
+              },
+              {
+                "operation": "ease",
+                "atNanos": 37769000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "footer-after.opacity",
+            "actorId": "footer-after",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 37319000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-after.typed",
+            "actorId": "footer-after",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 37341727272,
+                "value": 0.016393442
+              },
+              {
+                "operation": "set",
+                "atNanos": 37364454544,
+                "value": 0.032786883
+              },
+              {
+                "operation": "set",
+                "atNanos": 37387181816,
+                "value": 0.04918033
+              },
+              {
+                "operation": "set",
+                "atNanos": 37409909088,
+                "value": 0.06557377
+              },
+              {
+                "operation": "set",
+                "atNanos": 37432636360,
+                "value": 0.08196721
+              },
+              {
+                "operation": "set",
+                "atNanos": 37455363632,
+                "value": 0.09836066
+              },
+              {
+                "operation": "set",
+                "atNanos": 37478090904,
+                "value": 0.114754096
+              },
+              {
+                "operation": "set",
+                "atNanos": 37500818176,
+                "value": 0.13114753
+              },
+              {
+                "operation": "set",
+                "atNanos": 37523545448,
+                "value": 0.14754099
+              },
+              {
+                "operation": "set",
+                "atNanos": 37546272720,
+                "value": 0.16393442
+              },
+              {
+                "operation": "set",
+                "atNanos": 37568999992,
+                "value": 0.18032786
+              },
+              {
+                "operation": "set",
+                "atNanos": 37591727264,
+                "value": 0.19672132
+              },
+              {
+                "operation": "set",
+                "atNanos": 37614454536,
+                "value": 0.21311475
+              },
+              {
+                "operation": "set",
+                "atNanos": 37637181808,
+                "value": 0.22950819
+              },
+              {
+                "operation": "set",
+                "atNanos": 37659909080,
+                "value": 0.24590164
+              },
+              {
+                "operation": "set",
+                "atNanos": 37682636352,
+                "value": 0.26229507
+              },
+              {
+                "operation": "set",
+                "atNanos": 37705363624,
+                "value": 0.27868852
+              },
+              {
+                "operation": "set",
+                "atNanos": 37728090896,
+                "value": 0.29508197
+              },
+              {
+                "operation": "set",
+                "atNanos": 37750818168,
+                "value": 0.3114754
+              },
+              {
+                "operation": "set",
+                "atNanos": 37773545440,
+                "value": 0.32786885
+              },
+              {
+                "operation": "set",
+                "atNanos": 37796272712,
+                "value": 0.3442623
+              },
+              {
+                "operation": "set",
+                "atNanos": 37818999984,
+                "value": 0.36065573
+              },
+              {
+                "operation": "set",
+                "atNanos": 37841727256,
+                "value": 0.37704918
+              },
+              {
+                "operation": "set",
+                "atNanos": 37864454528,
+                "value": 0.39344263
+              },
+              {
+                "operation": "set",
+                "atNanos": 37887181800,
+                "value": 0.40983605
+              },
+              {
+                "operation": "set",
+                "atNanos": 37909909072,
+                "value": 0.4262295
+              },
+              {
+                "operation": "set",
+                "atNanos": 37932636344,
+                "value": 0.44262296
+              },
+              {
+                "operation": "set",
+                "atNanos": 37955363616,
+                "value": 0.45901638
+              },
+              {
+                "operation": "set",
+                "atNanos": 37978090888,
+                "value": 0.47540984
+              },
+              {
+                "operation": "set",
+                "atNanos": 38000818160,
+                "value": 0.4918033
+              },
+              {
+                "operation": "set",
+                "atNanos": 38023545432,
+                "value": 0.5081967
+              },
+              {
+                "operation": "set",
+                "atNanos": 38046272704,
+                "value": 0.52459013
+              },
+              {
+                "operation": "set",
+                "atNanos": 38068999976,
+                "value": 0.5409836
+              },
+              {
+                "operation": "set",
+                "atNanos": 38091727248,
+                "value": 0.55737704
+              },
+              {
+                "operation": "set",
+                "atNanos": 38114454520,
+                "value": 0.57377046
+              },
+              {
+                "operation": "set",
+                "atNanos": 38137181792,
+                "value": 0.59016395
+              },
+              {
+                "operation": "set",
+                "atNanos": 38159909064,
+                "value": 0.60655737
+              },
+              {
+                "operation": "set",
+                "atNanos": 38182636336,
+                "value": 0.6229508
+              },
+              {
+                "operation": "set",
+                "atNanos": 38205363608,
+                "value": 0.6393443
+              },
+              {
+                "operation": "set",
+                "atNanos": 38228090880,
+                "value": 0.6557377
+              },
+              {
+                "operation": "set",
+                "atNanos": 38250818152,
+                "value": 0.6721311
+              },
+              {
+                "operation": "set",
+                "atNanos": 38273545424,
+                "value": 0.6885246
+              },
+              {
+                "operation": "set",
+                "atNanos": 38296272696,
+                "value": 0.704918
+              },
+              {
+                "operation": "set",
+                "atNanos": 38318999968,
+                "value": 0.72131145
+              },
+              {
+                "operation": "set",
+                "atNanos": 38341727240,
+                "value": 0.73770493
+              },
+              {
+                "operation": "set",
+                "atNanos": 38364454512,
+                "value": 0.75409836
+              },
+              {
+                "operation": "set",
+                "atNanos": 38387181784,
+                "value": 0.7704918
+              },
+              {
+                "operation": "set",
+                "atNanos": 38409909056,
+                "value": 0.78688526
+              },
+              {
+                "operation": "set",
+                "atNanos": 38432636328,
+                "value": 0.8032787
+              },
+              {
+                "operation": "set",
+                "atNanos": 38455363600,
+                "value": 0.8196721
+              },
+              {
+                "operation": "set",
+                "atNanos": 38478090872,
+                "value": 0.8360656
+              },
+              {
+                "operation": "set",
+                "atNanos": 38500818144,
+                "value": 0.852459
+              },
+              {
+                "operation": "set",
+                "atNanos": 38523545416,
+                "value": 0.86885244
+              },
+              {
+                "operation": "set",
+                "atNanos": 38546272688,
+                "value": 0.8852459
+              },
+              {
+                "operation": "set",
+                "atNanos": 38568999960,
+                "value": 0.90163934
+              },
+              {
+                "operation": "set",
+                "atNanos": 38591727232,
+                "value": 0.91803277
+              },
+              {
+                "operation": "set",
+                "atNanos": 38614454504,
+                "value": 0.93442625
+              },
+              {
+                "operation": "set",
+                "atNanos": 38637181776,
+                "value": 0.9508197
+              },
+              {
+                "operation": "set",
+                "atNanos": 38659909048,
+                "value": 0.9672131
+              },
+              {
+                "operation": "set",
+                "atNanos": 38682636320,
+                "value": 0.9836066
+              },
+              {
+                "operation": "set",
+                "atNanos": 38705363592,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "footer-after.caret",
+            "actorId": "footer-after",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 37319000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 39455363592,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.x",
+            "actorId": "stage",
+            "property": "camera.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 0.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.y",
+            "actorId": "stage",
+            "property": "camera.y",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 0.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.wk.glow",
+            "actorId": "stage",
+            "property": "wk.glow",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 40898000000,
+                "target": 0.65,
+                "responseSeconds": 0.96000004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [],
+        "media": [
+          {
+            "id": "narration-cache-before",
+            "path": "narration/cache-before.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 19359000000,
+            "timelineStartNanos": 1400000000,
+            "timelineEndNanos": 20759000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "narration-cache-after",
+            "path": "narration/cache-after.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 17839000000,
+            "timelineStartNanos": 22759000000,
+            "timelineEndNanos": 40598000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "connect-0",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 1840000000,
+            "timelineEndNanos": 1980000000,
+            "gainDb": -20.0
+          },
+          {
+            "id": "req-1-send",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 2180000000,
+            "timelineEndNanos": 2340000000,
+            "gainDb": -9.0
+          },
+          {
+            "id": "err-503-hit",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 4440000000,
+            "timelineEndNanos": 4920000000,
+            "gainDb": -9.0
+          },
+          {
+            "id": "cfg-glitch",
+            "path": "../../assets/pr-walkthrough/glitch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 200000000,
+            "timelineStartNanos": 9750000000,
+            "timelineEndNanos": 9950000000,
+            "gainDb": -18.0
+          },
+          {
+            "id": "rewind",
+            "path": "../../assets/opencode-hot-reload/launch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 1370000000,
+            "timelineStartNanos": 21129000000,
+            "timelineEndNanos": 22499000000,
+            "gainDb": -13.0
+          },
+          {
+            "id": "wk-mark",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 32172432053,
+            "timelineEndNanos": 32472432053,
+            "gainDb": -18.0
+          },
+          {
+            "id": "fanout-bloom",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 37769000000,
+            "timelineEndNanos": 38564000000,
+            "gainDb": -10.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 1150000000,
+      "transitionStyle": "zoom",
+      "transitionFocus": [
+        782.38806,
+        433.43283,
+        355.22388,
+        129.55223
+      ],
+      "plan": {
+        "version": 2,
+        "id": "cache-code",
+        "durationNanos": 14259000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "#53821",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "retain validated wellknown remote config"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip-change",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "the change"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "editor",
+            "recipe": "editor",
+            "data": {
+              "enteringOffsetX": 0.0,
+              "fileName": "packages/core/src/wellknown.ts",
+              "finalLineIds": [
+                "line-1",
+                "line-2",
+                "line-3",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-7",
+                "line-8",
+                "line-9",
+                "line-10",
+                "line-11",
+                "line-12",
+                "line-13",
+                "line-14"
+              ],
+              "focusHeight": 44.0,
+              "focusLineId": "line-0",
+              "initialLineIds": [
+                "line-0",
+                "line-2",
+                "line-3",
+                "line-4",
+                "line-14"
+              ],
+              "lineHeight": 44.0,
+              "lines": [
+                {
+                  "id": "line-0",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* bus."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "publish"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "type",
+                          "text": "Event"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "type",
+                          "text": "Updated"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", {})"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-1",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* bus."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "publish"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "type",
+                          "text": "Event"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "type",
+                          "text": "Updated"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", {}, { global: "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "true"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " })"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-2",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              128,
+                              128,
+                              128
+                            ]
+                          },
+                          "text": "// … in resolve(entry, variables, credentialID, validate):"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-3",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "resolveEntry"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(entry, variables)."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "pipe"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-4",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "provideService"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "type",
+                          "text": "HttpClient"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "type",
+                          "text": "HttpClient"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", http),"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-5",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "tap"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "((configs) => (validate ? "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "validate"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(configs) : "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ".void)),"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-6",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "tap"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "((configs) => "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "sync"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(() => {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-7",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    remote."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "set"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(key, { origin: entry.origin, configs })"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-8",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  })),"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-9",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "catch"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "((error) => {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-10",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " cached = remote."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "get"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(key)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-11",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " (!cached) "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "fail"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(error)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-12",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "succeed"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(cached.configs)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-13",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  }),"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-14",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": ")"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-1",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-2",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-3",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "gap-4",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                }
+              ],
+              "snapshots": [
+                {
+                  "atNanos": 2200000000,
+                  "lineIds": [
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-14"
+                  ]
+                },
+                {
+                  "atNanos": 6380000000,
+                  "lineIds": [
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "gap-0",
+                    "gap-1",
+                    "gap-2",
+                    "gap-3",
+                    "line-14"
+                  ]
+                },
+                {
+                  "atNanos": 6680000000,
+                  "lineIds": [
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-14"
+                  ]
+                },
+                {
+                  "atNanos": 9740000000,
+                  "lineIds": [
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "gap-0",
+                    "gap-1",
+                    "gap-2",
+                    "gap-3",
+                    "gap-4",
+                    "line-14"
+                  ]
+                },
+                {
+                  "atNanos": 10040000000,
+                  "lineIds": [
+                    "line-1",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-9",
+                    "line-10",
+                    "line-11",
+                    "line-12",
+                    "line-13",
+                    "line-14"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "footer",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "condensed for display · Config.parseRemote runs strict normalization before caching",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "chip-change.opacity",
+            "actorId": "chip-change",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 200000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-change.y",
+            "actorId": "chip-change",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 200000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.mark.line-0",
+            "actorId": "editor",
+            "property": "mark.line-0",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 1300000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer.opacity",
+            "actorId": "footer",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer.y",
+            "actorId": "footer",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [],
+        "media": [
+          {
+            "id": "narration-cache-code",
+            "path": "narration/cache-code.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 11759000000,
+            "timelineStartNanos": 900000000,
+            "timelineEndNanos": 12659000000,
+            "gainDb": 0.0
+          }
+        ]
+      }
+    }
+  ]
+}

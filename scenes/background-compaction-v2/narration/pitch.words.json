@@ -1,0 +1,334 @@
+{
+ "wordTimings": [
+  {
+   "word": "OpenCode",
+   "start": 0,
+   "end": 0.66
+  },
+  {
+   "word": "can",
+   "start": 0.66,
+   "end": 0.9
+  },
+  {
+   "word": "now",
+   "start": 0.9,
+   "end": 1.08
+  },
+  {
+   "word": "compact",
+   "start": 1.08,
+   "end": 1.5
+  },
+  {
+   "word": "your",
+   "start": 1.5,
+   "end": 1.82
+  },
+  {
+   "word": "context",
+   "start": 1.82,
+   "end": 2.28
+  },
+  {
+   "word": "in",
+   "start": 2.28,
+   "end": 2.64
+  },
+  {
+   "word": "the",
+   "start": 2.64,
+   "end": 2.7
+  },
+  {
+   "word": "background.",
+   "start": 2.7,
+   "end": 3.08
+  },
+  {
+   "word": "These",
+   "start": 3.38,
+   "end": 3.62
+  },
+  {
+   "word": "two",
+   "start": 3.62,
+   "end": 3.84
+  },
+  {
+   "word": "sessions",
+   "start": 3.84,
+   "end": 4.2
+  },
+  {
+   "word": "fill",
+   "start": 4.2,
+   "end": 4.58
+  },
+  {
+   "word": "up",
+   "start": 4.58,
+   "end": 4.76
+  },
+  {
+   "word": "at",
+   "start": 4.76,
+   "end": 4.86
+  },
+  {
+   "word": "the",
+   "start": 4.86,
+   "end": 4.94
+  },
+  {
+   "word": "same",
+   "start": 4.94,
+   "end": 5.2
+  },
+  {
+   "word": "pace.",
+   "start": 5.2,
+   "end": 5.56
+  },
+  {
+   "word": "The",
+   "start": 5.8,
+   "end": 5.98
+  },
+  {
+   "word": "bottom",
+   "start": 5.98,
+   "end": 6.28
+  },
+  {
+   "word": "one",
+   "start": 6.28,
+   "end": 6.5
+  },
+  {
+   "word": "starts",
+   "start": 6.5,
+   "end": 6.76
+  },
+  {
+   "word": "writing",
+   "start": 6.76,
+   "end": 7.14
+  },
+  {
+   "word": "its",
+   "start": 7.14,
+   "end": 7.38
+  },
+  {
+   "word": "summary",
+   "start": 7.38,
+   "end": 7.7
+  },
+  {
+   "word": "at",
+   "start": 7.7,
+   "end": 7.94
+  },
+  {
+   "word": "85%.",
+   "start": 7.94,
+   "end": 8.9
+  },
+  {
+   "word": "At",
+   "start": 8.9,
+   "end": 9.42
+  },
+  {
+   "word": "the",
+   "start": 9.42,
+   "end": 9.54
+  },
+  {
+   "word": "limit,",
+   "start": 9.54,
+   "end": 9.84
+  },
+  {
+   "word": "it",
+   "start": 9.92,
+   "end": 10.04
+  },
+  {
+   "word": "swaps",
+   "start": 10.04,
+   "end": 10.48
+  },
+  {
+   "word": "the",
+   "start": 10.48,
+   "end": 10.56
+  },
+  {
+   "word": "summary",
+   "start": 10.56,
+   "end": 10.9
+  },
+  {
+   "word": "in",
+   "start": 10.9,
+   "end": 11.18
+  },
+  {
+   "word": "and",
+   "start": 11.18,
+   "end": 11.36
+  },
+  {
+   "word": "keeps",
+   "start": 11.36,
+   "end": 11.56
+  },
+  {
+   "word": "going.",
+   "start": 11.56,
+   "end": 11.86
+  },
+  {
+   "word": "The",
+   "start": 12.14,
+   "end": 12.38
+  },
+  {
+   "word": "top",
+   "start": 12.38,
+   "end": 12.58
+  },
+  {
+   "word": "one",
+   "start": 12.58,
+   "end": 12.8
+  },
+  {
+   "word": "stops",
+   "start": 12.8,
+   "end": 13.12
+  },
+  {
+   "word": "for",
+   "start": 13.12,
+   "end": 13.44
+  },
+  {
+   "word": "almost",
+   "start": 13.44,
+   "end": 13.7
+  },
+  {
+   "word": "a",
+   "start": 13.7,
+   "end": 13.94
+  },
+  {
+   "word": "minute.",
+   "start": 13.94,
+   "end": 14.14
+  },
+  {
+   "word": "On",
+   "start": 14.32,
+   "end": 14.54
+  },
+  {
+   "word": "my",
+   "start": 14.54,
+   "end": 14.7
+  },
+  {
+   "word": "first",
+   "start": 14.7,
+   "end": 14.98
+  },
+  {
+   "word": "99",
+   "start": 14.98,
+   "end": 15.46
+  },
+  {
+   "word": "compactions,",
+   "start": 15.46,
+   "end": 16.38
+  },
+  {
+   "word": "the",
+   "start": 16.54,
+   "end": 16.74
+  },
+  {
+   "word": "median",
+   "start": 16.74,
+   "end": 17.06
+  },
+  {
+   "word": "pause",
+   "start": 17.06,
+   "end": 17.42
+  },
+  {
+   "word": "went",
+   "start": 17.42,
+   "end": 17.78
+  },
+  {
+   "word": "from",
+   "start": 17.78,
+   "end": 18
+  },
+  {
+   "word": "55",
+   "start": 18,
+   "end": 18.4
+  },
+  {
+   "word": "seconds",
+   "start": 18.4,
+   "end": 18.98
+  },
+  {
+   "word": "to",
+   "start": 18.98,
+   "end": 19.28
+  },
+  {
+   "word": "2",
+   "start": 19.28,
+   "end": 19.5
+  },
+  {
+   "word": "milliseconds.",
+   "start": 19.5,
+   "end": 19.92
+  },
+  {
+   "word": "Philip",
+   "start": 20.46,
+   "end": 20.76
+  },
+  {
+   "word": "and",
+   "start": 20.76,
+   "end": 20.96
+  },
+  {
+   "word": "Aidan",
+   "start": 20.96,
+   "end": 21.28
+  },
+  {
+   "word": "built",
+   "start": 21.28,
+   "end": 21.52
+  },
+  {
+   "word": "it.",
+   "start": 21.52,
+   "end": 21.7
+  }
+ ]
+}

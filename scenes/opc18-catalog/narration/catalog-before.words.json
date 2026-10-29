@@ -1,0 +1,294 @@
+{
+ "wordTimings": [
+  {
+   "word": "Here's",
+   "start": 0,
+   "end": 0.34
+  },
+  {
+   "word": "what",
+   "start": 0.34,
+   "end": 0.5
+  },
+  {
+   "word": "we",
+   "start": 0.5,
+   "end": 0.66
+  },
+  {
+   "word": "measured.",
+   "start": 0.66,
+   "end": 1
+  },
+  {
+   "word": "That",
+   "start": 1.16,
+   "end": 1.44
+  },
+  {
+   "word": "catalog",
+   "start": 1.44,
+   "end": 1.9
+  },
+  {
+   "word": "isn't",
+   "start": 1.9,
+   "end": 2.62
+  },
+  {
+   "word": "built",
+   "start": 2.62,
+   "end": 2.78
+  },
+  {
+   "word": "once.",
+   "start": 2.78,
+   "end": 3.24
+  },
+  {
+   "word": "During",
+   "start": 3.48,
+   "end": 3.94
+  },
+  {
+   "word": "plugin",
+   "start": 3.94,
+   "end": 4.36
+  },
+  {
+   "word": "activation",
+   "start": 4.36,
+   "end": 4.74
+  },
+  {
+   "word": "it",
+   "start": 4.74,
+   "end": 5.2
+  },
+  {
+   "word": "gets",
+   "start": 5.2,
+   "end": 5.44
+  },
+  {
+   "word": "rebuilt",
+   "start": 5.44,
+   "end": 5.82
+  },
+  {
+   "word": "17",
+   "start": 5.82,
+   "end": 6.58
+  },
+  {
+   "word": "times.",
+   "start": 6.58,
+   "end": 7.26
+  },
+  {
+   "word": "Each",
+   "start": 7.76,
+   "end": 8.14
+  },
+  {
+   "word": "rebuild",
+   "start": 8.14,
+   "end": 8.54
+  },
+  {
+   "word": "starts",
+   "start": 8.54,
+   "end": 8.9
+  },
+  {
+   "word": "over",
+   "start": 8.9,
+   "end": 9.36
+  },
+  {
+   "word": "from",
+   "start": 9.36,
+   "end": 9.58
+  },
+  {
+   "word": "the",
+   "start": 9.58,
+   "end": 9.68
+  },
+  {
+   "word": "snapshot",
+   "start": 9.68,
+   "end": 10.08
+  },
+  {
+   "word": "and",
+   "start": 10.08,
+   "end": 10.46
+  },
+  {
+   "word": "copies",
+   "start": 10.46,
+   "end": 10.86
+  },
+  {
+   "word": "about",
+   "start": 10.86,
+   "end": 11.1
+  },
+  {
+   "word": "230",
+   "start": 11.1,
+   "end": 11.6
+  },
+  {
+   "word": "providers.",
+   "start": 11.6,
+   "end": 12.42
+  },
+  {
+   "word": "Activation",
+   "start": 12.94,
+   "end": 13.62
+  },
+  {
+   "word": "takes",
+   "start": 13.62,
+   "end": 13.84
+  },
+  {
+   "word": "about",
+   "start": 13.84,
+   "end": 14.2
+  },
+  {
+   "word": "250",
+   "start": 14.2,
+   "end": 14.72
+  },
+  {
+   "word": "milliseconds",
+   "start": 14.72,
+   "end": 15.34
+  },
+  {
+   "word": "on",
+   "start": 15.34,
+   "end": 15.9
+  },
+  {
+   "word": "a",
+   "start": 15.9,
+   "end": 16
+  },
+  {
+   "word": "warm",
+   "start": 16,
+   "end": 16.2
+  },
+  {
+   "word": "boot.",
+   "start": 16.2,
+   "end": 16.46
+  },
+  {
+   "word": "The",
+   "start": 16.7,
+   "end": 17.02
+  },
+  {
+   "word": "rebuilds",
+   "start": 17.02,
+   "end": 17.6
+  },
+  {
+   "word": "are",
+   "start": 17.6,
+   "end": 17.64
+  },
+  {
+   "word": "about",
+   "start": 17.64,
+   "end": 17.86
+  },
+  {
+   "word": "40",
+   "start": 17.86,
+   "end": 18.3
+  },
+  {
+   "word": "of",
+   "start": 18.3,
+   "end": 18.46
+  },
+  {
+   "word": "that,",
+   "start": 18.46,
+   "end": 18.66
+  },
+  {
+   "word": "and",
+   "start": 18.84,
+   "end": 19.18
+  },
+  {
+   "word": "the",
+   "start": 19.18,
+   "end": 19.26
+  },
+  {
+   "word": "cascade",
+   "start": 19.26,
+   "end": 19.64
+  },
+  {
+   "word": "at",
+   "start": 19.64,
+   "end": 19.98
+  },
+  {
+   "word": "the",
+   "start": 19.98,
+   "end": 20.04
+  },
+  {
+   "word": "end",
+   "start": 20.04,
+   "end": 20.24
+  },
+  {
+   "word": "of",
+   "start": 20.24,
+   "end": 20.34
+  },
+  {
+   "word": "the",
+   "start": 20.34,
+   "end": 20.4
+  },
+  {
+   "word": "batch",
+   "start": 20.4,
+   "end": 20.68
+  },
+  {
+   "word": "is",
+   "start": 20.68,
+   "end": 20.88
+  },
+  {
+   "word": "about",
+   "start": 20.88,
+   "end": 21.08
+  },
+  {
+   "word": "70",
+   "start": 21.08,
+   "end": 21.48
+  },
+  {
+   "word": "more.",
+   "start": 21.48,
+   "end": 21.72
+  }
+ ]
+}

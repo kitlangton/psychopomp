@@ -1,0 +1,24 @@
+{
+  "clips": [
+    {
+      "id": "compare-before",
+      "text": "In Console, the segmented control had no sliding pill and no hover state. Clicking between Cost and Tokens just flipped the background in place, and hovering an inactive option gave no feedback at all."
+    },
+    {
+      "id": "compare-after",
+      "text": "[confident] With solid motion, a shared indicator pill springs both position and width in a hundred and fifty milliseconds. It jumps on first paint so it never flies in on mount, and inactive labels brighten on hover."
+    },
+    {
+      "id": "cursor-before",
+      "text": "While testing this, we noticed the cursor strobing over button text. Tailwind four dropped user select none from buttons, and the inner label spans still had pointer events enabled. Every time the pointer crossed onto the label text, the hit target flipped from the button to the inner span and back. On top of that, our cursor pointer rule used a zero specificity where selector, so component styles overrode it."
+    },
+    {
+      "id": "cursor-after",
+      "text": "[confident] Setting pointer events none and user select none on the inner spans keeps the button as one atomic hit target. We verified this with a one hundred twenty hertz Window Server cursor trace on macOS, and the pointing hand seed stays locked across every pixel of the text."
+    },
+    {
+      "id": "cursor-code",
+      "text": "In the code, solid motion drives the indicator position and width with a snappy spring, and inner button wrappers disable pointer events and text selection."
+    }
+  ]
+}

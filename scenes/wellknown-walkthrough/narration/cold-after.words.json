@@ -1,0 +1,224 @@
+{
+ "wordTimings": [
+  {
+   "word": "With",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "the",
+   "start": 0.14,
+   "end": 0.28
+  },
+  {
+   "word": "fix,",
+   "start": 0.28,
+   "end": 0.56
+  },
+  {
+   "word": "the",
+   "start": 0.76,
+   "end": 0.96
+  },
+  {
+   "word": "login",
+   "start": 0.96,
+   "end": 1.28
+  },
+  {
+   "word": "plugin",
+   "start": 1.28,
+   "end": 1.56
+  },
+  {
+   "word": "catches",
+   "start": 1.56,
+   "end": 2
+  },
+  {
+   "word": "initial",
+   "start": 2,
+   "end": 2.36
+  },
+  {
+   "word": "discovery",
+   "start": 2.36,
+   "end": 2.82
+  },
+  {
+   "word": "errors",
+   "start": 2.82,
+   "end": 3.34
+  },
+  {
+   "word": "so",
+   "start": 3.34,
+   "end": 3.56
+  },
+  {
+   "word": "it",
+   "start": 3.56,
+   "end": 3.7
+  },
+  {
+   "word": "still",
+   "start": 3.7,
+   "end": 4
+  },
+  {
+   "word": "registers",
+   "start": 4,
+   "end": 4.54
+  },
+  {
+   "word": "its",
+   "start": 4.54,
+   "end": 4.76
+  },
+  {
+   "word": "transform",
+   "start": 4.76,
+   "end": 5.2
+  },
+  {
+   "word": "and",
+   "start": 5.2,
+   "end": 5.48
+  },
+  {
+   "word": "update",
+   "start": 5.48,
+   "end": 5.76
+  },
+  {
+   "word": "subscription.",
+   "start": 5.76,
+   "end": 6.18
+  },
+  {
+   "word": "And",
+   "start": 6.54,
+   "end": 6.92
+  },
+  {
+   "word": "the",
+   "start": 6.92,
+   "end": 7.04
+  },
+  {
+   "word": "10",
+   "start": 7.04,
+   "end": 7.28
+  },
+  {
+   "word": "-minute",
+   "start": 7.28,
+   "end": 7.48
+  },
+  {
+   "word": "timer",
+   "start": 7.48,
+   "end": 7.82
+  },
+  {
+   "word": "always",
+   "start": 7.82,
+   "end": 8.28
+  },
+  {
+   "word": "calls",
+   "start": 8.28,
+   "end": 8.64
+  },
+  {
+   "word": "refresh",
+   "start": 8.64,
+   "end": 9.04
+  },
+  {
+   "word": "before",
+   "start": 9.04,
+   "end": 9.4
+  },
+  {
+   "word": "checking",
+   "start": 9.4,
+   "end": 9.92
+  },
+  {
+   "word": "the",
+   "start": 9.92,
+   "end": 10.12
+  },
+  {
+   "word": "snapshot,",
+   "start": 10.12,
+   "end": 10.44
+  },
+  {
+   "word": "so",
+   "start": 10.74,
+   "end": 11.08
+  },
+  {
+   "word": "cold",
+   "start": 11.08,
+   "end": 11.42
+  },
+  {
+   "word": "sources",
+   "start": 11.42,
+   "end": 11.66
+  },
+  {
+   "word": "and",
+   "start": 11.66,
+   "end": 12.02
+  },
+  {
+   "word": "login",
+   "start": 12.02,
+   "end": 12.32
+  },
+  {
+   "word": "commands",
+   "start": 12.32,
+   "end": 12.64
+  },
+  {
+   "word": "recover",
+   "start": 12.64,
+   "end": 13
+  },
+  {
+   "word": "automatically",
+   "start": 13,
+   "end": 13.68
+  },
+  {
+   "word": "when",
+   "start": 13.68,
+   "end": 14.24
+  },
+  {
+   "word": "the",
+   "start": 14.24,
+   "end": 14.36
+  },
+  {
+   "word": "endpoint",
+   "start": 14.36,
+   "end": 14.56
+  },
+  {
+   "word": "comes",
+   "start": 14.56,
+   "end": 14.88
+  },
+  {
+   "word": "back.",
+   "start": 14.88,
+   "end": 15.18
+  }
+ ]
+}

@@ -1,0 +1,129 @@
+{
+ "wordTimings": [
+  {
+   "word": "In",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "the",
+   "start": 0.12,
+   "end": 0.2
+  },
+  {
+   "word": "code,",
+   "start": 0.2,
+   "end": 0.48
+  },
+  {
+   "word": "Solid",
+   "start": 0.74,
+   "end": 1.52
+  },
+  {
+   "word": "Motion",
+   "start": 1.52,
+   "end": 1.88
+  },
+  {
+   "word": "drives",
+   "start": 1.88,
+   "end": 2.46
+  },
+  {
+   "word": "the",
+   "start": 2.46,
+   "end": 2.78
+  },
+  {
+   "word": "indicator",
+   "start": 2.78,
+   "end": 3.08
+  },
+  {
+   "word": "position",
+   "start": 3.08,
+   "end": 3.58
+  },
+  {
+   "word": "and",
+   "start": 3.58,
+   "end": 4.08
+  },
+  {
+   "word": "width",
+   "start": 4.08,
+   "end": 4.34
+  },
+  {
+   "word": "with",
+   "start": 4.34,
+   "end": 4.98
+  },
+  {
+   "word": "a",
+   "start": 4.98,
+   "end": 5.24
+  },
+  {
+   "word": "snappy",
+   "start": 5.24,
+   "end": 5.78
+  },
+  {
+   "word": "spring,",
+   "start": 5.78,
+   "end": 6.12
+  },
+  {
+   "word": "and",
+   "start": 6.98,
+   "end": 7.34
+  },
+  {
+   "word": "inner",
+   "start": 7.34,
+   "end": 7.68
+  },
+  {
+   "word": "button",
+   "start": 7.68,
+   "end": 7.98
+  },
+  {
+   "word": "wrappers",
+   "start": 7.98,
+   "end": 8.56
+  },
+  {
+   "word": "disable",
+   "start": 8.56,
+   "end": 8.92
+  },
+  {
+   "word": "pointer",
+   "start": 8.92,
+   "end": 9.48
+  },
+  {
+   "word": "events",
+   "start": 9.48,
+   "end": 9.9
+  },
+  {
+   "word": "and",
+   "start": 9.9,
+   "end": 10.6
+  },
+  {
+   "word": "text",
+   "start": 10.6,
+   "end": 11.02
+  },
+  {
+   "word": "selection.",
+   "start": 11.02,
+   "end": 11.56
+  }
+ ]
+}

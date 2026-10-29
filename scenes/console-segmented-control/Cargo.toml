@@ -1,0 +1,11 @@
+[package]
+name = "psychopomp-console-segmented-control"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+anyhow = "1.0"
+psychopomp = { path = "../../crates/psychopomp" }
+psychopomp-pr-walkthrough = { path = "../pr-walkthrough" }
+serde_json = "1.0"

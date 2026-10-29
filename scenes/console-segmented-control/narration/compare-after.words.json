@@ -1,0 +1,169 @@
+{
+ "wordTimings": [
+  {
+   "word": "With",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "solid",
+   "start": 0.12,
+   "end": 0.46
+  },
+  {
+   "word": "motion,",
+   "start": 0.46,
+   "end": 0.86
+  },
+  {
+   "word": "a",
+   "start": 1.16,
+   "end": 1.5
+  },
+  {
+   "word": "shared",
+   "start": 1.5,
+   "end": 2
+  },
+  {
+   "word": "indicator",
+   "start": 2,
+   "end": 2.32
+  },
+  {
+   "word": "pill",
+   "start": 2.32,
+   "end": 2.82
+  },
+  {
+   "word": "springs",
+   "start": 2.82,
+   "end": 3.4
+  },
+  {
+   "word": "both",
+   "start": 3.4,
+   "end": 3.9
+  },
+  {
+   "word": "position",
+   "start": 3.9,
+   "end": 4.42
+  },
+  {
+   "word": "and",
+   "start": 4.42,
+   "end": 4.84
+  },
+  {
+   "word": "width",
+   "start": 4.84,
+   "end": 5.08
+  },
+  {
+   "word": "in",
+   "start": 5.08,
+   "end": 5.44
+  },
+  {
+   "word": "150",
+   "start": 5.44,
+   "end": 5.86
+  },
+  {
+   "word": "milliseconds.",
+   "start": 5.86,
+   "end": 6.84
+  },
+  {
+   "word": "It",
+   "start": 7.92,
+   "end": 8.32
+  },
+  {
+   "word": "jumps",
+   "start": 8.32,
+   "end": 8.7
+  },
+  {
+   "word": "on",
+   "start": 8.7,
+   "end": 9
+  },
+  {
+   "word": "first",
+   "start": 9,
+   "end": 9.4
+  },
+  {
+   "word": "paint",
+   "start": 9.4,
+   "end": 9.8
+  },
+  {
+   "word": "so",
+   "start": 9.8,
+   "end": 10.44
+  },
+  {
+   "word": "it",
+   "start": 10.44,
+   "end": 10.62
+  },
+  {
+   "word": "never",
+   "start": 10.62,
+   "end": 10.82
+  },
+  {
+   "word": "flies",
+   "start": 10.82,
+   "end": 11.2
+  },
+  {
+   "word": "in",
+   "start": 11.2,
+   "end": 11.58
+  },
+  {
+   "word": "on",
+   "start": 11.58,
+   "end": 11.74
+  },
+  {
+   "word": "mount,",
+   "start": 11.74,
+   "end": 12.06
+  },
+  {
+   "word": "and",
+   "start": 12.2,
+   "end": 12.94
+  },
+  {
+   "word": "inactive",
+   "start": 12.94,
+   "end": 13.58
+  },
+  {
+   "word": "labels",
+   "start": 13.58,
+   "end": 14
+  },
+  {
+   "word": "brighten",
+   "start": 14,
+   "end": 14.48
+  },
+  {
+   "word": "on",
+   "start": 14.48,
+   "end": 14.9
+  },
+  {
+   "word": "hover.",
+   "start": 14.9,
+   "end": 15.16
+  }
+ ]
+}

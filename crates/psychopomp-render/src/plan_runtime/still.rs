@@ -87,9 +87,21 @@ impl Loaded {
         output: &Path,
         window: TimeRange,
     ) -> Result<()> {
+        self.render_video_with(renderer, output, window, false)
+    }
+
+    /// Encode `window` to `output`; with `draft`, each frame takes one instant
+    /// sample instead of a full shutter exposure, for fast audio/timing review.
+    pub(super) fn render_video_with(
+        &self,
+        renderer: &mut HeadlessRenderer,
+        output: &Path,
+        window: TimeRange,
+        draft: bool,
+    ) -> Result<()> {
         match self {
-            Self::Plan(plan) => delivery::render_video(plan, renderer, output, window),
-            Self::Reel(reel) => delivery::render_reel(reel, renderer, output, window),
+            Self::Plan(plan) => delivery::render_video_with(plan, renderer, output, window, draft),
+            Self::Reel(reel) => delivery::render_reel_with(reel, renderer, output, window, draft),
         }
     }
 
@@ -270,9 +282,88 @@ pub(super) fn read_png(path: &Path) -> Result<Vec<u8>> {
     Ok(pixels)
 }
 
+/// Composite `times` into one onion-skin PNG: stationary pixels keep their
+/// median color, while moving pixels leave progressively brighter ghosts
+/// leading into the final sample at full opacity.
+pub(super) fn onion(
+    path: &Path,
+    times: &[f64],
+    output: &Path,
+    shutter: bool,
+    theme: Theme,
+) -> Result<()> {
+    ensure!(
+        times.len() >= 2,
+        "plan onion needs at least two sample times"
+    );
+    let (loaded, mut renderer) = pollster::block_on(Loaded::load(path, theme))?;
+    let frames = times
+        .iter()
+        .map(|&at| loaded.still(&mut renderer, at, shutter))
+        .collect::<Result<Vec<_>>>()?;
+    let blended = blend_onion(&frames);
+    delivery::write_png(output, &blended)?;
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&json!({
+            "output": output,
+            "frames": times.len(),
+            "times": times,
+        }))?
+    );
+    Ok(())
+}
+
+pub(super) fn blend_onion(frames: &[Vec<u8>]) -> Vec<u8> {
+    let Some(first) = frames.first() else {
+        return Vec::new();
+    };
+    let n = frames.len();
+    if n == 1 {
+        return first.clone();
+    }
+    let len = first.len();
+    let mut out = vec![0_u8; len];
+    let mut scratch = Vec::with_capacity(n);
+    for idx in (0..len).step_by(4) {
+        let mut base = [0_u8; 4];
+        for c in 0..3 {
+            scratch.clear();
+            scratch.extend(frames.iter().map(|f| f[idx + c]));
+            scratch.sort_unstable();
+            base[c] = scratch[n / 2];
+        }
+        base[3] = 255;
+        let mut rgb = [f32::from(base[0]), f32::from(base[1]), f32::from(base[2])];
+        for (step, frame) in frames.iter().enumerate() {
+            let delta = (0..3)
+                .map(|c| frame[idx + c].abs_diff(base[c]))
+                .max()
+                .unwrap_or(0);
+            if delta <= 4 {
+                continue;
+            }
+            let alpha = if step + 1 == n {
+                1.0
+            } else {
+                0.22 + 0.48 * (step as f32 / (n - 1) as f32)
+            };
+            let weight = alpha * ((f32::from(delta) - 4.0) / 24.0).clamp(0.0, 1.0);
+            for c in 0..3 {
+                rgb[c] += (f32::from(frame[idx + c]) - rgb[c]) * weight;
+            }
+        }
+        out[idx] = rgb[0].round().clamp(0.0, 255.0) as u8;
+        out[idx + 1] = rgb[1].round().clamp(0.0, 255.0) as u8;
+        out[idx + 2] = rgb[2].round().clamp(0.0, 255.0) as u8;
+        out[idx + 3] = 255;
+    }
+    out
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{Change, parse_times};
+    use super::{Change, blend_onion, parse_times};
 
     #[test]
     fn times_parse_as_lists_or_ranges() {
@@ -289,5 +380,19 @@ mod tests {
         let change = Change::between(&before, &after);
         assert_eq!((change.pixels, change.max), (1, 9));
         assert_eq!(change.bounds, Some([3, 1, 3, 1]));
+    }
+
+    #[test]
+    fn onion_retains_ghosts_and_final_pose() {
+        let mut f0 = vec![10, 10, 10, 255, 10, 10, 10, 255, 10, 10, 10, 255];
+        let mut f1 = f0.clone();
+        let mut f2 = f0.clone();
+        f0[0..3].copy_from_slice(&[240, 240, 240]);
+        f1[4..7].copy_from_slice(&[240, 240, 240]);
+        f2[8..11].copy_from_slice(&[240, 240, 240]);
+        let out = blend_onion(&[f0, f1, f2]);
+        assert!(out[0] > 40 && out[0] < out[4]);
+        assert!(out[4] > out[0] && out[4] < out[8]);
+        assert_eq!(out[8], 240);
     }
 }

@@ -1,0 +1,504 @@
+{
+ "wordTimings": [
+  {
+   "word": "Instead,",
+   "start": 0,
+   "end": 0.34
+  },
+  {
+   "word": "use",
+   "start": 0.6,
+   "end": 1.24
+  },
+  {
+   "word": "the",
+   "start": 1.24,
+   "end": 1.5
+  },
+  {
+   "word": "browser",
+   "start": 1.5,
+   "end": 1.74
+  },
+  {
+   "word": "once",
+   "start": 1.74,
+   "end": 2.16
+  },
+  {
+   "word": "to",
+   "start": 2.16,
+   "end": 2.56
+  },
+  {
+   "word": "discover",
+   "start": 2.56,
+   "end": 2.96
+  },
+  {
+   "word": "the",
+   "start": 2.96,
+   "end": 3.2
+  },
+  {
+   "word": "API,",
+   "start": 3.2,
+   "end": 3.5
+  },
+  {
+   "word": "and",
+   "start": 3.88,
+   "end": 4.52
+  },
+  {
+   "word": "turn",
+   "start": 4.52,
+   "end": 4.74
+  },
+  {
+   "word": "it",
+   "start": 4.74,
+   "end": 4.9
+  },
+  {
+   "word": "into",
+   "start": 4.9,
+   "end": 5.16
+  },
+  {
+   "word": "a",
+   "start": 5.16,
+   "end": 5.44
+  },
+  {
+   "word": "command",
+   "start": 5.44,
+   "end": 5.7
+  },
+  {
+   "word": "line",
+   "start": 5.7,
+   "end": 6
+  },
+  {
+   "word": "tool.",
+   "start": 6,
+   "end": 6.32
+  },
+  {
+   "word": "Start",
+   "start": 6.92,
+   "end": 7.6
+  },
+  {
+   "word": "network",
+   "start": 7.6,
+   "end": 8.06
+  },
+  {
+   "word": "capture",
+   "start": 8.06,
+   "end": 8.34
+  },
+  {
+   "word": "in",
+   "start": 8.34,
+   "end": 8.8
+  },
+  {
+   "word": "your",
+   "start": 8.8,
+   "end": 8.98
+  },
+  {
+   "word": "Karma",
+   "start": 8.98,
+   "end": 9.36
+  },
+  {
+   "word": "Cafe",
+   "start": 9.36,
+   "end": 9.66
+  },
+  {
+   "word": "session,",
+   "start": 9.66,
+   "end": 10.22
+  },
+  {
+   "word": "add",
+   "start": 10.6,
+   "end": 11.2
+  },
+  {
+   "word": "the",
+   "start": 11.2,
+   "end": 11.4
+  },
+  {
+   "word": "smoothie",
+   "start": 11.4,
+   "end": 11.74
+  },
+  {
+   "word": "once,",
+   "start": 11.74,
+   "end": 12.26
+  },
+  {
+   "word": "and",
+   "start": 12.46,
+   "end": 13.04
+  },
+  {
+   "word": "stop",
+   "start": 13.04,
+   "end": 13.36
+  },
+  {
+   "word": "capture.",
+   "start": 13.36,
+   "end": 13.82
+  },
+  {
+   "word": "Browser",
+   "start": 14.08,
+   "end": 14.74
+  },
+  {
+   "word": "Control",
+   "start": 14.74,
+   "end": 15.06
+  },
+  {
+   "word": "hands",
+   "start": 15.06,
+   "end": 15.52
+  },
+  {
+   "word": "back",
+   "start": 15.52,
+   "end": 15.92
+  },
+  {
+   "word": "a",
+   "start": 15.92,
+   "end": 16.16
+  },
+  {
+   "word": "clean",
+   "start": 16.16,
+   "end": 16.44
+  },
+  {
+   "word": "digest",
+   "start": 16.44,
+   "end": 16.94
+  },
+  {
+   "word": "of",
+   "start": 16.94,
+   "end": 17.38
+  },
+  {
+   "word": "the",
+   "start": 17.38,
+   "end": 17.48
+  },
+  {
+   "word": "three",
+   "start": 17.48,
+   "end": 17.76
+  },
+  {
+   "word": "JSON",
+   "start": 17.76,
+   "end": 18.22
+  },
+  {
+   "word": "endpoints",
+   "start": 18.22,
+   "end": 18.82
+  },
+  {
+   "word": "that",
+   "start": 18.82,
+   "end": 19.06
+  },
+  {
+   "word": "fired,",
+   "start": 19.06,
+   "end": 19.4
+  },
+  {
+   "word": "with",
+   "start": 19.6,
+   "end": 20.2
+  },
+  {
+   "word": "your",
+   "start": 20.2,
+   "end": 20.34
+  },
+  {
+   "word": "cookies",
+   "start": 20.34,
+   "end": 20.7
+  },
+  {
+   "word": "redacted",
+   "start": 20.7,
+   "end": 21.44
+  },
+  {
+   "word": "as",
+   "start": 21.44,
+   "end": 21.7
+  },
+  {
+   "word": "secret",
+   "start": 21.7,
+   "end": 22.18
+  },
+  {
+   "word": "references.",
+   "start": 22.18,
+   "end": 22.64
+  },
+  {
+   "word": "Now,",
+   "start": 23.34,
+   "end": 24.02
+  },
+  {
+   "word": "your",
+   "start": 24.26,
+   "end": 24.5
+  },
+  {
+   "word": "CLI",
+   "start": 24.5,
+   "end": 25.18
+  },
+  {
+   "word": "calls",
+   "start": 25.18,
+   "end": 25.5
+  },
+  {
+   "word": "Uber",
+   "start": 25.5,
+   "end": 25.84
+  },
+  {
+   "word": "Eats",
+   "start": 25.84,
+   "end": 26.26
+  },
+  {
+   "word": "directly",
+   "start": 26.26,
+   "end": 26.94
+  },
+  {
+   "word": "through",
+   "start": 26.94,
+   "end": 27.36
+  },
+  {
+   "word": "that",
+   "start": 27.36,
+   "end": 27.58
+  },
+  {
+   "word": "Live",
+   "start": 27.58,
+   "end": 27.92
+  },
+  {
+   "word": "Browser",
+   "start": 27.92,
+   "end": 28.44
+  },
+  {
+   "word": "tab",
+   "start": 28.44,
+   "end": 28.66
+  },
+  {
+   "word": "in",
+   "start": 28.66,
+   "end": 29.06
+  },
+  {
+   "word": "60",
+   "start": 29.06,
+   "end": 29.5
+  },
+  {
+   "word": "milliseconds.",
+   "start": 29.5,
+   "end": 30.02
+  },
+  {
+   "word": "And",
+   "start": 30.48,
+   "end": 31.1
+  },
+  {
+   "word": "if",
+   "start": 31.1,
+   "end": 31.24
+  },
+  {
+   "word": "your",
+   "start": 31.24,
+   "end": 31.44
+  },
+  {
+   "word": "login",
+   "start": 31.44,
+   "end": 31.86
+  },
+  {
+   "word": "ever",
+   "start": 31.86,
+   "end": 32.2
+  },
+  {
+   "word": "expires",
+   "start": 32.2,
+   "end": 32.96
+  },
+  {
+   "word": "and",
+   "start": 32.96,
+   "end": 33.26
+  },
+  {
+   "word": "returns",
+   "start": 33.26,
+   "end": 33.74
+  },
+  {
+   "word": "a",
+   "start": 33.74,
+   "end": 34.1
+  },
+  {
+   "word": "401,",
+   "start": 34.1,
+   "end": 34.6
+  },
+  {
+   "word": "Browser",
+   "start": 35.24,
+   "end": 35.88
+  },
+  {
+   "word": "Control",
+   "start": 35.88,
+   "end": 36.1
+  },
+  {
+   "word": "pauses,",
+   "start": 36.1,
+   "end": 36.84
+  },
+  {
+   "word": "shows",
+   "start": 37.04,
+   "end": 37.68
+  },
+  {
+   "word": "a",
+   "start": 37.68,
+   "end": 37.96
+  },
+  {
+   "word": "continue",
+   "start": 37.96,
+   "end": 38.32
+  },
+  {
+   "word": "pill",
+   "start": 38.32,
+   "end": 38.66
+  },
+  {
+   "word": "right",
+   "start": 38.66,
+   "end": 39.32
+  },
+  {
+   "word": "on",
+   "start": 39.32,
+   "end": 39.5
+  },
+  {
+   "word": "the",
+   "start": 39.5,
+   "end": 39.66
+  },
+  {
+   "word": "tab",
+   "start": 39.66,
+   "end": 39.94
+  },
+  {
+   "word": "so",
+   "start": 39.94,
+   "end": 40.2
+  },
+  {
+   "word": "you",
+   "start": 40.2,
+   "end": 40.34
+  },
+  {
+   "word": "can",
+   "start": 40.34,
+   "end": 40.48
+  },
+  {
+   "word": "sign",
+   "start": 40.48,
+   "end": 40.76
+  },
+  {
+   "word": "in",
+   "start": 40.76,
+   "end": 40.96
+  },
+  {
+   "word": "once,",
+   "start": 40.96,
+   "end": 41.28
+  },
+  {
+   "word": "and",
+   "start": 41.46,
+   "end": 41.98
+  },
+  {
+   "word": "retries",
+   "start": 41.98,
+   "end": 42.42
+  },
+  {
+   "word": "the",
+   "start": 42.42,
+   "end": 42.62
+  },
+  {
+   "word": "request",
+   "start": 42.62,
+   "end": 42.9
+  },
+  {
+   "word": "automatically.",
+   "start": 42.9,
+   "end": 43.44
+  }
+ ]
+}

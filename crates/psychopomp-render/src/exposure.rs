@@ -195,16 +195,24 @@ pub(crate) fn accumulate_region(
         return Ok(first);
     }
     let tables = linear_tables();
-    let mut frame = first.clone();
+    let mut frame = vec![0_u8; FRAME_BYTES];
     let mut sum = vec![0.0_f32; region.pixel_count() * 4];
     for (index, &(time, weight)) in exposure.iter().enumerate() {
-        if index > 0 {
+        let source = if index == 0 {
+            &first[..]
+        } else {
             render_sample(&mut frame, time)?;
-        }
+            &frame[..]
+        };
         let weighted = WeightedLinear::new(tables, weight);
-        let pixels = region.rows().flat_map(|row| frame[row].as_chunks::<4>().0);
-        for (sum, pixel) in sum.as_chunks_mut::<4>().0.iter_mut().zip(pixels) {
-            weighted.add(sum, pixel);
+        let mut sums = sum.as_chunks_mut::<4>().0;
+        for row in region.rows() {
+            let pixels = source[row].as_chunks::<4>().0;
+            let (target, rest) = sums.split_at_mut(pixels.len());
+            sums = rest;
+            for (sum, pixel) in target.iter_mut().zip(pixels) {
+                weighted.add(sum, pixel);
+            }
         }
     }
     let constant: [[u8; 4]; 256] = std::array::from_fn(|value| {
@@ -215,19 +223,23 @@ pub(crate) fn accumulate_region(
         encode_linear(tables, &sum)
     });
     let mut exposed = first;
-    for pixel in exposed.as_chunks_mut::<4>().0 {
-        for (channel, value) in pixel.iter_mut().enumerate() {
-            *value = constant[*value as usize][channel];
+    if constant
+        .iter()
+        .enumerate()
+        .any(|(value, mapped)| *mapped != [value as u8; 4])
+    {
+        for pixel in exposed.as_chunks_mut::<4>().0 {
+            for (channel, value) in pixel.iter_mut().enumerate() {
+                *value = constant[*value as usize][channel];
+            }
         }
     }
-    let mut sums = sum.as_chunks::<4>().0.iter();
+    let mut sums = sum.as_chunks::<4>().0;
     for row in region.rows() {
-        for (pixel, sum) in exposed[row]
-            .as_chunks_mut::<4>()
-            .0
-            .iter_mut()
-            .zip(&mut sums)
-        {
+        let pixels = exposed[row].as_chunks_mut::<4>().0;
+        let (source, rest) = sums.split_at(pixels.len());
+        sums = rest;
+        for (pixel, sum) in pixels.iter_mut().zip(source) {
             *pixel = encode_linear(tables, sum);
         }
     }
@@ -243,24 +255,23 @@ impl Region {
     /// The frame pixels any of `bounds` touches; empty for none.
     pub(crate) fn covering(bounds: impl IntoIterator<Item = Box2>) -> Self {
         let frame = vec2(WIDTH as f32, HEIGHT as f32);
-        let boxes = bounds
-            .into_iter()
-            .map(|bounds| {
-                let min = bounds.min.floor().clamp(Vec2::ZERO, frame);
-                let max = bounds.max.ceil().clamp(min, frame);
-                (
-                    min.x as usize..max.x as usize,
-                    min.y as usize..max.y as usize,
-                )
-            })
-            .collect::<Vec<_>>();
+        let mut by_row = vec![Vec::<Range<usize>>::new(); HEIGHT as usize];
+        for bounds in bounds {
+            let min = bounds.min.floor().clamp(Vec2::ZERO, frame);
+            let max = bounds.max.ceil().clamp(min, frame);
+            let x = min.x as usize..max.x as usize;
+            if x.is_empty() {
+                continue;
+            }
+            for row in &mut by_row[min.y as usize..max.y as usize] {
+                row.push(x.clone());
+            }
+        }
         let mut rows = Vec::new();
-        for y in 0..HEIGHT as usize {
-            let mut spans = boxes
-                .iter()
-                .filter(|(x, rows)| rows.contains(&y) && !x.is_empty())
-                .map(|(x, _)| x.clone())
-                .collect::<Vec<_>>();
+        for (y, mut spans) in by_row.into_iter().enumerate() {
+            if spans.is_empty() {
+                continue;
+            }
             spans.sort_by_key(|span| span.start);
             let row = y * WIDTH as usize;
             let mut spans = spans.into_iter();

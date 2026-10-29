@@ -9,6 +9,7 @@ mod confetti;
 mod meter;
 mod readout;
 mod subtitles;
+pub(crate) use confetti::confetti_bounds;
 
 use psychopomp::{face::Face, math::lerp};
 
@@ -198,20 +199,29 @@ pub(super) fn rotated_rect(
     }
     let half = [size[0] * 0.5, size[1] * 0.5];
     let (sin, cos) = angle.sin_cos();
-    let reach = half[0].hypot(half[1]) + 1.0;
-    let x0 = (center[0] - reach).floor().max(0.0) as i32;
-    let x1 = (center[0] + reach).ceil().min(width as f32) as i32;
-    let y0 = (center[1] - reach).floor().max(0.0) as i32;
-    let y1 = (center[1] + reach).ceil().min(height as f32) as i32;
+    let reach_x = half[0] * cos.abs() + half[1] * sin.abs() + 1.0;
+    let reach_y = half[0] * sin.abs() + half[1] * cos.abs() + 1.0;
+    let x0 = (center[0] - reach_x).floor().max(0.0) as i32;
+    let x1 = (center[0] + reach_x).ceil().min(width as f32) as i32;
+    let y0 = (center[1] - reach_y).floor().max(0.0) as i32;
+    let y1 = (center[1] + reach_y).ceil().min(height as f32) as i32;
+    let thin = size[1].min(size[0]).min(1.0);
     for y in y0..y1 {
+        let py = y as f32 + 0.5 - center[1];
         for x in x0..x1 {
-            let p = [x as f32 + 0.5 - center[0], y as f32 + 0.5 - center[1]];
-            let local = [p[0] * cos + p[1] * sin, -p[0] * sin + p[1] * cos];
+            let px = x as f32 + 0.5 - center[0];
+            let local = [px * cos + py * sin, -px * sin + py * cos];
             let d = [local[0].abs() - half[0], local[1].abs() - half[1]];
-            let outside = d[0].max(0.0).hypot(d[1].max(0.0));
-            let distance = outside + d[0].max(d[1]).min(0.0);
+            if d[0] >= 0.5 || d[1] >= 0.5 {
+                continue;
+            }
+            let distance = if d[0] <= 0.0 || d[1] <= 0.0 {
+                d[0].max(d[1])
+            } else {
+                d[0].hypot(d[1])
+            };
             // Thin pieces keep their area as they turn edge-on.
-            let coverage = (0.5 - distance).clamp(0.0, 1.0) * (size[1].min(size[0]).min(1.0));
+            let coverage = (0.5 - distance).clamp(0.0, 1.0) * thin;
             if coverage > 0.0 {
                 let i = (y as usize * width as usize + x as usize) * 4;
                 blend_pixel(&mut pixels[i..i + 4], [r, g, b, 255], coverage * opacity);

@@ -1,0 +1,3578 @@
+{
+  "version": 1,
+  "id": "pr-53823",
+  "segments": [
+    {
+      "transitionNanos": 0,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "cold-stage",
+        "durationNanos": 41318000000,
+        "actors": [
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    1040.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "endpoint",
+                  "kind": "orb",
+                  "points": 800,
+                  "radius": 118.0,
+                  "tone": "plain"
+                },
+                {
+                  "at": [
+                    1040.0,
+                    675.0,
+                    0.0
+                  ],
+                  "id": "ep-name",
+                  "kind": "label",
+                  "size": 22.0,
+                  "spans": [
+                    {
+                      "text": "/.well-known/opencode"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1040.0,
+                    706.0,
+                    0.0
+                  ],
+                  "id": "ep-down",
+                  "kind": "label",
+                  "size": 18.0,
+                  "spans": [
+                    {
+                      "text": "●",
+                      "tone": "error"
+                    },
+                    {
+                      "text": " cold startup · 503",
+                      "tone": "error"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1040.0,
+                    706.0,
+                    0.0
+                  ],
+                  "id": "ep-up",
+                  "kind": "label",
+                  "size": 18.0,
+                  "spans": [
+                    {
+                      "text": "●",
+                      "tone": "success"
+                    },
+                    {
+                      "text": " 200 · manifest ready",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    960.0,
+                    220.0,
+                    -20.0
+                  ],
+                  "id": "kv",
+                  "kind": "card",
+                  "size": [
+                    340.0,
+                    104.0
+                  ],
+                  "status": [
+                    {
+                      "text": "persisted origin",
+                      "tone": "accent"
+                    }
+                  ],
+                  "title": "KV wellknown:sources"
+                },
+                {
+                  "at": [
+                    420.0,
+                    360.0,
+                    -40.0
+                  ],
+                  "id": "timer",
+                  "kind": "card",
+                  "size": [
+                    340.0,
+                    120.0
+                  ],
+                  "status": [
+                    {
+                      "text": "snapshot empty → return",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "calls wellknown.refresh()",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "Config 10m timer",
+                  "tone": "request"
+                },
+                {
+                  "at": [
+                    420.0,
+                    660.0,
+                    -40.0
+                  ],
+                  "id": "plugin",
+                  "kind": "card",
+                  "size": [
+                    340.0,
+                    120.0
+                  ],
+                  "status": [
+                    {
+                      "text": "Effect.orDie → failed",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "catches error · subscribed",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "login method registered",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "WellKnownPlugin",
+                  "tone": "accent"
+                },
+                {
+                  "at": [
+                    1520.0,
+                    520.0,
+                    -40.0
+                  ],
+                  "id": "int",
+                  "kind": "card",
+                  "size": [
+                    320.0,
+                    120.0
+                  ],
+                  "status": [
+                    {
+                      "text": "no login command",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "command: login ready",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "Integration.Service"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "timer",
+                  "id": "timer-ep",
+                  "kind": "beam",
+                  "to": "endpoint",
+                  "tone": "request"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "timer",
+                  "id": "timer-kv",
+                  "kind": "beam",
+                  "to": "kv",
+                  "tone": "request"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "plugin",
+                  "id": "plugin-ep",
+                  "kind": "beam",
+                  "to": "endpoint",
+                  "tone": "accent"
+                },
+                {
+                  "bend": 0.0,
+                  "from": "plugin",
+                  "id": "plugin-int",
+                  "kind": "beam",
+                  "to": "int",
+                  "tone": "success"
+                },
+                {
+                  "beam": "plugin-ep",
+                  "id": "cold-fail",
+                  "kind": "packet",
+                  "label": "503 → orDie",
+                  "reverse": true,
+                  "tone": "error"
+                },
+                {
+                  "beam": "timer-kv",
+                  "id": "kv-read",
+                  "kind": "packet",
+                  "label": "read origins",
+                  "tone": "request"
+                },
+                {
+                  "beam": "timer-ep",
+                  "id": "refresh-ok",
+                  "kind": "packet",
+                  "label": "refresh()",
+                  "tone": "success"
+                },
+                {
+                  "beam": "plugin-int",
+                  "id": "reg-login",
+                  "kind": "packet",
+                  "label": "register login",
+                  "tone": "success"
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "#53823",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "recover cold wellknown sources & plugin"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip-before",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "before"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "cold-note",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "edge": "top",
+                  "element": "timer",
+                  "id": "timer",
+                  "kind": "stage",
+                  "side": "top"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "!snapshot().length ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "skipped refresh()"
+                  }
+                ]
+              ],
+              "reach": 58.0,
+              "side": "top",
+              "size": 24.0,
+              "tone": "error"
+            }
+          },
+          {
+            "id": "footer-before",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "cold outage → "
+                  },
+                  {
+                    "text": "timer & login plugin never recover",
+                    "tone": "error"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          },
+          {
+            "id": "chip-rewind",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "◀◀ rewind"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "chip-after",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "after the fix"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "footer-after",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "timer refreshes KV origins · "
+                  },
+                  {
+                    "text": "login command recovers",
+                    "tone": "success"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -140.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 2.4,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 39618000000,
+                "target": 60.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.dof",
+            "actorId": "stage",
+            "property": "camera.dof",
+            "initial": 0.38,
+            "events": []
+          },
+          {
+            "id": "stage.endpoint.scale",
+            "actorId": "stage",
+            "property": "endpoint.scale",
+            "initial": 0.58,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 0.8,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.endpoint.blur",
+            "actorId": "stage",
+            "property": "endpoint.blur",
+            "initial": 11.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "responseSeconds": 0.84000003,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.endpoint.rotation",
+            "actorId": "stage",
+            "property": "endpoint.rotation",
+            "initial": -1.8,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "durationNanos": 1250000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.endpoint.opacity",
+            "actorId": "stage",
+            "property": "endpoint.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.ep-name.opacity",
+            "actorId": "stage",
+            "property": "ep-name.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.ep-down.opacity",
+            "actorId": "stage",
+            "property": "ep-down.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 800000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 31539000000,
+                "target": 0.0,
+                "responseSeconds": 0.18,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.endpoint.hurt",
+            "actorId": "stage",
+            "property": "endpoint.hurt",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 500000000,
+                "target": 0.7,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 31539000000,
+                "target": 0.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.kv.scale",
+            "actorId": "stage",
+            "property": "kv.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 280000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 280000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.kv.y",
+            "actorId": "stage",
+            "property": "kv.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 280000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 280000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.kv.content",
+            "actorId": "stage",
+            "property": "kv.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 280000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 345000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.kv.opacity",
+            "actorId": "stage",
+            "property": "kv.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 280000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 280000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.kv.blur",
+            "actorId": "stage",
+            "property": "kv.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 280000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 280000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.scale",
+            "actorId": "stage",
+            "property": "timer.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 420000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 420000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.y",
+            "actorId": "stage",
+            "property": "timer.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 420000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 420000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.content",
+            "actorId": "stage",
+            "property": "timer.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 420000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 485000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.opacity",
+            "actorId": "stage",
+            "property": "timer.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 420000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 420000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.blur",
+            "actorId": "stage",
+            "property": "timer.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 420000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 420000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.scale",
+            "actorId": "stage",
+            "property": "plugin.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 560000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 560000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.y",
+            "actorId": "stage",
+            "property": "plugin.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 560000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 560000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.content",
+            "actorId": "stage",
+            "property": "plugin.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 560000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 625000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.opacity",
+            "actorId": "stage",
+            "property": "plugin.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 560000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 560000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.blur",
+            "actorId": "stage",
+            "property": "plugin.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 560000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 560000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.int.scale",
+            "actorId": "stage",
+            "property": "int.scale",
+            "initial": 1.035,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 700000000,
+                "value": 1.035
+              },
+              {
+                "operation": "spring",
+                "atNanos": 700000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.int.y",
+            "actorId": "stage",
+            "property": "int.y",
+            "initial": 16.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 700000000,
+                "value": 16.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 700000000,
+                "target": 0.0,
+                "responseSeconds": 0.66,
+                "dampingRatio": 0.84000003,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.int.content",
+            "actorId": "stage",
+            "property": "int.content",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 700000000,
+                "value": 0.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 765000000,
+                "target": 1.0,
+                "responseSeconds": 0.43200004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.int.opacity",
+            "actorId": "stage",
+            "property": "int.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 700000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 700000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.int.blur",
+            "actorId": "stage",
+            "property": "int.blur",
+            "initial": 3.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 700000000,
+                "value": 3.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 700000000,
+                "target": 0.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.timer-kv.port",
+            "actorId": "stage",
+            "property": "timer-kv.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 900000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.timer-kv.draw",
+            "actorId": "stage",
+            "property": "timer-kv.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1200000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1200000000,
+                "target": 1.0,
+                "durationNanos": 450000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.timer-ep.port",
+            "actorId": "stage",
+            "property": "timer-ep.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1040000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.timer-ep.draw",
+            "actorId": "stage",
+            "property": "timer-ep.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1340000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1340000000,
+                "target": 1.0,
+                "durationNanos": 450000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin-ep.port",
+            "actorId": "stage",
+            "property": "plugin-ep.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1180000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin-ep.draw",
+            "actorId": "stage",
+            "property": "plugin-ep.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1480000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1480000000,
+                "target": 1.0,
+                "durationNanos": 450000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin-int.port",
+            "actorId": "stage",
+            "property": "plugin-int.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 1320000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin-int.draw",
+            "actorId": "stage",
+            "property": "plugin-int.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1620000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 1620000000,
+                "target": 1.0,
+                "durationNanos": 450000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "header.opacity",
+            "actorId": "header",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "header.typed",
+            "actorId": "header",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 318181818,
+                "value": 0.021276595
+              },
+              {
+                "operation": "set",
+                "atNanos": 336363636,
+                "value": 0.04255319
+              },
+              {
+                "operation": "set",
+                "atNanos": 354545454,
+                "value": 0.06382979
+              },
+              {
+                "operation": "set",
+                "atNanos": 372727272,
+                "value": 0.08510638
+              },
+              {
+                "operation": "set",
+                "atNanos": 390909090,
+                "value": 0.10638298
+              },
+              {
+                "operation": "set",
+                "atNanos": 409090908,
+                "value": 0.12765957
+              },
+              {
+                "operation": "set",
+                "atNanos": 427272726,
+                "value": 0.14893617
+              },
+              {
+                "operation": "set",
+                "atNanos": 445454544,
+                "value": 0.17021276
+              },
+              {
+                "operation": "set",
+                "atNanos": 463636362,
+                "value": 0.19148937
+              },
+              {
+                "operation": "set",
+                "atNanos": 481818180,
+                "value": 0.21276596
+              },
+              {
+                "operation": "set",
+                "atNanos": 499999998,
+                "value": 0.23404256
+              },
+              {
+                "operation": "set",
+                "atNanos": 518181816,
+                "value": 0.25531915
+              },
+              {
+                "operation": "set",
+                "atNanos": 536363634,
+                "value": 0.27659574
+              },
+              {
+                "operation": "set",
+                "atNanos": 554545452,
+                "value": 0.29787233
+              },
+              {
+                "operation": "set",
+                "atNanos": 572727270,
+                "value": 0.31914893
+              },
+              {
+                "operation": "set",
+                "atNanos": 590909088,
+                "value": 0.34042552
+              },
+              {
+                "operation": "set",
+                "atNanos": 609090906,
+                "value": 0.3617021
+              },
+              {
+                "operation": "set",
+                "atNanos": 627272724,
+                "value": 0.38297874
+              },
+              {
+                "operation": "set",
+                "atNanos": 645454542,
+                "value": 0.40425533
+              },
+              {
+                "operation": "set",
+                "atNanos": 663636360,
+                "value": 0.42553192
+              },
+              {
+                "operation": "set",
+                "atNanos": 681818178,
+                "value": 0.44680852
+              },
+              {
+                "operation": "set",
+                "atNanos": 699999996,
+                "value": 0.4680851
+              },
+              {
+                "operation": "set",
+                "atNanos": 718181814,
+                "value": 0.4893617
+              },
+              {
+                "operation": "set",
+                "atNanos": 736363632,
+                "value": 0.5106383
+              },
+              {
+                "operation": "set",
+                "atNanos": 754545450,
+                "value": 0.5319149
+              },
+              {
+                "operation": "set",
+                "atNanos": 772727268,
+                "value": 0.5531915
+              },
+              {
+                "operation": "set",
+                "atNanos": 790909086,
+                "value": 0.5744681
+              },
+              {
+                "operation": "set",
+                "atNanos": 809090904,
+                "value": 0.59574467
+              },
+              {
+                "operation": "set",
+                "atNanos": 827272722,
+                "value": 0.61702126
+              },
+              {
+                "operation": "set",
+                "atNanos": 845454540,
+                "value": 0.63829786
+              },
+              {
+                "operation": "set",
+                "atNanos": 863636358,
+                "value": 0.65957445
+              },
+              {
+                "operation": "set",
+                "atNanos": 881818176,
+                "value": 0.68085104
+              },
+              {
+                "operation": "set",
+                "atNanos": 899999994,
+                "value": 0.70212764
+              },
+              {
+                "operation": "set",
+                "atNanos": 918181812,
+                "value": 0.7234042
+              },
+              {
+                "operation": "set",
+                "atNanos": 936363630,
+                "value": 0.7446808
+              },
+              {
+                "operation": "set",
+                "atNanos": 954545448,
+                "value": 0.7659575
+              },
+              {
+                "operation": "set",
+                "atNanos": 972727266,
+                "value": 0.78723407
+              },
+              {
+                "operation": "set",
+                "atNanos": 990909084,
+                "value": 0.80851066
+              },
+              {
+                "operation": "set",
+                "atNanos": 1009090902,
+                "value": 0.82978725
+              },
+              {
+                "operation": "set",
+                "atNanos": 1027272720,
+                "value": 0.85106385
+              },
+              {
+                "operation": "set",
+                "atNanos": 1045454538,
+                "value": 0.87234044
+              },
+              {
+                "operation": "set",
+                "atNanos": 1063636356,
+                "value": 0.89361703
+              },
+              {
+                "operation": "set",
+                "atNanos": 1081818174,
+                "value": 0.9148936
+              },
+              {
+                "operation": "set",
+                "atNanos": 1099999992,
+                "value": 0.9361702
+              },
+              {
+                "operation": "set",
+                "atNanos": 1118181810,
+                "value": 0.9574468
+              },
+              {
+                "operation": "set",
+                "atNanos": 1136363628,
+                "value": 0.9787234
+              },
+              {
+                "operation": "set",
+                "atNanos": 1154545446,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "header.caret",
+            "actorId": "header",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 300000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 1754545469,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-before.opacity",
+            "actorId": "chip-before",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 550000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22169000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-before.y",
+            "actorId": "chip-before",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 550000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.alarm",
+            "actorId": "stage",
+            "property": "timer.alarm",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8180000000,
+                "value": 0.25
+              },
+              {
+                "operation": "ease",
+                "atNanos": 8180000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "cold-note.draw",
+            "actorId": "cold-note",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 14140000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              },
+              {
+                "operation": "ease",
+                "atNanos": 22249000000,
+                "target": 0.0,
+                "durationNanos": 280000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "cold-note.label",
+            "actorId": "cold-note",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14320000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22169000000,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer-ep.break",
+            "actorId": "stage",
+            "property": "timer-ep.break",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14140000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22569000000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.cold-fail.age",
+            "actorId": "stage",
+            "property": "cold-fail.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 17430000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 17430000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.cold-fail.flight",
+            "actorId": "stage",
+            "property": "cold-fail.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 17430000000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.alarm",
+            "actorId": "stage",
+            "property": "plugin.alarm",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18220000000,
+                "value": 0.28
+              },
+              {
+                "operation": "ease",
+                "atNanos": 18220000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.damage",
+            "actorId": "stage",
+            "property": "plugin.damage",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18220000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 22569000000,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.glitch",
+            "actorId": "stage",
+            "property": "plugin.glitch",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18220000000,
+                "value": 7.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 18247000000,
+                "value": 9.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 18274000000,
+                "value": 8.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 18301000000,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin-int.break",
+            "actorId": "stage",
+            "property": "plugin-int.break",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18320000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22569000000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-before.opacity",
+            "actorId": "footer-before",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18120000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 22169000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-before.typed",
+            "actorId": "footer-before",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18141739130,
+                "value": 0.020833334
+              },
+              {
+                "operation": "set",
+                "atNanos": 18163478260,
+                "value": 0.041666668
+              },
+              {
+                "operation": "set",
+                "atNanos": 18185217390,
+                "value": 0.0625
+              },
+              {
+                "operation": "set",
+                "atNanos": 18206956520,
+                "value": 0.083333336
+              },
+              {
+                "operation": "set",
+                "atNanos": 18228695650,
+                "value": 0.104166664
+              },
+              {
+                "operation": "set",
+                "atNanos": 18250434780,
+                "value": 0.125
+              },
+              {
+                "operation": "set",
+                "atNanos": 18272173910,
+                "value": 0.14583333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18293913040,
+                "value": 0.16666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18315652170,
+                "value": 0.1875
+              },
+              {
+                "operation": "set",
+                "atNanos": 18337391300,
+                "value": 0.20833333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18359130430,
+                "value": 0.22916667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18380869560,
+                "value": 0.25
+              },
+              {
+                "operation": "set",
+                "atNanos": 18402608690,
+                "value": 0.27083334
+              },
+              {
+                "operation": "set",
+                "atNanos": 18424347820,
+                "value": 0.29166666
+              },
+              {
+                "operation": "set",
+                "atNanos": 18446086950,
+                "value": 0.3125
+              },
+              {
+                "operation": "set",
+                "atNanos": 18467826080,
+                "value": 0.33333334
+              },
+              {
+                "operation": "set",
+                "atNanos": 18489565210,
+                "value": 0.35416666
+              },
+              {
+                "operation": "set",
+                "atNanos": 18511304340,
+                "value": 0.375
+              },
+              {
+                "operation": "set",
+                "atNanos": 18533043470,
+                "value": 0.39583334
+              },
+              {
+                "operation": "set",
+                "atNanos": 18554782600,
+                "value": 0.41666666
+              },
+              {
+                "operation": "set",
+                "atNanos": 18576521730,
+                "value": 0.4375
+              },
+              {
+                "operation": "set",
+                "atNanos": 18598260860,
+                "value": 0.45833334
+              },
+              {
+                "operation": "set",
+                "atNanos": 18619999990,
+                "value": 0.47916666
+              },
+              {
+                "operation": "set",
+                "atNanos": 18641739120,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 18663478250,
+                "value": 0.5208333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18685217380,
+                "value": 0.5416667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18706956510,
+                "value": 0.5625
+              },
+              {
+                "operation": "set",
+                "atNanos": 18728695640,
+                "value": 0.5833333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18750434770,
+                "value": 0.6041667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18772173900,
+                "value": 0.625
+              },
+              {
+                "operation": "set",
+                "atNanos": 18793913030,
+                "value": 0.6458333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18815652160,
+                "value": 0.6666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18837391290,
+                "value": 0.6875
+              },
+              {
+                "operation": "set",
+                "atNanos": 18859130420,
+                "value": 0.7083333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18880869550,
+                "value": 0.7291667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18902608680,
+                "value": 0.75
+              },
+              {
+                "operation": "set",
+                "atNanos": 18924347810,
+                "value": 0.7708333
+              },
+              {
+                "operation": "set",
+                "atNanos": 18946086940,
+                "value": 0.7916667
+              },
+              {
+                "operation": "set",
+                "atNanos": 18967826070,
+                "value": 0.8125
+              },
+              {
+                "operation": "set",
+                "atNanos": 18989565200,
+                "value": 0.8333333
+              },
+              {
+                "operation": "set",
+                "atNanos": 19011304330,
+                "value": 0.8541667
+              },
+              {
+                "operation": "set",
+                "atNanos": 19033043460,
+                "value": 0.875
+              },
+              {
+                "operation": "set",
+                "atNanos": 19054782590,
+                "value": 0.8958333
+              },
+              {
+                "operation": "set",
+                "atNanos": 19076521720,
+                "value": 0.9166667
+              },
+              {
+                "operation": "set",
+                "atNanos": 19098260850,
+                "value": 0.9375
+              },
+              {
+                "operation": "set",
+                "atNanos": 19119999980,
+                "value": 0.9583333
+              },
+              {
+                "operation": "set",
+                "atNanos": 19141739110,
+                "value": 0.9791667
+              },
+              {
+                "operation": "set",
+                "atNanos": 19163478240,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "footer-before.caret",
+            "actorId": "footer-before",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18120000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19863478228,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.post.rewind",
+            "actorId": "stage",
+            "property": "post.rewind",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 22169000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 22169000000,
+                "target": 1.35,
+                "durationNanos": 1350000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "chip-rewind.opacity",
+            "actorId": "chip-rewind",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22389000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 23569000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-rewind.y",
+            "actorId": "chip-rewind",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22389000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-after.opacity",
+            "actorId": "chip-after",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 23719000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 39618000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-after.y",
+            "actorId": "chip-after",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 23719000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.status",
+            "actorId": "stage",
+            "property": "plugin.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22569000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 36809000000,
+                "target": 2.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.status",
+            "actorId": "stage",
+            "property": "timer.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22569000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.plugin.glow",
+            "actorId": "stage",
+            "property": "plugin.glow",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25279000000,
+                "target": 0.45,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.kv-read.age",
+            "actorId": "stage",
+            "property": "kv-read.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30999000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 30999000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.kv-read.flight",
+            "actorId": "stage",
+            "property": "kv-read.flight",
+            "initial": 0.42,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30999000000,
+                "value": 0.42
+              }
+            ]
+          },
+          {
+            "id": "stage.ep-up.opacity",
+            "actorId": "stage",
+            "property": "ep-up.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 31759000000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.refresh-ok.age",
+            "actorId": "stage",
+            "property": "refresh-ok.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 31399000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 31399000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.refresh-ok.flight",
+            "actorId": "stage",
+            "property": "refresh-ok.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 31399000000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.flash",
+            "actorId": "stage",
+            "property": "timer.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 32189000000,
+                "value": 0.35
+              },
+              {
+                "operation": "ease",
+                "atNanos": 32189000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.reg-login.age",
+            "actorId": "stage",
+            "property": "reg-login.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36019000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 36019000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.reg-login.flight",
+            "actorId": "stage",
+            "property": "reg-login.flight",
+            "initial": 0.45,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36019000000,
+                "value": 0.45
+              }
+            ]
+          },
+          {
+            "id": "stage.int.flash",
+            "actorId": "stage",
+            "property": "int.flash",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36809000000,
+                "value": 0.35
+              },
+              {
+                "operation": "ease",
+                "atNanos": 36809000000,
+                "target": 0.0,
+                "durationNanos": 800000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "stage.int.status",
+            "actorId": "stage",
+            "property": "int.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 36809000000,
+                "target": 1.0,
+                "responseSeconds": 0.3,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-after.opacity",
+            "actorId": "footer-after",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36359000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 39618000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer-after.typed",
+            "actorId": "footer-after",
+            "property": "typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36381727272,
+                "value": 0.019607844
+              },
+              {
+                "operation": "set",
+                "atNanos": 36404454544,
+                "value": 0.039215688
+              },
+              {
+                "operation": "set",
+                "atNanos": 36427181816,
+                "value": 0.05882353
+              },
+              {
+                "operation": "set",
+                "atNanos": 36449909088,
+                "value": 0.078431375
+              },
+              {
+                "operation": "set",
+                "atNanos": 36472636360,
+                "value": 0.09803922
+              },
+              {
+                "operation": "set",
+                "atNanos": 36495363632,
+                "value": 0.11764706
+              },
+              {
+                "operation": "set",
+                "atNanos": 36518090904,
+                "value": 0.13725491
+              },
+              {
+                "operation": "set",
+                "atNanos": 36540818176,
+                "value": 0.15686275
+              },
+              {
+                "operation": "set",
+                "atNanos": 36563545448,
+                "value": 0.1764706
+              },
+              {
+                "operation": "set",
+                "atNanos": 36586272720,
+                "value": 0.19607843
+              },
+              {
+                "operation": "set",
+                "atNanos": 36608999992,
+                "value": 0.21568628
+              },
+              {
+                "operation": "set",
+                "atNanos": 36631727264,
+                "value": 0.23529412
+              },
+              {
+                "operation": "set",
+                "atNanos": 36654454536,
+                "value": 0.25490198
+              },
+              {
+                "operation": "set",
+                "atNanos": 36677181808,
+                "value": 0.27450982
+              },
+              {
+                "operation": "set",
+                "atNanos": 36699909080,
+                "value": 0.29411766
+              },
+              {
+                "operation": "set",
+                "atNanos": 36722636352,
+                "value": 0.3137255
+              },
+              {
+                "operation": "set",
+                "atNanos": 36745363624,
+                "value": 0.33333334
+              },
+              {
+                "operation": "set",
+                "atNanos": 36768090896,
+                "value": 0.3529412
+              },
+              {
+                "operation": "set",
+                "atNanos": 36790818168,
+                "value": 0.37254903
+              },
+              {
+                "operation": "set",
+                "atNanos": 36813545440,
+                "value": 0.39215687
+              },
+              {
+                "operation": "set",
+                "atNanos": 36836272712,
+                "value": 0.4117647
+              },
+              {
+                "operation": "set",
+                "atNanos": 36858999984,
+                "value": 0.43137255
+              },
+              {
+                "operation": "set",
+                "atNanos": 36881727256,
+                "value": 0.4509804
+              },
+              {
+                "operation": "set",
+                "atNanos": 36904454528,
+                "value": 0.47058824
+              },
+              {
+                "operation": "set",
+                "atNanos": 36927181800,
+                "value": 0.49019608
+              },
+              {
+                "operation": "set",
+                "atNanos": 36949909072,
+                "value": 0.50980395
+              },
+              {
+                "operation": "set",
+                "atNanos": 36972636344,
+                "value": 0.5294118
+              },
+              {
+                "operation": "set",
+                "atNanos": 36995363616,
+                "value": 0.54901963
+              },
+              {
+                "operation": "set",
+                "atNanos": 37018090888,
+                "value": 0.5686275
+              },
+              {
+                "operation": "set",
+                "atNanos": 37040818160,
+                "value": 0.5882353
+              },
+              {
+                "operation": "set",
+                "atNanos": 37063545432,
+                "value": 0.60784316
+              },
+              {
+                "operation": "set",
+                "atNanos": 37086272704,
+                "value": 0.627451
+              },
+              {
+                "operation": "set",
+                "atNanos": 37108999976,
+                "value": 0.64705884
+              },
+              {
+                "operation": "set",
+                "atNanos": 37131727248,
+                "value": 0.6666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 37154454520,
+                "value": 0.6862745
+              },
+              {
+                "operation": "set",
+                "atNanos": 37177181792,
+                "value": 0.7058824
+              },
+              {
+                "operation": "set",
+                "atNanos": 37199909064,
+                "value": 0.7254902
+              },
+              {
+                "operation": "set",
+                "atNanos": 37222636336,
+                "value": 0.74509805
+              },
+              {
+                "operation": "set",
+                "atNanos": 37245363608,
+                "value": 0.7647059
+              },
+              {
+                "operation": "set",
+                "atNanos": 37268090880,
+                "value": 0.78431374
+              },
+              {
+                "operation": "set",
+                "atNanos": 37290818152,
+                "value": 0.8039216
+              },
+              {
+                "operation": "set",
+                "atNanos": 37313545424,
+                "value": 0.8235294
+              },
+              {
+                "operation": "set",
+                "atNanos": 37336272696,
+                "value": 0.84313726
+              },
+              {
+                "operation": "set",
+                "atNanos": 37358999968,
+                "value": 0.8627451
+              },
+              {
+                "operation": "set",
+                "atNanos": 37381727240,
+                "value": 0.88235295
+              },
+              {
+                "operation": "set",
+                "atNanos": 37404454512,
+                "value": 0.9019608
+              },
+              {
+                "operation": "set",
+                "atNanos": 37427181784,
+                "value": 0.92156863
+              },
+              {
+                "operation": "set",
+                "atNanos": 37449909056,
+                "value": 0.9411765
+              },
+              {
+                "operation": "set",
+                "atNanos": 37472636328,
+                "value": 0.9607843
+              },
+              {
+                "operation": "set",
+                "atNanos": 37495363600,
+                "value": 0.98039216
+              },
+              {
+                "operation": "set",
+                "atNanos": 37518090872,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "footer-after.caret",
+            "actorId": "footer-after",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 36359000000,
+                "value": 1.0
+              },
+              {
+                "operation": "spring",
+                "atNanos": 38268090872,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.x",
+            "actorId": "stage",
+            "property": "camera.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 39618000000,
+                "target": -120.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.y",
+            "actorId": "stage",
+            "property": "camera.y",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 39618000000,
+                "target": -40.0,
+                "responseSeconds": 1.44,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.timer.glow",
+            "actorId": "stage",
+            "property": "timer.glow",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 39618000000,
+                "target": 0.65,
+                "responseSeconds": 0.96000004,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [],
+        "media": [
+          {
+            "id": "narration-cold-before",
+            "path": "narration/cold-before.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 20319000000,
+            "timelineStartNanos": 1400000000,
+            "timelineEndNanos": 21719000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "narration-cold-after",
+            "path": "narration/cold-after.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 15599000000,
+            "timelineStartNanos": 23719000000,
+            "timelineEndNanos": 39318000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "connect-0",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 2070000000,
+            "timelineEndNanos": 2210000000,
+            "gainDb": -20.0
+          },
+          {
+            "id": "die-hit",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 18220000000,
+            "timelineEndNanos": 18700000000,
+            "gainDb": -8.0
+          },
+          {
+            "id": "rewind",
+            "path": "../../assets/opencode-hot-reload/launch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 1370000000,
+            "timelineStartNanos": 22089000000,
+            "timelineEndNanos": 23459000000,
+            "gainDb": -13.0
+          },
+          {
+            "id": "ref-send",
+            "path": "../../assets/opencode-hot-reload/save.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 160000000,
+            "timelineStartNanos": 31739000000,
+            "timelineEndNanos": 31899000000,
+            "gainDb": -9.0
+          },
+          {
+            "id": "reg-bloom",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 36809000000,
+            "timelineEndNanos": 37604000000,
+            "gainDb": -10.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 1150000000,
+      "transitionStyle": "zoom",
+      "transitionFocus": [
+        324.61536,
+        324.6154,
+        366.15387,
+        129.23077
+      ],
+      "plan": {
+        "version": 2,
+        "id": "cold-code",
+        "durationNanos": 11379000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "#53823",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "recover cold wellknown sources & plugin"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip-change",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "the change"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "editor",
+            "recipe": "editor",
+            "data": {
+              "enteringOffsetX": 0.0,
+              "fileName": "core/src/wellknown/plugin.ts & config.ts",
+              "finalLineIds": [
+                "line-0",
+                "line-2",
+                "line-3",
+                "line-4",
+                "line-5",
+                "line-7",
+                "line-8",
+                "line-9",
+                "line-10",
+                "line-12"
+              ],
+              "focusHeight": 44.0,
+              "focusLineId": "line-0",
+              "initialLineIds": [
+                "line-0",
+                "line-1",
+                "line-5",
+                "line-6",
+                "line-7",
+                "line-8",
+                "line-9",
+                "line-10",
+                "line-11"
+              ],
+              "lineHeight": 44.0,
+              "lines": [
+                {
+                  "id": "line-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              128,
+                              128,
+                              128
+                            ]
+                          },
+                          "text": "// packages/core/src/wellknown/plugin.ts"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-1",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* wellknown."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "entries"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "()."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "pipe"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ".orDie)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-2",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* wellknown."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "entries"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "()."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "pipe"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-3",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "catch"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(() => "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "logWarning"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"awaiting refresh\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ")),"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-4",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": ")"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-5",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              128,
+                              128,
+                              128
+                            ]
+                          },
+                          "text": "// packages/core/src/config.ts (10m timer)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-6",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " (!wellknown."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "snapshot"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "().length) "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ".void"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-7",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " changed = "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* wellknown."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "refresh"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "()."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "pipe"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-8",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "catch"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "((error) =>"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-9",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "logWarning"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"failed\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", { error })."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "pipe"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "as"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "false"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "))),"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-10",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": ")"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-11",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " (!changed) "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "reload"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "()"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-12",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " (!changed && wellknown."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "snapshot"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "().length) "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "reload"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "()"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                }
+              ],
+              "snapshots": [
+                {
+                  "atNanos": 2880000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-9",
+                    "line-10",
+                    "line-11"
+                  ]
+                },
+                {
+                  "atNanos": 6220000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-7",
+                    "line-8",
+                    "line-9",
+                    "line-10",
+                    "line-12"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "footer",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "condensed for display · persisted cold sources and login registration both recover",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "chip-change.opacity",
+            "actorId": "chip-change",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 200000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "chip-change.y",
+            "actorId": "chip-change",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 200000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.mark.line-1",
+            "actorId": "editor",
+            "property": "mark.line-1",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 1980000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.mark.line-6",
+            "actorId": "editor",
+            "property": "mark.line-6",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5320000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.mark.line-11",
+            "actorId": "editor",
+            "property": "mark.line-11",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5320000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer.opacity",
+            "actorId": "footer",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "footer.y",
+            "actorId": "footer",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [],
+        "media": [
+          {
+            "id": "narration-cold-code",
+            "path": "narration/cold-code.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 8879000000,
+            "timelineStartNanos": 900000000,
+            "timelineEndNanos": 9779000000,
+            "gainDb": 0.0
+          }
+        ]
+      }
+    }
+  ]
+}

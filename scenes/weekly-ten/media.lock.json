@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "resources": {
+    "horn": {
+      "key": "2d6ae6b41c1c9ea6",
+      "file": "media/2d6ae6b41c1c9ea6.wav",
+      "durationNanos": 2000000000,
+      "spec": {
+        "backend": "elevenlabs",
+        "durationNanos": 2000000000,
+        "format": "mp3_44100_192",
+        "kind": "sound",
+        "model": "eleven_text_to_sound_v2",
+        "post": "trim-onset=0.02:-0.003|peak=0.5|fade-out=0.06|wav=48000:mono:s16",
+        "prompt": "An absurd celebratory stadium airhorn triple blast with crowd cheering, punchy distorted rave horn, immediate attack, wild victory sound. No words."
+      },
+      "credits": 22
+    },
+    "impact": {
+      "key": "67bdb5be8743252f",
+      "file": "media/67bdb5be8743252f.wav",
+      "durationNanos": 1480000000,
+      "spec": {
+        "backend": "elevenlabs",
+        "durationNanos": 1500000000,
+        "format": "mp3_44100_192",
+        "kind": "sound",
+        "model": "eleven_text_to_sound_v2",
+        "post": "trim-onset=0.02:-0.003|peak=0.5|fade-out=0.06|wav=48000:mono:s16",
+        "prompt": "A gigantic cinematic bass drop impact, explosive distorted sub bass punch, metallic crunch and short electric crackling tail. Immediate attack. No speech."
+      },
+      "credits": 17
+    },
+    "reveal": {
+      "key": "7ef46fd10e2ba8bd",
+      "file": "media/7ef46fd10e2ba8bd.mp3",
+      "durationNanos": 6798999999,
+      "spec": {
+        "align": "provider",
+        "backend": "elevenlabs",
+        "format": "mp3_44100_192",
+        "kind": "speech",
+        "lines": [{"text": "[sudden explosive screaming, ecstatic, completely unhinged, fast] JUST FUCKING KIDDING! TEN! TEN! TEN! [triumphant yelling] A HUNDRED WEEKS! TEN OUT OF TEN! AGAIN!", "voice": "dNdjwQil3LjvIangzxuD"}],
+        "model": "eleven_v4",
+        "post": "loudnorm=I=-16:TP=-1.5:LRA=11|mp3=48000:mono:160k",
+        "route": "speech",
+        "settings": {"similarity": 0.65, "stability": 0.15}
+      },
+      "requests": [
+        "60QjD402x4n6y9DLcM3l"
+      ],
+      "credits": 20,
+      "words": [
+        ["JUST", 1.05, 1.068],
+        ["FUCKING", 1.085, 1.281],
+        ["KIDDING!", 1.441, 1.948],
+        ["TEN!", 1.974, 2.441],
+        ["TEN!", 2.481, 2.921],
+        ["TEN!", 2.961, 3.521],
+        ["A", 3.825, 3.841],
+        ["HUNDRED", 3.881, 4.241],
+        ["WEEKS!", 4.321, 4.908],
+        ["TEN", 4.934, 5.041],
+        ["OUT", 5.121, 5.201],
+        ["OF", 5.281, 5.361],
+        ["TEN!", 5.441, 5.961],
+        ["AGAIN!", 6.001, 6.799]
+      ]
+    },
+    "whisper": {
+      "key": "f3b67add29f2098d",
+      "file": "media/f3b67add29f2098d.mp3",
+      "durationNanos": 1519000000,
+      "spec": {
+        "align": "provider",
+        "backend": "elevenlabs",
+        "format": "mp3_44100_192",
+        "kind": "speech",
+        "lines": [{"text": "[extremely quiet intimate ASMR whisper, disappointed] This week's a three.", "voice": "dNdjwQil3LjvIangzxuD"}],
+        "model": "eleven_v4",
+        "post": "loudnorm=I=-16:TP=-1.5:LRA=11|mp3=48000:mono:160k",
+        "route": "speech",
+        "settings": {"similarity": 0.65, "stability": 0.15}
+      },
+      "requests": [
+        "PqxnUeuzOOLWBZ6AVzrL"
+      ],
+      "credits": 9,
+      "words": [
+        ["This", 0.161, 0.321],
+        ["week's", 0.401, 0.641],
+        ["a", 0.721, 0.801],
+        ["three.", 0.881, 1.519]
+      ]
+    }
+  }
+}

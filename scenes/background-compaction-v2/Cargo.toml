@@ -1,0 +1,9 @@
+[package]
+name = "psychopomp-background-compaction-v2"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+anyhow = "1.0"
+psychopomp = { path = "../../crates/psychopomp" }

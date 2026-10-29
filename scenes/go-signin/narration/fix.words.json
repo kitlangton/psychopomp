@@ -1,0 +1,289 @@
+{
+ "wordTimings": [
+  {
+   "word": "So",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "the",
+   "start": 0.14,
+   "end": 0.24
+  },
+  {
+   "word": "fix",
+   "start": 0.24,
+   "end": 0.56
+  },
+  {
+   "word": "is",
+   "start": 0.56,
+   "end": 0.84
+  },
+  {
+   "word": "one",
+   "start": 0.84,
+   "end": 1.16
+  },
+  {
+   "word": "OpenCode",
+   "start": 1.16,
+   "end": 1.82
+  },
+  {
+   "word": "row.",
+   "start": 1.82,
+   "end": 2
+  },
+  {
+   "word": "We",
+   "start": 2.2,
+   "end": 2.56
+  },
+  {
+   "word": "drop",
+   "start": 2.56,
+   "end": 2.8
+  },
+  {
+   "word": "the",
+   "start": 2.8,
+   "end": 2.96
+  },
+  {
+   "word": "Go",
+   "start": 2.96,
+   "end": 3.12
+  },
+  {
+   "word": "row",
+   "start": 3.12,
+   "end": 3.3
+  },
+  {
+   "word": "from",
+   "start": 3.3,
+   "end": 3.6
+  },
+  {
+   "word": "Connect",
+   "start": 3.6,
+   "end": 3.92
+  },
+  {
+   "word": "and",
+   "start": 3.92,
+   "end": 4.36
+  },
+  {
+   "word": "rename",
+   "start": 4.36,
+   "end": 4.64
+  },
+  {
+   "word": "Console",
+   "start": 4.64,
+   "end": 5.12
+  },
+  {
+   "word": "to",
+   "start": 5.12,
+   "end": 5.48
+  },
+  {
+   "word": "just",
+   "start": 5.48,
+   "end": 5.78
+  },
+  {
+   "word": "OpenCode.",
+   "start": 5.78,
+   "end": 6.56
+  },
+  {
+   "word": "You",
+   "start": 6.64,
+   "end": 6.94
+  },
+  {
+   "word": "sign",
+   "start": 6.94,
+   "end": 7.16
+  },
+  {
+   "word": "in",
+   "start": 7.16,
+   "end": 7.32
+  },
+  {
+   "word": "once,",
+   "start": 7.32,
+   "end": 7.58
+  },
+  {
+   "word": "and",
+   "start": 7.72,
+   "end": 8
+  },
+  {
+   "word": "Go",
+   "start": 8,
+   "end": 8.16
+  },
+  {
+   "word": "comes",
+   "start": 8.16,
+   "end": 8.36
+  },
+  {
+   "word": "with",
+   "start": 8.36,
+   "end": 8.58
+  },
+  {
+   "word": "it.",
+   "start": 8.58,
+   "end": 8.76
+  },
+  {
+   "word": "API",
+   "start": 9.02,
+   "end": 9.26
+  },
+  {
+   "word": "keys",
+   "start": 9.26,
+   "end": 9.64
+  },
+  {
+   "word": "still",
+   "start": 9.64,
+   "end": 10.04
+  },
+  {
+   "word": "work.",
+   "start": 10.04,
+   "end": 10.38
+  },
+  {
+   "word": "A",
+   "start": 10.6,
+   "end": 10.86
+  },
+  {
+   "word": "Go",
+   "start": 10.86,
+   "end": 11.02
+  },
+  {
+   "word": "key",
+   "start": 11.02,
+   "end": 11.24
+  },
+  {
+   "word": "is",
+   "start": 11.24,
+   "end": 11.48
+  },
+  {
+   "word": "a",
+   "start": 11.48,
+   "end": 11.6
+  },
+  {
+   "word": "normal",
+   "start": 11.6,
+   "end": 11.94
+  },
+  {
+   "word": "OpenCode",
+   "start": 11.94,
+   "end": 12.5
+  },
+  {
+   "word": "key,",
+   "start": 12.5,
+   "end": 12.72
+  },
+  {
+   "word": "so",
+   "start": 12.86,
+   "end": 13.14
+  },
+  {
+   "word": "you",
+   "start": 13.14,
+   "end": 13.34
+  },
+  {
+   "word": "paste",
+   "start": 13.34,
+   "end": 13.58
+  },
+  {
+   "word": "it",
+   "start": 13.58,
+   "end": 13.78
+  },
+  {
+   "word": "into",
+   "start": 13.78,
+   "end": 13.94
+  },
+  {
+   "word": "the",
+   "start": 13.94,
+   "end": 14.04
+  },
+  {
+   "word": "same",
+   "start": 14.04,
+   "end": 14.28
+  },
+  {
+   "word": "row",
+   "start": 14.28,
+   "end": 14.54
+  },
+  {
+   "word": "or",
+   "start": 14.54,
+   "end": 14.94
+  },
+  {
+   "word": "set",
+   "start": 14.94,
+   "end": 15.24
+  },
+  {
+   "word": "the",
+   "start": 15.24,
+   "end": 15.42
+  },
+  {
+   "word": "OpenCode",
+   "start": 15.42,
+   "end": 15.98
+  },
+  {
+   "word": "API",
+   "start": 15.98,
+   "end": 16.12
+  },
+  {
+   "word": "key",
+   "start": 16.12,
+   "end": 16.58
+  },
+  {
+   "word": "environment",
+   "start": 16.58,
+   "end": 16.84
+  },
+  {
+   "word": "variable.",
+   "start": 16.84,
+   "end": 17.3
+  }
+ ]
+}

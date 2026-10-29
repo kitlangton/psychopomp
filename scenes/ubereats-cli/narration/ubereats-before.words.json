@@ -1,0 +1,339 @@
+{
+ "wordTimings": [
+  {
+   "word": "Say",
+   "start": 0,
+   "end": 0.2
+  },
+  {
+   "word": "you",
+   "start": 0.2,
+   "end": 0.36
+  },
+  {
+   "word": "want",
+   "start": 0.36,
+   "end": 0.6
+  },
+  {
+   "word": "your",
+   "start": 0.6,
+   "end": 0.78
+  },
+  {
+   "word": "agent",
+   "start": 0.78,
+   "end": 1.18
+  },
+  {
+   "word": "to",
+   "start": 1.18,
+   "end": 1.46
+  },
+  {
+   "word": "put",
+   "start": 1.46,
+   "end": 1.66
+  },
+  {
+   "word": "an",
+   "start": 1.66,
+   "end": 1.82
+  },
+  {
+   "word": "espresso",
+   "start": 1.82,
+   "end": 2.16
+  },
+  {
+   "word": "nut",
+   "start": 2.16,
+   "end": 2.52
+  },
+  {
+   "word": "smoothie",
+   "start": 2.52,
+   "end": 2.94
+  },
+  {
+   "word": "from",
+   "start": 2.94,
+   "end": 3.34
+  },
+  {
+   "word": "Karma",
+   "start": 3.34,
+   "end": 3.72
+  },
+  {
+   "word": "Cafe",
+   "start": 3.72,
+   "end": 3.98
+  },
+  {
+   "word": "into",
+   "start": 3.98,
+   "end": 4.98
+  },
+  {
+   "word": "your",
+   "start": 4.98,
+   "end": 5.3
+  },
+  {
+   "word": "Uber",
+   "start": 5.3,
+   "end": 5.6
+  },
+  {
+   "word": "Eats",
+   "start": 5.6,
+   "end": 6.02
+  },
+  {
+   "word": "cart.",
+   "start": 6.02,
+   "end": 6.3
+  },
+  {
+   "word": "If",
+   "start": 7.02,
+   "end": 7.34
+  },
+  {
+   "word": "the",
+   "start": 7.34,
+   "end": 7.48
+  },
+  {
+   "word": "agent",
+   "start": 7.48,
+   "end": 7.78
+  },
+  {
+   "word": "clicks",
+   "start": 7.78,
+   "end": 8.12
+  },
+  {
+   "word": "through",
+   "start": 8.12,
+   "end": 8.48
+  },
+  {
+   "word": "the",
+   "start": 8.48,
+   "end": 8.64
+  },
+  {
+   "word": "website",
+   "start": 8.64,
+   "end": 8.92
+  },
+  {
+   "word": "every",
+   "start": 8.92,
+   "end": 9.32
+  },
+  {
+   "word": "time,",
+   "start": 9.32,
+   "end": 9.68
+  },
+  {
+   "word": "it",
+   "start": 9.86,
+   "end": 10.44
+  },
+  {
+   "word": "has",
+   "start": 10.44,
+   "end": 10.56
+  },
+  {
+   "word": "to",
+   "start": 10.56,
+   "end": 10.72
+  },
+  {
+   "word": "open",
+   "start": 10.72,
+   "end": 10.98
+  },
+  {
+   "word": "the",
+   "start": 10.98,
+   "end": 11.2
+  },
+  {
+   "word": "feed,",
+   "start": 11.2,
+   "end": 11.48
+  },
+  {
+   "word": "type",
+   "start": 11.72,
+   "end": 12.18
+  },
+  {
+   "word": "into",
+   "start": 12.18,
+   "end": 12.44
+  },
+  {
+   "word": "the",
+   "start": 12.44,
+   "end": 12.58
+  },
+  {
+   "word": "search",
+   "start": 12.58,
+   "end": 12.82
+  },
+  {
+   "word": "box,",
+   "start": 12.82,
+   "end": 13.2
+  },
+  {
+   "word": "wait",
+   "start": 13.44,
+   "end": 13.82
+  },
+  {
+   "word": "for",
+   "start": 13.82,
+   "end": 13.98
+  },
+  {
+   "word": "results,",
+   "start": 13.98,
+   "end": 14.4
+  },
+  {
+   "word": "dismiss",
+   "start": 14.62,
+   "end": 15.14
+  },
+  {
+   "word": "a",
+   "start": 15.14,
+   "end": 15.5
+  },
+  {
+   "word": "closed",
+   "start": 15.5,
+   "end": 15.9
+  },
+  {
+   "word": "store",
+   "start": 15.9,
+   "end": 16.4
+  },
+  {
+   "word": "dialog,",
+   "start": 16.4,
+   "end": 16.82
+  },
+  {
+   "word": "and",
+   "start": 17.16,
+   "end": 17.5
+  },
+  {
+   "word": "scroll",
+   "start": 17.5,
+   "end": 17.8
+  },
+  {
+   "word": "through",
+   "start": 17.8,
+   "end": 18.12
+  },
+  {
+   "word": "a",
+   "start": 18.12,
+   "end": 18.26
+  },
+  {
+   "word": "hundred",
+   "start": 18.26,
+   "end": 18.54
+  },
+  {
+   "word": "menu",
+   "start": 18.54,
+   "end": 18.92
+  },
+  {
+   "word": "items.",
+   "start": 18.92,
+   "end": 19.34
+  },
+  {
+   "word": "That",
+   "start": 19.62,
+   "end": 20.26
+  },
+  {
+   "word": "takes",
+   "start": 20.26,
+   "end": 20.62
+  },
+  {
+   "word": "25",
+   "start": 20.62,
+   "end": 21.06
+  },
+  {
+   "word": "seconds",
+   "start": 21.06,
+   "end": 21.68
+  },
+  {
+   "word": "and",
+   "start": 21.68,
+   "end": 22.04
+  },
+  {
+   "word": "four",
+   "start": 22.04,
+   "end": 22.24
+  },
+  {
+   "word": "model",
+   "start": 22.24,
+   "end": 22.64
+  },
+  {
+   "word": "turns",
+   "start": 22.64,
+   "end": 23
+  },
+  {
+   "word": "just",
+   "start": 23,
+   "end": 23.78
+  },
+  {
+   "word": "to",
+   "start": 23.78,
+   "end": 23.98
+  },
+  {
+   "word": "add",
+   "start": 23.98,
+   "end": 24.18
+  },
+  {
+   "word": "one",
+   "start": 24.18,
+   "end": 24.5
+  },
+  {
+   "word": "drink.",
+   "start": 24.5,
+   "end": 24.88
+  }
+ ]
+}

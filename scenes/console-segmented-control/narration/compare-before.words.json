@@ -1,0 +1,174 @@
+{
+ "wordTimings": [
+  {
+   "word": "In",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "console,",
+   "start": 0.12,
+   "end": 0.52
+  },
+  {
+   "word": "the",
+   "start": 0.8,
+   "end": 1.24
+  },
+  {
+   "word": "segmented",
+   "start": 1.24,
+   "end": 1.82
+  },
+  {
+   "word": "control",
+   "start": 1.82,
+   "end": 2.04
+  },
+  {
+   "word": "had",
+   "start": 2.04,
+   "end": 2.5
+  },
+  {
+   "word": "no",
+   "start": 2.5,
+   "end": 2.82
+  },
+  {
+   "word": "sliding",
+   "start": 2.82,
+   "end": 3.32
+  },
+  {
+   "word": "pill",
+   "start": 3.32,
+   "end": 3.7
+  },
+  {
+   "word": "and",
+   "start": 3.7,
+   "end": 4.3
+  },
+  {
+   "word": "no",
+   "start": 4.3,
+   "end": 4.64
+  },
+  {
+   "word": "hover",
+   "start": 4.64,
+   "end": 5
+  },
+  {
+   "word": "state.",
+   "start": 5,
+   "end": 5.34
+  },
+  {
+   "word": "Clicking",
+   "start": 6,
+   "end": 6.74
+  },
+  {
+   "word": "between",
+   "start": 6.74,
+   "end": 6.9
+  },
+  {
+   "word": "cost",
+   "start": 6.9,
+   "end": 7.52
+  },
+  {
+   "word": "and",
+   "start": 7.52,
+   "end": 7.78
+  },
+  {
+   "word": "tokens",
+   "start": 7.78,
+   "end": 8.22
+  },
+  {
+   "word": "just",
+   "start": 8.22,
+   "end": 9.08
+  },
+  {
+   "word": "flipped",
+   "start": 9.08,
+   "end": 9.52
+  },
+  {
+   "word": "the",
+   "start": 9.52,
+   "end": 9.72
+  },
+  {
+   "word": "background",
+   "start": 9.72,
+   "end": 10.1
+  },
+  {
+   "word": "in",
+   "start": 10.1,
+   "end": 10.38
+  },
+  {
+   "word": "place,",
+   "start": 10.38,
+   "end": 10.68
+  },
+  {
+   "word": "and",
+   "start": 11.25,
+   "end": 11.62
+  },
+  {
+   "word": "hovering",
+   "start": 11.62,
+   "end": 12.04
+  },
+  {
+   "word": "an",
+   "start": 12.04,
+   "end": 12.56
+  },
+  {
+   "word": "inactive",
+   "start": 12.56,
+   "end": 13.04
+  },
+  {
+   "word": "option",
+   "start": 13.04,
+   "end": 13.36
+  },
+  {
+   "word": "gave",
+   "start": 13.36,
+   "end": 13.82
+  },
+  {
+   "word": "no",
+   "start": 13.82,
+   "end": 14.14
+  },
+  {
+   "word": "feedback",
+   "start": 14.14,
+   "end": 14.56
+  },
+  {
+   "word": "at",
+   "start": 14.56,
+   "end": 14.86
+  },
+  {
+   "word": "all.",
+   "start": 14.86,
+   "end": 15.08
+  }
+ ]
+}
