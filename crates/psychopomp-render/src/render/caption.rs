@@ -5,7 +5,10 @@
 use psychopomp::{
     caption::{CaptionAlign, CaptionPlan},
     lens::Glass,
-    math::{shapes::RoundedBox, vec2},
+    math::{
+        shapes::{Box2, RoundedBox},
+        vec2,
+    },
 };
 
 use super::{
@@ -24,6 +27,68 @@ impl HeadlessRenderer {
         sample: impl Fn(&str, f32) -> f32,
     ) {
         self.composite_caption_at(pixels, plan, plan.origin, sample);
+    }
+
+    /// Screen-space bounding box of a visible caption at `origin`.
+    pub(crate) fn caption_bounds(
+        &mut self,
+        plan: &CaptionPlan,
+        origin: [f32; 2],
+        sample: impl Fn(&str, f32) -> f32,
+    ) -> Option<Box2> {
+        let opacity = sample("opacity", 1.0).clamp(0.0, 1.0);
+        if opacity <= 0.02 || plan.lines.is_empty() {
+            return None;
+        }
+        let origin = [origin[0] + sample("x", 0.0), origin[1] + sample("y", 0.0)];
+        let spec = PlainTextSpec {
+            font_size: plan.size,
+            color: [0, 0, 0],
+            size: [1600, (plan.size * 1.5).ceil() as u32],
+            semibold: false,
+            crop_to_advance: true,
+        };
+        let line_height = plan.line_height();
+        let widths = plan
+            .lines
+            .iter()
+            .map(|line| {
+                line.iter()
+                    .map(|span| {
+                        if span.text.is_empty() {
+                            0.0
+                        } else {
+                            let color = self.theme.tone(span.tone);
+                            self.plain_text_sprite(&span.text, PlainTextSpec { color, ..spec })
+                                .advance
+                        }
+                    })
+                    .sum::<f32>()
+            })
+            .collect::<Vec<_>>();
+        let lefts = widths
+            .iter()
+            .map(|&width| match plan.align {
+                CaptionAlign::Left => origin[0],
+                CaptionAlign::Center => origin[0] - width * 0.5,
+                CaptionAlign::Right => origin[0] - width,
+            })
+            .collect::<Vec<_>>();
+        let left = lefts.iter().copied().fold(f32::INFINITY, f32::min);
+        let right = widths
+            .iter()
+            .zip(&lefts)
+            .map(|(w, l)| l + w)
+            .fold(f32::NEG_INFINITY, f32::max);
+        let top = origin[1] - line_height * 0.5 - if plan.chip { 4.0 } else { 0.0 };
+        let bottom = origin[1]
+            + line_height * (plan.lines.len() as f32 - 0.5)
+            + if plan.chip { 4.0 } else { 0.0 };
+        let pad_x = if plan.chip { plan.size * 0.7 } else { 0.0 };
+        Some(Box2 {
+            min: vec2(left - pad_x, top),
+            max: vec2(right + pad_x, bottom),
+        })
     }
 
     /// `composite_caption` with its origin at `origin` (as when anchored)

@@ -84,16 +84,20 @@ pub(super) fn render_frame(
 }
 
 pub(crate) fn write_png(path: &Path, pixels: &[u8]) -> Result<()> {
-    let expected = WIDTH as usize * HEIGHT as usize * 4;
+    write_rgba_png(path, WIDTH, HEIGHT, pixels)
+}
+
+pub(crate) fn write_rgba_png(path: &Path, width: u32, height: u32, pixels: &[u8]) -> Result<()> {
+    let expected = width as usize * height as usize * 4;
     if pixels.len() != expected {
         bail!(
-            "renderer returned {} bytes for a {WIDTH}x{HEIGHT} RGBA frame; expected {expected}",
+            "renderer returned {} bytes for a {width}x{height} RGBA frame; expected {expected}",
             pixels.len()
         );
     }
     let file =
         fs::File::create(path).with_context(|| format!("create frame {}", path.display()))?;
-    let mut encoder = png::Encoder::new(BufWriter::new(file), WIDTH, HEIGHT);
+    let mut encoder = png::Encoder::new(BufWriter::new(file), width, height);
     encoder.set_color(png::ColorType::Rgba);
     encoder.set_depth(png::BitDepth::Eight);
     // Stage grain makes the default deflate level spend hundreds of

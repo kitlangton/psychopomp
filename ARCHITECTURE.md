@@ -29,6 +29,7 @@ Lightweight crate (`crates/psychopomp/src`):
 - `crates/psychopomp/src/state.rs`: deterministic arbitrary-time discrete State Tracks
 - `crates/psychopomp/src/playback.rs`: interruptible step destinations, continuous track retargeting, and a pausable local presentation clock
 - `crates/psychopomp/src/timeline.rs`: explicit-time continuous Property Track compilation
+- `crates/psychopomp/src/time_spec.rs`: scene- and cue-relative time and range addressing (`3.2s`, `500ms`, `120f`, `50%`, `intro@1.5s`, `intro..outro`) shared across CLI inspection, contact sheets, and rendering
 - `crates/psychopomp/src/timeline/retarget.rs`: shared cancellation-safe numeric schedule for Playback and authored resting entrances
 - `crates/psychopomp/src/motion.rs`: deterministic arbitrary-time analytic spring sampling with position and velocity
 - `crates/psychopomp/src/transcript.rs`: word timing ingestion, word and phrase cue lookup, every occurrence of a phrase
@@ -91,6 +92,8 @@ Renderer crate (`crates/psychopomp-render/src`), plan runtime:
 - `crates/psychopomp-render/src/plan_runtime/attachments.rs`: private companion-track compilation for layout-aware semantic coordinates
 - `crates/psychopomp-render/src/plan_runtime/delivery.rs`: PNG and MP4 delivery from a prepared scene
 - `crates/psychopomp-render/src/plan_runtime/still.rs`: plan or reel delivery as video, single frames, or compared frame snapshots
+- `crates/psychopomp-render/src/plan_runtime/strip.rs`: native CommitMono-labeled contact sheets (`plan strip`) and sharp pixel-region crops (`--crop x,y,w,h`)
+- `crates/psychopomp-render/src/plan_runtime/check.rs` and `audio_check.rs`: headless agent preflight (`plan check`, `plan audio`) checking projected canvas clipping, card-box text overflow, 1-frame step/flash pops (`--pops`), and ITU-R BS.1770-4 loudness / 4x oversampled true peak (`--audio`)
 - `crates/psychopomp-render/src/plan_runtime/render_queue.rs`: machine-wide render slots (advisory file locks in the temporary directory, `PSYCHOPOMP_RENDER_SLOTS`) that `plan render` waits on, so concurrent renders queue instead of contending
 - `crates/psychopomp-render/src/plan_runtime/verify.rs`: `psychopomp verify`: builds and runs the Scene Programs in the root `verify.json`, loads each plan, renders its key frames on one renderer, and stores or compares plans and pixels; `verify/manifest.rs` parses the manifest and `verify/diff.rs` summarizes plan changes by segment, actor, channel, cue, and media ID
 - `crates/psychopomp-render/src/plan_runtime/reel.rs`: Reel preparation, layer mixing, media retiming, and reel frame/video delivery

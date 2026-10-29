@@ -1221,6 +1221,221 @@ pub(crate) fn stage_rune_anchor(
     Some(center + Vec2::from_angle(roll).rotate(point - center) * zoom)
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct StageBoundsItem {
+    pub id: String,
+    pub kind: &'static str,
+    pub text: Option<String>,
+    pub bbox: [f32; 4],
+    /// `(label_text, text_px, inner_card_px)` when card text exceeds card inner width.
+    pub card_overflow: Option<(String, f32, f32)>,
+    pub non_finite: bool,
+}
+
+/// Screen-space bounds and card-fit checks for visible positioned Stage elements at `time`.
+pub(crate) fn stage_bounds(
+    plan: &StagePlan,
+    gpu: &StageGpu,
+    value: &dyn Fn(&str, f32) -> f32,
+    time: f64,
+    size: Vec2,
+) -> Vec<StageBoundsItem> {
+    let scene = Scene::camera(plan, value, time as f32, size);
+    let roll = shake::rumble(time as f32, trauma(plan, value)).roll;
+    let zoom = 1.0 + read(plan, value, "camera.punch").max(0.0) + roll.abs() * 0.6;
+    let frame_center = size * 0.5;
+    let project_point = |point: Vec2| {
+        let rolled = scene.camera.rolled(point);
+        frame_center + Vec2::from_angle(roll).rotate(rolled - frame_center) * zoom
+    };
+    let atlas_width = |key: &str, scale: f32| -> f32 {
+        gpu.texts.get(key).map_or(0.0, |text| {
+            (text.rect[2] - 4.0).max(0.0) * scale / TEXT_RASTER
+        })
+    };
+
+    let mut out = Vec::new();
+    for element in &plan.elements {
+        let id = element.id();
+        if element.anchor().is_none() {
+            continue;
+        }
+        let opacity = scene.unit(id, "opacity");
+        if opacity <= 0.05 {
+            continue;
+        }
+        // Ignore cards that have already burned away or orbs past combustion.
+        if matches!(element, StageElement::Card { .. }) && scene.v(id, "dissolve") >= dissolve::BURN
+        {
+            continue;
+        }
+        if matches!(
+            element,
+            StageElement::Orb { .. } | StageElement::Form { .. }
+        ) && scene.v(id, "burst") >= 1.2
+        {
+            continue;
+        }
+        let raw = [
+            scene.v(id, "x"),
+            scene.v(id, "y"),
+            scene.v(id, "z"),
+            scene.v(id, "scale"),
+        ];
+        if raw.iter().any(|v| !v.is_finite()) {
+            out.push(StageBoundsItem {
+                id: id.to_owned(),
+                kind: "stage",
+                text: None,
+                bbox: [0.0; 4],
+                card_overflow: None,
+                non_finite: true,
+            });
+            continue;
+        }
+        let Some(place) = scene.place(element) else {
+            continue;
+        };
+        let (kind, text, corners, card_overflow) = match element {
+            StageElement::Label {
+                size: font_size,
+                align,
+                spans,
+                ..
+            } => {
+                let total_w: f32 = spans
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, s)| !s.text.is_empty())
+                    .map(|(i, _)| atlas_width(&text_key(id, &format!("span{i}")), place.scale))
+                    .sum();
+                let h = *font_size * place.scale * 1.15;
+                let left = place.center.x
+                    - match align {
+                        CaptionAlign::Left => 0.0,
+                        CaptionAlign::Center => total_w * 0.5,
+                        CaptionAlign::Right => total_w,
+                    };
+                let joined: String = spans.iter().map(|s| s.text.as_str()).collect();
+                (
+                    "label",
+                    Some(joined),
+                    [
+                        vec2(left, place.center.y - h * 0.5),
+                        vec2(left + total_w, place.center.y - h * 0.5),
+                        vec2(left + total_w, place.center.y + h * 0.5),
+                        vec2(left, place.center.y + h * 0.5),
+                    ],
+                    None,
+                )
+            }
+            StageElement::Card {
+                size: card_size,
+                title,
+                status,
+                ..
+            } => {
+                let inner_w = (card_size[0] - 24.0).max(8.0) * place.scale;
+                let title_w = atlas_width(&text_key(id, "title"), place.scale);
+                let mut overflow =
+                    (title_w > inner_w + 2.0).then(|| (title.clone(), title_w, inner_w));
+                if overflow.is_none() && !status.is_empty() && scene.unit(id, "content") > 0.2 {
+                    let active = scene
+                        .v(id, "status")
+                        .round()
+                        .clamp(0.0, (status.len() - 1) as f32)
+                        as usize;
+                    let status_w =
+                        atlas_width(&text_key(id, &format!("status{active}")), place.scale);
+                    if status_w > inner_w + 2.0 {
+                        overflow = Some((status[active].text.clone(), status_w, inner_w));
+                    }
+                }
+                let l = CalloutSide::Left.on(place.outline);
+                let r = CalloutSide::Right.on(place.outline);
+                let t = CalloutSide::Top.on(place.outline);
+                let b = CalloutSide::Bottom.on(place.outline);
+                (
+                    "card",
+                    Some(title.clone()),
+                    [
+                        vec2(l.x, t.y),
+                        vec2(r.x, t.y),
+                        vec2(r.x, b.y),
+                        vec2(l.x, b.y),
+                    ],
+                    overflow,
+                )
+            }
+            _ => {
+                let kind = match element {
+                    StageElement::Orb { .. } => "orb",
+                    StageElement::Ring { .. } => "ring",
+                    StageElement::Icon { .. } => "icon",
+                    StageElement::Shape { .. } => "shape",
+                    StageElement::Form { .. } => "form",
+                    StageElement::Footage { .. } => "footage",
+                    _ => "element",
+                };
+                let l = CalloutSide::Left.on(place.outline);
+                let r = CalloutSide::Right.on(place.outline);
+                let t = CalloutSide::Top.on(place.outline);
+                let b = CalloutSide::Bottom.on(place.outline);
+                (
+                    kind,
+                    None,
+                    [
+                        vec2(l.x, t.y),
+                        vec2(r.x, t.y),
+                        vec2(r.x, b.y),
+                        vec2(l.x, b.y),
+                    ],
+                    None,
+                )
+            }
+        };
+        let projected = corners.map(project_point);
+        if projected
+            .iter()
+            .any(|p| !p.x.is_finite() || !p.y.is_finite())
+        {
+            out.push(StageBoundsItem {
+                id: id.to_owned(),
+                kind,
+                text,
+                bbox: [0.0; 4],
+                card_overflow: None,
+                non_finite: true,
+            });
+            continue;
+        }
+        let min_x = projected.iter().map(|p| p.x).fold(f32::INFINITY, f32::min);
+        let max_x = projected
+            .iter()
+            .map(|p| p.x)
+            .fold(f32::NEG_INFINITY, f32::max);
+        let min_y = projected.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
+        let max_y = projected
+            .iter()
+            .map(|p| p.y)
+            .fold(f32::NEG_INFINITY, f32::max);
+        out.push(StageBoundsItem {
+            id: id.to_owned(),
+            kind,
+            text,
+            bbox: [
+                min_x,
+                min_y,
+                (max_x - min_x).max(0.0),
+                (max_y - min_y).max(0.0),
+            ],
+            card_overflow,
+            non_finite: false,
+        });
+    }
+    out
+}
+
 /// Camera trauma: a jolt's decaying `shake` plus a scene's sustained `quake`.
 fn trauma(plan: &StagePlan, value: &dyn Fn(&str, f32) -> f32) -> f32 {
     read(plan, value, "camera.shake").max(0.0) + read(plan, value, "camera.quake").max(0.0)
