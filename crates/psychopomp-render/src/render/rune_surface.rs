@@ -822,6 +822,7 @@ fn build_kit_node(node: &KitNode, s: &SurfaceState, k: &Kit) -> Option<El> {
                 .w_full()
                 .h(38.0)
                 .px(12.0)
+                .gap(12.0)
                 .radius(6.0)
                 .center_y()
                 .fill(if *selected {

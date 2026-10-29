@@ -2740,6 +2740,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-kaizen-opencode"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-keyed-grid"
 version = "0.1.0"
 dependencies = [
