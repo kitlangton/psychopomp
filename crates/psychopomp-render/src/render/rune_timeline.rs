@@ -574,6 +574,105 @@ impl HeadlessRenderer {
         Ok(())
     }
 
+    /// Render a `StageElement::RuneCard` at `time` into `atlas_tex` at `origin`
+    /// (`slot_size` pixels) purely on the GPU (`copy_texture_to_texture`),
+    /// skipping GPU work when `shown` already matches the current instance hash.
+    pub(crate) fn render_rune_card_to_slot(
+        &mut self,
+        plan: &psychopomp::rune_surface::RuneSurfacePlan,
+        time: f64,
+        atlas_tex: &wgpu::Texture,
+        origin: [u32; 2],
+        slot_size: [u32; 2],
+        shown: &std::cell::Cell<Option<u64>>,
+    ) {
+        self.ensure_rune_gpu();
+        let rune_gpu = self.rune_gpu.as_mut().expect("rune_gpu initialized");
+        crate::render::rune_surface::with_plan_timeline(plan, |timeline| {
+            crate::render::rune_surface::sync_surface_pose(
+                timeline,
+                time,
+                crate::render::rune_surface::SurfacePose::default(),
+            );
+            let tl_id = timeline.id();
+            let key = (tl_id, timeline.atlas_generation);
+            let rt = timeline.rt.as_mut().expect("runtime initialized");
+
+            let clear = rt.clear_color();
+            let inst_bytes: &[u8] = bytemuck::cast_slice::<Instance, u8>(&rt.instances);
+            let mut hash = 0xcbf2_9ce4_8422_2325_u64 ^ tl_id;
+            for &b in bytemuck::bytes_of(&clear).iter().chain(inst_bytes.iter()) {
+                hash ^= u64::from(b);
+                hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
+            }
+            if shown.get() == Some(hash) && rt.text.atlas.dirty.is_none() {
+                return;
+            }
+
+            rune_gpu.shutter.ensure_size(&self.device, slot_size);
+            if rune_gpu.last_timeline != Some(key) {
+                rt.text.atlas.invalidate();
+                rt.images.invalidate();
+                rune_gpu.last_timeline = Some(key);
+            }
+
+            let viewport = (slot_size[0], slot_size[1]);
+            rune_gpu
+                .renderer
+                .upload_images(&self.device, &self.queue, &mut rt.images);
+            rune_gpu.renderer.prepare(
+                &self.device,
+                &self.queue,
+                &mut rt.text.atlas,
+                &rt.instances,
+                viewport,
+            );
+            let mut enc = self
+                .device
+                .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                    label: Some("rune card to stage slot"),
+                });
+            rune_gpu
+                .renderer
+                .draw(&mut enc, &rune_gpu.shutter.sample_view, clear);
+            rune_gpu
+                .shutter
+                .add_sample(&self.queue, &mut enc, 1.0, true);
+            rune_gpu.shutter.resolve(
+                &self.queue,
+                &mut enc,
+                &rune_gpu.shutter.resolved_view,
+                1.0,
+                true,
+            );
+            enc.copy_texture_to_texture(
+                wgpu::TexelCopyTextureInfo {
+                    texture: rune_gpu.shutter.resolved_texture(),
+                    mip_level: 0,
+                    origin: wgpu::Origin3d::ZERO,
+                    aspect: wgpu::TextureAspect::All,
+                },
+                wgpu::TexelCopyTextureInfo {
+                    texture: atlas_tex,
+                    mip_level: 0,
+                    origin: wgpu::Origin3d {
+                        x: origin[0],
+                        y: origin[1],
+                        z: 0,
+                    },
+                    aspect: wgpu::TextureAspect::All,
+                },
+                wgpu::Extent3d {
+                    width: slot_size[0],
+                    height: slot_size[1],
+                    depth_or_array_layers: 1,
+                },
+            );
+            rune_gpu.renderer.submit(&self.queue, enc);
+            shown.set(Some(hash));
+        });
+    }
+
     /// Render a `RuneTimeline<S>` across `exposure` on the shared `wgpu::Device`
     /// and read back a single exposed `Rgba8UnormSrgb` frame.
     #[allow(dead_code)]

@@ -14,6 +14,48 @@ use crate::{
     render::{HeadlessRenderer, StageGpu, icon_svg},
 };
 
+pub(super) fn audit_stage_rune_cards(plan: &StagePlan, duration_secs: f64) -> Result<()> {
+    for element in &plan.elements {
+        if let StageElement::RuneCard { id, surface, .. } = element {
+            let tl = crate::render::rune_surface::build_surface_timeline(surface);
+            let mut rules: Vec<rune::motion_gate::Allow> = vec![
+                (
+                    "fade-snap",
+                    "segment",
+                    "",
+                    "static_pill mode intentionally snaps without a sliding indicator",
+                ),
+                (
+                    "color-snap",
+                    "segment",
+                    "",
+                    "static_pill mode intentionally snaps without a sliding indicator",
+                ),
+            ];
+            for rule in &surface.allow_motion {
+                let r: &'static str = Box::leak(rule[0].clone().into_boxed_str());
+                let k: &'static str = Box::leak(rule[1].clone().into_boxed_str());
+                let inp: &'static str = Box::leak(rule[2].clone().into_boxed_str());
+                let why: &'static str = Box::leak(rule[3].clone().into_boxed_str());
+                rules.push((r, k, inp, why));
+            }
+            let findings = tl.motion_audit(duration_secs, 120.0, &rules);
+            if !findings.is_empty() {
+                let formatted = findings
+                    .iter()
+                    .map(|f| format!("  - {f}"))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                anyhow::bail!(
+                    "stage rune-card '{id}' failed motion_gate ({} finding(s)):\n{formatted}",
+                    findings.len()
+                );
+            }
+        }
+    }
+    Ok(())
+}
+
 pub(super) fn validate_recipe(
     actor: &ActorPlan,
     channels: &[ContinuousChannelPlan],
@@ -60,8 +102,24 @@ impl PreparedStage {
         footage: &HashMap<String, [u32; 2]>,
         renderer: &mut HeadlessRenderer,
     ) -> Result<Self> {
-        let gpu = renderer.prepare_stage_with(&plan, footage)?;
+        let mut sizes = footage.clone();
+        for element in &plan.elements {
+            if let StageElement::RuneCard { id, surface, .. } = element {
+                sizes.insert(
+                    id.clone(),
+                    [
+                        surface.size[0].round().max(1.0) as u32,
+                        surface.size[1].round().max(1.0) as u32,
+                    ],
+                );
+            }
+        }
+        let gpu = renderer.prepare_stage_with(&plan, &sizes)?;
         Ok(Self { id, plan, gpu })
+    }
+
+    pub(super) fn audit_rune_motion(&self, duration_secs: f64) -> Result<()> {
+        audit_stage_rune_cards(&self.plan, duration_secs)
     }
 
     pub(super) fn id(&self) -> &str {

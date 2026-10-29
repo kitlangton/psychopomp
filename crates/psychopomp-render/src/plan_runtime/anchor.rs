@@ -15,15 +15,19 @@ use psychopomp::{
     stage::StageElement,
 };
 
-use super::{PreparedRoot, preflight::RootPlan, sequence::PreparedSequence};
-use crate::render::stage_anchor;
+use super::{
+    PreparedRoot, preflight::RootPlan, rune_surface::PreparedRuneSurface,
+    sequence::PreparedSequence,
+};
+use crate::render::{stage_anchor, stage_rune_anchor};
 
-/// What anchors may name: the root, its Semantic Targets, and the plan's
-/// Sequence Diagrams.
+/// What anchors may name: the root, its Semantic Targets, the plan's
+/// Sequence Diagrams, and any `RuneSurface` actors.
 pub(super) struct Placeable<'a> {
     pub root: &'a RootPlan,
     pub targets: &'a [SemanticTargetPlan],
     pub sequences: &'a [PreparedSequence],
+    pub rune_surfaces: &'a [PreparedRuneSurface],
 }
 
 /// Every anchor of `kind` actor `owner` must name something the plan can place.
@@ -37,6 +41,7 @@ pub(super) fn validate<'a>(
         root,
         targets,
         sequences,
+        rune_surfaces,
     } = placeable;
     for (id, target) in anchors {
         match (target, root) {
@@ -99,6 +104,22 @@ pub(super) fn validate<'a>(
             (AnchorTarget::Editor { .. }, _) => {
                 bail!("{kind} '{owner}' anchor '{id}' needs an editor root")
             }
+            (AnchorTarget::Rune { actor, key, .. }, root) => {
+                if key.trim().is_empty() {
+                    bail!("{kind} '{owner}' anchor '{id}' needs a non-empty rune element key");
+                }
+                let on_overlay = rune_surfaces.iter().any(|s| s.id() == actor);
+                let on_stage_card = matches!(
+                    root,
+                    RootPlan::Stage { recipe, .. }
+                        if matches!(recipe.element(actor), Some(StageElement::RuneCard { .. }))
+                );
+                if !on_overlay && !on_stage_card {
+                    bail!(
+                        "{kind} '{owner}' anchor '{id}' references unknown rune surface or stage rune-card '{actor}'"
+                    );
+                }
+            }
         }
     }
     Ok(())
@@ -122,9 +143,11 @@ pub(super) fn validate_plans(
 /// Where `target` is on the delivered frame at `time`, from the prepared root
 /// or Sequence Diagram: the recipe owns the layout, the overlay only asks for
 /// a point.
+#[expect(clippy::too_many_arguments)]
 pub(super) fn resolve(
     root: &PreparedRoot,
     sequences: &[PreparedSequence],
+    rune_surfaces: &[PreparedRuneSurface],
     target: AnchorTarget<'_>,
     size: [u32; 2],
     value: impl Fn(&str, &str, f32) -> f32,
@@ -149,6 +172,28 @@ pub(super) fn resolve(
         ),
         (AnchorTarget::Editor { target, edge }, PreparedRoot::Editor { editor, .. }) => {
             editor.anchor(target, edge, size, motion)
+        }
+        (AnchorTarget::Rune { actor, key, edge }, root) => {
+            if let Some(surface) = rune_surfaces.iter().find(|s| s.id() == actor) {
+                let [rx, ry, rw, rh] = surface.presented_rect(time, key, &value)?;
+                let bounds = psychopomp::math::shapes::Box2 {
+                    min: vec2(rx, ry),
+                    max: vec2(rx + rw, ry + rh),
+                };
+                return Some(edge.on(psychopomp::math::shapes::Shape::Box(bounds)));
+            }
+            if let PreparedRoot::Stage(stage) = root {
+                return stage_rune_anchor(
+                    stage.plan(),
+                    &|property, default| value(stage.id(), property, default),
+                    time,
+                    vec2(size[0] as f32, size[1] as f32),
+                    actor,
+                    key,
+                    edge,
+                );
+            }
+            None
         }
         _ => None,
     }

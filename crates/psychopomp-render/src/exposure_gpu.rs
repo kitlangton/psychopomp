@@ -266,6 +266,10 @@ impl GpuShutter {
         )
     }
 
+    pub(crate) fn resolved_texture(&self) -> &wgpu::Texture {
+        &self.resolved_tex
+    }
+
     pub(crate) fn ensure_size(&mut self, device: &wgpu::Device, size: [u32; 2]) {
         let size = [size[0].max(1), size[1].max(1)];
         if self.size == size {

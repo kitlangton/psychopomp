@@ -318,6 +318,24 @@ pub enum StageElement {
         #[serde(default = "accent", skip_serializing_if = "is_accent")]
         tint: Tone,
     },
+    /// A real Rune surface (`Note`, `Diff`, or `Kit`) rendered onto a 2.5D
+    /// perspective Stage quad `size` world pixels, with optional card framing
+    /// and internal `"<id>::<key>"` beam/packet docking.
+    #[serde(rename_all = "camelCase")]
+    RuneCard {
+        id: String,
+        at: [f32; 3],
+        size: [f32; 2],
+        surface: Box<crate::rune_surface::RuneSurfacePlan>,
+        #[serde(default = "default_rune_corner")]
+        corner: f32,
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        framed: bool,
+    },
+}
+
+fn default_rune_corner() -> f32 {
+    20.0
 }
 
 fn is_accent(tone: &Tone) -> bool {
@@ -870,6 +888,41 @@ impl StageElement {
         }
     }
 
+    /// A real Rune surface (`Note`, `Diff`, or `Kit`) on a 2.5D Stage quad
+    /// `size` world pixels at `at`.
+    pub fn rune_card(
+        id: &str,
+        at: [f32; 3],
+        size: [f32; 2],
+        mut surface: crate::rune_surface::RuneSurfacePlan,
+    ) -> Self {
+        surface.size = size;
+        surface.origin = [size[0] * 0.5, size[1] * 0.5];
+        Self::RuneCard {
+            id: id.into(),
+            at,
+            size,
+            surface: Box::new(surface),
+            corner: default_rune_corner(),
+            framed: false,
+        }
+    }
+
+    /// Name a keyed Rune element inside a `StageElement::RuneCard` as a Stage
+    /// beam or bolt endpoint (`"card::rows/console"`).
+    pub fn rune_pin(card_id: &str, rune_key: &str) -> String {
+        format!("{card_id}::{rune_key}")
+    }
+
+    /// Put a tactile card mat and overhead specular rim behind footage or a `RuneCard`.
+    pub fn framed(mut self) -> Self {
+        match &mut self {
+            Self::Footage { framed, .. } | Self::RuneCard { framed, .. } => *framed = true,
+            other => panic!("stage element '{}' cannot be framed", other.id()),
+        }
+        self
+    }
+
     pub fn tone(mut self, tone: Tone) -> Self {
         match &mut self {
             Self::Card { tone: own, .. }
@@ -887,10 +940,12 @@ impl StageElement {
         self
     }
 
-    /// Corner radius of a rectangle or polygon shape.
+    /// Corner radius of a rectangle, polygon, or `RuneCard`.
     pub fn corner(mut self, radius: f32) -> Self {
         match &mut self {
-            Self::Shape { corner, .. } | Self::Path { corner, .. } => *corner = radius,
+            Self::Shape { corner, .. }
+            | Self::Path { corner, .. }
+            | Self::RuneCard { corner, .. } => *corner = radius,
             other => panic!("stage element '{}' has no corner", other.id()),
         }
         self
@@ -1039,7 +1094,8 @@ impl StageElement {
             | Self::Shape { id, .. }
             | Self::Path { id, .. }
             | Self::Icon { id, .. }
-            | Self::Footage { id, .. } => id,
+            | Self::Footage { id, .. }
+            | Self::RuneCard { id, .. } => id,
         }
     }
 
@@ -1054,7 +1110,8 @@ impl StageElement {
             | Self::Form { at, .. }
             | Self::Shape { at, .. }
             | Self::Icon { at, .. }
-            | Self::Footage { at, .. } => Some(*at),
+            | Self::Footage { at, .. }
+            | Self::RuneCard { at, .. } => Some(*at),
             Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
@@ -1107,7 +1164,7 @@ impl StageElement {
                 center,
                 radius: size[0].min(size[1]) * 0.5 * scale,
             }),
-            Self::Footage { size, .. } => {
+            Self::Footage { size, .. } | Self::RuneCard { size, .. } => {
                 Shape::Box(Box2::from_center_size(center, Vec2::from(*size) * scale))
             }
         }
@@ -1166,6 +1223,21 @@ impl StageElement {
             Self::Path { .. } => &["opacity", "draw", "trim", "flow", "emphasis", "surge"],
             Self::Icon { .. } => &["opacity", "x", "y", "z", "scale", "blur", "flash"],
             Self::Footage { .. } => &STAGE_FOOTAGE_CHANNELS,
+            Self::RuneCard { .. } => &[
+                "opacity",
+                "x",
+                "y",
+                "z",
+                "scale",
+                "blur",
+                "rotation",
+                "focus-x",
+                "focus-y",
+                "focus-size",
+                "saturation",
+                "tint",
+                "dim",
+            ],
         }
     }
 
@@ -1325,6 +1397,21 @@ impl StageElement {
                 ("focus-y", 0.5),
                 ("focus-size", 1.0),
                 ("time", 0.0),
+                ("saturation", 1.0),
+                ("tint", 0.0),
+                ("dim", 0.0),
+            ],
+            Self::RuneCard { .. } => &[
+                ("opacity", 1.0),
+                ("x", 0.0),
+                ("y", 0.0),
+                ("z", 0.0),
+                ("scale", 1.0),
+                ("blur", 0.0),
+                ("rotation", 0.0),
+                ("focus-x", 0.5),
+                ("focus-y", 0.5),
+                ("focus-size", 1.0),
                 ("saturation", 1.0),
                 ("tint", 0.0),
                 ("dim", 0.0),
@@ -1531,9 +1618,17 @@ impl StagePlan {
                 }
                 StageElement::Beam { from, to, bend, .. } => {
                     for end in [from, to] {
+                        let valid_end = self.element(end).and_then(StageElement::anchor).is_some()
+                            || end.split_once("::").is_some_and(|(card_id, rune_key)| {
+                                !rune_key.is_empty()
+                                    && matches!(
+                                        self.element(card_id),
+                                        Some(StageElement::RuneCard { .. })
+                                    )
+                            });
                         ensure!(
-                            self.element(end).and_then(StageElement::anchor).is_some(),
-                            "beam '{id}' must connect positioned elements; '{end}' is not one"
+                            valid_end,
+                            "beam '{id}' must connect positioned elements or '<rune-card>::<key>' pins; '{end}' is not one"
                         );
                     }
                     ensure!(
@@ -1698,6 +1793,24 @@ impl StagePlan {
                     clip.validate()
                         .and_then(|()| mask.validate())
                         .with_context(|| format!("stage footage '{id}'"))?;
+                }
+                StageElement::RuneCard {
+                    size,
+                    surface,
+                    corner,
+                    ..
+                } => {
+                    ensure!(
+                        size.iter().all(|v| (32.0..=2048.0).contains(v)),
+                        "rune-card '{id}' size is out of range"
+                    );
+                    ensure!(
+                        corner.is_finite() && (0.0..=256.0).contains(corner),
+                        "rune-card '{id}' corner is out of range"
+                    );
+                    surface
+                        .validate()
+                        .with_context(|| format!("stage rune-card '{id}'"))?;
                 }
                 StageElement::Label { size, spans, .. } => {
                     ensure!(
@@ -2922,14 +3035,28 @@ mod tests {
                 { "kind": "path", "id": "route", "through": ["client", [960, 900, 0]] },
                 { "kind": "icon", "id": "glyph", "at": [200, 900, 0], "size": 48, "icon": "cloud" },
                 { "kind": "footage", "id": "clip", "at": [1600, 900, -200], "size": [320, 180],
-                  "clip": { "media": "clip" }, "mask": { "shape": "circle" } }
+                  "clip": { "media": "clip" }, "mask": { "shape": "circle" } },
+                { "kind": "rune-card", "id": "rune", "at": [1200, 500, 0], "size": [480, 320],
+                  "surface": { "surface": { "recipe": "note", "markdown": "ok" } } }
             ]))
             .unwrap(),
         );
         plan.validate().unwrap();
         let kinds = [
-            "card", "orb", "beam", "packet", "label", "ring", "bolt", "shield", "form", "shape",
-            "path", "icon", "footage",
+            "card",
+            "orb",
+            "beam",
+            "packet",
+            "label",
+            "ring",
+            "bolt",
+            "shield",
+            "form",
+            "shape",
+            "path",
+            "icon",
+            "footage",
+            "rune-card",
         ];
         for kind in kinds {
             assert!(

@@ -104,12 +104,18 @@ pub enum AnchorTarget<'a> {
         row: &'a str,
         edge: Edge,
     },
+    /// A keyed element inside a `RuneSurface` actor or a 2.5D `StageElement::RuneCard`.
+    Rune {
+        actor: &'a str,
+        key: &'a str,
+        edge: Edge,
+    },
 }
 
 impl AnchorTarget<'_> {
-    /// Whether this anchor moves with the Stage camera.
+    /// Whether this anchor moves with the Stage camera or a Rune surface spring.
     pub fn on_stage(&self) -> bool {
-        matches!(self, Self::Stage { .. })
+        matches!(self, Self::Stage { .. } | Self::Rune { .. })
     }
 }
 
@@ -159,6 +165,16 @@ pub enum AnchorPlan {
         id: String,
         sequence: String,
         row: String,
+        #[serde(default, skip_serializing_if = "Edge::is_center")]
+        edge: Edge,
+        #[serde(default, skip_serializing_if = "is_zero")]
+        offset: [f32; 2],
+    },
+    #[serde(rename_all = "camelCase")]
+    Rune {
+        id: String,
+        actor: String,
+        key: String,
         #[serde(default, skip_serializing_if = "Edge::is_center")]
         edge: Edge,
         #[serde(default, skip_serializing_if = "is_zero")]
@@ -232,6 +248,22 @@ impl AnchorPlan {
         }
     }
 
+    /// `edge` of a keyed element inside a `RuneSurface` or `StageElement::RuneCard`.
+    pub fn rune(
+        id: impl Into<String>,
+        actor: impl Into<String>,
+        key: impl Into<String>,
+        edge: Edge,
+    ) -> Self {
+        Self::Rune {
+            id: id.into(),
+            actor: actor.into(),
+            key: key.into(),
+            edge,
+            offset: [0.0, 0.0],
+        }
+    }
+
     /// Move the pinned origin `offset` canvas pixels from the anchor.
     pub fn with_offset(mut self, offset: [f32; 2]) -> Self {
         match &mut self {
@@ -239,7 +271,8 @@ impl AnchorPlan {
             | Self::Stage { offset: own, .. }
             | Self::Editor { offset: own, .. }
             | Self::Participant { offset: own, .. }
-            | Self::Row { offset: own, .. } => *own = offset,
+            | Self::Row { offset: own, .. }
+            | Self::Rune { offset: own, .. } => *own = offset,
         }
         self
     }
@@ -250,7 +283,8 @@ impl AnchorPlan {
             | Self::Stage { id, .. }
             | Self::Editor { id, .. }
             | Self::Participant { id, .. }
-            | Self::Row { id, .. } => id,
+            | Self::Row { id, .. }
+            | Self::Rune { id, .. } => id,
         }
     }
 
@@ -260,7 +294,8 @@ impl AnchorPlan {
             | Self::Stage { offset, .. }
             | Self::Editor { offset, .. }
             | Self::Participant { offset, .. }
-            | Self::Row { offset, .. } => Vec2::from(*offset),
+            | Self::Row { offset, .. }
+            | Self::Rune { offset, .. } => Vec2::from(*offset),
         }
     }
 
@@ -293,6 +328,13 @@ impl AnchorPlan {
             } => AnchorTarget::Row {
                 sequence,
                 row,
+                edge: *edge,
+            },
+            Self::Rune {
+                actor, key, edge, ..
+            } => AnchorTarget::Rune {
+                actor,
+                key,
                 edge: *edge,
             },
         }
@@ -355,6 +397,10 @@ pub fn validate_target(kind: &str, id: &str, target: AnchorTarget<'_>) -> Result
         AnchorTarget::Row { sequence, row, .. } => ensure!(
             !sequence.is_empty() && !row.is_empty(),
             "{kind} anchor '{id}' needs a sequence and a row"
+        ),
+        AnchorTarget::Rune { actor, key, .. } => ensure!(
+            !actor.is_empty() && !key.is_empty(),
+            "{kind} anchor '{id}' needs a rune actor and element key"
         ),
     }
     Ok(())

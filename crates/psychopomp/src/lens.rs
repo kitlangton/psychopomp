@@ -207,6 +207,9 @@ impl LensPlan {
                     side,
                     ..
                 } => (side, !sequence.is_empty() && !row.is_empty()),
+                CalloutAnchorPlan::Rune {
+                    actor, key, side, ..
+                } => (side, !actor.is_empty() && !key.is_empty()),
             };
             ensure!(
                 side.is_none(),

@@ -546,6 +546,7 @@ impl Plan {
             root: &root,
             targets: &plan.semantic_targets,
             sequences: &sequences,
+            rune_surfaces: &rune_surfaces,
         };
         for callout in &callouts {
             callout.validate_anchors(&placeable)?;

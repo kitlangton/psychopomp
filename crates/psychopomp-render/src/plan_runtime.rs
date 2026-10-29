@@ -209,6 +209,9 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
                     for surface in &input.rune_surfaces {
                         surface.audit_motion(duration_secs)?;
                     }
+                    if let preflight::RootPlan::Stage { recipe, .. } = &input.root {
+                        stage::audit_stage_rune_cards(recipe, duration_secs)?;
+                    }
                 }
                 PlanFile::Reel(reel) => {
                     for segment in &reel.segments {
@@ -218,6 +221,10 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
                         for surface in &input.rune_surfaces {
                             surface
                                 .audit_motion(duration_secs)
+                                .with_context(|| format!("reel segment '{}'", segment.plan.id))?;
+                        }
+                        if let preflight::RootPlan::Stage { recipe, .. } = &input.root {
+                            stage::audit_stage_rune_cards(recipe, duration_secs)
                                 .with_context(|| format!("reel segment '{}'", segment.plan.id))?;
                         }
                     }
@@ -866,6 +873,9 @@ impl PreparedPlan {
         for surface in &self.rune_surfaces {
             surface.audit_motion(duration_secs)?;
         }
+        if let PreparedRoot::Stage(stage) = &self.root {
+            stage.audit_rune_motion(duration_secs)?;
+        }
         Ok(())
     }
 
@@ -1203,6 +1213,7 @@ impl PreparedPlan {
         anchor::resolve(
             &self.root,
             &self.sequences,
+            &self.rune_surfaces,
             target,
             size,
             |actor, property, default| {

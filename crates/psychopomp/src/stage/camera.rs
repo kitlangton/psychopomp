@@ -394,7 +394,9 @@ fn footprint(element: &StageElement, at: Vec3, scale: f32) -> Option<Footprint> 
             Shape::Point(_) => (Vec2::ZERO, Vec2::ZERO),
         },
         StageElement::Icon { size, .. } => (Vec2::splat(size * 0.5), Vec2::ZERO),
-        StageElement::Footage { size, .. } => (Vec2::from(*size) * 0.5, Vec2::ZERO),
+        StageElement::Footage { size, .. } | StageElement::RuneCard { size, .. } => {
+            (Vec2::from(*size) * 0.5, Vec2::ZERO)
+        }
         StageElement::Beam { .. }
         | StageElement::Packet { .. }
         | StageElement::Path { .. }

@@ -108,6 +108,17 @@ pub enum CalloutAnchorPlan {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         side: Option<CalloutSide>,
     },
+    /// A keyed element inside a `RuneSurface` actor or a `StageElement::RuneCard`.
+    #[serde(rename_all = "camelCase")]
+    Rune {
+        id: String,
+        actor: String,
+        key: String,
+        #[serde(default, skip_serializing_if = "CalloutSide::is_center")]
+        edge: CalloutSide,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        side: Option<CalloutSide>,
+    },
 }
 
 fn default_size() -> f32 {
@@ -127,13 +138,41 @@ fn is_accent(tone: &Tone) -> bool {
 }
 
 impl CalloutAnchorPlan {
+    pub fn rune(
+        id: impl Into<String>,
+        actor: impl Into<String>,
+        key: impl Into<String>,
+        edge: CalloutSide,
+    ) -> Self {
+        Self::Rune {
+            id: id.into(),
+            actor: actor.into(),
+            key: key.into(),
+            edge,
+            side: None,
+        }
+    }
+
+    pub fn with_side(mut self, label_side: CalloutSide) -> Self {
+        match &mut self {
+            Self::Point { side, .. }
+            | Self::Stage { side, .. }
+            | Self::Editor { side, .. }
+            | Self::Participant { side, .. }
+            | Self::Row { side, .. }
+            | Self::Rune { side, .. } => *side = Some(label_side),
+        }
+        self
+    }
+
     pub fn id(&self) -> &str {
         match self {
             Self::Point { id, .. }
             | Self::Stage { id, .. }
             | Self::Editor { id, .. }
             | Self::Participant { id, .. }
-            | Self::Row { id, .. } => id,
+            | Self::Row { id, .. }
+            | Self::Rune { id, .. } => id,
         }
     }
 
@@ -143,7 +182,8 @@ impl CalloutAnchorPlan {
             | Self::Stage { side, .. }
             | Self::Editor { side, .. }
             | Self::Participant { side, .. }
-            | Self::Row { side, .. } => *side,
+            | Self::Row { side, .. }
+            | Self::Rune { side, .. } => *side,
         }
     }
 
@@ -177,6 +217,13 @@ impl CalloutAnchorPlan {
             } => AnchorTarget::Row {
                 sequence,
                 row,
+                edge: *edge,
+            },
+            Self::Rune {
+                actor, key, edge, ..
+            } => AnchorTarget::Rune {
+                actor,
+                key,
                 edge: *edge,
             },
         }

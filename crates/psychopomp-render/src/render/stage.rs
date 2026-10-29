@@ -986,6 +986,20 @@ impl HeadlessRenderer {
             if !gpu.slots.is_empty() {
                 let frames = footage(time)?;
                 self.upload_footage(gpu, &frames);
+                for element in &plan.elements {
+                    if let StageElement::RuneCard { id, surface, .. } = element
+                        && let Some(slot) = gpu.slots.get(id)
+                    {
+                        self.render_rune_card_to_slot(
+                            surface,
+                            time,
+                            &gpu.footage,
+                            slot.origin,
+                            slot.size,
+                            &slot.shown,
+                        );
+                    }
+                }
             }
             let scene = Scene::sample_with(plan, &value, time as f32, size, Some(&gpu.forms));
             let mut painter = Painter {
@@ -1179,6 +1193,29 @@ pub(crate) fn stage_anchor(
     let point = scene.camera.rolled(edge.on(scene.place(element)?.outline));
     let roll = shake::rumble(time as f32, trauma(plan, value)).roll;
     // Mirrors `composite` in stage_post.wgsl, which samples the inverse.
+    let zoom = 1.0 + read(plan, value, "camera.punch").max(0.0) + roll.abs() * 0.6;
+    let center = size * 0.5;
+    Some(center + Vec2::from_angle(roll).rotate(point - center) * zoom)
+}
+
+/// Resolve `edge` of keyed Rune element `key` inside a 2.5D `StageElement::RuneCard`
+/// `card_id` through the Stage camera, rotation, roll, shake, and punch-in.
+pub(crate) fn stage_rune_anchor(
+    plan: &StagePlan,
+    value: &dyn Fn(&str, f32) -> f32,
+    time: f64,
+    size: Vec2,
+    card_id: &str,
+    key: &str,
+    edge: CalloutSide,
+) -> Option<Vec2> {
+    let element @ StageElement::RuneCard { .. } = plan.element(card_id)? else {
+        return None;
+    };
+    let scene = Scene::camera(plan, value, time as f32, size);
+    let place = scene.rune_child_placement(element, key)?;
+    let point = scene.camera.rolled(edge.on(place.outline));
+    let roll = shake::rumble(time as f32, trauma(plan, value)).roll;
     let zoom = 1.0 + read(plan, value, "camera.punch").max(0.0) + roll.abs() * 0.6;
     let center = size * 0.5;
     Some(center + Vec2::from_angle(roll).rotate(point - center) * zoom)
@@ -1817,7 +1854,7 @@ impl<'a> Scene<'a> {
     fn bolt_end(&self, end: &BoltEnd) -> Option<(Shape, f32, f32)> {
         match end {
             BoltEnd::Element(id) => {
-                let place = self.placements.get(id.as_str())?;
+                let place = self.resolve_placement(id)?;
                 Some((place.outline, place.scale, place.depth))
             }
             BoltEnd::Point(at) => {
@@ -1887,8 +1924,58 @@ impl<'a> Scene<'a> {
         SampledForm { dots, radius, hull }
     }
 
+    fn rune_child_placement(&self, element: &StageElement, rune_key: &str) -> Option<Placement> {
+        let StageElement::RuneCard {
+            id, size, surface, ..
+        } = element
+        else {
+            return None;
+        };
+        let parent = self
+            .placements
+            .get(id.as_str())
+            .copied()
+            .or_else(|| self.place(element))?;
+        let [rx, ry, rw, rh] = crate::render::rune_surface::rune_card_child_rect(
+            surface,
+            f64::from(self.time),
+            rune_key,
+        )?;
+        let surf_w = surface.size[0].max(1.0);
+        let surf_h = surface.size[1].max(1.0);
+        let u_center = (rx + rw * 0.5) / surf_w - 0.5;
+        let v_center = (ry + rh * 0.5) / surf_h - 0.5;
+        let local_offset = vec2(u_center * size[0], v_center * size[1]);
+        let local_size = vec2(
+            (rw / surf_w * size[0]).max(1.0),
+            (rh / surf_h * size[1]).max(1.0),
+        );
+        let turn = Vec2::from_angle(self.v(id, "rotation"));
+        let child_center = parent.center + turn.rotate(local_offset * parent.scale);
+        let child_world = parent.world + vec3(local_offset.x, local_offset.y, 0.0);
+        Some(Placement {
+            world: child_world,
+            depth: parent.depth,
+            center: child_center,
+            scale: parent.scale,
+            outline: Shape::Box(Box2::from_center_size(
+                child_center,
+                local_size * parent.scale,
+            )),
+        })
+    }
+
+    fn resolve_placement(&self, target: &str) -> Option<Placement> {
+        if let Some(place) = self.placements.get(target) {
+            return Some(*place);
+        }
+        let (card_id, rune_key) = target.split_once("::")?;
+        let element = self.plan.element(card_id)?;
+        self.rune_child_placement(element, rune_key)
+    }
+
     fn link(&self, id: &str, from: &str, to: &str, bend: f32) -> Option<Link> {
-        let (a, b) = (self.placements.get(from)?, self.placements.get(to)?);
+        let (a, b) = (self.resolve_placement(from)?, self.resolve_placement(to)?);
         // A twang sags the curve downward, as if it had weight, then vibrates
         // back to rest.
         let downward = if (b.center - a.center).perp().y >= 0.0 {
@@ -2776,6 +2863,24 @@ impl<'a> Painter<'a> {
                 mask,
                 *framed,
                 *tint,
+                place,
+            ),
+            (
+                StageElement::RuneCard {
+                    size,
+                    corner,
+                    framed,
+                    ..
+                },
+                Some(place),
+            ) => self.footage(
+                order,
+                id,
+                Vec2::from(*size),
+                Fit::Contain,
+                &Mask::Rect { radius: *corner },
+                *framed,
+                Tone::Accent,
                 place,
             ),
             // A positioned element behind the camera.

@@ -919,6 +919,35 @@ pub(crate) fn with_cached_surface_timeline<R>(
     })
 }
 
+fn plan_uid(plan: &RuneSurfacePlan) -> u64 {
+    let bytes = serde_json::to_vec(plan).unwrap_or_default();
+    let mut h = 0xcbf2_9ce4_8422_2325_u64;
+    for &b in &bytes {
+        h ^= u64::from(b);
+        h = h.wrapping_mul(0x0000_0100_0000_01b3);
+    }
+    // Keep high bit set so plan hashes never collide with `NEXT_SURFACE_UID` counters.
+    h | (1_u64 << 63)
+}
+
+pub(crate) fn with_plan_timeline<R>(
+    plan: &RuneSurfacePlan,
+    f: impl FnOnce(&mut RuneTimeline<SurfaceState>) -> R,
+) -> R {
+    with_cached_surface_timeline(plan_uid(plan), plan, f)
+}
+
+pub(crate) fn rune_card_child_rect(
+    plan: &RuneSurfacePlan,
+    time: f64,
+    key: &str,
+) -> Option<[f32; 4]> {
+    with_plan_timeline(plan, |tl| {
+        sync_surface_pose(tl, time, SurfacePose::default());
+        tl.presented_px(time, key).map(|(rect, _)| rect)
+    })
+}
+
 pub(crate) fn sync_surface_pose(tl: &mut RuneTimeline<SurfaceState>, time: f64, pose: SurfacePose) {
     let rt = tl.sample_at(time);
     if rt.state.pose != pose {
