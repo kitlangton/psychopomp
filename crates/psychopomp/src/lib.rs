@@ -51,6 +51,7 @@ pub mod timeline;
 pub mod tone;
 pub mod transcript;
 pub mod tree;
+pub mod typography;
 pub mod value;
 pub mod video;
 pub mod window;

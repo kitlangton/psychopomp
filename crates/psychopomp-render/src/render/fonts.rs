@@ -1,10 +1,11 @@
 //! The font database. CommitMono is compiled in, so every machine shapes the
 //! same text with the same weights; installed fonts only supply glyphs it lacks
 //! (chess pieces, CJK, emoji). See `assets/fonts/OFL.txt`.
-use std::sync::LazyLock;
+use std::{fs, path::Path, sync::LazyLock};
 
+use anyhow::{Context, Result};
 use cosmic_text::{Attrs, Family, FontSystem, Stretch, Style, Weight, fontdb};
-use psychopomp::face::Face;
+use psychopomp::face::{Face, FontFacePlan};
 
 /// The bundled monospace family used for code and labels.
 pub(crate) const MONO: Family<'static> = Family::Name("CommitMono");
@@ -12,6 +13,10 @@ pub(crate) const MONO: Family<'static> = Family::Name("CommitMono");
 pub(crate) const SANS: Family<'static> = Family::Name("Helvetica Neue");
 /// The installed display serif.
 const SERIF: Family<'static> = Family::Name("Didot");
+const SYSTEM_SANS: Family<'static> = Family::SansSerif;
+const GEOMETRIC: Family<'static> = Family::Name("Futura");
+const HUMANIST: Family<'static> = Family::Name("Avenir Next");
+const EDITORIAL: Family<'static> = Family::Name("Baskerville");
 
 /// Attributes that select `face`.
 pub(crate) fn attrs(face: Face) -> Attrs<'static> {
@@ -27,7 +32,39 @@ pub(crate) fn attrs(face: Face) -> Attrs<'static> {
             .family(SANS)
             .stretch(Stretch::Condensed)
             .weight(Weight::BLACK),
+        Face::SystemSans => attrs.family(SYSTEM_SANS),
+        Face::Geometric => attrs.family(GEOMETRIC).weight(Weight::BOLD),
+        Face::Humanist => attrs.family(HUMANIST).weight(Weight::SEMIBOLD),
+        Face::Editorial => attrs.family(EDITORIAL),
     }
+}
+
+pub(crate) fn load_custom_fonts(
+    font_system: &mut FontSystem,
+    base: &Path,
+    fonts: &[FontFacePlan],
+) -> Result<()> {
+    for decl in fonts {
+        let resolved = if decl.path.is_absolute() {
+            decl.path.clone()
+        } else {
+            let candidate = base.join(&decl.path);
+            if candidate.exists() {
+                candidate
+            } else {
+                decl.path.clone()
+            }
+        };
+        let bytes = fs::read(&resolved).with_context(|| {
+            format!(
+                "read custom font '{}' from {}",
+                decl.family,
+                resolved.display()
+            )
+        })?;
+        font_system.db_mut().load_font_data(bytes);
+    }
+    Ok(())
 }
 
 const COMMIT_MONO: [&[u8]; 4] = [

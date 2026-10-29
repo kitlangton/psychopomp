@@ -836,6 +836,7 @@ impl PreparedPlan {
             lenses,
             rune_surfaces,
         } = input;
+        renderer.load_plan_fonts(base, &plan.fonts)?;
         let components = component_prototype::PreparedComponents::prepare_inputs(
             &mut plan, components, renderer,
         )?;

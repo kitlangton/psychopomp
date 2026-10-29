@@ -35,6 +35,7 @@ pub(crate) mod rune_notes;
 pub(crate) mod rune_surface;
 pub(crate) mod rune_timeline;
 mod sequence;
+mod smoothing;
 mod stage;
 mod task;
 mod terminal;
@@ -516,6 +517,19 @@ impl HeadlessRenderer {
             Some(p) => p.tone(tone),
             None => self.theme.tone(tone),
         }
+    }
+
+    pub(crate) fn load_plan_fonts(
+        &mut self,
+        base: &std::path::Path,
+        fonts: &[psychopomp::face::FontFacePlan],
+    ) -> Result<()> {
+        if fonts.is_empty() {
+            return Ok(());
+        }
+        fonts::load_custom_fonts(&mut self.font_system, base, fonts)?;
+        self.plain_text_sprites.clear();
+        Ok(())
     }
 
     pub fn set_theme(&mut self, theme: Theme) {

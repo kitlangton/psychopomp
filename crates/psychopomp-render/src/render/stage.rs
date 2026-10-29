@@ -829,8 +829,40 @@ impl HeadlessRenderer {
                     .clone()
             })
             .collect::<Vec<_>>();
-        // Icons follow the text, rasterized at the same density.
+        // Icons and kinetic `Type` units follow, rasterized at `TEXT_RASTER` density.
         let mut keys = strings.into_iter().map(|(key, ..)| key).collect::<Vec<_>>();
+        for element in &plan.elements {
+            if let StageElement::Type { id, spec, .. } = element {
+                let raster = (spec.size * TEXT_RASTER).clamp(8.0, 1024.0);
+                let line = (raster * 1.38).ceil();
+                for unit in spec.units() {
+                    let mut attrs = match &spec.family {
+                        Some(name) => Attrs::new().family(cosmic_text::Family::Name(name.as_str())),
+                        None => fonts::attrs(spec.face),
+                    }
+                    .weight(Weight(spec.weight))
+                    .color(Color::rgb(255, 255, 255));
+                    if spec.italic {
+                        attrs = attrs.style(cosmic_text::Style::Italic);
+                    }
+                    let width =
+                        ((unit.text.chars().count() as f32 * raster * 0.85) as u32 + 96).min(4096);
+                    let sprite = super::smoothing::make_smoothed_sprite(
+                        &mut self.font_system,
+                        &mut self.swash_cache,
+                        vec![(unit.text.as_str(), attrs.clone())],
+                        attrs,
+                        Metrics::new(raster, line),
+                        width,
+                        line as u32,
+                        TEXT_RASTER,
+                        spec.tracking * raster,
+                    );
+                    sprites.push(sprite);
+                    keys.push(text_key(id, &format!("u{}", unit.index)));
+                }
+            }
+        }
         for element in &plan.elements {
             if let StageElement::Icon {
                 id,
@@ -1367,6 +1399,41 @@ pub(crate) fn stage_bounds(
                         vec2(l.x, b.y),
                     ],
                     overflow,
+                )
+            }
+            StageElement::Type { spec, .. } => {
+                let units = spec.units();
+                let line_count = spec.text.split('\n').count().max(1);
+                let space_w = spec.size * 0.28 * place.scale;
+                let mut max_line_w = 0.0_f32;
+                for ln in 0..line_count {
+                    let lw: f32 = units
+                        .iter()
+                        .filter(|u| u.line == ln)
+                        .map(|u| {
+                            u.leading_spaces as f32 * space_w
+                                + atlas_width(&text_key(id, &format!("u{}", u.index)), place.scale)
+                        })
+                        .sum();
+                    max_line_w = max_line_w.max(lw);
+                }
+                let total_h = line_count as f32 * spec.size * spec.line_height * place.scale;
+                let left = place.center.x
+                    - match spec.align {
+                        psychopomp::caption::CaptionAlign::Left => 0.0,
+                        psychopomp::caption::CaptionAlign::Center => max_line_w * 0.5,
+                        psychopomp::caption::CaptionAlign::Right => max_line_w,
+                    };
+                (
+                    "label",
+                    Some(spec.text.replace('\n', " ")),
+                    [
+                        vec2(left, place.center.y - total_h * 0.5),
+                        vec2(left + max_line_w, place.center.y - total_h * 0.5),
+                        vec2(left + max_line_w, place.center.y + total_h * 0.5),
+                        vec2(left, place.center.y + total_h * 0.5),
+                    ],
+                    None,
                 )
             }
             _ => {
@@ -3025,6 +3092,9 @@ impl<'a> Painter<'a> {
             (StageElement::Label { align, spans, .. }, Some(place)) => {
                 self.label(order, id, *align, spans, place)
             }
+            (StageElement::Type { spec, .. }, Some(place)) => {
+                self.kinetic_type(order, id, spec, place)
+            }
             (
                 StageElement::Ring {
                     radius,
@@ -4574,6 +4644,134 @@ impl<'a> Painter<'a> {
             }
             remaining -= shown;
             x += width;
+        }
+        self.frame.close(place.depth - 0.5, order);
+    }
+
+    fn kinetic_type(
+        &mut self,
+        order: usize,
+        id: &str,
+        spec: &psychopomp::typography::TypePlan,
+        place: Placement,
+    ) {
+        let (scene, look) = (self.scene, self.look);
+        let base_opacity = scene.unit(id, "opacity");
+        if base_opacity <= 0.001 {
+            return;
+        }
+        let base_blur = scene.blur_at(place.depth) + scene.v(id, "blur").max(0.0) * place.scale;
+        let base_rot = scene.v(id, "rotation");
+        let extra_track = scene.v(id, "tracking") * spec.size * place.scale;
+        let space_w = (spec.size * 0.28 * place.scale + extra_track).max(0.0);
+
+        let units = spec.units();
+        let line_count = spec.text.split('\n').count().max(1);
+        let line_step = spec.size * spec.line_height * place.scale;
+        let first_line_y = place.center.y - (line_count.saturating_sub(1) as f32) * line_step * 0.5;
+        let viewport = scene.camera.size;
+
+        let is_block = spec.split == psychopomp::typography::SplitUnit::Block;
+        for ln in 0..line_count {
+            let line_units: Vec<_> = units.iter().filter(|u| u.line == ln).collect();
+            if line_units.is_empty() {
+                continue;
+            }
+            let widths: Vec<f32> = line_units
+                .iter()
+                .map(|u| {
+                    let key = text_key(id, &format!("u{}", u.index));
+                    self.frame.width(&key, place.scale)
+                })
+                .collect();
+            let spaces: Vec<f32> = line_units
+                .iter()
+                .enumerate()
+                .map(|(k, u)| {
+                    u.leading_spaces as f32 * space_w + if k > 0 { extra_track } else { 0.0 }
+                })
+                .collect();
+            let line_w: f32 = widths.iter().sum::<f32>() + spaces.iter().sum::<f32>();
+            let line_y = first_line_y + ln as f32 * line_step;
+            let mut cursor_x = place.center.x
+                - match spec.align {
+                    CaptionAlign::Left => 0.0,
+                    CaptionAlign::Center => line_w * 0.5,
+                    CaptionAlign::Right => line_w,
+                };
+            let slit = if spec.masked {
+                let half_slit = (spec.size * place.scale * 0.62).max(line_step * 0.54);
+                [0.0, line_y - half_slit, viewport.x, line_y + half_slit]
+            } else {
+                [0.0; 4]
+            };
+
+            for ((u, &uw), &lead) in line_units.iter().zip(&widths).zip(&spaces) {
+                cursor_x += lead;
+                let u_idx = if is_block { 0 } else { u.index };
+                let u_op = scene.unit(id, &format!("u{u_idx}.opacity")) * base_opacity;
+                if u_op <= 0.001 {
+                    cursor_x += uw;
+                    continue;
+                }
+                let ux = scene.v(id, &format!("u{u_idx}.x")) * place.scale;
+                let uy = scene.v(id, &format!("u{u_idx}.y")) * place.scale;
+                let uscale = scene.v(id, &format!("u{u_idx}.scale")).max(0.01);
+                let urot = base_rot + scene.v(id, &format!("u{u_idx}.rotation"));
+                let ublur =
+                    base_blur + scene.v(id, &format!("u{u_idx}.blur")).max(0.0) * place.scale;
+
+                let key = text_key(id, &format!("u{}", u.index));
+                let Some(atlas) = self.frame.texts.get(&key) else {
+                    cursor_x += uw;
+                    continue;
+                };
+                let draw_scale = place.scale * uscale;
+                let size = vec2(atlas.rect[2], atlas.rect[3]) * (draw_scale / TEXT_RASTER);
+                let unit_center = vec2(cursor_x + uw * 0.5 + ux, line_y + uy);
+                let left = unit_center.x - size.x * 0.5;
+                let top = unit_center.y - size.y * 0.5;
+                let uv = [
+                    atlas.rect[0],
+                    atlas.rect[1],
+                    atlas.rect[0] + atlas.rect[2],
+                    atlas.rect[1] + atlas.rect[3],
+                ];
+                let (fill, grad_a, grad_b) = look.resolve_paint(spec.paint, u_op);
+                let gamma = super::smoothing::glyph_coverage_exponent(
+                    [fill[0], fill[1], fill[2]],
+                    TEXT_RASTER,
+                );
+                let pad = if urot.abs() > 1e-4 {
+                    Vec2::splat(size.length() * 0.5 + ublur + 4.0)
+                } else {
+                    size * 0.5 + Vec2::splat(ublur + 3.0)
+                };
+                if spec.backing {
+                    self.frame.prims.push(Prim {
+                        bbox: around(unit_center, pad + 6.0),
+                        a: [4.0, left, top, 5.0 + ublur * 0.5],
+                        b: [size.x, size.y, size.x + 8.0, urot],
+                        fill: rgba(look.background, u_op * 0.8),
+                        uv,
+                        pool: slit,
+                        ..Default::default()
+                    });
+                }
+                self.frame.prims.push(Prim {
+                    bbox: around(unit_center, pad),
+                    a: [4.0, left, top, ublur * 0.5],
+                    b: [size.x, size.y, size.x + 8.0, urot],
+                    fill,
+                    uv,
+                    light: [0.0, 0.0, gamma, 0.0],
+                    pool: slit,
+                    grad_a,
+                    grad_b,
+                    ..Default::default()
+                });
+                cursor_x += uw;
+            }
         }
         self.frame.close(place.depth - 0.5, order);
     }

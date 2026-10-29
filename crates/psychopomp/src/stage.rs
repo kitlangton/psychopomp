@@ -29,6 +29,7 @@ use crate::{
     plan::MediaPlan,
     plan::SpringPlan,
     tone::Tone,
+    typography::{TYPE_BASE_DEFAULTS, TypePlan},
 };
 
 pub const STAGE_RECIPE: &str = "stage";
@@ -337,6 +338,15 @@ pub enum StageElement {
     /// gradient, or radial gradient) behind Stage elements.
     #[serde(rename_all = "camelCase")]
     Backdrop { id: String, paint: Paint },
+    /// Kinetic display typography with custom faces, tracking, line-height,
+    /// `Paint` gradients, and per-line/word/char choreography (`u{i}.*`) plus
+    /// optional stationary baseline slit masking.
+    #[serde(rename_all = "camelCase")]
+    Type {
+        id: String,
+        at: [f32; 3],
+        spec: TypePlan,
+    },
 }
 
 fn default_rune_corner() -> f32 {
@@ -966,6 +976,15 @@ impl StageElement {
         }
     }
 
+    /// Kinetic display typography at `at` with per-unit (`Block | Line | Word | Char`) channels.
+    pub fn kinetic_type(id: &str, at: [f32; 3], spec: TypePlan) -> Self {
+        Self::Type {
+            id: id.into(),
+            at,
+            spec,
+        }
+    }
+
     /// Fill of a flat shape with an explicit `Paint` (solid hex, linear, or radial gradient).
     pub fn paint(mut self, paint: Paint) -> Self {
         let Self::Shape { fill, .. } = &mut self else {
@@ -1120,7 +1139,8 @@ impl StageElement {
             | Self::Icon { id, .. }
             | Self::Footage { id, .. }
             | Self::RuneCard { id, .. }
-            | Self::Backdrop { id, .. } => id,
+            | Self::Backdrop { id, .. }
+            | Self::Type { id, .. } => id,
         }
     }
 
@@ -1136,7 +1156,8 @@ impl StageElement {
             | Self::Shape { at, .. }
             | Self::Icon { at, .. }
             | Self::Footage { at, .. }
-            | Self::RuneCard { at, .. } => Some(*at),
+            | Self::RuneCard { at, .. }
+            | Self::Type { at, .. } => Some(*at),
             Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
@@ -1162,6 +1183,7 @@ impl StageElement {
                 radius: radius * scale,
             }),
             Self::Label { .. }
+            | Self::Type { .. }
             | Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
@@ -1266,6 +1288,9 @@ impl StageElement {
                 "dim",
             ],
             Self::Backdrop { .. } => &["opacity"],
+            Self::Type { .. } => &[
+                "opacity", "x", "y", "z", "scale", "rotation", "blur", "tracking",
+            ],
         }
     }
 
@@ -1445,11 +1470,15 @@ impl StageElement {
                 ("dim", 0.0),
             ],
             Self::Backdrop { .. } => &[("opacity", 1.0)],
+            Self::Type { .. } => &TYPE_BASE_DEFAULTS,
         }
     }
 
     /// What `property` reads before anything writes it, if this element reads it.
     pub fn channel_default(&self, property: &str) -> Option<f32> {
+        if let Self::Type { spec, .. } = self {
+            return spec.property_default(property);
+        }
         self.channel_defaults()
             .iter()
             .find(|(name, _)| *name == property)
@@ -1540,7 +1569,8 @@ impl StagePlan {
         }
         property.split_once('.').is_some_and(|(id, rest)| {
             self.element(id)
-                .is_some_and(|element| element.properties().contains(&rest))
+                .and_then(|element| element.channel_default(rest))
+                .is_some()
         })
     }
 
@@ -1848,6 +1878,9 @@ impl StagePlan {
                     paint
                         .validate()
                         .with_context(|| format!("stage backdrop '{id}'"))?;
+                }
+                StageElement::Type { spec, .. } => {
+                    spec.validate(id)?;
                 }
                 StageElement::Label { size, spans, .. } => {
                     ensure!(
@@ -2512,6 +2545,84 @@ impl StageActor {
             }
             _ => {}
         }
+    }
+
+    /// Staggered baseline rise across every unit (`Line`, `Word`, or `Char`) of a
+    /// `StageElement::Type`. When `masked` is enabled on `TypePlan`, units stay at
+    /// full opacity and sharp (`blur = 0`) while emerging through the stationary
+    /// line slit (`kit-motion` rule); when unmasked, units also fade in cleanly.
+    pub fn rise_type(
+        &mut self,
+        scene: &mut PlanBuilder,
+        id: &str,
+        at_nanos: u64,
+        stagger_gap: u64,
+        offset_y: f32,
+        spring: SpringPlan,
+    ) -> u64 {
+        let Some(StageElement::Type { spec, .. }) = self.plan.element(id).cloned() else {
+            panic!("stage has no kinetic_type element '{id}'");
+        };
+        let count = spec.unit_count();
+        for idx in 0..count {
+            let t = at_nanos + stagger_gap * idx as u64;
+            let yc = self.channel(scene, &format!("{id}.u{idx}.y"), offset_y);
+            scene.set(&yc, t, offset_y);
+            scene.spring_with(&yc, t, 0.0, spring);
+            if !spec.masked {
+                let oc = self.channel(scene, &format!("{id}.u{idx}.opacity"), 0.0);
+                scene.set(&oc, t, 0.0);
+                scene.ease(&oc, t, 1.0, 0.22, Ease::Smootherstep);
+            }
+        }
+        at_nanos + stagger_gap * count.saturating_sub(1) as u64 + whole_millis(0.45)
+    }
+
+    /// Staggered character/word pop (`scale 0.88 -> 1`, `blur 3.5 -> 0`, `y +18 -> 0`).
+    pub fn pop_type(
+        &mut self,
+        scene: &mut PlanBuilder,
+        id: &str,
+        at_nanos: u64,
+        stagger_gap: u64,
+        spring: SpringPlan,
+    ) -> u64 {
+        let Some(StageElement::Type { spec, .. }) = self.plan.element(id).cloned() else {
+            panic!("stage has no kinetic_type element '{id}'");
+        };
+        let count = spec.unit_count();
+        for idx in 0..count {
+            let t = at_nanos + stagger_gap * idx as u64;
+            let sc = self.channel(scene, &format!("{id}.u{idx}.scale"), 0.88);
+            scene.set(&sc, t, 0.88);
+            scene.spring_with(&sc, t, 1.0, spring);
+            let yc = self.channel(scene, &format!("{id}.u{idx}.y"), 18.0);
+            scene.set(&yc, t, 18.0);
+            scene.spring_with(&yc, t, 0.0, spring);
+            let oc = self.channel(scene, &format!("{id}.u{idx}.opacity"), 0.0);
+            scene.set(&oc, t, 0.0);
+            scene.ease(&oc, t, 1.0, 0.18, Ease::Smootherstep);
+            let bc = self.channel(scene, &format!("{id}.u{idx}.blur"), 3.5);
+            scene.set(&bc, t, 3.5);
+            scene.ease(&bc, t, 0.0, 0.28, Ease::Smootherstep);
+        }
+        at_nanos + stagger_gap * count.saturating_sub(1) as u64 + whole_millis(0.45)
+    }
+
+    /// Animate display letter-spacing (`tracking`, in `em`) smoothly.
+    pub fn sweep_tracking(
+        &mut self,
+        scene: &mut PlanBuilder,
+        id: &str,
+        at_nanos: u64,
+        from_em: f32,
+        to_em: f32,
+        seconds: f32,
+    ) -> u64 {
+        let ch = self.channel(scene, &format!("{id}.tracking"), from_em);
+        scene.set(&ch, at_nanos, from_em);
+        scene.ease(&ch, at_nanos, to_em, seconds, Ease::Smootherstep);
+        at_nanos + whole_millis(seconds)
     }
 }
 
