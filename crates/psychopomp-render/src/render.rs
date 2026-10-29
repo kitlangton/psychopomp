@@ -31,6 +31,7 @@ mod lower_third;
 mod plot;
 mod rich_text;
 mod rolling;
+pub(crate) mod rune_timeline;
 mod sequence;
 mod stage;
 mod task;
@@ -323,6 +324,7 @@ pub struct HeadlessRenderer {
     preview_editor_backgrounds: VecDeque<(String, Vec<u8>)>,
     grid_renderer: Option<grid::GridRenderer>,
     grid_line_palette: Option<GridLinePalette>,
+    rune_gpu: Option<rune_timeline::RuneGpu>,
     theme: Theme,
 }
 
@@ -368,7 +370,9 @@ impl HeadlessRenderer {
             sample_count: 1,
             dimension: wgpu::TextureDimension::D2,
             format: FORMAT,
-            usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::COPY_SRC,
+            usage: wgpu::TextureUsages::RENDER_ATTACHMENT
+                | wgpu::TextureUsages::COPY_SRC
+                | wgpu::TextureUsages::COPY_DST,
             view_formats: &[],
         });
         let view = texture.create_view(&wgpu::TextureViewDescriptor::default());
@@ -459,6 +463,7 @@ impl HeadlessRenderer {
             preview_editor_backgrounds: VecDeque::new(),
             grid_renderer: None,
             grid_line_palette: None,
+            rune_gpu: None,
             theme: Theme::default(),
         })
     }

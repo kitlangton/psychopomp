@@ -2,3 +2,9 @@
 members = ["crates/*", "scenes/*"]
 default-members = ["crates/psychopomp-render"]
 resolver = "3"
+
+[workspace.dependencies]
+rune = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402" }
+rune-kit = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402", features = ["markdown", "mermaid"] }
+rune-theme-opencode = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402" }
+rune-knobs = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402" }

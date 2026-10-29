@@ -2,6 +2,7 @@
 
 mod encode;
 mod exposure;
+mod exposure_gpu;
 mod footage;
 mod plan_runtime;
 mod render;
@@ -139,6 +140,21 @@ mod wgsl_tests {
             &joined(&crate::render::POST_SHADER),
             &["vs", "accumulate", "prefilter", "down", "up", "composite"],
             &[("Post", size("Post"))],
+        );
+        validate_wgsl(
+            "exposure_gpu.wgsl",
+            include_str!("exposure_gpu.wgsl"),
+            &[
+                "vs",
+                "fs_add",
+                "fs_resolve_opaque",
+                "fs_resolve_alpha",
+                "fs_composite_over",
+            ],
+            &[(
+                "ShutterUniform",
+                std::mem::size_of::<crate::exposure_gpu::ShutterUniform>() as u32,
+            )],
         );
     }
 }
