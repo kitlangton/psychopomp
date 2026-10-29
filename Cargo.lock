@@ -2652,6 +2652,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-rune-surfaces"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-shape-of-openness"
 version = "0.1.0"
 dependencies = [

@@ -37,13 +37,14 @@ struct ScheduledCommit<S> {
 }
 
 /// Deterministic random-access schedule over a `rune::Runtime<S>`.
-pub(crate) struct RuneTimeline<S: Clone + 'static> {
+pub(crate) struct RuneTimeline<S: 'static> {
     id: u64,
-    initial: S,
+    make_initial: Box<dyn Fn() -> S>,
     view: fn(&S, &mut Cx<S>) -> El,
     pixel_size: [u32; 2],
     scale: f32,
     dark: bool,
+    transparent: bool,
     growth_grid: bool,
     commits: Vec<ScheduledCommit<S>>,
     rt: Option<Runtime<S>>,
@@ -60,14 +61,27 @@ impl<S: Clone + 'static> RuneTimeline<S> {
         scale: f32,
         dark: bool,
     ) -> Self {
+        Self::new_with_factory(move || initial.clone(), view, pixel_size, scale, dark)
+    }
+}
+
+impl<S: 'static> RuneTimeline<S> {
+    pub(crate) fn new_with_factory(
+        make_initial: impl Fn() -> S + 'static,
+        view: fn(&S, &mut Cx<S>) -> El,
+        pixel_size: [u32; 2],
+        scale: f32,
+        dark: bool,
+    ) -> Self {
         let scale = scale.max(0.25);
         Self {
             id: NEXT_TIMELINE_ID.fetch_add(1, Ordering::Relaxed),
-            initial,
+            make_initial: Box::new(make_initial),
             view,
             pixel_size: [pixel_size[0].max(1), pixel_size[1].max(1)],
             scale,
             dark,
+            transparent: false,
             growth_grid: false,
             commits: Vec::new(),
             rt: None,
@@ -75,6 +89,12 @@ impl<S: Clone + 'static> RuneTimeline<S> {
             next_commit: 0,
             atlas_generation: 0,
         }
+    }
+
+    pub(crate) fn with_transparent(mut self, transparent: bool) -> Self {
+        self.transparent = transparent;
+        self.rt = None;
+        self
     }
 
     pub(crate) fn id(&self) -> u64 {
@@ -131,12 +151,13 @@ impl<S: Clone + 'static> RuneTimeline<S> {
             .map(|rt| rt.text)
             .unwrap_or_else(opencode_text_system);
         let mut rt = Runtime::with_text(
-            self.initial.clone(),
+            (self.make_initial)(),
             self.view,
             self.logical_size(),
             Env::new(self.dark, self.scale),
             text,
         );
+        rt.transparent = self.transparent;
         rt.frame(0.0);
         self.rt = Some(rt);
         self.cur_t = 0.0;
@@ -239,12 +260,13 @@ impl<S: Clone + 'static> RuneTimeline<S> {
         let hz = hz.max(60.0);
         let dt = 1.0 / hz;
         let mut rt = Runtime::with_text(
-            self.initial.clone(),
+            (self.make_initial)(),
             self.view,
             self.logical_size(),
             Env::new(self.dark, self.scale),
             opencode_text_system(),
         );
+        rt.transparent = self.transparent;
         rt.frame(0.0);
         let mut rec = Recording::new(rt.viewport, hz);
 
@@ -324,7 +346,7 @@ impl RuneGpu {
     /// Render and accumulate `exposure` (`[(time_secs, weight)]`) into `shutter.accum_view`
     /// (`Rgba16Float`), coalescing consecutive identical instance frames so still windows
     /// execute a single uber-quad pass while moving windows run all 24 HDR shutter samples.
-    pub(crate) fn accumulate_exposure<S: Clone + 'static>(
+    pub(crate) fn accumulate_exposure<S: 'static>(
         &mut self,
         device: &wgpu::Device,
         queue: &wgpu::Queue,
@@ -419,6 +441,10 @@ impl RuneGpu {
 }
 
 impl HeadlessRenderer {
+    pub(crate) fn device_ref(&self) -> &wgpu::Device {
+        &self.device
+    }
+
     pub(crate) fn ensure_rune_gpu(&mut self) -> &mut RuneGpu {
         let size = [self.spec.width, self.spec.height];
         let device = &self.device;
@@ -426,10 +452,132 @@ impl HeadlessRenderer {
             .get_or_insert_with(|| RuneGpu::new(device, size))
     }
 
+    /// Accumulate a `RuneTimeline<SurfaceState>` with per-sample `SurfacePose`
+    /// in `Rgba16Float` on the GPU and composite over `base_pixels` in linear light.
+    pub(crate) fn composite_rune_with_pose(
+        &mut self,
+        base_pixels: &mut [u8],
+        timeline: &mut RuneTimeline<crate::render::rune_surface::SurfaceState>,
+        exposure: &[(f64, f32)],
+        mut pose_at: impl FnMut(f64) -> crate::render::rune_surface::SurfacePose,
+    ) -> Result<()> {
+        self.ensure_rune_gpu();
+        let rune_gpu = self.rune_gpu.as_mut().expect("rune_gpu initialized");
+        let size = timeline.pixel_size();
+        rune_gpu.shutter.ensure_size(&self.device, size);
+        let viewport = (size[0], size[1]);
+
+        let mut pending_weight = 0.0_f32;
+        let mut first_flush = true;
+        let mut prev_clear = [0.0_f32; 4];
+        let mut have_sample = false;
+        let tl_id = timeline.id();
+
+        for &(sample_t, weight) in exposure {
+            if weight <= 0.0 {
+                continue;
+            }
+            let pose = pose_at(sample_t);
+            crate::render::rune_surface::sync_surface_pose(timeline, sample_t, pose);
+            let key = (tl_id, timeline.atlas_generation);
+            let rt = timeline.rt.as_mut().expect("runtime initialized");
+            if rune_gpu.last_timeline != Some(key) {
+                rt.text.atlas.invalidate();
+                rt.images.invalidate();
+                rune_gpu.last_timeline = Some(key);
+                have_sample = false;
+            }
+
+            let clear = rt.clear_color();
+            let inst_bytes: &[u8] = bytemuck::cast_slice::<Instance, u8>(&rt.instances);
+            let unchanged = have_sample
+                && clear == prev_clear
+                && rt.text.atlas.dirty.is_none()
+                && inst_bytes == rune_gpu.prev_instances.as_slice();
+
+            if unchanged {
+                pending_weight += weight;
+                continue;
+            }
+
+            let mut enc = self
+                .device
+                .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                    label: Some("rune surface shutter sample"),
+                });
+            if have_sample && pending_weight > 0.0 {
+                rune_gpu
+                    .shutter
+                    .add_sample(&self.queue, &mut enc, pending_weight, first_flush);
+                first_flush = false;
+            }
+
+            rune_gpu
+                .renderer
+                .upload_images(&self.device, &self.queue, &mut rt.images);
+            rune_gpu.renderer.prepare(
+                &self.device,
+                &self.queue,
+                &mut rt.text.atlas,
+                &rt.instances,
+                viewport,
+            );
+            rune_gpu
+                .renderer
+                .draw(&mut enc, &rune_gpu.shutter.sample_view, clear);
+            rune_gpu.renderer.submit(&self.queue, enc);
+
+            rune_gpu.prev_instances.clear();
+            rune_gpu.prev_instances.extend_from_slice(inst_bytes);
+            prev_clear = clear;
+            pending_weight = weight;
+            have_sample = true;
+        }
+
+        if !have_sample || pending_weight <= 0.0 {
+            return Ok(());
+        }
+
+        self.queue.write_texture(
+            wgpu::TexelCopyTextureInfo {
+                texture: &self.texture,
+                mip_level: 0,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+            },
+            base_pixels,
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(self.spec.width * BYTES_PER_PIXEL),
+                rows_per_image: Some(self.spec.height),
+            },
+            wgpu::Extent3d {
+                width: self.spec.width,
+                height: self.spec.height,
+                depth_or_array_layers: 1,
+            },
+        );
+
+        let mut enc = self
+            .device
+            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("rune surface composite over base"),
+            });
+        rune_gpu
+            .shutter
+            .add_sample(&self.queue, &mut enc, pending_weight, first_flush);
+        rune_gpu
+            .shutter
+            .composite_over(&self.queue, &mut enc, &self.view, 1.0);
+        let out = self.read_frame(enc)?;
+        base_pixels.copy_from_slice(&out);
+        Ok(())
+    }
+
     /// Render a `RuneTimeline<S>` across `exposure` on the shared `wgpu::Device`
     /// and read back a single exposed `Rgba8UnormSrgb` frame.
     #[allow(dead_code)]
-    pub(crate) fn render_rune_exposure<S: Clone + 'static>(
+    pub(crate) fn render_rune_exposure<S: 'static>(
         &mut self,
         timeline: &mut RuneTimeline<S>,
         exposure: &[(f64, f32)],
@@ -458,7 +606,7 @@ impl HeadlessRenderer {
     /// the GPU and composite it over `base_pixels` (`WIDTH × HEIGHT × 4`) in a
     /// single upload + linear blend + readback pass.
     #[allow(dead_code)]
-    pub(crate) fn composite_rune_exposure<S: Clone + 'static>(
+    pub(crate) fn composite_rune_exposure<S: 'static>(
         &mut self,
         base_pixels: &mut [u8],
         timeline: &mut RuneTimeline<S>,
@@ -509,7 +657,7 @@ impl HeadlessRenderer {
     /// the GPU with zero CPU readback (for 2.5D `StageElement::RuneCard` and live
     /// Studio preview).
     #[allow(dead_code)]
-    pub(crate) fn render_rune_texture_exposure<S: Clone + 'static>(
+    pub(crate) fn render_rune_texture_exposure<S: 'static>(
         &mut self,
         timeline: &mut RuneTimeline<S>,
         exposure: &[(f64, f32)],

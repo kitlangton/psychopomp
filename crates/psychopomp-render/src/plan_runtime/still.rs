@@ -81,6 +81,13 @@ impl Loaded {
     }
 
     /// Encode `window` of the global clock to `output`.
+    pub(super) fn audit_rune_motion(&self) -> Result<()> {
+        match self {
+            Self::Plan(plan) => plan.audit_rune_motion(),
+            Self::Reel(reel) => reel.audit_rune_motion(),
+        }
+    }
+
     pub(super) fn render_video(
         &self,
         renderer: &mut HeadlessRenderer,

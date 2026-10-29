@@ -11,10 +11,10 @@ use psychopomp::{
     plan::{
         ReelPlan, ReelSegmentPlan, ReelTransitionStyle, ReelWipePlan, ScenePlan, WipeDirection,
     },
+    rune_surface::{KitNode, KitTone, RuneAction, RuneSurfaceActor, RuneSurfacePlan, kit},
     sfx,
     stage::{Fill, Material, StageActor, StageElement, StagePlan, StagePost},
     tone::Tone,
-    video::{self, VideoActor, VideoPlan},
 };
 use psychopomp_pr_walkthrough::film::{Pr, chip, code, footer, header, span};
 
@@ -88,6 +88,41 @@ fn build_reel(narration_dir: &std::path::Path) -> Result<ReelPlan> {
     Ok(reel)
 }
 
+fn usage_card(static_pill: bool) -> KitNode {
+    let seg = if static_pill {
+        kit::segmented_static("seg", &["Cost", "Tokens", "Web Search"], 0, Some(280.0))
+    } else {
+        kit::segmented("seg", &["Cost", "Tokens", "Web Search"], 0, Some(280.0))
+    };
+    kit::dialog(
+        "usage-card",
+        560.0,
+        vec![
+            kit::row(
+                "hdr",
+                12.0,
+                vec![
+                    kit::col(
+                        "titles",
+                        2.0,
+                        vec![
+                            kit::text("Workspace usage", 15.5, 620.0, KitTone::Base),
+                            kit::text("Last 7 days · anomaly-prod", 12.0, 450.0, KitTone::Muted),
+                        ],
+                    ),
+                    kit::spacer(),
+                    seg,
+                ],
+            ),
+            kit::divider(),
+            kit::note(
+                "metrics",
+                "```facts\nActive metric: {working} Cost ($412.80)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```",
+            ),
+        ],
+    )
+}
+
 fn build_video_before(narration: &Narration) -> Result<ScenePlan> {
     let reading = narration.reading(seconds(0.6), [("compare-before", seconds(2.4))])?;
     let duration = reading.duration();
@@ -98,24 +133,39 @@ fn build_video_before(narration: &Narration) -> Result<ScenePlan> {
     let mut before_chip = chip(&mut scene, "chip-before", Tone::Error, "before")?;
     before_chip.show(&mut scene, seconds(0.4));
 
-    let mut card = VideoActor::declare(
+    let mut card = RuneSurfaceActor::declare(
         &mut scene,
-        "recording-before",
-        VideoPlan::new("before-clip", [1120, 488], 60)
-            .at([960.0, 510.0], 1440.0)
-            .titled("opencode-console  /  segmented-control (before)"),
-        video::media(
-            "before-clip",
-            "../../assets/console-segmented-control/before.mp4",
-            (0, duration),
-            0,
-        ),
+        "surface-before",
+        RuneSurfacePlan::kit(usage_card(true)).at([960.0, 515.0]),
     )?;
-    card.fly_in(&mut scene, seconds(0.15));
-
-    let focus_at = spoken.at("cost and tokens");
-    card.focus(&mut scene, focus_at, [18.0, 62.0, 580.0, 215.0], 0.85);
-    card.unfocus(&mut scene, spoken.at("no feedback"), 0.85);
+    card.settle_in(&mut scene, seconds(0.15));
+    card.commit(
+        &mut scene,
+        spoken.at("cost and tokens"),
+        "static flip to tokens",
+        RuneAction::Batch {
+            actions: vec![
+                RuneAction::SelectSegment {
+                    key: "seg".into(),
+                    index: 1,
+                },
+                RuneAction::SetText {
+                    key: "metrics".into(),
+                    text: "```facts\nActive metric: {warn} Tokens (84.2M)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```".into(),
+                    tone: None,
+                },
+            ],
+        },
+    )?;
+    card.commit(
+        &mut scene,
+        spoken.at("no feedback"),
+        "static flip to search",
+        RuneAction::SelectSegment {
+            key: "seg".into(),
+            index: 2,
+        },
+    )?;
 
     let mut cap = footer(
         &mut scene,
@@ -143,32 +193,47 @@ fn build_video_after(narration: &Narration) -> Result<ScenePlan> {
     let mut after_chip = chip(&mut scene, "chip-after", Tone::Success, "after the fix")?;
     after_chip.show(&mut scene, seconds(0.3));
 
-    let mut card = VideoActor::declare(
+    let mut card = RuneSurfaceActor::declare(
         &mut scene,
-        "recording-after",
-        VideoPlan::new("after-clip", [1120, 488], 60)
-            .at([960.0, 510.0], 1440.0)
-            .titled("opencode-console  /  segmented-control (solid-motion)"),
-        video::media(
-            "after-clip",
-            "../../assets/console-segmented-control/after.mp4",
-            (0, duration),
-            0,
-        ),
+        "surface-after",
+        RuneSurfacePlan::kit(usage_card(false)).at([960.0, 515.0]),
     )?;
-    card.fly_in(&mut scene, 0);
-
-    let focus_at = spoken.at("position and width");
-    card.focus(&mut scene, focus_at, [18.0, 62.0, 580.0, 215.0], 0.85);
-    card.unfocus(&mut scene, spoken.at("first paint"), 0.85);
+    card.settle_in(&mut scene, 0);
+    card.commit(
+        &mut scene,
+        spoken.at("position and width"),
+        "slide pill to tokens",
+        RuneAction::Batch {
+            actions: vec![
+                RuneAction::SelectSegment {
+                    key: "seg".into(),
+                    index: 1,
+                },
+                RuneAction::SetText {
+                    key: "metrics".into(),
+                    text: "```facts\nActive metric: {verified} Tokens (84.2M)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```".into(),
+                    tone: None,
+                },
+            ],
+        },
+    )?;
+    card.commit(
+        &mut scene,
+        spoken.at("first paint"),
+        "slide pill to web search",
+        RuneAction::SelectSegment {
+            key: "seg".into(),
+            index: 2,
+        },
+    )?;
 
     let mut cap = footer(
         &mut scene,
         "footer-after",
         vec![
-            span("solid-motion ", Tone::Success),
+            span("rune-kit SegmentedControl ", Tone::Success),
             span(
-                "· 150ms snap spring on x + width · hover brightens inactive labels",
+                "· spring indicator pill on x + width · zero external MP4s",
                 Tone::Muted,
             ),
         ],

@@ -59,6 +59,7 @@ use crate::{
 };
 
 pub use crate::author::{CONTENT_LAG, DRAW_SECONDS, MILLISECOND, STAGGER, millis, spread};
+pub use crate::rune_surface::ScoreRuneSurface as RuneSurface;
 
 /// Calibrated spring motion profiles from `explainer-motion/TECHNIQUES.md`
 /// (re-exposing [`SpringPlan`] constants).

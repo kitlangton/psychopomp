@@ -474,6 +474,7 @@ fn verify_scene(
     }
 
     let loaded = Loaded::load_on(&source, record.theme, renderer)?;
+    loaded.audit_rune_motion()?;
     let duration = loaded.duration_seconds();
     record.duration = Some(duration);
     let outside = scene

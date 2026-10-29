@@ -49,465 +49,26 @@
                 },
                 {
                   "at": [
-                    1230.0,
+                    1240.0,
                     520.0,
                     0.0
                   ],
-                  "corner": 18.0,
-                  "fill": "raised",
                   "id": "dialog",
                   "kind": "shape",
                   "shape": {
                     "rect": [
-                      820.0,
+                      840.0,
                       440.0
                     ]
-                  },
-                  "width": 1.2000000476837158
-                },
-                {
-                  "at": [
-                    1230.0,
-                    520.0,
-                    -1.0
-                  ],
-                  "corner": 18.0,
-                  "id": "dialog-error",
-                  "kind": "shape",
-                  "shape": {
-                    "rect": [
-                      820.0,
-                      440.0
-                    ]
-                  },
-                  "stroke": "error",
-                  "width": 2.0
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    350.0,
-                    -2.0
-                  ],
-                  "id": "title",
-                  "kind": "label",
-                  "size": 28.0,
-                  "spans": [
-                    {
-                      "text": "Connect an integration"
-                    }
-                  ]
-                },
-                {
-                  "align": "right",
-                  "at": [
-                    1600.0,
-                    350.0,
-                    -2.0
-                  ],
-                  "id": "esc",
-                  "kind": "label",
-                  "size": 22.0,
-                  "spans": [
-                    {
-                      "text": "esc",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    400.0,
-                    -2.0
-                  ],
-                  "id": "popular",
-                  "kind": "label",
-                  "size": 20.0,
-                  "spans": [
-                    {
-                      "text": "Popular",
-                      "tone": "request"
-                    }
-                  ]
-                },
-                {
-                  "at": [
-                    1230.0,
-                    450.0,
-                    -1.0
-                  ],
-                  "corner": 8.0,
-                  "fill": "accent",
-                  "fillOpacity": 0.10000000149011612,
-                  "id": "row-hi",
-                  "kind": "shape",
-                  "shape": {
-                    "rect": [
-                      760.0,
-                      50.0
-                    ]
-                  },
-                  "stroke": "accent",
-                  "width": 1.2000000476837158
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    450.0,
-                    -2.0
-                  ],
-                  "id": "go-name",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "OpenCode Go"
-                    }
-                  ]
-                },
-                {
-                  "align": "right",
-                  "at": [
-                    1600.0,
-                    450.0,
-                    -2.0
-                  ],
-                  "id": "go-hint",
-                  "kind": "label",
-                  "size": 23.0,
-                  "spans": [
-                    {
-                      "text": "API key only",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    510.0,
-                    -2.0
-                  ],
-                  "id": "console-name",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "OpenCode Console"
-                    }
-                  ]
-                },
-                {
-                  "align": "right",
-                  "at": [
-                    1600.0,
-                    510.0,
-                    -2.0
-                  ],
-                  "id": "console-hint",
-                  "kind": "label",
-                  "size": 23.0,
-                  "spans": [
-                    {
-                      "text": "sign in or API key",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    570.0,
-                    -2.0
-                  ],
-                  "id": "anthropic-name",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "Anthropic"
-                    }
-                  ]
-                },
-                {
-                  "align": "right",
-                  "at": [
-                    1600.0,
-                    570.0,
-                    -2.0
-                  ],
-                  "id": "anthropic-hint",
-                  "kind": "label",
-                  "size": 23.0,
-                  "spans": [
-                    {
-                      "text": "Claude Max or API key",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    630.0,
-                    -2.0
-                  ],
-                  "id": "openai-name",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "OpenAI"
-                    }
-                  ]
-                },
-                {
-                  "align": "right",
-                  "at": [
-                    1600.0,
-                    630.0,
-                    -2.0
-                  ],
-                  "id": "openai-hint",
-                  "kind": "label",
-                  "size": 23.0,
-                  "spans": [
-                    {
-                      "text": "ChatGPT Plus/Pro or API key",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    450.0,
-                    -3.0
-                  ],
-                  "id": "go-name-error",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "OpenCode Go",
-                      "tone": "error"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    510.0,
-                    -2.0
-                  ],
-                  "id": "opencode-name",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "OpenCode"
-                    }
-                  ]
-                },
-                {
-                  "align": "right",
-                  "at": [
-                    1600.0,
-                    510.0,
-                    -2.0
-                  ],
-                  "id": "opencode-hint",
-                  "kind": "label",
-                  "size": 23.0,
-                  "spans": [
-                    {
-                      "text": "sign in or API key · ",
-                      "tone": "muted"
-                    },
-                    {
-                      "text": "Go included",
-                      "tone": "success"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    350.0,
-                    -2.0
-                  ],
-                  "id": "prompt-title",
-                  "kind": "label",
-                  "size": 28.0,
-                  "spans": [
-                    {
-                      "text": "Connect OpenCode Go"
-                    }
-                  ]
-                },
-                {
-                  "at": [
-                    1230.0,
-                    470.0,
-                    -1.0
-                  ],
-                  "corner": 10.0,
-                  "fill": "well",
-                  "id": "input",
-                  "kind": "shape",
-                  "shape": {
-                    "rect": [
-                      760.0,
-                      64.0
-                    ]
-                  },
-                  "width": 1.0
-                },
-                {
-                  "at": [
-                    882.0,
-                    470.0,
-                    -2.0
-                  ],
-                  "fill": "accent",
-                  "id": "caret",
-                  "kind": "shape",
-                  "shape": {
-                    "rect": [
-                      3.0,
-                      32.0
-                    ]
-                  },
-                  "stroke": null
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    894.0,
-                    470.0,
-                    -2.0
-                  ],
-                  "id": "placeholder",
-                  "kind": "label",
-                  "size": 26.0,
-                  "spans": [
-                    {
-                      "text": "API key",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "align": "left",
-                  "at": [
-                    860.0,
-                    550.0,
-                    -2.0
-                  ],
-                  "id": "submit",
-                  "kind": "label",
-                  "size": 22.0,
-                  "spans": [
-                    {
-                      "text": "submit"
-                    },
-                    {
-                      "text": "  enter",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "at": [
-                    1230.0,
-                    800.0,
-                    0.0
-                  ],
-                  "id": "note-stuck",
-                  "kind": "label",
-                  "size": 24.0,
-                  "spans": [
-                    {
-                      "text": "no sign-in on this row",
-                      "tone": "error"
-                    }
-                  ]
-                },
-                {
-                  "at": [
-                    1230.0,
-                    800.0,
-                    0.0
-                  ],
-                  "id": "note-models",
-                  "kind": "label",
-                  "size": 24.0,
-                  "spans": [
-                    {
-                      "text": "+ Go models",
-                      "tone": "success"
-                    },
-                    {
-                      "text": " from the Console",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "at": [
-                    1230.0,
-                    800.0,
-                    0.0
-                  ],
-                  "id": "note-key",
-                  "kind": "label",
-                  "size": 24.0,
-                  "spans": [
-                    {
-                      "text": "Go key",
-                      "tone": "accent"
-                    },
-                    {
-                      "text": " = OpenCode API key · paste it in this row",
-                      "tone": "muted"
-                    }
-                  ]
-                },
-                {
-                  "at": [
-                    1230.0,
-                    846.0,
-                    0.0
-                  ],
-                  "id": "note-env",
-                  "kind": "label",
-                  "size": 24.0,
-                  "spans": [
-                    {
-                      "text": "or set ",
-                      "tone": "muted"
-                    },
-                    {
-                      "text": "OPENCODE_API_KEY"
-                    }
-                  ]
+                  }
                 },
                 {
                   "bend": 0.0,
                   "from": "dialog",
                   "id": "link",
                   "kind": "beam",
-                  "to": "console"
+                  "to": "console",
+                  "tone": "request"
                 },
                 {
                   "beam": "link",
@@ -538,17 +99,6 @@
                   "label": "Go models",
                   "reverse": true,
                   "tone": "success"
-                },
-                {
-                  "at": [
-                    1180.0,
-                    474.0,
-                    -12.0
-                  ],
-                  "icon": "cursor",
-                  "id": "cursor",
-                  "kind": "icon",
-                  "size": 52.0
                 }
               ],
               "post": {
@@ -557,6 +107,338 @@
                 "grain": 0.012000000104308128,
                 "vignette": 0.2199999988079071
               }
+            }
+          },
+          {
+            "id": "connect",
+            "recipe": "rune-surface",
+            "data": {
+              "commits": [
+                {
+                  "action": {
+                    "key": "go",
+                    "op": "set-selected",
+                    "selected": true
+                  },
+                  "atNanos": 6140000000,
+                  "label": "highlight go row"
+                },
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "key": "list-view",
+                        "op": "set-visible",
+                        "visible": false
+                      },
+                      {
+                        "key": "api-prompt",
+                        "op": "set-visible",
+                        "visible": true
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 9240000000,
+                  "label": "show bare api key prompt"
+                },
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "key": "dialog",
+                        "op": "set-border-tone",
+                        "tone": "danger"
+                      },
+                      {
+                        "key": "stuck-hint",
+                        "op": "set-visible",
+                        "visible": true
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 11200000000,
+                  "label": "flag missing oauth on go row"
+                },
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "key": "dialog",
+                        "op": "set-border-tone",
+                        "tone": null
+                      },
+                      {
+                        "key": "api-prompt",
+                        "op": "set-visible",
+                        "visible": false
+                      },
+                      {
+                        "key": "list-view",
+                        "op": "set-visible",
+                        "visible": true
+                      },
+                      {
+                        "key": "go",
+                        "op": "set-selected",
+                        "selected": false
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 17299000000,
+                  "label": "escape back to provider list"
+                },
+                {
+                  "action": {
+                    "key": "console",
+                    "op": "set-selected",
+                    "selected": true
+                  },
+                  "atNanos": 24179000000,
+                  "label": "select console row"
+                },
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "key": "status-note",
+                        "op": "set-text",
+                        "text": "+ Go models unlocked from Console workspace",
+                        "tone": "success"
+                      },
+                      {
+                        "key": "status-note",
+                        "op": "set-visible",
+                        "visible": true
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 29709000000,
+                  "label": "show go models unlocked"
+                },
+                {
+                  "action": {
+                    "key": "go",
+                    "op": "set-row",
+                    "tone": "danger"
+                  },
+                  "atNanos": 33799000000,
+                  "label": "warn on duplicate go row"
+                },
+                {
+                  "action": {
+                    "key": "status-note",
+                    "op": "set-visible",
+                    "visible": false
+                  },
+                  "atNanos": 36358000000,
+                  "label": "clear console note"
+                },
+                {
+                  "action": {
+                    "key": "go",
+                    "op": "set-visible",
+                    "visible": false
+                  },
+                  "atNanos": 38918000000,
+                  "label": "drop go row"
+                },
+                {
+                  "action": {
+                    "hint": "sign in or API key · Go included",
+                    "hint_tone": "success",
+                    "key": "console",
+                    "op": "set-row",
+                    "selected": true,
+                    "title": "OpenCode",
+                    "tone": "base"
+                  },
+                  "atNanos": 40718000000,
+                  "label": "rename console to opencode"
+                },
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "key": "status-note",
+                        "op": "set-text",
+                        "text": "Paste an API key or set OPENCODE_API_KEY in the same row",
+                        "tone": "muted"
+                      },
+                      {
+                        "key": "status-note",
+                        "op": "set-visible",
+                        "visible": true
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 45378000000,
+                  "label": "show api key support note"
+                }
+              ],
+              "origin": [
+                1240.0,
+                520.0
+              ],
+              "surface": {
+                "recipe": "kit",
+                "root": {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "key": "dlg-title",
+                          "kind": "text",
+                          "size": 15.0,
+                          "text": "Connect an integration",
+                          "tone": "base",
+                          "weight": 600.0
+                        },
+                        {
+                          "kind": "spacer"
+                        },
+                        {
+                          "kind": "badge",
+                          "label": "esc",
+                          "tone": "muted"
+                        }
+                      ],
+                      "gap": 8.0,
+                      "key": "hdr",
+                      "kind": "row",
+                      "padding": 0.0
+                    },
+                    {
+                      "key": "search",
+                      "kind": "text-input",
+                      "placeholder": "Search 230 providers…",
+                      "value": ""
+                    },
+                    {
+                      "children": [
+                        {
+                          "kind": "text",
+                          "size": 11.5,
+                          "text": "Popular",
+                          "tone": "muted",
+                          "weight": 560.0
+                        },
+                        {
+                          "children": [
+                            {
+                              "hint": "API key only",
+                              "hint_tone": "muted",
+                              "key": "go",
+                              "kind": "list-row",
+                              "title": "OpenCode Go",
+                              "tone": "base"
+                            },
+                            {
+                              "hint": "sign in or API key",
+                              "hint_tone": "muted",
+                              "key": "console",
+                              "kind": "list-row",
+                              "title": "OpenCode Console",
+                              "tone": "base"
+                            },
+                            {
+                              "hint": "Claude Max or API key",
+                              "hint_tone": "muted",
+                              "key": "anthropic",
+                              "kind": "list-row",
+                              "title": "Anthropic",
+                              "tone": "base"
+                            },
+                            {
+                              "hint": "ChatGPT Plus/Pro or API key",
+                              "hint_tone": "muted",
+                              "key": "openai",
+                              "kind": "list-row",
+                              "title": "OpenAI",
+                              "tone": "base"
+                            }
+                          ],
+                          "gap": 4.0,
+                          "key": "rows",
+                          "kind": "col",
+                          "padding": 0.0
+                        }
+                      ],
+                      "gap": 6.0,
+                      "key": "list-view",
+                      "kind": "col",
+                      "padding": 0.0
+                    },
+                    {
+                      "children": [
+                        {
+                          "kind": "text",
+                          "size": 13.0,
+                          "text": "Enter your OpenCode Go API key",
+                          "tone": "muted",
+                          "weight": 520.0
+                        },
+                        {
+                          "key": "api-key",
+                          "kind": "text-input",
+                          "placeholder": "sk-opencode-…",
+                          "value": ""
+                        },
+                        {
+                          "children": [
+                            {
+                              "key": "stuck-hint",
+                              "kind": "text",
+                              "size": 12.0,
+                              "text": "No browser sign-in on this row",
+                              "tone": "danger",
+                              "visible": false,
+                              "weight": 500.0
+                            },
+                            {
+                              "kind": "spacer"
+                            },
+                            {
+                              "key": "submit",
+                              "kind": "button",
+                              "label": "Submit",
+                              "primary": true
+                            }
+                          ],
+                          "gap": 8.0,
+                          "key": "prompt-actions",
+                          "kind": "row",
+                          "padding": 0.0
+                        }
+                      ],
+                      "gap": 10.0,
+                      "key": "api-prompt",
+                      "kind": "col",
+                      "padding": 0.0,
+                      "visible": false
+                    },
+                    {
+                      "key": "status-note",
+                      "kind": "text",
+                      "size": 12.0,
+                      "text": "",
+                      "tone": "muted",
+                      "visible": false,
+                      "weight": 500.0
+                    }
+                  ],
+                  "gap": 12.0,
+                  "key": "dialog",
+                  "kind": "dialog",
+                  "padding": 18.0,
+                  "width": 420.0
+                }
+              },
+              "theme": "opencode"
             }
           },
           {
@@ -729,22 +611,17 @@
         "semanticTargets": [],
         "continuousChannels": [
           {
-            "id": "stage.console.opacity",
-            "actorId": "stage",
-            "property": "console.opacity",
+            "id": "connect.opacity",
+            "actorId": "connect",
+            "property": "opacity",
             "initial": 0.0,
             "events": [
               {
-                "operation": "set",
-                "atNanos": 2820000000,
-                "value": 0.0
-              },
-              {
                 "operation": "ease",
-                "atNanos": 2820000000,
+                "atNanos": 5020000000,
                 "target": 1.0,
-                "durationNanos": 180000000,
-                "curve": "smootherstep"
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
               }
             ]
           },
@@ -753,857 +630,7 @@
             "actorId": "stage",
             "property": "dialog.opacity",
             "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5020000000,
-                "target": 1.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.dialog-error.opacity",
-            "actorId": "stage",
-            "property": "dialog-error.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 11200000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.title.opacity",
-            "actorId": "stage",
-            "property": "title.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5140000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17499000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.esc.opacity",
-            "actorId": "stage",
-            "property": "esc.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5180000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17529000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.popular.opacity",
-            "actorId": "stage",
-            "property": "popular.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5220000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17559000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.row-hi.opacity",
-            "actorId": "stage",
-            "property": "row-hi.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 6140000000,
-                "target": 1.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 24179000000,
-                "target": 1.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.go-name.opacity",
-            "actorId": "stage",
-            "property": "go-name.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5260000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17589000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 38918000000,
-                "target": 0.0,
-                "responseSeconds": 0.18,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.go-hint.opacity",
-            "actorId": "stage",
-            "property": "go-hint.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5300000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17619000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 38918000000,
-                "target": 0.0,
-                "responseSeconds": 0.18,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.console-name.opacity",
-            "actorId": "stage",
-            "property": "console-name.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5340000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17649000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 40718000000,
-                "target": 0.0,
-                "responseSeconds": 0.18,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.console-hint.opacity",
-            "actorId": "stage",
-            "property": "console-hint.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5380000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17679000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 40798000000,
-                "target": 0.0,
-                "responseSeconds": 0.18,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.anthropic-name.opacity",
-            "actorId": "stage",
-            "property": "anthropic-name.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5420000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17709000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.anthropic-hint.opacity",
-            "actorId": "stage",
-            "property": "anthropic-hint.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5460000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17739000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.openai-name.opacity",
-            "actorId": "stage",
-            "property": "openai-name.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5500000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17769000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.openai-hint.opacity",
-            "actorId": "stage",
-            "property": "openai-hint.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5540000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.21600002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17799000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.go-name-error.opacity",
-            "actorId": "stage",
-            "property": "go-name-error.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 33799000000,
-                "target": 1.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 35399000000,
-                "target": 0.0,
-                "responseSeconds": 0.48000002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 38918000000,
-                "target": 1.0,
-                "responseSeconds": 0.18,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 39218000000,
-                "target": 0.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.opencode-name.opacity",
-            "actorId": "stage",
-            "property": "opencode-name.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 40918000000,
-                "target": 1.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.opencode-hint.opacity",
-            "actorId": "stage",
-            "property": "opencode-hint.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 40998000000,
-                "target": 1.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.prompt-title.opacity",
-            "actorId": "stage",
-            "property": "prompt-title.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 9460000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.input.opacity",
-            "actorId": "stage",
-            "property": "input.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 9520000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.caret.opacity",
-            "actorId": "stage",
-            "property": "caret.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 9580000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.placeholder.opacity",
-            "actorId": "stage",
-            "property": "placeholder.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 9640000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.submit.opacity",
-            "actorId": "stage",
-            "property": "submit.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 9700000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.note-stuck.opacity",
-            "actorId": "stage",
-            "property": "note-stuck.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 11350000000,
-                "value": 1.0
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": 0.0,
-                "responseSeconds": 0.24000001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.cursor.opacity",
-            "actorId": "stage",
-            "property": "cursor.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 6140000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 9240000000,
-                "target": 0.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 24179000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 28229000000,
-                "target": 0.0,
-                "responseSeconds": 0.48000002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 42698000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 44098000000,
-                "target": 0.0,
-                "responseSeconds": 0.48000002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.note-models.opacity",
-            "actorId": "stage",
-            "property": "note-models.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 29709000000,
-                "value": 1.0
-              },
-              {
-                "operation": "spring",
-                "atNanos": 36358000000,
-                "target": 0.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 45168000000,
-                "target": 1.0,
-                "responseSeconds": 0.36,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 45378000000,
-                "target": 0.0,
-                "responseSeconds": 0.3,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.note-key.opacity",
-            "actorId": "stage",
-            "property": "note-key.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 45678000000,
-                "value": 1.0
-              }
-            ]
-          },
-          {
-            "id": "stage.note-env.opacity",
-            "actorId": "stage",
-            "property": "note-env.opacity",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 50898000000,
-                "value": 1.0
-              }
-            ]
+            "events": []
           },
           {
             "id": "stage.link.draw",
@@ -1633,98 +660,6 @@
             ]
           },
           {
-            "id": "stage.cursor.x",
-            "actorId": "stage",
-            "property": "cursor.x",
-            "initial": 160.0,
-            "events": [
-              {
-                "operation": "ease",
-                "atNanos": 6140000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "smootherstep"
-              },
-              {
-                "operation": "set",
-                "atNanos": 24179000000,
-                "value": 120.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 24179000000,
-                "target": 0.0,
-                "durationNanos": 700000000,
-                "curve": "smootherstep"
-              },
-              {
-                "operation": "set",
-                "atNanos": 42698000000,
-                "value": 120.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 42698000000,
-                "target": 0.0,
-                "durationNanos": 600000000,
-                "curve": "smootherstep"
-              }
-            ]
-          },
-          {
-            "id": "stage.cursor.y",
-            "actorId": "stage",
-            "property": "cursor.y",
-            "initial": 140.0,
-            "events": [
-              {
-                "operation": "ease",
-                "atNanos": 6140000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "smootherstep"
-              },
-              {
-                "operation": "set",
-                "atNanos": 24179000000,
-                "value": 180.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 24179000000,
-                "target": 60.0,
-                "durationNanos": 700000000,
-                "curve": "smootherstep"
-              },
-              {
-                "operation": "set",
-                "atNanos": 42698000000,
-                "value": 120.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 42698000000,
-                "target": 0.0,
-                "durationNanos": 600000000,
-                "curve": "smootherstep"
-              }
-            ]
-          },
-          {
-            "id": "stage.opencode-name.y",
-            "actorId": "stage",
-            "property": "opencode-name.y",
-            "initial": -60.0,
-            "events": []
-          },
-          {
-            "id": "stage.opencode-hint.y",
-            "actorId": "stage",
-            "property": "opencode-hint.y",
-            "initial": -60.0,
-            "events": []
-          },
-          {
             "id": "stage.camera.z",
             "actorId": "stage",
             "property": "camera.z",
@@ -1735,15 +670,6 @@
                 "atNanos": 0,
                 "target": 0.0,
                 "responseSeconds": 2.64,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 37198000000,
-                "target": 50.0,
-                "responseSeconds": 2.16,
                 "dampingRatio": 1.0,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
@@ -2068,6 +994,26 @@
             ]
           },
           {
+            "id": "stage.console.opacity",
+            "actorId": "stage",
+            "property": "console.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 2820000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 2820000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
             "id": "stage.console.blur",
             "actorId": "stage",
             "property": "console.blur",
@@ -2236,18 +1182,6 @@
               },
               {
                 "operation": "set",
-                "atNanos": 31759000000,
-                "value": 0.45
-              },
-              {
-                "operation": "ease",
-                "atNanos": 31759000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
                 "atNanos": 44098000000,
                 "value": 0.6
               },
@@ -2261,70 +1195,9 @@
             ]
           },
           {
-            "id": "stage.camera.x",
-            "actorId": "stage",
-            "property": "camera.x",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5020000000,
-                "target": 50.0,
-                "responseSeconds": 1.9200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 17299000000,
-                "target": -30.0,
-                "responseSeconds": 2.16,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 24179000000,
-                "target": 30.0,
-                "responseSeconds": 1.9200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 37198000000,
-                "target": 80.0,
-                "responseSeconds": 2.16,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.dialog.scale",
-            "actorId": "stage",
-            "property": "dialog.scale",
-            "initial": 1.035,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5020000000,
-                "target": 1.0,
-                "responseSeconds": 0.72,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.dialog.y",
-            "actorId": "stage",
-            "property": "dialog.y",
+            "id": "connect.y",
+            "actorId": "connect",
+            "property": "y",
             "initial": 18.0,
             "events": [
               {
@@ -2339,314 +1212,19 @@
             ]
           },
           {
-            "id": "stage.row-hi.flash",
-            "actorId": "stage",
-            "property": "row-hi.flash",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 6240000000,
-                "value": 0.5
-              },
-              {
-                "operation": "ease",
-                "atNanos": 6240000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 8510000000,
-                "value": 0.7
-              },
-              {
-                "operation": "ease",
-                "atNanos": 8510000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 26319000000,
-                "value": 0.7
-              },
-              {
-                "operation": "ease",
-                "atNanos": 26319000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 41838000000,
-                "value": 0.6
-              },
-              {
-                "operation": "ease",
-                "atNanos": 41838000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 43338000000,
-                "value": 0.7
-              },
-              {
-                "operation": "ease",
-                "atNanos": 43338000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 50398000000,
-                "value": 0.5
-              },
-              {
-                "operation": "ease",
-                "atNanos": 50398000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              }
-            ]
-          },
-          {
-            "id": "stage.cursor.scale",
-            "actorId": "stage",
-            "property": "cursor.scale",
-            "initial": 1.0,
+            "id": "connect.scale",
+            "actorId": "connect",
+            "property": "scale",
+            "initial": 0.985,
             "events": [
               {
                 "operation": "spring",
-                "atNanos": 8470000000,
-                "target": 0.86,
-                "responseSeconds": 0.072000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 8540000000,
+                "atNanos": 5020000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
-                "dampingRatio": 0.8,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 26279000000,
-                "target": 0.86,
-                "responseSeconds": 0.072000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 26349000000,
-                "target": 1.0,
-                "responseSeconds": 0.42000002,
-                "dampingRatio": 0.8,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 43298000000,
-                "target": 0.86,
-                "responseSeconds": 0.072000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 43368000000,
-                "target": 1.0,
-                "responseSeconds": 0.42000002,
-                "dampingRatio": 0.8,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.input.flash",
-            "actorId": "stage",
-            "property": "input.flash",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 9840000000,
-                "value": 0.4
-              },
-              {
-                "operation": "ease",
-                "atNanos": 9840000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              }
-            ]
-          },
-          {
-            "id": "stage.dialog-error.flash",
-            "actorId": "stage",
-            "property": "dialog-error.flash",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 11200000000,
-                "value": 0.6
-              },
-              {
-                "operation": "ease",
-                "atNanos": 11200000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 15080000000,
-                "value": 0.8
-              },
-              {
-                "operation": "ease",
-                "atNanos": 15080000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              }
-            ]
-          },
-          {
-            "id": "stage.note-stuck.typed",
-            "actorId": "stage",
-            "property": "note-stuck.typed",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 11379411764,
-                "value": 0.045454547
-              },
-              {
-                "operation": "set",
-                "atNanos": 11408823528,
-                "value": 0.09090909
-              },
-              {
-                "operation": "set",
-                "atNanos": 11438235292,
-                "value": 0.13636364
-              },
-              {
-                "operation": "set",
-                "atNanos": 11467647056,
-                "value": 0.18181819
-              },
-              {
-                "operation": "set",
-                "atNanos": 11497058820,
-                "value": 0.22727273
-              },
-              {
-                "operation": "set",
-                "atNanos": 11526470584,
-                "value": 0.27272728
-              },
-              {
-                "operation": "set",
-                "atNanos": 11555882348,
-                "value": 0.3181818
-              },
-              {
-                "operation": "set",
-                "atNanos": 11585294112,
-                "value": 0.36363637
-              },
-              {
-                "operation": "set",
-                "atNanos": 11614705876,
-                "value": 0.4090909
-              },
-              {
-                "operation": "set",
-                "atNanos": 11644117640,
-                "value": 0.45454547
-              },
-              {
-                "operation": "set",
-                "atNanos": 11673529404,
-                "value": 0.5
-              },
-              {
-                "operation": "set",
-                "atNanos": 11702941168,
-                "value": 0.54545456
-              },
-              {
-                "operation": "set",
-                "atNanos": 11732352932,
-                "value": 0.59090906
-              },
-              {
-                "operation": "set",
-                "atNanos": 11761764696,
-                "value": 0.6363636
-              },
-              {
-                "operation": "set",
-                "atNanos": 11791176460,
-                "value": 0.6818182
-              },
-              {
-                "operation": "set",
-                "atNanos": 11820588224,
-                "value": 0.72727275
-              },
-              {
-                "operation": "set",
-                "atNanos": 11849999988,
-                "value": 0.77272725
-              },
-              {
-                "operation": "set",
-                "atNanos": 11879411752,
-                "value": 0.8181818
-              },
-              {
-                "operation": "set",
-                "atNanos": 11908823516,
-                "value": 0.8636364
-              },
-              {
-                "operation": "set",
-                "atNanos": 11938235280,
-                "value": 0.90909094
-              },
-              {
-                "operation": "set",
-                "atNanos": 11967647044,
-                "value": 0.95454544
-              },
-              {
-                "operation": "set",
-                "atNanos": 11997058808,
-                "value": 1.0
               }
             ]
           },
@@ -2982,28 +1560,6 @@
             ]
           },
           {
-            "id": "stage.row-hi.y",
-            "actorId": "stage",
-            "property": "row-hi.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 24179000000,
-                "value": 60.0
-              },
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": 0.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
             "id": "stage.link.port",
             "actorId": "stage",
             "property": "link.port",
@@ -3107,186 +1663,6 @@
                 "operation": "set",
                 "atNanos": 28619000000,
                 "value": 0.75
-              }
-            ]
-          },
-          {
-            "id": "stage.dialog.flash",
-            "actorId": "stage",
-            "property": "dialog.flash",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 29709000000,
-                "value": 0.6
-              },
-              {
-                "operation": "ease",
-                "atNanos": 29709000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              },
-              {
-                "operation": "set",
-                "atNanos": 45168000000,
-                "value": 0.6
-              },
-              {
-                "operation": "ease",
-                "atNanos": 45168000000,
-                "target": 0.0,
-                "durationNanos": 800000000,
-                "curve": "cubic-out"
-              }
-            ]
-          },
-          {
-            "id": "stage.note-models.typed",
-            "actorId": "stage",
-            "property": "note-models.typed",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 29736777777,
-                "value": 0.035714287
-              },
-              {
-                "operation": "set",
-                "atNanos": 29764555554,
-                "value": 0.071428575
-              },
-              {
-                "operation": "set",
-                "atNanos": 29792333331,
-                "value": 0.10714286
-              },
-              {
-                "operation": "set",
-                "atNanos": 29820111108,
-                "value": 0.14285715
-              },
-              {
-                "operation": "set",
-                "atNanos": 29847888885,
-                "value": 0.17857143
-              },
-              {
-                "operation": "set",
-                "atNanos": 29875666662,
-                "value": 0.21428572
-              },
-              {
-                "operation": "set",
-                "atNanos": 29903444439,
-                "value": 0.25
-              },
-              {
-                "operation": "set",
-                "atNanos": 29931222216,
-                "value": 0.2857143
-              },
-              {
-                "operation": "set",
-                "atNanos": 29958999993,
-                "value": 0.32142857
-              },
-              {
-                "operation": "set",
-                "atNanos": 29986777770,
-                "value": 0.35714287
-              },
-              {
-                "operation": "set",
-                "atNanos": 30014555547,
-                "value": 0.39285713
-              },
-              {
-                "operation": "set",
-                "atNanos": 30042333324,
-                "value": 0.42857143
-              },
-              {
-                "operation": "set",
-                "atNanos": 30070111101,
-                "value": 0.4642857
-              },
-              {
-                "operation": "set",
-                "atNanos": 30097888878,
-                "value": 0.5
-              },
-              {
-                "operation": "set",
-                "atNanos": 30125666655,
-                "value": 0.53571427
-              },
-              {
-                "operation": "set",
-                "atNanos": 30153444432,
-                "value": 0.5714286
-              },
-              {
-                "operation": "set",
-                "atNanos": 30181222209,
-                "value": 0.60714287
-              },
-              {
-                "operation": "set",
-                "atNanos": 30208999986,
-                "value": 0.64285713
-              },
-              {
-                "operation": "set",
-                "atNanos": 30236777763,
-                "value": 0.6785714
-              },
-              {
-                "operation": "set",
-                "atNanos": 30264555540,
-                "value": 0.71428573
-              },
-              {
-                "operation": "set",
-                "atNanos": 30292333317,
-                "value": 0.75
-              },
-              {
-                "operation": "set",
-                "atNanos": 30320111094,
-                "value": 0.78571427
-              },
-              {
-                "operation": "set",
-                "atNanos": 30347888871,
-                "value": 0.8214286
-              },
-              {
-                "operation": "set",
-                "atNanos": 30375666648,
-                "value": 0.85714287
-              },
-              {
-                "operation": "set",
-                "atNanos": 30403444425,
-                "value": 0.89285713
-              },
-              {
-                "operation": "set",
-                "atNanos": 30431222202,
-                "value": 0.9285714
-              },
-              {
-                "operation": "set",
-                "atNanos": 30458999979,
-                "value": 0.96428573
-              },
-              {
-                "operation": "set",
-                "atNanos": 30486777756,
-                "value": 1.0
               }
             ]
           },
@@ -3582,108 +1958,6 @@
             ]
           },
           {
-            "id": "stage.console-name.y",
-            "actorId": "stage",
-            "property": "console-name.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": -60.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.console-hint.y",
-            "actorId": "stage",
-            "property": "console-hint.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": -60.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.anthropic-name.y",
-            "actorId": "stage",
-            "property": "anthropic-name.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": -60.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.anthropic-hint.y",
-            "actorId": "stage",
-            "property": "anthropic-hint.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": -60.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.openai-name.y",
-            "actorId": "stage",
-            "property": "openai-name.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": -60.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "stage.openai-hint.y",
-            "actorId": "stage",
-            "property": "openai-hint.y",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 39368000000,
-                "target": -60.0,
-                "responseSeconds": 0.66,
-                "dampingRatio": 0.88,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
             "id": "stage.signin-2.age",
             "actorId": "stage",
             "property": "signin-2.age",
@@ -3746,377 +2020,6 @@
                 "operation": "set",
                 "atNanos": 44178000000,
                 "value": 0.65
-              }
-            ]
-          },
-          {
-            "id": "stage.note-key.typed",
-            "actorId": "stage",
-            "property": "note-key.typed",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 45703000000,
-                "value": 0.020833334
-              },
-              {
-                "operation": "set",
-                "atNanos": 45728000000,
-                "value": 0.041666668
-              },
-              {
-                "operation": "set",
-                "atNanos": 45753000000,
-                "value": 0.0625
-              },
-              {
-                "operation": "set",
-                "atNanos": 45778000000,
-                "value": 0.083333336
-              },
-              {
-                "operation": "set",
-                "atNanos": 45803000000,
-                "value": 0.104166664
-              },
-              {
-                "operation": "set",
-                "atNanos": 45828000000,
-                "value": 0.125
-              },
-              {
-                "operation": "set",
-                "atNanos": 45853000000,
-                "value": 0.14583333
-              },
-              {
-                "operation": "set",
-                "atNanos": 45878000000,
-                "value": 0.16666667
-              },
-              {
-                "operation": "set",
-                "atNanos": 45903000000,
-                "value": 0.1875
-              },
-              {
-                "operation": "set",
-                "atNanos": 45928000000,
-                "value": 0.20833333
-              },
-              {
-                "operation": "set",
-                "atNanos": 45953000000,
-                "value": 0.22916667
-              },
-              {
-                "operation": "set",
-                "atNanos": 45978000000,
-                "value": 0.25
-              },
-              {
-                "operation": "set",
-                "atNanos": 46003000000,
-                "value": 0.27083334
-              },
-              {
-                "operation": "set",
-                "atNanos": 46028000000,
-                "value": 0.29166666
-              },
-              {
-                "operation": "set",
-                "atNanos": 46053000000,
-                "value": 0.3125
-              },
-              {
-                "operation": "set",
-                "atNanos": 46078000000,
-                "value": 0.33333334
-              },
-              {
-                "operation": "set",
-                "atNanos": 46103000000,
-                "value": 0.35416666
-              },
-              {
-                "operation": "set",
-                "atNanos": 46128000000,
-                "value": 0.375
-              },
-              {
-                "operation": "set",
-                "atNanos": 46153000000,
-                "value": 0.39583334
-              },
-              {
-                "operation": "set",
-                "atNanos": 46178000000,
-                "value": 0.41666666
-              },
-              {
-                "operation": "set",
-                "atNanos": 46203000000,
-                "value": 0.4375
-              },
-              {
-                "operation": "set",
-                "atNanos": 46228000000,
-                "value": 0.45833334
-              },
-              {
-                "operation": "set",
-                "atNanos": 46253000000,
-                "value": 0.47916666
-              },
-              {
-                "operation": "set",
-                "atNanos": 46278000000,
-                "value": 0.5
-              },
-              {
-                "operation": "set",
-                "atNanos": 46303000000,
-                "value": 0.5208333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46328000000,
-                "value": 0.5416667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46353000000,
-                "value": 0.5625
-              },
-              {
-                "operation": "set",
-                "atNanos": 46378000000,
-                "value": 0.5833333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46403000000,
-                "value": 0.6041667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46428000000,
-                "value": 0.625
-              },
-              {
-                "operation": "set",
-                "atNanos": 46453000000,
-                "value": 0.6458333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46478000000,
-                "value": 0.6666667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46503000000,
-                "value": 0.6875
-              },
-              {
-                "operation": "set",
-                "atNanos": 46528000000,
-                "value": 0.7083333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46553000000,
-                "value": 0.7291667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46578000000,
-                "value": 0.75
-              },
-              {
-                "operation": "set",
-                "atNanos": 46603000000,
-                "value": 0.7708333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46628000000,
-                "value": 0.7916667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46653000000,
-                "value": 0.8125
-              },
-              {
-                "operation": "set",
-                "atNanos": 46678000000,
-                "value": 0.8333333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46703000000,
-                "value": 0.8541667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46728000000,
-                "value": 0.875
-              },
-              {
-                "operation": "set",
-                "atNanos": 46753000000,
-                "value": 0.8958333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46778000000,
-                "value": 0.9166667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46803000000,
-                "value": 0.9375
-              },
-              {
-                "operation": "set",
-                "atNanos": 46828000000,
-                "value": 0.9583333
-              },
-              {
-                "operation": "set",
-                "atNanos": 46853000000,
-                "value": 0.9791667
-              },
-              {
-                "operation": "set",
-                "atNanos": 46878000000,
-                "value": 1.0
-              }
-            ]
-          },
-          {
-            "id": "stage.note-env.typed",
-            "actorId": "stage",
-            "property": "note-env.typed",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 50927411764,
-                "value": 0.04347826
-              },
-              {
-                "operation": "set",
-                "atNanos": 50956823528,
-                "value": 0.08695652
-              },
-              {
-                "operation": "set",
-                "atNanos": 50986235292,
-                "value": 0.13043478
-              },
-              {
-                "operation": "set",
-                "atNanos": 51015647056,
-                "value": 0.17391305
-              },
-              {
-                "operation": "set",
-                "atNanos": 51045058820,
-                "value": 0.2173913
-              },
-              {
-                "operation": "set",
-                "atNanos": 51074470584,
-                "value": 0.26086956
-              },
-              {
-                "operation": "set",
-                "atNanos": 51103882348,
-                "value": 0.3043478
-              },
-              {
-                "operation": "set",
-                "atNanos": 51133294112,
-                "value": 0.3478261
-              },
-              {
-                "operation": "set",
-                "atNanos": 51162705876,
-                "value": 0.39130434
-              },
-              {
-                "operation": "set",
-                "atNanos": 51192117640,
-                "value": 0.4347826
-              },
-              {
-                "operation": "set",
-                "atNanos": 51221529404,
-                "value": 0.47826087
-              },
-              {
-                "operation": "set",
-                "atNanos": 51250941168,
-                "value": 0.5217391
-              },
-              {
-                "operation": "set",
-                "atNanos": 51280352932,
-                "value": 0.5652174
-              },
-              {
-                "operation": "set",
-                "atNanos": 51309764696,
-                "value": 0.6086956
-              },
-              {
-                "operation": "set",
-                "atNanos": 51339176460,
-                "value": 0.65217394
-              },
-              {
-                "operation": "set",
-                "atNanos": 51368588224,
-                "value": 0.6956522
-              },
-              {
-                "operation": "set",
-                "atNanos": 51397999988,
-                "value": 0.73913044
-              },
-              {
-                "operation": "set",
-                "atNanos": 51427411752,
-                "value": 0.7826087
-              },
-              {
-                "operation": "set",
-                "atNanos": 51456823516,
-                "value": 0.82608694
-              },
-              {
-                "operation": "set",
-                "atNanos": 51486235280,
-                "value": 0.8695652
-              },
-              {
-                "operation": "set",
-                "atNanos": 51515647044,
-                "value": 0.9130435
-              },
-              {
-                "operation": "set",
-                "atNanos": 51545058808,
-                "value": 0.95652175
-              },
-              {
-                "operation": "set",
-                "atNanos": 51574470572,
-                "value": 1.0
               }
             ]
           },
@@ -4533,7 +2436,7 @@
             "gainDb": -20.0
           },
           {
-            "id": "click-8470000000",
+            "id": "pick-go",
             "path": "../../assets/visual-effects/task-running.wav",
             "kind": "audio",
             "role": "layer",
@@ -4553,17 +2456,6 @@
             "timelineStartNanos": 11200000000,
             "timelineEndNanos": 11680000000,
             "gainDb": -24.0
-          },
-          {
-            "id": "click-26279000000",
-            "path": "../../assets/visual-effects/task-running.wav",
-            "kind": "audio",
-            "role": "layer",
-            "sourceStartNanos": 0,
-            "sourceEndNanos": 140000000,
-            "timelineStartNanos": 26279000000,
-            "timelineEndNanos": 26419000000,
-            "gainDb": -18.0
           },
           {
             "id": "link",
@@ -4616,8 +2508,8 @@
             "role": "layer",
             "sourceStartNanos": 0,
             "sourceEndNanos": 612208333,
-            "timelineStartNanos": 39218000000,
-            "timelineEndNanos": 39830208333,
+            "timelineStartNanos": 39098000000,
+            "timelineEndNanos": 39710208333,
             "gainDb": -24.0
           },
           {
@@ -4630,17 +2522,6 @@
             "timelineStartNanos": 41838000000,
             "timelineEndNanos": 42138000000,
             "gainDb": -20.0
-          },
-          {
-            "id": "click-43298000000",
-            "path": "../../assets/visual-effects/task-running.wav",
-            "kind": "audio",
-            "role": "layer",
-            "sourceStartNanos": 0,
-            "sourceEndNanos": 140000000,
-            "timelineStartNanos": 43298000000,
-            "timelineEndNanos": 43438000000,
-            "gainDb": -18.0
           },
           {
             "id": "signin-2",
@@ -4663,17 +2544,6 @@
             "timelineStartNanos": 44518000000,
             "timelineEndNanos": 44678000000,
             "gainDb": -14.0
-          },
-          {
-            "id": "models-2-land",
-            "path": "../../assets/opencode-hot-reload/confirm.wav",
-            "kind": "audio",
-            "role": "layer",
-            "sourceStartNanos": 0,
-            "sourceEndNanos": 340000000,
-            "timelineStartNanos": 45168000000,
-            "timelineEndNanos": 45508000000,
-            "gainDb": -22.0
           }
         ]
       }
@@ -4736,30 +2606,30 @@
             }
           },
           {
-            "id": "plan",
-            "recipe": "checklist",
+            "id": "plan-note",
+            "recipe": "rune-surface",
             "data": {
-              "items": [
+              "commits": [
                 {
-                  "id": "row",
-                  "label": "one OpenCode row in connect",
-                  "result": "~30 lines"
-                },
-                {
-                  "failure": "+1,394 lines · close",
-                  "id": "pr",
-                  "label": "#57155 · two rows sharing a login"
+                  "action": {
+                    "markdown": "Keep a single **OpenCode** row in `/connect` so Go subscribers sign in or paste a key in one place.\n\n```facts\nChange: {built} ~30 lines in dialog-integration.tsx\nReplaces: {risk} #57155 (+1,394 lines across two rows)\n```\n\n```size\napp +24 −6 · tests +18 −0 · 2 files\n```\n\n```steps\n{built} One OpenCode row in connect · OAuth + API key + Go models\n{done} Close #57155 · avoids two rows sharing one login\n```",
+                    "op": "set-markdown"
+                  },
+                  "atNanos": 3060000000,
+                  "label": "reveal size and steps"
                 }
               ],
               "origin": [
-                300.0,
-                360.0
+                960.0,
+                520.0
               ],
-              "panel": true,
-              "rail": true,
-              "size": 32.0,
-              "title": "recommendation",
-              "width": 1320.0
+              "surface": {
+                "markdown": "Keep a single **OpenCode** row in `/connect` so Go subscribers sign in or paste a key in one place.\n\n```facts\nChange: {built} ~30 lines in dialog-integration.tsx\nReplaces: {risk} #57155 (+1,394 lines across two rows)\n```",
+                "recipe": "note",
+                "title": "Recommendation",
+                "width": 620.0
+              },
+              "theme": "opencode"
             }
           },
           {
@@ -4861,176 +2731,51 @@
             ]
           },
           {
-            "id": "plan.opacity",
-            "actorId": "plan",
+            "id": "plan-note.opacity",
+            "actorId": "plan-note",
             "property": "opacity",
             "initial": 0.0,
             "events": [
               {
-                "operation": "spring",
-                "atNanos": 400000000,
+                "operation": "ease",
+                "atNanos": 350000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
               }
             ]
           },
           {
-            "id": "plan.y",
-            "actorId": "plan",
+            "id": "plan-note.y",
+            "actorId": "plan-note",
             "property": "y",
-            "initial": 10.0,
+            "initial": 18.0,
             "events": [
               {
                 "operation": "spring",
-                "atNanos": 400000000,
+                "atNanos": 350000000,
                 "target": 0.0,
-                "responseSeconds": 0.54,
-                "dampingRatio": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
             ]
           },
           {
-            "id": "plan.item.row.reveal",
-            "actorId": "plan",
-            "property": "item.row.reveal",
-            "initial": 0.0,
+            "id": "plan-note.scale",
+            "actorId": "plan-note",
+            "property": "scale",
+            "initial": 0.985,
             "events": [
               {
                 "operation": "spring",
-                "atNanos": 800000000,
+                "atNanos": 350000000,
                 "target": 1.0,
-                "responseSeconds": 0.6,
-                "dampingRatio": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "plan.item.row.spinner",
-            "actorId": "plan",
-            "property": "item.row.spinner",
-            "initial": -1.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 800000000,
-                "value": 0.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 800000000,
-                "target": 14.919,
-                "durationNanos": 14919000000,
-                "curve": "linear"
-              }
-            ]
-          },
-          {
-            "id": "plan.item.row.mark",
-            "actorId": "plan",
-            "property": "item.row.mark",
-            "initial": -1.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 2293424177,
-                "value": 0.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 2293424177,
-                "target": 13.425,
-                "durationNanos": 13425000000,
-                "curve": "linear"
-              }
-            ]
-          },
-          {
-            "id": "plan.item.row.outcome",
-            "actorId": "plan",
-            "property": "item.row.outcome",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 2293424177,
-                "value": 1.0
-              }
-            ]
-          },
-          {
-            "id": "plan.item.pr.reveal",
-            "actorId": "plan",
-            "property": "item.pr.reveal",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 3060000000,
-                "target": 1.0,
-                "responseSeconds": 0.6,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "plan.item.pr.spinner",
-            "actorId": "plan",
-            "property": "item.pr.spinner",
-            "initial": -1.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 6580000000,
-                "value": 0.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 6580000000,
-                "target": 9.139,
-                "durationNanos": 9139000000,
-                "curve": "linear"
-              }
-            ]
-          },
-          {
-            "id": "plan.item.pr.mark",
-            "actorId": "plan",
-            "property": "item.pr.mark",
-            "initial": -1.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 12873432236,
-                "value": 0.0
-              },
-              {
-                "operation": "ease",
-                "atNanos": 12873432236,
-                "target": 2.845,
-                "durationNanos": 2845000000,
-                "curve": "linear"
-              }
-            ]
-          },
-          {
-            "id": "plan.item.pr.outcome",
-            "actorId": "plan",
-            "property": "item.pr.outcome",
-            "initial": 0.0,
-            "events": [
-              {
-                "operation": "set",
-                "atNanos": 12873432236,
-                "value": 2.0
               }
             ]
           },
@@ -5279,20 +3024,9 @@
             "role": "layer",
             "sourceStartNanos": 0,
             "sourceEndNanos": 300000000,
-            "timelineStartNanos": 2553424177,
-            "timelineEndNanos": 2853424177,
+            "timelineStartNanos": 1940000000,
+            "timelineEndNanos": 2240000000,
             "gainDb": -18.0
-          },
-          {
-            "id": "pr-in",
-            "path": "../../assets/visual-effects/task-running.wav",
-            "kind": "audio",
-            "role": "layer",
-            "sourceStartNanos": 0,
-            "sourceEndNanos": 140000000,
-            "timelineStartNanos": 3060000000,
-            "timelineEndNanos": 3200000000,
-            "gainDb": -24.0
           },
           {
             "id": "pr-closed",
@@ -5301,8 +3035,8 @@
             "role": "layer",
             "sourceStartNanos": 0,
             "sourceEndNanos": 300000000,
-            "timelineStartNanos": 13133432236,
-            "timelineEndNanos": 13433432236,
+            "timelineStartNanos": 12820000000,
+            "timelineEndNanos": 13120000000,
             "gainDb": -20.0
           }
         ]

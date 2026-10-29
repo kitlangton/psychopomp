@@ -104,6 +104,15 @@ impl PreparedReel {
         &self.media
     }
 
+    pub(super) fn audit_rune_motion(&self) -> Result<()> {
+        for segment in &self.segments {
+            segment
+                .audit_rune_motion()
+                .with_context(|| format!("reel segment '{}'", segment.plan.id))?;
+        }
+        Ok(())
+    }
+
     pub(super) fn visual_sample_key(&self, time: f64) -> Result<ReelSampleKey> {
         self.reel
             .layers_at(time)

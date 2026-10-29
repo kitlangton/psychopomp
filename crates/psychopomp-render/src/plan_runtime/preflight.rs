@@ -17,6 +17,7 @@ use super::{
     lower_third::PreparedLowerThird,
     plot::PreparedPlot,
     rolling::RollingNumberInput,
+    rune_surface::PreparedRuneSurface,
     sequence::PreparedSequence,
     terminal::PreparedTerminal,
     tree::PreparedTree,
@@ -44,6 +45,7 @@ use psychopomp::{
     plan::{ActorPlan, ContinuousChannelPlan, MediaKindPlan, ScenePlan, StateChannelPlan},
     plot::PLOT_RECIPE,
     rolling::ROLLING_NUMBER_RECIPE,
+    rune_surface::RUNE_SURFACE_RECIPE,
     sequence::SEQUENCE_RECIPE,
     stage::{STAGE_RECIPE, StagePlan},
     state::{StateTrack, TimedState},
@@ -83,6 +85,7 @@ pub(super) struct Plan {
     pub lower_thirds: Vec<PreparedLowerThird>,
     pub viz: super::viz::VizInputs,
     pub lenses: Vec<PreparedLens>,
+    pub rune_surfaces: Vec<PreparedRuneSurface>,
 }
 pub(super) enum RootPlan {
     Blank,
@@ -393,6 +396,7 @@ impl Plan {
         let mut lower_thirds = Vec::new();
         let mut viz = super::viz::VizInputs::default();
         let mut lenses = Vec::new();
+        let mut rune_surfaces = Vec::new();
         for actor in &plan.actors {
             if let Some(annotation) = PreparedAnnotation::parse(actor, &plan.continuous_channels)? {
                 annotations.push(annotation);
@@ -485,6 +489,9 @@ impl Plan {
                 IMAGE_RECIPE => footage.image(actor, &plan.media, &plan.continuous_channels)?,
                 FOOTAGE_RECIPE => footage.footage(actor, &plan.media, &plan.continuous_channels)?,
                 LENS_RECIPE => lenses.push(PreparedLens::new(actor, &plan.continuous_channels)?),
+                RUNE_SURFACE_RECIPE => {
+                    rune_surfaces.push(PreparedRuneSurface::new(actor, &plan.continuous_channels)?)
+                }
                 recipe => bail!("unsupported actor recipe '{recipe}'"),
             }
         }
@@ -602,6 +609,7 @@ impl Plan {
             lower_thirds,
             viz,
             lenses,
+            rune_surfaces,
         };
         match &result.root {
             RootPlan::Editor { editor, .. } => editor.compile_channels(&mut result.plan)?,
@@ -634,6 +642,7 @@ impl Plan {
             // Their changes follow the authored clock, not Playback destinations.
             && self.rolling.is_empty()
             && self.changed_files.iter().all(ChangedFilesInput::native)
+            && self.rune_surfaces.iter().all(PreparedRuneSurface::native)
             && self.viz.native()
     }
 

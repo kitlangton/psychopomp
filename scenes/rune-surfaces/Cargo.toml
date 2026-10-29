@@ -1,0 +1,10 @@
+[package]
+name = "psychopomp-rune-surfaces"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = "1.0"
+psychopomp = { path = "../../crates/psychopomp" }
+serde_json = "1.0"

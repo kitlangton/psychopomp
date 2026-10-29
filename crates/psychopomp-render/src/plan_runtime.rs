@@ -51,6 +51,7 @@ mod reel;
 mod render_queue;
 mod rich_text;
 mod rolling;
+mod rune_surface;
 mod sequence;
 #[cfg(test)]
 mod stability_tests;
@@ -195,6 +196,38 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
                 "{}",
                 serde_json::to_string_pretty(&json!({
                     "valid": true,
+                    "path": path,
+                }))?
+            );
+            Ok(())
+        }
+        ("motion-gate", [path]) => {
+            match PlanFile::read(Path::new(path))? {
+                PlanFile::Plan(plan) => {
+                    let input = preflight::Plan::new(plan)?;
+                    let duration_secs = seconds_f64(input.plan.duration_nanos);
+                    for surface in &input.rune_surfaces {
+                        surface.audit_motion(duration_secs)?;
+                    }
+                }
+                PlanFile::Reel(reel) => {
+                    for segment in &reel.segments {
+                        let input = preflight::Plan::new(segment.plan.clone())
+                            .with_context(|| format!("reel segment '{}'", segment.plan.id))?;
+                        let duration_secs = seconds_f64(input.plan.duration_nanos);
+                        for surface in &input.rune_surfaces {
+                            surface
+                                .audit_motion(duration_secs)
+                                .with_context(|| format!("reel segment '{}'", segment.plan.id))?;
+                        }
+                    }
+                }
+                PlanFile::Deck(_) => bail!(DECK_UNSUPPORTED),
+            }
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&json!({
+                    "motionGate": "passed",
                     "path": path,
                 }))?
             );
@@ -494,6 +527,7 @@ struct PreparedPlan {
     changed_files: Vec<changed_files::PreparedChangedFiles>,
     lower_thirds: Vec<lower_third::PreparedLowerThird>,
     viz: viz::PreparedViz,
+    rune_surfaces: Vec<rune_surface::PreparedRuneSurface>,
 }
 
 // A prepared scene exposes a read-only view of its compiled data. There is no
@@ -572,6 +606,7 @@ impl PreparedPlan {
             lower_thirds,
             viz,
             lenses,
+            rune_surfaces,
         } = input;
         let components = component_prototype::PreparedComponents::prepare_inputs(
             &mut plan, components, renderer,
@@ -666,6 +701,7 @@ impl PreparedPlan {
             changed_files,
             lower_thirds,
             viz,
+            rune_surfaces,
         })
     }
 }
@@ -825,6 +861,22 @@ impl CompiledPlan {
 }
 
 impl PreparedPlan {
+    pub(super) fn audit_rune_motion(&self) -> Result<()> {
+        let duration_secs = seconds_f64(self.plan.duration_nanos);
+        for surface in &self.rune_surfaces {
+            surface.audit_motion(duration_secs)?;
+        }
+        Ok(())
+    }
+
+    fn has_rune_surface(&self, actor: &str) -> bool {
+        self.rune_surfaces.iter().any(|s| s.id() == actor)
+    }
+
+    fn rune_moves(&self, time: f64) -> bool {
+        self.rune_surfaces.iter().any(|s| s.moving(time))
+    }
+
     fn visual_sample_key(&self, time: f64) -> Result<VisualSampleKey> {
         self.visual_sample_key_using(time, &self.timeline)
     }
@@ -836,6 +888,7 @@ impl PreparedPlan {
         let stage = matches!(&self.root, PreparedRoot::Stage(_));
         key.ambient_time = (stage
             || self.rolling_moves(time)
+            || self.rune_moves(time)
             || self.viz.moving(time)
             || self.running_properties().iter().any(|property| {
                 timeline
@@ -888,52 +941,82 @@ impl PreparedPlan {
         match &self.root {
             // Samples accumulate on the GPU without a readback each.
             PreparedRoot::Stage(_) => STAGE_TEMPORAL_SAMPLES,
+            PreparedRoot::Blank if !self.rune_surfaces.is_empty() => STAGE_TEMPORAL_SAMPLES,
             _ => crate::exposure::plan_temporal_samples(center),
         }
     }
 
-    /// One exposed frame from weighted shutter samples. A Stage accumulates
-    /// its light on the GPU; overlays drawn over it are averaged only across
-    /// samples where they differ, and only where they differ when that is
-    /// just callouts.
+    /// One exposed frame from weighted shutter samples. A Stage and any Rune
+    /// surfaces accumulate their light in `Rgba16Float` on the GPU; CPU overlays
+    /// drawn over them are averaged only across samples where they differ.
     fn render_exposure(
         &self,
         renderer: &mut HeadlessRenderer,
         exposure: &[(f64, f32)],
     ) -> Result<Vec<u8>> {
-        let PreparedRoot::Stage(stage) = &self.root else {
-            if !self.lenses.is_empty() && self.texts.is_empty() && self.tasks.is_empty() {
-                return self.render_lensed_exposure(renderer, exposure);
-            }
-            return crate::exposure::accumulate(renderer, exposure, |renderer, time| {
-                self.render_sample(renderer, time)
-            });
-        };
         let timeline = &self.timeline;
-        let mut base = stage.render_exposure(
-            renderer,
-            exposure,
-            |actor, property, time, default| {
-                self.property_value(timeline, actor, property, time, default)
-            },
-            |time| {
-                self.footage.stage_frames(time, |property, default| {
-                    self.property_value(timeline, stage.id(), property, time, default)
-                })
-            },
-        )?;
+        let (mut base, root_actor) = match &self.root {
+            PreparedRoot::Stage(stage) => {
+                let px = stage.render_exposure(
+                    renderer,
+                    exposure,
+                    |actor, property, time, default| {
+                        self.property_value(timeline, actor, property, time, default)
+                    },
+                    |time| {
+                        self.footage.stage_frames(time, |property, default| {
+                            self.property_value(timeline, stage.id(), property, time, default)
+                        })
+                    },
+                )?;
+                (px, stage.id())
+            }
+            PreparedRoot::Blank
+                if !self.rune_surfaces.is_empty()
+                    && self.lenses.is_empty()
+                    && self.footage.overlays().is_empty() =>
+            {
+                (renderer.render_title_card("", None, 0.0), "")
+            }
+            _ => {
+                if !self.lenses.is_empty() && self.texts.is_empty() && self.tasks.is_empty() {
+                    return self.render_lensed_exposure(renderer, exposure);
+                }
+                return crate::exposure::accumulate(renderer, exposure, |renderer, time| {
+                    self.render_sample(renderer, time)
+                });
+            }
+        };
+        for surface in &self.rune_surfaces {
+            surface.composite_exposure(
+                &mut base,
+                renderer,
+                exposure,
+                |actor, property, time, default| {
+                    self.property_value(timeline, actor, property, time, default)
+                },
+            )?;
+        }
         let size = renderer.size();
         let overlays = crate::exposure::merge_equal_samples(exposure.iter().copied(), |time| {
-            self.overlay_key(time, stage.id(), size)
+            self.overlay_key(time, root_actor, size)
         })?;
         if let &[(time, _)] = overlays.as_slice() {
-            self.render_overlays(&mut base, renderer, time, timeline)?;
+            self.render_overlays_with(&mut base, renderer, time, timeline, |_| true, true, false)?;
             return Ok(base);
         }
-        if !self.only_callouts_differ(&overlays, stage.id(), size)? {
+        if !self.only_callouts_differ(&overlays, root_actor, size)? {
             return crate::exposure::accumulate(renderer, &overlays, |renderer, time| {
                 let mut pixels = base.clone();
-                self.render_overlays(&mut pixels, renderer, time, timeline)?;
+                self.render_overlays_with(
+                    &mut pixels,
+                    renderer,
+                    time,
+                    timeline,
+                    |_| true,
+                    true,
+                    false,
+                )?;
                 Ok(pixels)
             });
         }
@@ -990,16 +1073,25 @@ impl PreparedPlan {
             .collect::<Vec<_>>();
         let region = crate::exposure::Region::covering(moving);
         let mut first = base.clone();
-        self.render_overlays(&mut first, renderer, overlays[0].0, timeline)?;
+        self.render_overlays_with(
+            &mut first,
+            renderer,
+            overlays[0].0,
+            timeline,
+            |_| true,
+            true,
+            false,
+        )?;
         crate::exposure::accumulate_region(&overlays, &region, first, |frame, time| {
             region.copy(&base, frame);
-            self.render_overlays_drawing(
+            self.render_overlays_with(
                 frame,
                 renderer,
                 time,
                 timeline,
                 |callout| redraw[callout],
                 true,
+                false,
             )
         })
     }
@@ -1024,6 +1116,7 @@ impl PreparedPlan {
         let mut keys = samples.iter().map(|&(time, _)| {
             let mut key = self.overlay_key_ignoring(time, |actor| {
                 actor == stage
+                    || self.has_rune_surface(actor)
                     || self.callouts.iter().any(|callout| callout.id() == actor)
                     || self.viz.has_confetti(actor)
             })?;
@@ -1044,7 +1137,8 @@ impl PreparedPlan {
     /// The visual state of everything but the root `stage` actor, plus where
     /// any callout pinned to it lands.
     fn overlay_key(&self, time: f64, stage: &str, size: [u32; 2]) -> Result<VisualSampleKey> {
-        let mut key = self.overlay_key_ignoring(time, |actor| actor == stage)?;
+        let mut key = self
+            .overlay_key_ignoring(time, |actor| actor == stage || self.has_rune_surface(actor))?;
         key.anchors = self
             .callouts
             .iter()
@@ -1372,9 +1466,28 @@ impl PreparedPlan {
         callouts: impl Fn(usize) -> bool,
         lenses: bool,
     ) -> Result<()> {
+        self.render_overlays_with(pixels, renderer, time, timeline, callouts, lenses, true)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn render_overlays_with(
+        &self,
+        pixels: &mut [u8],
+        renderer: &mut HeadlessRenderer,
+        time: f64,
+        timeline: &Timeline,
+        callouts: impl Fn(usize) -> bool,
+        lenses: bool,
+        draw_rune_surfaces: bool,
+    ) -> Result<()> {
         let value = |actor: &str, property: &str, default: f32| {
             self.property_value(timeline, actor, property, time, default)
         };
+        if draw_rune_surfaces {
+            for surface in &self.rune_surfaces {
+                surface.render_single(pixels, renderer, time, value)?;
+            }
+        }
         // Video cards, images, and footage are the bottom media surface.
         // Value tiles are diagram surfaces; ordinary text is their foreground
         // annotation layer, regardless of declaration order.

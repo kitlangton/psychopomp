@@ -60,21 +60,109 @@
             }
           },
           {
-            "id": "recording-before",
-            "recipe": "video",
+            "id": "surface-before",
+            "recipe": "rune-surface",
             "data": {
-              "center": [
+              "commits": [
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "index": 1,
+                        "key": "seg",
+                        "op": "select-segment"
+                      },
+                      {
+                        "key": "metrics",
+                        "op": "set-text",
+                        "text": "```facts\nActive metric: {warn} Tokens (84.2M)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```"
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 7500000000,
+                  "label": "static flip to tokens"
+                },
+                {
+                  "action": {
+                    "index": 2,
+                    "key": "seg",
+                    "op": "select-segment"
+                  },
+                  "atNanos": 14420000000,
+                  "label": "static flip to search"
+                }
+              ],
+              "origin": [
                 960.0,
-                510.0
+                515.0
               ],
-              "fps": 60,
-              "mediaId": "before-clip",
-              "size": [
-                1120,
-                488
-              ],
-              "title": "opencode-console  /  segmented-control (before)",
-              "width": 1440.0
+              "surface": {
+                "recipe": "kit",
+                "root": {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "kind": "text",
+                              "size": 15.5,
+                              "text": "Workspace usage",
+                              "tone": "base",
+                              "weight": 620.0
+                            },
+                            {
+                              "kind": "text",
+                              "size": 12.0,
+                              "text": "Last 7 days · anomaly-prod",
+                              "tone": "muted",
+                              "weight": 450.0
+                            }
+                          ],
+                          "gap": 2.0,
+                          "key": "titles",
+                          "kind": "col",
+                          "padding": 0.0
+                        },
+                        {
+                          "kind": "spacer"
+                        },
+                        {
+                          "key": "seg",
+                          "kind": "segmented",
+                          "selected": 0,
+                          "static_pill": true,
+                          "tabs": [
+                            "Cost",
+                            "Tokens",
+                            "Web Search"
+                          ],
+                          "width": 280.0
+                        }
+                      ],
+                      "gap": 12.0,
+                      "key": "hdr",
+                      "kind": "row",
+                      "padding": 0.0
+                    },
+                    {
+                      "kind": "divider"
+                    },
+                    {
+                      "key": "metrics",
+                      "kind": "note",
+                      "markdown": "```facts\nActive metric: {working} Cost ($412.80)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```"
+                    }
+                  ],
+                  "gap": 12.0,
+                  "key": "usage-card",
+                  "kind": "dialog",
+                  "padding": 18.0,
+                  "width": 560.0
+                }
+              },
+              "theme": "opencode"
             }
           },
           {
@@ -376,163 +464,49 @@
             ]
           },
           {
-            "id": "recording-before.y",
-            "actorId": "recording-before",
-            "property": "y",
-            "initial": 220.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 150000000,
-                "target": 0.0,
-                "responseSeconds": 0.96000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.scale",
-            "actorId": "recording-before",
-            "property": "scale",
-            "initial": 0.82,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 150000000,
-                "target": 1.0,
-                "responseSeconds": 0.96000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.tilt-x",
-            "actorId": "recording-before",
-            "property": "tilt-x",
-            "initial": 0.42,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 150000000,
-                "target": 0.0,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.blur",
-            "actorId": "recording-before",
-            "property": "blur",
-            "initial": 9.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 150000000,
-                "target": 0.0,
-                "responseSeconds": 0.84000003,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.opacity",
-            "actorId": "recording-before",
+            "id": "surface-before.opacity",
+            "actorId": "surface-before",
             "property": "opacity",
             "initial": 0.0,
             "events": [
               {
+                "operation": "ease",
+                "atNanos": 150000000,
+                "target": 1.0,
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "surface-before.y",
+            "actorId": "surface-before",
+            "property": "y",
+            "initial": 18.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 150000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "surface-before.scale",
+            "actorId": "surface-before",
+            "property": "scale",
+            "initial": 0.985,
+            "events": [
+              {
                 "operation": "spring",
                 "atNanos": 150000000,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.focus-x",
-            "actorId": "recording-before",
-            "property": "focus-x",
-            "initial": 0.5,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 7500000000,
-                "target": 0.275,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 14420000000,
-                "target": 0.5,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.focus-y",
-            "actorId": "recording-before",
-            "property": "focus-y",
-            "initial": 0.5,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 7500000000,
-                "target": 0.34733605,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 14420000000,
-                "target": 0.5,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-before.focus-size",
-            "actorId": "recording-before",
-            "property": "focus-size",
-            "initial": 1.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 7500000000,
-                "target": 0.51785713,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 14420000000,
-                "target": 1.0,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -980,17 +954,6 @@
             "timelineStartNanos": 600000000,
             "timelineEndNanos": 16017062500,
             "gainDb": 0.0
-          },
-          {
-            "id": "before-clip",
-            "path": "../../assets/console-segmented-control/before.mp4",
-            "kind": "video",
-            "role": "layer",
-            "sourceStartNanos": 0,
-            "sourceEndNanos": 18417062500,
-            "timelineStartNanos": 0,
-            "timelineEndNanos": 18417062500,
-            "gainDb": 0.0
           }
         ]
       }
@@ -1066,21 +1029,108 @@
             }
           },
           {
-            "id": "recording-after",
-            "recipe": "video",
+            "id": "surface-after",
+            "recipe": "rune-surface",
             "data": {
-              "center": [
+              "commits": [
+                {
+                  "action": {
+                    "actions": [
+                      {
+                        "index": 1,
+                        "key": "seg",
+                        "op": "select-segment"
+                      },
+                      {
+                        "key": "metrics",
+                        "op": "set-text",
+                        "text": "```facts\nActive metric: {verified} Tokens (84.2M)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```"
+                      }
+                    ],
+                    "op": "batch"
+                  },
+                  "atNanos": 5400000000,
+                  "label": "slide pill to tokens"
+                },
+                {
+                  "action": {
+                    "index": 2,
+                    "key": "seg",
+                    "op": "select-segment"
+                  },
+                  "atNanos": 10500000000,
+                  "label": "slide pill to web search"
+                }
+              ],
+              "origin": [
                 960.0,
-                510.0
+                515.0
               ],
-              "fps": 60,
-              "mediaId": "after-clip",
-              "size": [
-                1120,
-                488
-              ],
-              "title": "opencode-console  /  segmented-control (solid-motion)",
-              "width": 1440.0
+              "surface": {
+                "recipe": "kit",
+                "root": {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "kind": "text",
+                              "size": 15.5,
+                              "text": "Workspace usage",
+                              "tone": "base",
+                              "weight": 620.0
+                            },
+                            {
+                              "kind": "text",
+                              "size": 12.0,
+                              "text": "Last 7 days · anomaly-prod",
+                              "tone": "muted",
+                              "weight": 450.0
+                            }
+                          ],
+                          "gap": 2.0,
+                          "key": "titles",
+                          "kind": "col",
+                          "padding": 0.0
+                        },
+                        {
+                          "kind": "spacer"
+                        },
+                        {
+                          "key": "seg",
+                          "kind": "segmented",
+                          "selected": 0,
+                          "tabs": [
+                            "Cost",
+                            "Tokens",
+                            "Web Search"
+                          ],
+                          "width": 280.0
+                        }
+                      ],
+                      "gap": 12.0,
+                      "key": "hdr",
+                      "kind": "row",
+                      "padding": 0.0
+                    },
+                    {
+                      "kind": "divider"
+                    },
+                    {
+                      "key": "metrics",
+                      "kind": "note",
+                      "markdown": "```facts\nActive metric: {working} Cost ($412.80)\nRequests: 18,420 across 6 models\nCache hit rate: {verified} 91.4%\n```"
+                    }
+                  ],
+                  "gap": 12.0,
+                  "key": "usage-card",
+                  "kind": "dialog",
+                  "padding": 18.0,
+                  "width": 560.0
+                }
+              },
+              "theme": "opencode"
             }
           },
           {
@@ -1090,11 +1140,11 @@
               "lines": [
                 [
                   {
-                    "text": "solid-motion ",
+                    "text": "rune-kit SegmentedControl ",
                     "tone": "success"
                   },
                   {
-                    "text": "· 150ms snap spring on x + width · hover brightens inactive labels",
+                    "text": "· spring indicator pill on x + width · zero external MP4s",
                     "tone": "muted"
                   }
                 ]
@@ -1144,163 +1194,49 @@
             ]
           },
           {
-            "id": "recording-after.y",
-            "actorId": "recording-after",
-            "property": "y",
-            "initial": 220.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 0,
-                "target": 0.0,
-                "responseSeconds": 0.96000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.scale",
-            "actorId": "recording-after",
-            "property": "scale",
-            "initial": 0.82,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 0,
-                "target": 1.0,
-                "responseSeconds": 0.96000004,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.tilt-x",
-            "actorId": "recording-after",
-            "property": "tilt-x",
-            "initial": 0.42,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 0,
-                "target": 0.0,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.blur",
-            "actorId": "recording-after",
-            "property": "blur",
-            "initial": 9.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 0,
-                "target": 0.0,
-                "responseSeconds": 0.84000003,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.opacity",
-            "actorId": "recording-after",
+            "id": "surface-after.opacity",
+            "actorId": "surface-after",
             "property": "opacity",
             "initial": 0.0,
             "events": [
               {
+                "operation": "ease",
+                "atNanos": 0,
+                "target": 1.0,
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "surface-after.y",
+            "actorId": "surface-after",
+            "property": "y",
+            "initial": 18.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "surface-after.scale",
+            "actorId": "surface-after",
+            "property": "scale",
+            "initial": 0.985,
+            "events": [
+              {
                 "operation": "spring",
                 "atNanos": 0,
                 "target": 1.0,
-                "responseSeconds": 0.42000002,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.focus-x",
-            "actorId": "recording-after",
-            "property": "focus-x",
-            "initial": 0.5,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5400000000,
-                "target": 0.275,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 10500000000,
-                "target": 0.5,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.focus-y",
-            "actorId": "recording-after",
-            "property": "focus-y",
-            "initial": 0.5,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5400000000,
-                "target": 0.34733605,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 10500000000,
-                "target": 0.5,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              }
-            ]
-          },
-          {
-            "id": "recording-after.focus-size",
-            "actorId": "recording-after",
-            "property": "focus-size",
-            "initial": 1.0,
-            "events": [
-              {
-                "operation": "spring",
-                "atNanos": 5400000000,
-                "target": 0.51785713,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
-                "positionThreshold": 0.001,
-                "velocityThreshold": 0.001
-              },
-              {
-                "operation": "spring",
-                "atNanos": 10500000000,
-                "target": 1.0,
-                "responseSeconds": 1.0200001,
-                "dampingRatio": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
                 "positionThreshold": 0.001,
                 "velocityThreshold": 0.001
               }
@@ -1328,396 +1264,416 @@
               {
                 "operation": "set",
                 "atNanos": 3021739130,
-                "value": 0.012658228
+                "value": 0.012048192
               },
               {
                 "operation": "set",
                 "atNanos": 3043478260,
-                "value": 0.025316456
+                "value": 0.024096385
               },
               {
                 "operation": "set",
                 "atNanos": 3065217390,
-                "value": 0.03797468
+                "value": 0.036144577
               },
               {
                 "operation": "set",
                 "atNanos": 3086956520,
-                "value": 0.050632913
+                "value": 0.04819277
               },
               {
                 "operation": "set",
                 "atNanos": 3108695650,
-                "value": 0.06329114
+                "value": 0.060240965
               },
               {
                 "operation": "set",
                 "atNanos": 3130434780,
-                "value": 0.07594936
+                "value": 0.072289154
               },
               {
                 "operation": "set",
                 "atNanos": 3152173910,
-                "value": 0.088607594
+                "value": 0.084337346
               },
               {
                 "operation": "set",
                 "atNanos": 3173913040,
-                "value": 0.101265825
+                "value": 0.09638554
               },
               {
                 "operation": "set",
                 "atNanos": 3195652170,
-                "value": 0.11392405
+                "value": 0.10843374
               },
               {
                 "operation": "set",
                 "atNanos": 3217391300,
-                "value": 0.12658228
+                "value": 0.12048193
               },
               {
                 "operation": "set",
                 "atNanos": 3239130430,
-                "value": 0.1392405
+                "value": 0.13253012
               },
               {
                 "operation": "set",
                 "atNanos": 3260869560,
-                "value": 0.15189873
+                "value": 0.14457831
               },
               {
                 "operation": "set",
                 "atNanos": 3282608690,
-                "value": 0.16455697
+                "value": 0.15662651
               },
               {
                 "operation": "set",
                 "atNanos": 3304347820,
-                "value": 0.17721519
+                "value": 0.16867469
               },
               {
                 "operation": "set",
                 "atNanos": 3326086950,
-                "value": 0.18987341
+                "value": 0.18072289
               },
               {
                 "operation": "set",
                 "atNanos": 3347826080,
-                "value": 0.20253165
+                "value": 0.19277108
               },
               {
                 "operation": "set",
                 "atNanos": 3369565210,
-                "value": 0.21518987
+                "value": 0.20481928
               },
               {
                 "operation": "set",
                 "atNanos": 3391304340,
-                "value": 0.2278481
+                "value": 0.21686748
               },
               {
                 "operation": "set",
                 "atNanos": 3413043470,
-                "value": 0.24050634
+                "value": 0.22891566
               },
               {
                 "operation": "set",
                 "atNanos": 3434782600,
-                "value": 0.25316456
+                "value": 0.24096386
               },
               {
                 "operation": "set",
                 "atNanos": 3456521730,
-                "value": 0.2658228
+                "value": 0.25301206
               },
               {
                 "operation": "set",
                 "atNanos": 3478260860,
-                "value": 0.278481
+                "value": 0.26506025
               },
               {
                 "operation": "set",
                 "atNanos": 3499999990,
-                "value": 0.29113925
+                "value": 0.27710843
               },
               {
                 "operation": "set",
                 "atNanos": 3521739120,
-                "value": 0.30379745
+                "value": 0.28915662
               },
               {
                 "operation": "set",
                 "atNanos": 3543478250,
-                "value": 0.3164557
+                "value": 0.30120483
               },
               {
                 "operation": "set",
                 "atNanos": 3565217380,
-                "value": 0.32911393
+                "value": 0.31325302
               },
               {
                 "operation": "set",
                 "atNanos": 3586956510,
-                "value": 0.34177214
+                "value": 0.3253012
               },
               {
                 "operation": "set",
                 "atNanos": 3608695640,
-                "value": 0.35443038
+                "value": 0.33734939
               },
               {
                 "operation": "set",
                 "atNanos": 3630434770,
-                "value": 0.36708862
+                "value": 0.3493976
               },
               {
                 "operation": "set",
                 "atNanos": 3652173900,
-                "value": 0.37974682
+                "value": 0.36144578
               },
               {
                 "operation": "set",
                 "atNanos": 3673913030,
-                "value": 0.39240506
+                "value": 0.37349397
               },
               {
                 "operation": "set",
                 "atNanos": 3695652160,
-                "value": 0.4050633
+                "value": 0.38554215
               },
               {
                 "operation": "set",
                 "atNanos": 3717391290,
-                "value": 0.4177215
+                "value": 0.39759037
               },
               {
                 "operation": "set",
                 "atNanos": 3739130420,
-                "value": 0.43037975
+                "value": 0.40963855
               },
               {
                 "operation": "set",
                 "atNanos": 3760869550,
-                "value": 0.443038
+                "value": 0.42168674
               },
               {
                 "operation": "set",
                 "atNanos": 3782608680,
-                "value": 0.4556962
+                "value": 0.43373495
               },
               {
                 "operation": "set",
                 "atNanos": 3804347810,
-                "value": 0.46835443
+                "value": 0.44578314
               },
               {
                 "operation": "set",
                 "atNanos": 3826086940,
-                "value": 0.48101267
+                "value": 0.45783132
               },
               {
                 "operation": "set",
                 "atNanos": 3847826070,
-                "value": 0.49367088
+                "value": 0.4698795
               },
               {
                 "operation": "set",
                 "atNanos": 3869565200,
-                "value": 0.5063291
+                "value": 0.48192772
               },
               {
                 "operation": "set",
                 "atNanos": 3891304330,
-                "value": 0.51898736
+                "value": 0.4939759
               },
               {
                 "operation": "set",
                 "atNanos": 3913043460,
-                "value": 0.5316456
+                "value": 0.5060241
               },
               {
                 "operation": "set",
                 "atNanos": 3934782590,
-                "value": 0.5443038
+                "value": 0.5180723
               },
               {
                 "operation": "set",
                 "atNanos": 3956521720,
-                "value": 0.556962
+                "value": 0.5301205
               },
               {
                 "operation": "set",
                 "atNanos": 3978260850,
-                "value": 0.56962025
+                "value": 0.5421687
               },
               {
                 "operation": "set",
                 "atNanos": 3999999980,
-                "value": 0.5822785
+                "value": 0.55421686
               },
               {
                 "operation": "set",
                 "atNanos": 4021739110,
-                "value": 0.5949367
+                "value": 0.56626505
               },
               {
                 "operation": "set",
                 "atNanos": 4043478240,
-                "value": 0.6075949
+                "value": 0.57831323
               },
               {
                 "operation": "set",
                 "atNanos": 4065217370,
-                "value": 0.62025315
+                "value": 0.5903614
               },
               {
                 "operation": "set",
                 "atNanos": 4086956500,
-                "value": 0.6329114
+                "value": 0.60240966
               },
               {
                 "operation": "set",
                 "atNanos": 4108695630,
-                "value": 0.6455696
+                "value": 0.61445785
               },
               {
                 "operation": "set",
                 "atNanos": 4130434760,
-                "value": 0.65822786
+                "value": 0.62650603
               },
               {
                 "operation": "set",
                 "atNanos": 4152173890,
-                "value": 0.6708861
+                "value": 0.6385542
               },
               {
                 "operation": "set",
                 "atNanos": 4173913020,
-                "value": 0.6835443
+                "value": 0.6506024
               },
               {
                 "operation": "set",
                 "atNanos": 4195652150,
-                "value": 0.6962025
+                "value": 0.6626506
               },
               {
                 "operation": "set",
                 "atNanos": 4217391280,
-                "value": 0.70886075
+                "value": 0.67469877
               },
               {
                 "operation": "set",
                 "atNanos": 4239130410,
-                "value": 0.721519
+                "value": 0.686747
               },
               {
                 "operation": "set",
                 "atNanos": 4260869540,
-                "value": 0.73417723
+                "value": 0.6987952
               },
               {
                 "operation": "set",
                 "atNanos": 4282608670,
-                "value": 0.7468355
+                "value": 0.7108434
               },
               {
                 "operation": "set",
                 "atNanos": 4304347800,
-                "value": 0.75949365
+                "value": 0.72289157
               },
               {
                 "operation": "set",
                 "atNanos": 4326086930,
-                "value": 0.7721519
+                "value": 0.73493975
               },
               {
                 "operation": "set",
                 "atNanos": 4347826060,
-                "value": 0.7848101
+                "value": 0.74698794
               },
               {
                 "operation": "set",
                 "atNanos": 4369565190,
-                "value": 0.79746836
+                "value": 0.7590361
               },
               {
                 "operation": "set",
                 "atNanos": 4391304320,
-                "value": 0.8101266
+                "value": 0.7710843
               },
               {
                 "operation": "set",
                 "atNanos": 4413043450,
-                "value": 0.8227848
+                "value": 0.78313255
               },
               {
                 "operation": "set",
                 "atNanos": 4434782580,
-                "value": 0.835443
+                "value": 0.79518074
               },
               {
                 "operation": "set",
                 "atNanos": 4456521710,
-                "value": 0.84810126
+                "value": 0.8072289
               },
               {
                 "operation": "set",
                 "atNanos": 4478260840,
-                "value": 0.8607595
+                "value": 0.8192771
               },
               {
                 "operation": "set",
                 "atNanos": 4499999970,
-                "value": 0.87341774
+                "value": 0.8313253
               },
               {
                 "operation": "set",
                 "atNanos": 4521739100,
-                "value": 0.886076
+                "value": 0.8433735
               },
               {
                 "operation": "set",
                 "atNanos": 4543478230,
-                "value": 0.89873415
+                "value": 0.85542166
               },
               {
                 "operation": "set",
                 "atNanos": 4565217360,
-                "value": 0.9113924
+                "value": 0.8674699
               },
               {
                 "operation": "set",
                 "atNanos": 4586956490,
-                "value": 0.9240506
+                "value": 0.8795181
               },
               {
                 "operation": "set",
                 "atNanos": 4608695620,
-                "value": 0.93670887
+                "value": 0.8915663
               },
               {
                 "operation": "set",
                 "atNanos": 4630434750,
-                "value": 0.9493671
+                "value": 0.90361446
               },
               {
                 "operation": "set",
                 "atNanos": 4652173880,
-                "value": 0.96202534
+                "value": 0.91566265
               },
               {
                 "operation": "set",
                 "atNanos": 4673913010,
-                "value": 0.9746835
+                "value": 0.92771083
               },
               {
                 "operation": "set",
                 "atNanos": 4695652140,
-                "value": 0.98734176
+                "value": 0.939759
               },
               {
                 "operation": "set",
                 "atNanos": 4717391270,
+                "value": 0.9518072
+              },
+              {
+                "operation": "set",
+                "atNanos": 4739130400,
+                "value": 0.96385545
+              },
+              {
+                "operation": "set",
+                "atNanos": 4760869530,
+                "value": 0.97590363
+              },
+              {
+                "operation": "set",
+                "atNanos": 4782608660,
+                "value": 0.9879518
+              },
+              {
+                "operation": "set",
+                "atNanos": 4804347790,
                 "value": 1.0
               }
             ]
@@ -1735,7 +1691,7 @@
               },
               {
                 "operation": "spring",
-                "atNanos": 5417391258,
+                "atNanos": 5504347778,
                 "target": 0.0,
                 "responseSeconds": 0.24000001,
                 "dampingRatio": 1.0,
@@ -1757,17 +1713,6 @@
             "sourceEndNanos": 15556375000,
             "timelineStartNanos": 1500000000,
             "timelineEndNanos": 17056375000,
-            "gainDb": 0.0
-          },
-          {
-            "id": "after-clip",
-            "path": "../../assets/console-segmented-control/after.mp4",
-            "kind": "video",
-            "role": "layer",
-            "sourceStartNanos": 0,
-            "sourceEndNanos": 18256375000,
-            "timelineStartNanos": 0,
-            "timelineEndNanos": 18256375000,
             "gainDb": 0.0
           }
         ]

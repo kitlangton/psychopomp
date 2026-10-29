@@ -31,6 +31,8 @@ mod lower_third;
 mod plot;
 mod rich_text;
 mod rolling;
+pub(crate) mod rune_notes;
+pub(crate) mod rune_surface;
 pub(crate) mod rune_timeline;
 mod sequence;
 mod stage;
