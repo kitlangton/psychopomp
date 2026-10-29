@@ -95,8 +95,9 @@ pub(crate) async fn render_builtin_hero(output: &Path) -> Result<()> {
 
 const FRAME_USAGE: &str =
     "psychopomp plan frame <plan-or-reel.json> <seconds> [output.png] [--shutter] [--theme NAME]";
+const ONION_USAGE: &str = "psychopomp plan onion <plan-or-reel.json> <a,b,c | from:to:step> [output.png] [--shutter] [--theme NAME]";
 const SNAPSHOT_USAGE: &str = "psychopomp plan snapshot <plan-or-reel.json> <a,b,c | from:to:step> <dir> [--compare] [--shutter] [--theme NAME]";
-const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME]";
+const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME] [--draft]";
 const PRESENT_USAGE: &str = "psychopomp plan present <plan.json> [--theme NAME] [--speed 1|0.5|0.25|0.1] [--debug] [--reduced-motion] [--full-quality] [--fps FPS] [--benchmark | --benchmark-gpu]";
 
 fn usage() -> String {
@@ -108,6 +109,7 @@ fn usage() -> String {
         "psychopomp plan steps <plan.json>",
         "psychopomp plan diff <before.json> <after.json>",
         FRAME_USAGE,
+        ONION_USAGE,
         SNAPSHOT_USAGE,
         RENDER_USAGE,
         PRESENT_USAGE,
@@ -127,6 +129,27 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
         ("frame", arguments) => {
             let (arguments, theme) = delivery_theme(arguments)?;
             frame_command(&arguments, theme)
+        }
+        ("onion", arguments) => {
+            let (arguments, theme) = delivery_theme(arguments)?;
+            let (arguments, [shutter]) = flags(&arguments, &["--shutter"]);
+            let [path, times, rest @ ..] = arguments.as_slice() else {
+                bail!("usage: {ONION_USAGE}");
+            };
+            if rest.len() > 1 {
+                bail!("usage: {ONION_USAGE}");
+            }
+            let output = rest
+                .first()
+                .map_or_else(|| PathBuf::from("output/onion.png"), PathBuf::from);
+            create_output_directory(&output)?;
+            still::onion(
+                Path::new(path),
+                &still::parse_times(times)?,
+                &output,
+                shutter,
+                theme,
+            )
         }
         ("snapshot", arguments) => {
             let (arguments, theme) = delivery_theme(arguments)?;
@@ -257,6 +280,7 @@ fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
 }
 
 fn render_command(arguments: &[String], theme: Theme) -> Result<()> {
+    let (arguments, [draft]) = flags(arguments, &["--draft"]);
     let Some(path) = arguments.first() else {
         bail!("plan render requires a plan path");
     };
@@ -300,7 +324,7 @@ fn render_command(arguments: &[String], theme: Theme) -> Result<()> {
     let _slot = render_queue::wait()?;
     let base = path.parent().unwrap_or_else(|| Path::new("."));
     let (loaded, mut renderer) = pollster::block_on(still::Loaded::prepare(file, base, theme))?;
-    loaded.render_video(&mut renderer, &output, window)
+    loaded.render_video_with(&mut renderer, &output, window, draft)
 }
 
 fn create_output_directory(output: &Path) -> Result<()> {
@@ -886,7 +910,7 @@ impl PreparedPlan {
             });
         };
         let timeline = &self.timeline;
-        let base = stage.render_exposure(
+        let mut base = stage.render_exposure(
             renderer,
             exposure,
             |actor, property, time, default| {
@@ -902,6 +926,10 @@ impl PreparedPlan {
         let overlays = crate::exposure::merge_equal_samples(exposure.iter().copied(), |time| {
             self.overlay_key(time, stage.id(), size)
         })?;
+        if let &[(time, _)] = overlays.as_slice() {
+            self.render_overlays(&mut base, renderer, time, timeline)?;
+            return Ok(base);
+        }
         if !self.only_callouts_differ(&overlays, stage.id(), size)? {
             return crate::exposure::accumulate(renderer, &overlays, |renderer, time| {
                 let mut pixels = base.clone();
@@ -909,8 +937,8 @@ impl PreparedPlan {
                 Ok(pixels)
             });
         }
-        // Only callouts differ: repaint just where moving ones ink, and draw a
-        // still callout once unless a moving one overlaps it.
+        // Only callouts or confetti differ: repaint just where moving ones ink,
+        // and draw a still callout once unless a moving box overlaps it.
         let mut inked = Vec::new();
         for callout in &self.callouts {
             let poses = overlays
@@ -925,10 +953,31 @@ impl PreparedPlan {
                 .collect::<Vec<_>>();
             inked.push((moves, bounds));
         }
+        let confetti_samples = overlays
+            .iter()
+            .map(|&(time, _)| {
+                self.viz.confetti_bounds(|actor, property, default| {
+                    self.property_value(timeline, actor, property, time, default)
+                })
+            })
+            .collect::<Vec<_>>();
+        let confetti_count = confetti_samples.first().map_or(0, Vec::len);
+        let confetti_moving = (0..confetti_count)
+            .filter(|&index| {
+                confetti_samples
+                    .windows(2)
+                    .any(|pair| pair[0][index].0 != pair[1][index].0)
+            })
+            .flat_map(|index| {
+                confetti_samples
+                    .iter()
+                    .flat_map(move |sample| sample[index].1.iter().copied())
+            });
         let moving = inked
             .iter()
             .filter(|(moves, _)| *moves)
             .flat_map(|(_, bounds)| bounds.iter().copied())
+            .chain(confetti_moving)
             .collect::<Vec<_>>();
         let overlaps = |a: &Box2, b: &Box2| {
             (a.min - 1.0).cmplt(b.max + 1.0).all() && (b.min - 1.0).cmplt(a.max + 1.0).all()
@@ -974,7 +1023,9 @@ impl PreparedPlan {
         }
         let mut keys = samples.iter().map(|&(time, _)| {
             let mut key = self.overlay_key_ignoring(time, |actor| {
-                actor == stage || self.callouts.iter().any(|callout| callout.id() == actor)
+                actor == stage
+                    || self.callouts.iter().any(|callout| callout.id() == actor)
+                    || self.viz.has_confetti(actor)
             })?;
             key.anchors = self.stage_pins(time, size);
             Ok::<_, anyhow::Error>(key)

@@ -1,0 +1,289 @@
+{
+ "wordTimings": [
+  {
+   "word": "When",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "an",
+   "start": 0.12,
+   "end": 0.22
+  },
+  {
+   "word": "existing",
+   "start": 0.22,
+   "end": 0.58
+  },
+  {
+   "word": "session",
+   "start": 0.58,
+   "end": 1.02
+  },
+  {
+   "word": "saved",
+   "start": 1.02,
+   "end": 1.46
+  },
+  {
+   "word": "model",
+   "start": 1.46,
+   "end": 1.8
+  },
+  {
+   "word": "was",
+   "start": 1.8,
+   "end": 2.18
+  },
+  {
+   "word": "temporarily",
+   "start": 2.18,
+   "end": 2.7
+  },
+  {
+   "word": "missing",
+   "start": 2.7,
+   "end": 3.24
+  },
+  {
+   "word": "from",
+   "start": 3.24,
+   "end": 3.54
+  },
+  {
+   "word": "the",
+   "start": 3.54,
+   "end": 3.68
+  },
+  {
+   "word": "catalog",
+   "start": 3.68,
+   "end": 4.02
+  },
+  {
+   "word": "during",
+   "start": 4.02,
+   "end": 4.36
+  },
+  {
+   "word": "an",
+   "start": 4.36,
+   "end": 4.6
+  },
+  {
+   "word": "outage,",
+   "start": 4.6,
+   "end": 5.1
+  },
+  {
+   "word": "session",
+   "start": 5.22,
+   "end": 5.74
+  },
+  {
+   "word": "selection",
+   "start": 5.74,
+   "end": 6.12
+  },
+  {
+   "word": "filtered",
+   "start": 6.12,
+   "end": 6.74
+  },
+  {
+   "word": "it",
+   "start": 6.74,
+   "end": 6.98
+  },
+  {
+   "word": "out",
+   "start": 6.98,
+   "end": 7.16
+  },
+  {
+   "word": "as",
+   "start": 7.16,
+   "end": 7.38
+  },
+  {
+   "word": "invalid",
+   "start": 7.38,
+   "end": 7.78
+  },
+  {
+   "word": "and",
+   "start": 7.78,
+   "end": 8.38
+  },
+  {
+   "word": "silently",
+   "start": 8.38,
+   "end": 8.88
+  },
+  {
+   "word": "fell",
+   "start": 8.88,
+   "end": 9.24
+  },
+  {
+   "word": "back",
+   "start": 9.24,
+   "end": 9.5
+  },
+  {
+   "word": "to",
+   "start": 9.5,
+   "end": 9.72
+  },
+  {
+   "word": "a",
+   "start": 9.72,
+   "end": 9.86
+  },
+  {
+   "word": "local",
+   "start": 9.86,
+   "end": 10.18
+  },
+  {
+   "word": "default",
+   "start": 10.18,
+   "end": 10.48
+  },
+  {
+   "word": "model.",
+   "start": 10.48,
+   "end": 10.92
+  },
+  {
+   "word": "Pressing",
+   "start": 11.56,
+   "end": 11.88
+  },
+  {
+   "word": "enter",
+   "start": 11.88,
+   "end": 12.12
+  },
+  {
+   "word": "during",
+   "start": 12.12,
+   "end": 12.48
+  },
+  {
+   "word": "that",
+   "start": 12.48,
+   "end": 12.7
+  },
+  {
+   "word": "window",
+   "start": 12.7,
+   "end": 13.02
+  },
+  {
+   "word": "wrote",
+   "start": 13.02,
+   "end": 13.36
+  },
+  {
+   "word": "a",
+   "start": 13.36,
+   "end": 13.54
+  },
+  {
+   "word": "durable",
+   "start": 13.54,
+   "end": 14
+  },
+  {
+   "word": "model",
+   "start": 14,
+   "end": 14.32
+  },
+  {
+   "word": "switch",
+   "start": 14.32,
+   "end": 14.66
+  },
+  {
+   "word": "to",
+   "start": 14.66,
+   "end": 14.88
+  },
+  {
+   "word": "the",
+   "start": 14.88,
+   "end": 14.96
+  },
+  {
+   "word": "session,",
+   "start": 14.96,
+   "end": 15.3
+  },
+  {
+   "word": "so",
+   "start": 15.5,
+   "end": 16
+  },
+  {
+   "word": "even",
+   "start": 16,
+   "end": 16.28
+  },
+  {
+   "word": "after",
+   "start": 16.28,
+   "end": 16.74
+  },
+  {
+   "word": "the",
+   "start": 16.74,
+   "end": 16.92
+  },
+  {
+   "word": "catalog",
+   "start": 16.92,
+   "end": 17.24
+  },
+  {
+   "word": "recovered,",
+   "start": 17.24,
+   "end": 17.78
+  },
+  {
+   "word": "the",
+   "start": 18.02,
+   "end": 18.34
+  },
+  {
+   "word": "session",
+   "start": 18.34,
+   "end": 18.62
+  },
+  {
+   "word": "stayed",
+   "start": 18.62,
+   "end": 18.94
+  },
+  {
+   "word": "stuck",
+   "start": 18.94,
+   "end": 19.48
+  },
+  {
+   "word": "on",
+   "start": 19.48,
+   "end": 19.7
+  },
+  {
+   "word": "the",
+   "start": 19.7,
+   "end": 19.8
+  },
+  {
+   "word": "fallback.",
+   "start": 19.8,
+   "end": 20.24
+  }
+ ]
+}

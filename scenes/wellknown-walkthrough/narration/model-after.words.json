@@ -1,0 +1,189 @@
+{
+ "wordTimings": [
+  {
+   "word": "Now,",
+   "start": 0,
+   "end": 0.28
+  },
+  {
+   "word": "existing",
+   "start": 0.42,
+   "end": 0.92
+  },
+  {
+   "word": "sessions",
+   "start": 0.92,
+   "end": 1.42
+  },
+  {
+   "word": "always",
+   "start": 1.42,
+   "end": 1.94
+  },
+  {
+   "word": "retain",
+   "start": 1.94,
+   "end": 2.46
+  },
+  {
+   "word": "their",
+   "start": 2.46,
+   "end": 2.64
+  },
+  {
+   "word": "saved",
+   "start": 2.64,
+   "end": 3
+  },
+  {
+   "word": "model",
+   "start": 3,
+   "end": 3.28
+  },
+  {
+   "word": "selection",
+   "start": 3.28,
+   "end": 3.64
+  },
+  {
+   "word": "and",
+   "start": 3.64,
+   "end": 3.98
+  },
+  {
+   "word": "variant,",
+   "start": 3.98,
+   "end": 4.36
+  },
+  {
+   "word": "even",
+   "start": 4.58,
+   "end": 4.94
+  },
+  {
+   "word": "while",
+   "start": 4.94,
+   "end": 5.18
+  },
+  {
+   "word": "the",
+   "start": 5.18,
+   "end": 5.3
+  },
+  {
+   "word": "model",
+   "start": 5.3,
+   "end": 5.58
+  },
+  {
+   "word": "is",
+   "start": 5.58,
+   "end": 5.72
+  },
+  {
+   "word": "missing",
+   "start": 5.72,
+   "end": 6.08
+  },
+  {
+   "word": "from",
+   "start": 6.08,
+   "end": 6.32
+  },
+  {
+   "word": "the",
+   "start": 6.32,
+   "end": 6.46
+  },
+  {
+   "word": "catalog.",
+   "start": 6.46,
+   "end": 6.74
+  },
+  {
+   "word": "Availability",
+   "start": 7.36,
+   "end": 7.96
+  },
+  {
+   "word": "becomes",
+   "start": 7.96,
+   "end": 8.3
+  },
+  {
+   "word": "false,",
+   "start": 8.3,
+   "end": 8.9
+  },
+  {
+   "word": "so",
+   "start": 9.08,
+   "end": 9.36
+  },
+  {
+   "word": "pressing",
+   "start": 9.36,
+   "end": 9.66
+  },
+  {
+   "word": "Enter",
+   "start": 9.66,
+   "end": 10
+  },
+  {
+   "word": "blocks",
+   "start": 10,
+   "end": 10.42
+  },
+  {
+   "word": "with",
+   "start": 10.42,
+   "end": 10.72
+  },
+  {
+   "word": "model",
+   "start": 10.72,
+   "end": 10.98
+  },
+  {
+   "word": "unavailable,",
+   "start": 10.98,
+   "end": 11.72
+  },
+  {
+   "word": "instead",
+   "start": 11.84,
+   "end": 12.28
+  },
+  {
+   "word": "of",
+   "start": 12.28,
+   "end": 12.7
+  },
+  {
+   "word": "switching",
+   "start": 12.7,
+   "end": 12.94
+  },
+  {
+   "word": "models",
+   "start": 12.94,
+   "end": 13.42
+  },
+  {
+   "word": "behind",
+   "start": 13.42,
+   "end": 13.72
+  },
+  {
+   "word": "your",
+   "start": 13.72,
+   "end": 13.92
+  },
+  {
+   "word": "back.",
+   "start": 13.92,
+   "end": 14.18
+  }
+ ]
+}

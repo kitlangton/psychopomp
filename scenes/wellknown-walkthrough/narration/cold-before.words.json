@@ -1,0 +1,279 @@
+{
+ "wordTimings": [
+  {
+   "word": "If",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "open",
+   "start": 0.12,
+   "end": 0.34
+  },
+  {
+   "word": "code",
+   "start": 0.34,
+   "end": 0.6
+  },
+  {
+   "word": "started",
+   "start": 0.6,
+   "end": 0.88
+  },
+  {
+   "word": "cold",
+   "start": 0.88,
+   "end": 1.42
+  },
+  {
+   "word": "while",
+   "start": 1.42,
+   "end": 1.84
+  },
+  {
+   "word": "a",
+   "start": 1.84,
+   "end": 1.98
+  },
+  {
+   "word": "persisted",
+   "start": 1.98,
+   "end": 2.6
+  },
+  {
+   "word": "well",
+   "start": 2.6,
+   "end": 2.72
+  },
+  {
+   "word": "-known",
+   "start": 2.72,
+   "end": 3.02
+  },
+  {
+   "word": "endpoint",
+   "start": 3.02,
+   "end": 3.26
+  },
+  {
+   "word": "was",
+   "start": 3.26,
+   "end": 3.58
+  },
+  {
+   "word": "down,",
+   "start": 3.58,
+   "end": 3.9
+  },
+  {
+   "word": "initial",
+   "start": 4.16,
+   "end": 4.62
+  },
+  {
+   "word": "discovery",
+   "start": 4.62,
+   "end": 5.14
+  },
+  {
+   "word": "failed",
+   "start": 5.14,
+   "end": 5.68
+  },
+  {
+   "word": "and",
+   "start": 5.68,
+   "end": 6.08
+  },
+  {
+   "word": "left",
+   "start": 6.08,
+   "end": 6.28
+  },
+  {
+   "word": "the",
+   "start": 6.28,
+   "end": 6.44
+  },
+  {
+   "word": "manifest",
+   "start": 6.44,
+   "end": 6.78
+  },
+  {
+   "word": "snapshot",
+   "start": 6.78,
+   "end": 7.06
+  },
+  {
+   "word": "empty.",
+   "start": 7.06,
+   "end": 7.64
+  },
+  {
+   "word": "The",
+   "start": 7.98,
+   "end": 8.4
+  },
+  {
+   "word": "10",
+   "start": 8.4,
+   "end": 8.62
+  },
+  {
+   "word": "-minute",
+   "start": 8.62,
+   "end": 8.84
+  },
+  {
+   "word": "timer",
+   "start": 8.84,
+   "end": 9.18
+  },
+  {
+   "word": "checked",
+   "start": 9.18,
+   "end": 9.58
+  },
+  {
+   "word": "for",
+   "start": 9.58,
+   "end": 9.8
+  },
+  {
+   "word": "a",
+   "start": 9.8,
+   "end": 9.98
+  },
+  {
+   "word": "non",
+   "start": 9.98,
+   "end": 10.18
+  },
+  {
+   "word": "-empty",
+   "start": 10.18,
+   "end": 10.56
+  },
+  {
+   "word": "snapshot",
+   "start": 10.56,
+   "end": 10.84
+  },
+  {
+   "word": "before",
+   "start": 10.84,
+   "end": 11.32
+  },
+  {
+   "word": "refreshing,",
+   "start": 11.32,
+   "end": 11.88
+  },
+  {
+   "word": "so",
+   "start": 12.12,
+   "end": 12.5
+  },
+  {
+   "word": "it",
+   "start": 12.5,
+   "end": 12.74
+  },
+  {
+   "word": "never",
+   "start": 12.74,
+   "end": 13.08
+  },
+  {
+   "word": "retried",
+   "start": 13.08,
+   "end": 13.66
+  },
+  {
+   "word": "the",
+   "start": 13.66,
+   "end": 13.8
+  },
+  {
+   "word": "persisted",
+   "start": 13.8,
+   "end": 14.34
+  },
+  {
+   "word": "source",
+   "start": 14.34,
+   "end": 14.54
+  },
+  {
+   "word": "in",
+   "start": 14.54,
+   "end": 14.84
+  },
+  {
+   "word": "KV.",
+   "start": 14.84,
+   "end": 15.22
+  },
+  {
+   "word": "And",
+   "start": 15.42,
+   "end": 16
+  },
+  {
+   "word": "the",
+   "start": 16,
+   "end": 16.2
+  },
+  {
+   "word": "built",
+   "start": 16.2,
+   "end": 16.52
+  },
+  {
+   "word": "-in",
+   "start": 16.52,
+   "end": 16.72
+  },
+  {
+   "word": "login",
+   "start": 16.72,
+   "end": 17.08
+  },
+  {
+   "word": "plugin",
+   "start": 17.08,
+   "end": 17.42
+  },
+  {
+   "word": "died",
+   "start": 17.42,
+   "end": 17.86
+  },
+  {
+   "word": "before",
+   "start": 17.86,
+   "end": 18.36
+  },
+  {
+   "word": "subscribing",
+   "start": 18.36,
+   "end": 18.88
+  },
+  {
+   "word": "to",
+   "start": 18.88,
+   "end": 19.26
+  },
+  {
+   "word": "update",
+   "start": 19.26,
+   "end": 19.52
+  },
+  {
+   "word": "events.",
+   "start": 19.52,
+   "end": 19.86
+  }
+ ]
+}

@@ -87,10 +87,16 @@ authoring. Engineering rules are in [`AGENTS.md`](https://github.com/kitlangton/
    `Lens`) is an immutable value whose methods return composable `Beat`s
    (`.then`, `.also`, `.with`, `.on_end`, `.after`, `.early`, `stagger`, `each`,
    `at!(scene, time => ...)`). Schedule clips with `Narration::reading`, build
-   elements with `StageElement::card|orb|beam|packet|label|ring` and relative
+   elements with `StageElement::card|orb|beam|packet|label|ring|rect|icon` and relative
    `psychopomp::layout::Placement` envelopes on `StagePost::RESTRAINED`, frame
    with `Caption::header|chip|footer`, and play sounds with `sfx::*.beat(id, gain_db)`
-   (or `audio.beat(gain_db)` for `psychopomp-media`). Load the `explainer-motion`
+   (or `audio.beat(gain_db)` for `psychopomp-media`). Do not turn UI, interaction,
+   or geometry stories into abstract node diagrams of cards and beams: draw the
+   actual control anatomy on Stage (`StageElement::rect` with `width`/`height`
+   channels and `dash` hit-box outlines, plus `StageElement::icon` cursor shapes
+   `"cursor"`, `"hand-pointing"`, `"cursor-text"`), and pair with `VideoActor` +
+   `ReelSegmentPlan::wiped` (`BEFORE` / `AFTER` held wipe) for real screen
+   recordings. Load the `explainer-motion`
    skill and apply it to every beat: cards `settle_in`, beams `connect`,
    messages `send`, replies wait for `.reply()`, impacts `hit`, the hero `orb_in`,
    the fix's `rewind`; use `Callout` to pin annotations to Stage elements or
@@ -107,17 +113,21 @@ authoring. Engineering rules are in [`AGENTS.md`](https://github.com/kitlangton/
    with its clip: change the anchor to words the transcript actually contains.
 
 5. **Review before rendering.** Get segment spans from `plan inspect <reel>`, then
-   contact-sheet each segment at its before, switch, after, and code beats:
+   contact-sheet each segment at its before, switch, after, and code beats, and use
+   `plan onion` over key motion windows to inspect trajectories, spacing, and
+   cursor/shape morphs in one composite image:
    ```sh
    bun scripts/sheet.ts <reel> t1,t2,... --theme neutral --shutter --out output/sheet.jpg
+   cargo run --release -- plan onion <reel> from:to:step output/onion.png --theme neutral
    ```
    When tuning the look, set `PSYCHOPOMP_SHADER_DIR=crates/psychopomp-render/src/render`
    and edit [`stage.wgsl`](https://github.com/kitlangton/psychopomp/blob/main/crates/psychopomp-render/src/render/stage.wgsl)/[`stage_post.wgsl`](https://github.com/kitlangton/psychopomp/blob/main/crates/psychopomp-render/src/render/stage_post.wgsl): every frame and sheet picks up shader edits
    without a Rust rebuild.
    Then render one behavior segment with audio (`plan render <reel> out.mp4 --cue <scene-id>`)
-   or a 2–3 second window (`--range a..b`) and inspect frames extracted during
-   motion. Done when every segment has been looked at and no text overlaps, clips,
-   or reads against the wrong chip.
+   or a 2–3 second window (`--range a..b`; pass `--draft` for a fast single-sample
+   timing/audio check before the full-shutter render) and inspect frames extracted
+   during motion. Done when every segment has been looked at and no text overlaps,
+   clips, or reads against the wrong chip.
 
 6. **Render and verify** the whole reel once, after the sheets and short windows
    pass. Run it in the foreground with a long timeout and never end a turn while it

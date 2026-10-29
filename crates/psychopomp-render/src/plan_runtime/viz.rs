@@ -101,6 +101,20 @@ impl PreparedViz {
             .any(|subtitles| subtitles.moving(time))
     }
 
+    pub(super) fn has_confetti(&self, actor: &str) -> bool {
+        self.confetti.iter().any(|confetti| confetti.id() == actor)
+    }
+
+    pub(super) fn confetti_bounds(
+        &self,
+        sample: impl Fn(&str, &str, f32) -> f32 + Copy,
+    ) -> Vec<(Option<[u32; 4]>, Vec<psychopomp::math::shapes::Box2>)> {
+        self.confetti
+            .iter()
+            .map(|confetti| confetti.bounds(sample))
+            .collect()
+    }
+
     /// Checklists, meters, and bars, in the chart layer. `velocity` reads a
     /// channel's rate of change, which smears fast Readout wheels.
     pub(super) fn render_diagrams(

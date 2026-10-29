@@ -1,0 +1,44 @@
+{
+  "engine": "elevenlabs",
+  "model": "eleven_v4",
+  "voice": "dNdjwQil3LjvIangzxuD",
+  "settings": { "stability": 0.35, "similarity": 0.7 },
+  "clips": [
+    {
+      "id": "cache-before",
+      "text": "[warm, conversational voice] When a well-known remote config endpoint returned a transient five oh three, or a two hundred with invalid provider fields, [measured, concerned voice] OpenCode dropped the remote providers and their allowlist policies. [dry, deliberate emphasis] And when a manifest changed in one project, only that project got the update event, leaving every other open project stale."
+    },
+    {
+      "id": "cache-after",
+      "text": "[confident, clear voice] With the fix, Config validates and normalizes remote documents before WellKnown caches the last good snapshot for that origin and credential. [firm, reassuring delivery] Transient five oh threes and invalid payloads keep the previous validated config intact, [relieved, understated emphasis] and manifest updates broadcast globally to every open project."
+    },
+    {
+      "id": "cache-code",
+      "text": "[clear, engaged explanation] In the code, WellKnown publishes update events globally, and only stores a remote config after strict validation succeeds. [calm, grounded delivery] On failure, it falls back to the last good config for that credential."
+    },
+    {
+      "id": "model-before",
+      "text": "[warm, conversational voice] When an existing session's saved model was temporarily missing from the catalog during an outage, [measured, concerned voice] session selection filtered it out as invalid and silently fell back to a local default model. [restrained urgency] Pressing enter during that window wrote a durable model switch to the session... [dry, deliberate emphasis] so even after the catalog recovered, the session stayed stuck on the fallback."
+    },
+    {
+      "id": "model-after",
+      "text": "[confident, clear voice] Now, existing sessions always retain their saved model selection and variant, even while the model is missing from the catalog. [firm, helpful delivery] Availability becomes false, so pressing enter blocks with model unavailable, [relieved, understated emphasis] instead of switching models behind your back."
+    },
+    {
+      "id": "model-code",
+      "text": "[concise, satisfied delivery] The diff in local context is three lines. Session selection drops the model validity filter on saved session selections, and preserves the saved variant until the catalog entry returns."
+    },
+    {
+      "id": "cold-before",
+      "text": "[warm, conversational voice] If OpenCode started cold while a persisted well-known endpoint was down, initial discovery failed and left the manifest snapshot empty. [measured, concerned voice] The ten minute timer checked for a non-empty snapshot before refreshing, so it never retried the persisted source in K V. [dry, deliberate emphasis] And the built-in login plugin died before subscribing to update events."
+    },
+    {
+      "id": "cold-after",
+      "text": "[confident, clear voice] With the fix, the login plugin catches initial discovery errors so it still registers its transform and update subscription. [firm, decisive delivery] And the ten minute timer always calls refresh before checking the snapshot, [relieved, understated emphasis] so cold sources and login commands recover automatically when the endpoint comes back."
+    },
+    {
+      "id": "cold-code",
+      "text": "[clear, engaged explanation] In the plugin, or die becomes a warning catch before subscribing. [concise, satisfied delivery] And in config, the empty snapshot check moves after well-known refresh."
+    }
+  ]
+}

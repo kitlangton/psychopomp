@@ -1,0 +1,14 @@
+{
+  "clips": [
+    {
+      "id": "pitch",
+      "file": "pitch.mp3",
+      "words": "pitch.words.json",
+      "durationNanos": 27038999999,
+      "textHash": "a7fbd21821db6df8",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "W17d6NkbuZt38eqadjB9"
+    }
+  ]
+}

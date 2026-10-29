@@ -1,0 +1,249 @@
+{
+ "wordTimings": [
+  {
+   "word": "When",
+   "start": 0,
+   "end": 0.24
+  },
+  {
+   "word": "a",
+   "start": 0.24,
+   "end": 0.34
+  },
+  {
+   "word": "well",
+   "start": 0.34,
+   "end": 0.44
+  },
+  {
+   "word": "-known",
+   "start": 0.44,
+   "end": 0.78
+  },
+  {
+   "word": "Remote",
+   "start": 0.78,
+   "end": 1.02
+  },
+  {
+   "word": "Config",
+   "start": 1.02,
+   "end": 1.32
+  },
+  {
+   "word": "endpoint",
+   "start": 1.32,
+   "end": 1.76
+  },
+  {
+   "word": "returned",
+   "start": 1.76,
+   "end": 2.32
+  },
+  {
+   "word": "a",
+   "start": 2.32,
+   "end": 2.56
+  },
+  {
+   "word": "transient",
+   "start": 2.56,
+   "end": 3
+  },
+  {
+   "word": "503,",
+   "start": 3,
+   "end": 3.82
+  },
+  {
+   "word": "or",
+   "start": 4.06,
+   "end": 4.42
+  },
+  {
+   "word": "a",
+   "start": 4.42,
+   "end": 4.66
+  },
+  {
+   "word": "200",
+   "start": 4.66,
+   "end": 5.04
+  },
+  {
+   "word": "with",
+   "start": 5.04,
+   "end": 5.48
+  },
+  {
+   "word": "invalid",
+   "start": 5.48,
+   "end": 5.92
+  },
+  {
+   "word": "provider",
+   "start": 5.92,
+   "end": 6.24
+  },
+  {
+   "word": "fields,",
+   "start": 6.24,
+   "end": 6.72
+  },
+  {
+   "word": "OpenCode",
+   "start": 7.06,
+   "end": 7.9
+  },
+  {
+   "word": "dropped",
+   "start": 7.9,
+   "end": 8.3
+  },
+  {
+   "word": "the",
+   "start": 8.3,
+   "end": 8.56
+  },
+  {
+   "word": "remote",
+   "start": 8.56,
+   "end": 8.78
+  },
+  {
+   "word": "providers",
+   "start": 8.78,
+   "end": 9.26
+  },
+  {
+   "word": "and",
+   "start": 9.26,
+   "end": 9.6
+  },
+  {
+   "word": "their",
+   "start": 9.6,
+   "end": 9.86
+  },
+  {
+   "word": "allow",
+   "start": 9.86,
+   "end": 10.08
+  },
+  {
+   "word": "list",
+   "start": 10.08,
+   "end": 10.3
+  },
+  {
+   "word": "policies.",
+   "start": 10.3,
+   "end": 10.78
+  },
+  {
+   "word": "And",
+   "start": 11.16,
+   "end": 11.66
+  },
+  {
+   "word": "when",
+   "start": 11.66,
+   "end": 11.82
+  },
+  {
+   "word": "a",
+   "start": 11.82,
+   "end": 11.94
+  },
+  {
+   "word": "manifest",
+   "start": 11.94,
+   "end": 12.24
+  },
+  {
+   "word": "changed",
+   "start": 12.24,
+   "end": 12.62
+  },
+  {
+   "word": "in",
+   "start": 12.62,
+   "end": 13.02
+  },
+  {
+   "word": "one",
+   "start": 13.02,
+   "end": 13.26
+  },
+  {
+   "word": "project,",
+   "start": 13.26,
+   "end": 13.74
+  },
+  {
+   "word": "only",
+   "start": 14,
+   "end": 14.42
+  },
+  {
+   "word": "that",
+   "start": 14.42,
+   "end": 14.84
+  },
+  {
+   "word": "project",
+   "start": 14.84,
+   "end": 15.32
+  },
+  {
+   "word": "got",
+   "start": 15.32,
+   "end": 15.68
+  },
+  {
+   "word": "the",
+   "start": 15.68,
+   "end": 15.84
+  },
+  {
+   "word": "update",
+   "start": 15.84,
+   "end": 16.1
+  },
+  {
+   "word": "event,",
+   "start": 16.1,
+   "end": 16.4
+  },
+  {
+   "word": "leaving",
+   "start": 16.62,
+   "end": 16.92
+  },
+  {
+   "word": "every",
+   "start": 16.92,
+   "end": 17.4
+  },
+  {
+   "word": "other",
+   "start": 17.4,
+   "end": 17.72
+  },
+  {
+   "word": "open",
+   "start": 17.72,
+   "end": 18.02
+  },
+  {
+   "word": "project",
+   "start": 18.02,
+   "end": 18.46
+  },
+  {
+   "word": "stale.",
+   "start": 18.46,
+   "end": 19.06
+  }
+ ]
+}

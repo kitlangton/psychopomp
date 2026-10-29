@@ -18,13 +18,11 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use super::{
+    delivery::write_png,
     new_renderer,
     still::{self, Change, Loaded},
 };
-use crate::{
-    exposure::{HEIGHT, WIDTH},
-    render::{HeadlessRenderer, Theme},
-};
+use crate::render::{HeadlessRenderer, Theme};
 use manifest::{Manifest, Scene};
 
 pub(crate) const USAGE: &str = "psychopomp verify baseline [LABEL] [--manifest FILE] [--out DIR] [--only NAME,..] | psychopomp verify compare [LABEL | DIR] [--manifest FILE] [--out DIR] [--only NAME,..] [--expect NAME,..]";
@@ -599,20 +597,6 @@ fn frame_file(at: f64, shutter: bool) -> String {
     } else {
         name
     }
-}
-
-/// Write a frame with fast compression: Stage grain makes the default level
-/// spend most of a baseline's time deflating noise.
-fn write_png(path: &Path, pixels: &[u8]) -> Result<()> {
-    let file = fs::File::create(path).with_context(|| format!("create {}", path.display()))?;
-    let mut encoder = png::Encoder::new(std::io::BufWriter::new(file), WIDTH, HEIGHT);
-    encoder.set_color(png::ColorType::Rgba);
-    encoder.set_depth(png::BitDepth::Eight);
-    encoder.set_compression(png::Compression::Fast);
-    encoder
-        .write_header()?
-        .write_image_data(pixels)
-        .with_context(|| format!("write {}", path.display()))
 }
 
 /// A content hash that lets a comparison skip decoding identical baselines;

@@ -1,0 +1,94 @@
+{
+  "clips": [
+    {
+      "id": "cache-before",
+      "file": "cache-before.mp3",
+      "words": "cache-before.words.json",
+      "durationNanos": 19359000000,
+      "textHash": "88258b3fe9faa02d",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "tMRSxGmJxCFK1vjwZHOT"
+    },
+    {
+      "id": "cache-after",
+      "file": "cache-after.mp3",
+      "words": "cache-after.words.json",
+      "durationNanos": 17839000000,
+      "textHash": "542775a4761227eb",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "rhQyKDSCVcxmH7q6zzbn"
+    },
+    {
+      "id": "cache-code",
+      "file": "cache-code.mp3",
+      "words": "cache-code.words.json",
+      "durationNanos": 11759000000,
+      "textHash": "163c00b0229777e0",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "1tRdRQtgxPVo7Z7EuQuX"
+    },
+    {
+      "id": "model-before",
+      "file": "model-before.mp3",
+      "words": "model-before.words.json",
+      "durationNanos": 20639000000,
+      "textHash": "50116edee99d7ba2",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "MpTZwlbZmpYmov26BH7s"
+    },
+    {
+      "id": "model-after",
+      "file": "model-after.mp3",
+      "words": "model-after.words.json",
+      "durationNanos": 14559000000,
+      "textHash": "26f2af0de463a631",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "CZS2J17GYCTcPlwN7Zui"
+    },
+    {
+      "id": "model-code",
+      "file": "model-code.mp3",
+      "words": "model-code.words.json",
+      "durationNanos": 11359000000,
+      "textHash": "8d253f7d105ac741",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "lhRMksXpQIezfK3SUVQD"
+    },
+    {
+      "id": "cold-before",
+      "file": "cold-before.mp3",
+      "words": "cold-before.words.json",
+      "durationNanos": 20319000000,
+      "textHash": "f987c80fdf10306e",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "RX2jYYIMhQk3l2BAa3dt"
+    },
+    {
+      "id": "cold-after",
+      "file": "cold-after.mp3",
+      "words": "cold-after.words.json",
+      "durationNanos": 15599000000,
+      "textHash": "698a0a8d2499f8af",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "iujHRrbSVmyKSq9CgIVK"
+    },
+    {
+      "id": "cold-code",
+      "file": "cold-code.mp3",
+      "words": "cold-code.words.json",
+      "durationNanos": 8879000000,
+      "textHash": "fe8982b4d977727a",
+      "engine": "elevenlabs",
+      "model": "eleven_v4",
+      "requestId": "rEtqhhWZXCcsa1ONWElo"
+    }
+  ]
+}

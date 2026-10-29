@@ -1,0 +1,169 @@
+{
+ "wordTimings": [
+  {
+   "word": "The",
+   "start": 0,
+   "end": 0.14
+  },
+  {
+   "word": "change",
+   "start": 0.14,
+   "end": 0.38
+  },
+  {
+   "word": "is",
+   "start": 0.38,
+   "end": 0.58
+  },
+  {
+   "word": "about",
+   "start": 0.58,
+   "end": 0.8
+  },
+  {
+   "word": "30",
+   "start": 0.8,
+   "end": 1.14
+  },
+  {
+   "word": "lines.",
+   "start": 1.14,
+   "end": 1.56
+  },
+  {
+   "word": "It",
+   "start": 1.86,
+   "end": 2.26
+  },
+  {
+   "word": "replaces",
+   "start": 2.26,
+   "end": 2.68
+  },
+  {
+   "word": "pull",
+   "start": 2.68,
+   "end": 2.98
+  },
+  {
+   "word": "request",
+   "start": 2.98,
+   "end": 3.32
+  },
+  {
+   "word": "57155,",
+   "start": 3.32,
+   "end": 4.98
+  },
+  {
+   "word": "which",
+   "start": 5.3,
+   "end": 5.56
+  },
+  {
+   "word": "keeps",
+   "start": 5.56,
+   "end": 5.78
+  },
+  {
+   "word": "both",
+   "start": 5.78,
+   "end": 6.1
+  },
+  {
+   "word": "rows",
+   "start": 6.1,
+   "end": 6.38
+  },
+  {
+   "word": "and",
+   "start": 6.38,
+   "end": 6.68
+  },
+  {
+   "word": "has",
+   "start": 6.68,
+   "end": 6.88
+  },
+  {
+   "word": "them",
+   "start": 6.88,
+   "end": 7.04
+  },
+  {
+   "word": "share",
+   "start": 7.04,
+   "end": 7.34
+  },
+  {
+   "word": "a",
+   "start": 7.34,
+   "end": 7.5
+  },
+  {
+   "word": "login.",
+   "start": 7.5,
+   "end": 7.8
+  },
+  {
+   "word": "That",
+   "start": 8,
+   "end": 8.36
+  },
+  {
+   "word": "one",
+   "start": 8.36,
+   "end": 8.52
+  },
+  {
+   "word": "adds",
+   "start": 8.52,
+   "end": 8.74
+  },
+  {
+   "word": "about",
+   "start": 8.74,
+   "end": 9.02
+  },
+  {
+   "word": "1400",
+   "start": 9.02,
+   "end": 9.5
+  },
+  {
+   "word": "lines,",
+   "start": 9.5,
+   "end": 10.12
+  },
+  {
+   "word": "mostly",
+   "start": 10.4,
+   "end": 10.76
+  },
+  {
+   "word": "tests,",
+   "start": 10.76,
+   "end": 11.16
+  },
+  {
+   "word": "so",
+   "start": 11.4,
+   "end": 11.68
+  },
+  {
+   "word": "we'd",
+   "start": 11.68,
+   "end": 12.02
+  },
+  {
+   "word": "close",
+   "start": 12.02,
+   "end": 12.24
+  },
+  {
+   "word": "it.",
+   "start": 12.24,
+   "end": 12.44
+  }
+ ]
+}

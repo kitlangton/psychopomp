@@ -25,9 +25,10 @@ cargo fmt --check
 cargo clippy --workspace --all-targets --all-features -- -D warnings
 cargo run -p <scene-crate>                                   # write a plan or reel
 cargo run --release -- plan validate <plan-or-reel.json>
-cargo run --release -- plan render <plan-or-reel.json> output/<name>.mp4 --theme neutral
+cargo run --release -- plan render <plan-or-reel.json> output/<name>.mp4 --theme neutral [--draft]
 cargo run --release -- plan present <deck.json>              # native presentation
 cargo run --release -- plan frame <plan-or-reel.json> <seconds> out.png --shutter
+cargo run --release -- plan onion <plan-or-reel.json> <times> out.png --shutter
 cargo run --release -- plan snapshot <plan-or-reel.json> <times> <dir> [--compare]
 cargo run --release -- verify baseline [LABEL | --out DIR]   # every plan in verify.json + key frames
 cargo run --release -- verify compare [LABEL | DIR] [--expect NAME,..]

@@ -41,8 +41,31 @@ single source), and use the Stage's helpers that implement them.
   (red), warning (yellow), muted, accent (the one thing to follow).
 - Header caption top left (`#number  title`), status chip top right (`before`,
   `◀◀ rewind`, `after the fix`, `the change`), one footer caption that sums up the beat.
-- Behavior stories use the Stage (orb, cards, beams, packets, callouts, rolling
-  numbers); keep Sequence Diagrams for protocols with many ordered messages.
+- **Default to `--theme neutral` ("Clear Neutral")** — warm obsidian `#080807` canvas,
+  quiet 1px graphite borders, warm bone `#e2dfd9` ink, and desaturated semantic accents
+  (warm gold, sage, soft coral) reserved strictly for the single active change. Never
+  put four or five saturated primary colors on screen at once.
+- **One hero object in generous negative space.** Never stack three disconnected boxes
+  (a top widget, a middle diagram, and a bottom readout box) in one frame. Center one
+  tactile hero control or mechanism on the Stage and let dark obsidian whitespace frame it.
+- **Match the visual form to the subject — never default to a node diagram of cards
+  and beams when the subject is visual, geometric, or an interface:**
+  - **UI, interaction, hit-testing, and layout bugs:** Draw the actual control
+    anatomy at magnified scale on the Stage using tactile materials (`Material::Well`
+    for recessed tracks/troughs and `Material::Raised` for elevated pills and buttons,
+    which render as analytic SDF rounded rectangles with overhead key light, top-lit
+    specular rim, 3px inner double-frame rule, and soft drop shadow; plus `width` and
+    `height` channels and `dash` hit-box overlays). Set UI control labels in
+    `Face::Sans` (`Helvetica Neue`) and attach technical inspection notes with
+    `CalloutActor` (`elbow()` + `chip()` in `Face::Mono`), so the UI artifact and the
+    CAD inspection layer have distinct typographic voices. Use the solid, dark-rimmed,
+    shadow-casting cursor icons (`"cursor"`, `"hand-pointing"`, `"cursor-text"`) to
+    show pointer behavior directly over glyphs.
+  - **Services, processes, and topology:** Use Stage orbs, cards, beams, packets,
+    and callouts (`flagship.rs`).
+  - **Ordered multi-party protocols:** Use Sequence Diagrams (`lib.rs`).
+  - **Numbers, curves, and state spaces:** Use `Plot`, `Bars`, `RollingNumber`,
+    and `KeyedGrid`.
 - Code is **condensed for display**, never invented: at most 76 columns and 14 rows,
   real identifiers, the same shape as the real change. Say so in the footer.
 - Prefer `zoom` transitions when flying from a Stage card into its code, and `dip`

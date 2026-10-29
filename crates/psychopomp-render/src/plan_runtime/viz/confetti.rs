@@ -23,6 +23,19 @@ impl PreparedConfetti {
         })
     }
 
+    pub(super) fn id(&self) -> &str {
+        &self.id
+    }
+
+    pub(super) fn bounds(
+        &self,
+        sample: impl Fn(&str, &str, f32) -> f32,
+    ) -> (Option<[u32; 4]>, Vec<psychopomp::math::shapes::Box2>) {
+        crate::render::confetti_bounds(&self.plan, |property, default| {
+            sample(&self.id, property, default)
+        })
+    }
+
     pub(super) fn render(
         &self,
         pixels: &mut [u8],

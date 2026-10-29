@@ -26,7 +26,7 @@ if (crop && (crop.length !== 4 || crop.some(Number.isNaN))) throw new Error("--c
 
 const root = path.join(import.meta.dir, "..")
 const binary = path.join(root, "target/release/psychopomp")
-if (Bun.spawnSync(["cargo", "build", "--release", "-q"], { cwd: root, stderr: "inherit" }).exitCode !== 0) throw new Error("build failed")
+if (Bun.spawnSync(["cargo", "build", "--release", "-q", "-p", "psychopomp-render"], { cwd: root, stderr: "inherit" }).exitCode !== 0) throw new Error("build failed")
 const frames = path.join(root, "output/sheet-frames")
 await rm(frames, { recursive: true, force: true })
 const snapshot = Bun.spawnSync(

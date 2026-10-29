@@ -1,0 +1,159 @@
+{
+ "wordTimings": [
+  {
+   "word": "In",
+   "start": 0,
+   "end": 0.1
+  },
+  {
+   "word": "the",
+   "start": 0.1,
+   "end": 0.18
+  },
+  {
+   "word": "code,",
+   "start": 0.18,
+   "end": 0.44
+  },
+  {
+   "word": "Wellknown",
+   "start": 0.7,
+   "end": 1.3
+  },
+  {
+   "word": "publishes",
+   "start": 1.3,
+   "end": 1.9
+  },
+  {
+   "word": "update",
+   "start": 1.9,
+   "end": 2.14
+  },
+  {
+   "word": "events",
+   "start": 2.14,
+   "end": 2.44
+  },
+  {
+   "word": "globally,",
+   "start": 2.44,
+   "end": 3.02
+  },
+  {
+   "word": "and",
+   "start": 3.2,
+   "end": 3.64
+  },
+  {
+   "word": "only",
+   "start": 3.64,
+   "end": 3.96
+  },
+  {
+   "word": "stores",
+   "start": 3.96,
+   "end": 4.4
+  },
+  {
+   "word": "a",
+   "start": 4.4,
+   "end": 4.54
+  },
+  {
+   "word": "remote",
+   "start": 4.54,
+   "end": 4.76
+  },
+  {
+   "word": "config",
+   "start": 4.76,
+   "end": 5.02
+  },
+  {
+   "word": "after",
+   "start": 5.02,
+   "end": 5.48
+  },
+  {
+   "word": "strict",
+   "start": 5.48,
+   "end": 5.96
+  },
+  {
+   "word": "validation",
+   "start": 5.96,
+   "end": 6.42
+  },
+  {
+   "word": "succeeds.",
+   "start": 6.42,
+   "end": 7.06
+  },
+  {
+   "word": "On",
+   "start": 7.44,
+   "end": 7.88
+  },
+  {
+   "word": "failure,",
+   "start": 7.88,
+   "end": 8.36
+  },
+  {
+   "word": "it",
+   "start": 8.54,
+   "end": 8.84
+  },
+  {
+   "word": "falls",
+   "start": 8.84,
+   "end": 9.06
+  },
+  {
+   "word": "back",
+   "start": 9.06,
+   "end": 9.36
+  },
+  {
+   "word": "to",
+   "start": 9.36,
+   "end": 9.52
+  },
+  {
+   "word": "the",
+   "start": 9.52,
+   "end": 9.64
+  },
+  {
+   "word": "last",
+   "start": 9.64,
+   "end": 9.9
+  },
+  {
+   "word": "good",
+   "start": 9.9,
+   "end": 10.14
+  },
+  {
+   "word": "config",
+   "start": 10.14,
+   "end": 10.5
+  },
+  {
+   "word": "for",
+   "start": 10.5,
+   "end": 10.78
+  },
+  {
+   "word": "that",
+   "start": 10.78,
+   "end": 10.94
+  },
+  {
+   "word": "credential.",
+   "start": 10.94,
+   "end": 11.2
+  }
+ ]
+}

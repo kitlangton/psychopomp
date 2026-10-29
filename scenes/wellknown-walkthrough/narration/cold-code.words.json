@@ -1,0 +1,114 @@
+{
+ "wordTimings": [
+  {
+   "word": "In",
+   "start": 0,
+   "end": 0.12
+  },
+  {
+   "word": "the",
+   "start": 0.12,
+   "end": 0.2
+  },
+  {
+   "word": "plugin,",
+   "start": 0.2,
+   "end": 0.56
+  },
+  {
+   "word": "ordie",
+   "start": 0.74,
+   "end": 1.2
+  },
+  {
+   "word": "becomes",
+   "start": 1.2,
+   "end": 1.7
+  },
+  {
+   "word": "a",
+   "start": 1.7,
+   "end": 1.98
+  },
+  {
+   "word": "warning",
+   "start": 1.98,
+   "end": 2.3
+  },
+  {
+   "word": "catch",
+   "start": 2.3,
+   "end": 2.58
+  },
+  {
+   "word": "before",
+   "start": 2.58,
+   "end": 2.94
+  },
+  {
+   "word": "subscribing,",
+   "start": 2.94,
+   "end": 3.5
+  },
+  {
+   "word": "and",
+   "start": 3.8,
+   "end": 4.26
+  },
+  {
+   "word": "in",
+   "start": 4.26,
+   "end": 4.4
+  },
+  {
+   "word": "config,",
+   "start": 4.4,
+   "end": 4.74
+  },
+  {
+   "word": "the",
+   "start": 5.04,
+   "end": 5.32
+  },
+  {
+   "word": "empty",
+   "start": 5.32,
+   "end": 5.7
+  },
+  {
+   "word": "snapshot",
+   "start": 5.7,
+   "end": 6.04
+  },
+  {
+   "word": "check",
+   "start": 6.04,
+   "end": 6.5
+  },
+  {
+   "word": "moves",
+   "start": 6.5,
+   "end": 6.8
+  },
+  {
+   "word": "after",
+   "start": 6.8,
+   "end": 7.3
+  },
+  {
+   "word": "well",
+   "start": 7.3,
+   "end": 7.74
+  },
+  {
+   "word": "-known",
+   "start": 7.74,
+   "end": 7.98
+  },
+  {
+   "word": "refresh.",
+   "start": 7.98,
+   "end": 8.26
+  }
+ ]
+}

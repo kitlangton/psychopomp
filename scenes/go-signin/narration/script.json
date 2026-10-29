@@ -1,0 +1,24 @@
+{
+  "engine": "elevenlabs",
+  "voice": "8olojUk4IXpvKgaOCHXj",
+  "model": "eleven_v4",
+  "settings": { "stability": 0.5, "similarity": 0.75 },
+  "clips": [
+    {
+      "id": "problem",
+      "text": "[calm, conversational] Say you hit the free limit and buy OpenCode Go in the Console. You open connect, and the first row is OpenCode Go. You pick it, and it asks for an API key. [a little exasperated] There's no way to sign in, and buying Go didn't give you a key, so you're stuck."
+    },
+    {
+      "id": "console",
+      "text": "[calm, conversational] The Console already treats Go as part of your account. Its Go page tells you to sign in to OpenCode, the same login as everything else. The second row here, OpenCode Console, does that sign-in today. Once you're in, the Console adds the Go models, as long as your workspace is subscribed. You'd just have to know to skip the Go row."
+    },
+    {
+      "id": "fix",
+      "text": "[clear, confident] So the fix is one OpenCode row. We drop the Go row from connect, and rename Console to just OpenCode. You sign in once, and Go comes with it. API keys still work. A Go key is a normal OpenCode key, so you paste it into the same row, or set the OpenCode API key environment variable."
+    },
+    {
+      "id": "outro",
+      "text": "[calm, conversational] The change is about thirty lines. It replaces pull request fifty-seven one fifty-five, which keeps both rows and has them share a login. That one adds about fourteen hundred lines, mostly tests, so we'd close it."
+    }
+  ]
+}

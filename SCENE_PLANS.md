@@ -60,9 +60,10 @@ machinery:
 4. Review exact frames before encoding: `bun scripts/sheet.ts <plan> 0:10:0.5
    [--crop x,y,w,h] [--shutter]`, `plan frame <plan> <t> out.png --shutter`, and for
    code steps `plan steps`.
-5. Render one cue with audio (`plan render <plan> out.mp4 --cue <id>`), then the
-   whole film. When refactoring, `plan snapshot <plan> <times> <dir>` before and
-   `--compare` after proves the pixels did not change.
+5. Render one cue with audio (`plan render <plan> out.mp4 --cue <id> --draft` for
+   a fast single-sample timing check, then without `--draft` for full shutter
+   exposure), then the whole film. When refactoring, `plan snapshot <plan> <times>
+   <dir>` before and `--compare` after proves the pixels did not change.
 
 The sections below cover presentation, narrated reels, [every recipe's payload and
 channels](#recipe-payloads-and-channels), and the persistent renderer.
@@ -129,6 +130,7 @@ Render only one cue or exact range on the original scene clock:
 ```bash
 cargo run --release -- plan render target/agent-demo.json output/intro.mp4 --cue intro
 cargo run --release -- plan render target/agent-demo.json output/window.mp4 --range 0.2..0.4
+cargo run --release -- plan render target/agent-demo.json output/draft.mp4 --range 0.2..0.4 --draft
 ```
 
 A Render Window trims and rebases intersecting media to output time zero, but visual sampling remains on the original global scene clock. Starting a window in the middle of a spring therefore preserves its position and velocity.

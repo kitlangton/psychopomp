@@ -16,6 +16,16 @@ pub(super) fn render_video(
     output: &Path,
     window: TimeRange,
 ) -> Result<()> {
+    render_video_with(prepared, renderer, output, window, false)
+}
+
+pub(super) fn render_video_with(
+    prepared: &PreparedPlan,
+    renderer: &mut HeadlessRenderer,
+    output: &Path,
+    window: TimeRange,
+    draft: bool,
+) -> Result<()> {
     renderer.set_file_name(prepared.file_name());
     encode_exposures(
         renderer,
@@ -23,7 +33,13 @@ pub(super) fn render_video(
         prepared.duration(),
         &prepared.media,
         window,
-        |center| prepared.temporal_samples(center),
+        |center| {
+            if draft {
+                1
+            } else {
+                prepared.temporal_samples(center)
+            }
+        },
         |time| prepared.visual_sample_key(time),
         |renderer, exposure| prepared.render_exposure(renderer, exposure),
     )?;
@@ -31,11 +47,12 @@ pub(super) fn render_video(
     Ok(())
 }
 
-pub(super) fn render_reel(
+pub(super) fn render_reel_with(
     prepared: &PreparedReel,
     renderer: &mut HeadlessRenderer,
     output: &Path,
     window: TimeRange,
+    draft: bool,
 ) -> Result<()> {
     encode_exposures(
         renderer,
@@ -43,7 +60,13 @@ pub(super) fn render_reel(
         prepared.duration(),
         prepared.media(),
         window,
-        |center| prepared.temporal_samples(center),
+        |center| {
+            if draft {
+                1
+            } else {
+                prepared.temporal_samples(center)
+            }
+        },
         |time| prepared.visual_sample_key(time),
         |renderer, exposure| prepared.render_exposure(renderer, exposure),
     )
@@ -73,6 +96,9 @@ pub(crate) fn write_png(path: &Path, pixels: &[u8]) -> Result<()> {
     let mut encoder = png::Encoder::new(BufWriter::new(file), WIDTH, HEIGHT);
     encoder.set_color(png::ColorType::Rgba);
     encoder.set_depth(png::BitDepth::Eight);
+    // Stage grain makes the default deflate level spend hundreds of
+    // milliseconds per frame compressing noise; Fast stays lossless.
+    encoder.set_compression(png::Compression::Fast);
     encoder
         .write_header()
         .context("write PNG header")?

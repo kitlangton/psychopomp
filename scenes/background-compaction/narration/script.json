@@ -1,0 +1,12 @@
+{
+  "engine": "elevenlabs",
+  "model": "eleven_v4",
+  "voice": "8olojUk4IXpvKgaOCHXj",
+  "settings": { "stability": 0.5, "similarity": 0.75 },
+  "clips": [
+    {
+      "id": "pitch",
+      "text": "[warm, conversational voice] These two OpenCode sessions fill their context at the same pace. The bottom one has background compaction, so it starts writing its summary at eighty five percent.\n\nAt the limit, the bottom one swaps its summary in and keeps going. The top one stops for almost a minute.\n\n[measured, pleased] On my first ninety nine compactions, the median pause dropped from fifty five seconds to two milliseconds. That's one day of data. Filip and Aiden built it."
+    }
+  ]
+}

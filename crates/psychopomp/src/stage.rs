@@ -594,6 +594,8 @@ pub enum Fill {
 pub enum Material {
     Surface,
     Background,
+    Raised,
+    Well,
 }
 
 /// Which ends of an open line carry an arrowhead.
@@ -655,7 +657,7 @@ impl Curve {
 }
 
 /// Bundled Phosphor icons (MIT, `assets/icons`), by name.
-pub const ICONS: [&str; 40] = [
+pub const ICONS: [&str; 43] = [
     "arrows-clockwise",
     "bell",
     "brain",
@@ -667,6 +669,8 @@ pub const ICONS: [&str; 40] = [
     "code",
     "cpu",
     "cube",
+    "cursor",
+    "cursor-text",
     "database",
     "desktop",
     "device-mobile",
@@ -677,6 +681,7 @@ pub const ICONS: [&str; 40] = [
     "gear",
     "git-branch",
     "globe",
+    "hand-pointing",
     "hard-drives",
     "hourglass",
     "key",
@@ -835,14 +840,103 @@ impl StageElement {
         }
     }
 
+    /// A rectangle shape with a muted stroke and no fill.
+    pub fn rect(id: &str, at: [f32; 3], size: [f32; 2]) -> Self {
+        Self::Shape {
+            id: id.into(),
+            at,
+            shape: Figure::Rect(size),
+            corner: 0.0,
+            fill: None,
+            fill_opacity: 1.0,
+            stroke: muted_stroke(),
+            width: default_width(),
+            dash: None,
+            arrow: Arrow::None,
+        }
+    }
+
+    /// A bundled Phosphor icon (`ICONS`), `size` world pixels square.
+    pub fn icon(id: &str, at: [f32; 3], size: f32, icon: &str) -> Self {
+        Self::Icon {
+            id: id.into(),
+            at,
+            size,
+            icon: icon.into(),
+            path: String::new(),
+            view: default_view(),
+            ink: None,
+            tone: Tone::default(),
+        }
+    }
+
     pub fn tone(mut self, tone: Tone) -> Self {
         match &mut self {
             Self::Card { tone: own, .. }
             | Self::Orb { tone: own, .. }
             | Self::Beam { tone: own, .. }
             | Self::Packet { tone: own, .. }
-            | Self::Ring { tone: own, .. } => *own = tone,
+            | Self::Ring { tone: own, .. }
+            | Self::Form { tone: own, .. }
+            | Self::Path { tone: own, .. }
+            | Self::Icon { tone: own, .. }
+            | Self::Bolt { tone: own, .. }
+            | Self::Shield { tone: own, .. } => *own = tone,
             other => panic!("stage element '{}' has no tone", other.id()),
+        }
+        self
+    }
+
+    /// Corner radius of a rectangle or polygon shape.
+    pub fn corner(mut self, radius: f32) -> Self {
+        match &mut self {
+            Self::Shape { corner, .. } | Self::Path { corner, .. } => *corner = radius,
+            other => panic!("stage element '{}' has no corner", other.id()),
+        }
+        self
+    }
+
+    /// Fill of a flat shape (`Some(Fill::Material(Material::Surface))` or `Some(Fill::Tone(Tone::...))`).
+    pub fn fill(mut self, value: Option<Fill>) -> Self {
+        let Self::Shape { fill, .. } = &mut self else {
+            panic!("only shapes have a fill, not '{}'", self.id());
+        };
+        *fill = value;
+        self
+    }
+
+    /// Fill opacity of a flat shape (`0.0..=1.0`).
+    pub fn fill_opacity(mut self, alpha: f32) -> Self {
+        let Self::Shape { fill_opacity, .. } = &mut self else {
+            panic!("only shapes have a fill_opacity, not '{}'", self.id());
+        };
+        *fill_opacity = alpha;
+        self
+    }
+
+    /// Stroke tone of a flat shape (`None` for no stroke).
+    pub fn stroke(mut self, value: Option<Tone>) -> Self {
+        let Self::Shape { stroke, .. } = &mut self else {
+            panic!("only shapes have a stroke, not '{}'", self.id());
+        };
+        *stroke = value;
+        self
+    }
+
+    /// Stroke width of a flat shape or path, in world pixels.
+    pub fn stroke_width(mut self, value: f32) -> Self {
+        match &mut self {
+            Self::Shape { width, .. } | Self::Path { width, .. } => *width = value,
+            other => panic!("stage element '{}' has no stroke_width", other.id()),
+        }
+        self
+    }
+
+    /// Dash and gap lengths of a flat shape or path, in world pixels.
+    pub fn dash(mut self, value: [f32; 2]) -> Self {
+        match &mut self {
+            Self::Shape { dash, .. } | Self::Path { dash, .. } => *dash = Some(value),
+            other => panic!("stage element '{}' has no dash", other.id()),
         }
         self
     }
@@ -1066,8 +1160,8 @@ impl StageElement {
                 "morph", "burst", "shatter", "pulse", "hurt", "solid",
             ],
             Self::Shape { .. } => &[
-                "opacity", "x", "y", "z", "scale", "rotation", "blur", "draw", "fill", "emphasis",
-                "flash",
+                "opacity", "x", "y", "z", "width", "height", "scale", "rotation", "blur", "draw",
+                "fill", "emphasis", "flash",
             ],
             Self::Path { .. } => &["opacity", "draw", "trim", "flow", "emphasis", "surge"],
             Self::Icon { .. } => &["opacity", "x", "y", "z", "scale", "blur", "flash"],
@@ -1189,6 +1283,8 @@ impl StageElement {
                 ("x", 0.0),
                 ("y", 0.0),
                 ("z", 0.0),
+                ("width", 0.0),
+                ("height", 0.0),
                 ("scale", 1.0),
                 ("rotation", 0.0),
                 ("blur", 0.0),

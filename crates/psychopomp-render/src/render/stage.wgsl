@@ -112,15 +112,19 @@ fn direction(angle: f32) -> vec2<f32> {
 
 // Nearest point of the first `drawn` pixels of a polyline: (distance, length
 // along it, interpolated point energy). Points are (x, y, length so far, energy).
-fn path_nearest(px: vec2<f32>, first: u32, count: u32, drawn: f32) -> vec3<f32> {
-    var best = 1.0e9;
+fn path_nearest(px: vec2<f32>, first: u32, count: u32, drawn: f32, reach: f32) -> vec3<f32> {
+    var best = reach;
     var along = 0.0;
     var energy = 0.0;
     for (var k = 0u; k + 1u < count; k = k + 1u) {
         let a = points[first + k];
-        let b = points[first + k + 1u];
         if a.z >= drawn {
             break;
+        }
+        let b = points[first + k + 1u];
+        if px.x < min(a.x, b.x) - best || px.x > max(a.x, b.x) + best ||
+           px.y < min(a.y, b.y) - best || px.y > max(a.y, b.y) + best {
+            continue;
         }
         let t_end = clamp((drawn - a.z) / max(b.z - a.z, 1.0e-4), 0.0, 1.0);
         let end = mix(a.xy, b.xy, t_end);
@@ -263,9 +267,13 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
             var heat = 1.0;
             for (var k = 0u; k + 1u < count; k = k + 1u) {
                 let a = points[first + k];
-                let b = points[first + k + 1u];
                 if a.z >= drawn {
                     break;
+                }
+                let b = points[first + k + 1u];
+                if px.x < min(a.x, b.x) - best || px.x > max(a.x, b.x) + best ||
+                   px.y < min(a.y, b.y) - best || px.y > max(a.y, b.y) + best {
+                    continue;
                 }
                 var end = b.xy;
                 var end_length = b.z;
@@ -373,7 +381,14 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
         // the end), b = (blur, corona radius, reach, 0); fill.rgb = core light,
         // stroke.rgb = corona light; uv = (first point, count). Pure emission.
         case 10u: {
-            let hit = path_nearest(px, u32(prim.uv.x + 0.5), u32(prim.uv.y + 0.5), prim.a.z);
+            let perp_d = dot(px - prim.light.xy, prim.light.zw);
+            if perp_d < prim.light_color.x || perp_d > prim.light_color.y {
+                return vec4<f32>(0.0);
+            }
+            let hit = path_nearest(px, u32(prim.uv.x + 0.5), u32(prim.uv.y + 0.5), prim.a.z, prim.b.z + 2.0);
+            if hit.x >= prim.b.z + 2.0 {
+                return vec4<f32>(0.0);
+            }
             let taper = 1.0 - prim.a.w * clamp(hit.y / max(prim.a.z, 1.0), 0.0, 1.0);
             let light = lightning_channel(hit.x, prim.a.y * taper, prim.b.x, prim.fill.rgb, prim.stroke.rgb, prim.b.y, prim.b.z);
             return vec4<f32>(light * hit.z, 0.0);

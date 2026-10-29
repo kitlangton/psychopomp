@@ -1,0 +1,244 @@
+{
+ "wordTimings": [
+  {
+   "word": "Say",
+   "start": 0,
+   "end": 0.32
+  },
+  {
+   "word": "you",
+   "start": 0.32,
+   "end": 0.5
+  },
+  {
+   "word": "hit",
+   "start": 0.5,
+   "end": 0.68
+  },
+  {
+   "word": "the",
+   "start": 0.68,
+   "end": 0.78
+  },
+  {
+   "word": "free",
+   "start": 0.78,
+   "end": 0.98
+  },
+  {
+   "word": "limit",
+   "start": 0.98,
+   "end": 1.28
+  },
+  {
+   "word": "and",
+   "start": 1.28,
+   "end": 1.62
+  },
+  {
+   "word": "buy",
+   "start": 1.62,
+   "end": 1.82
+  },
+  {
+   "word": "OpenCodeGo",
+   "start": 1.82,
+   "end": 2.56
+  },
+  {
+   "word": "in",
+   "start": 2.56,
+   "end": 2.78
+  },
+  {
+   "word": "the",
+   "start": 2.78,
+   "end": 2.86
+  },
+  {
+   "word": "console.",
+   "start": 2.86,
+   "end": 3.2
+  },
+  {
+   "word": "You",
+   "start": 3.46,
+   "end": 3.82
+  },
+  {
+   "word": "open",
+   "start": 3.82,
+   "end": 4.06
+  },
+  {
+   "word": "Connect,",
+   "start": 4.06,
+   "end": 4.34
+  },
+  {
+   "word": "and",
+   "start": 4.62,
+   "end": 4.86
+  },
+  {
+   "word": "the",
+   "start": 4.86,
+   "end": 4.94
+  },
+  {
+   "word": "first",
+   "start": 4.94,
+   "end": 5.22
+  },
+  {
+   "word": "row",
+   "start": 5.22,
+   "end": 5.5
+  },
+  {
+   "word": "is",
+   "start": 5.5,
+   "end": 5.78
+  },
+  {
+   "word": "OpenCodeGo.",
+   "start": 5.78,
+   "end": 6.52
+  },
+  {
+   "word": "You",
+   "start": 6.72,
+   "end": 7.12
+  },
+  {
+   "word": "pick",
+   "start": 7.12,
+   "end": 7.34
+  },
+  {
+   "word": "it,",
+   "start": 7.34,
+   "end": 7.5
+  },
+  {
+   "word": "and",
+   "start": 7.6,
+   "end": 7.88
+  },
+  {
+   "word": "it",
+   "start": 7.88,
+   "end": 8.04
+  },
+  {
+   "word": "asks",
+   "start": 8.04,
+   "end": 8.3
+  },
+  {
+   "word": "for",
+   "start": 8.3,
+   "end": 8.5
+  },
+  {
+   "word": "an",
+   "start": 8.5,
+   "end": 8.64
+  },
+  {
+   "word": "API",
+   "start": 8.64,
+   "end": 8.86
+  },
+  {
+   "word": "key.",
+   "start": 8.86,
+   "end": 9.3
+  },
+  {
+   "word": "There's",
+   "start": 9.52,
+   "end": 10
+  },
+  {
+   "word": "no",
+   "start": 10,
+   "end": 10.14
+  },
+  {
+   "word": "way",
+   "start": 10.14,
+   "end": 10.4
+  },
+  {
+   "word": "to",
+   "start": 10.4,
+   "end": 10.52
+  },
+  {
+   "word": "sign",
+   "start": 10.52,
+   "end": 10.76
+  },
+  {
+   "word": "in,",
+   "start": 10.76,
+   "end": 11.04
+  },
+  {
+   "word": "and",
+   "start": 11.18,
+   "end": 11.5
+  },
+  {
+   "word": "buying",
+   "start": 11.5,
+   "end": 11.74
+  },
+  {
+   "word": "Go",
+   "start": 11.74,
+   "end": 11.98
+  },
+  {
+   "word": "didn't",
+   "start": 11.98,
+   "end": 12.44
+  },
+  {
+   "word": "give",
+   "start": 12.44,
+   "end": 12.56
+  },
+  {
+   "word": "you",
+   "start": 12.56,
+   "end": 12.76
+  },
+  {
+   "word": "a",
+   "start": 12.76,
+   "end": 12.84
+  },
+  {
+   "word": "key,",
+   "start": 12.84,
+   "end": 13.04
+  },
+  {
+   "word": "so",
+   "start": 13.2,
+   "end": 13.5
+  },
+  {
+   "word": "you're",
+   "start": 13.5,
+   "end": 13.88
+  },
+  {
+   "word": "stuck.",
+   "start": 13.88,
+   "end": 14.14
+  }
+ ]
+}
