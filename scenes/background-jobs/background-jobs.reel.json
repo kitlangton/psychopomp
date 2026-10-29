@@ -1,0 +1,4035 @@
+{
+  "version": 1,
+  "id": "background-jobs",
+  "segments": [
+    {
+      "transitionNanos": 0,
+      "transitionStyle": "crossfade",
+      "plan": {
+        "version": 2,
+        "id": "01-problem",
+        "durationNanos": 22568999999,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "today on dev",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "2m foreground kills & web-only steer"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "origin/dev"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "term",
+            "recipe": "terminal",
+            "data": {
+              "lines": [
+                {
+                  "id": "boot",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "[ses_9c2e] ",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "turn active · shell blocking foreground step",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "id": "cmd1",
+                  "kind": "command",
+                  "text": "cargo test --workspace"
+                },
+                {
+                  "done": [
+                    {
+                      "text": "SIGTERM at 120,000 ms ",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "· slow build killed mid-suite"
+                    }
+                  ],
+                  "id": "task2",
+                  "kind": "task",
+                  "mark": "cross",
+                  "spans": [
+                    {
+                      "text": "running shell sh_01 (timeout 120,000 ms)...",
+                      "tone": "request"
+                    }
+                  ]
+                },
+                {
+                  "id": "cmd3",
+                  "kind": "command",
+                  "text": "steer \"check job.ts while tests finish\""
+                },
+                {
+                  "id": "out4",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "tui / ios: ",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "message waits behind blocked foreground tool"
+                    }
+                  ]
+                },
+                {
+                  "id": "out5",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "  app/steer-background.ts only runs in web composer",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "id": "out6",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "LocationServiceMap.reload: ",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "notifyWhenDone fiber interrupted (#56729)"
+                    }
+                  ]
+                },
+                {
+                  "id": "out7",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "  sh_02 finished in global Job, notice never delivered",
+                      "tone": "muted"
+                    }
+                  ]
+                }
+              ],
+              "origin": [
+                120.0,
+                200.0
+              ],
+              "prompt": [
+                {
+                  "text": "opencode ",
+                  "tone": "accent"
+                },
+                {
+                  "text": "❯ ",
+                  "tone": "muted"
+                }
+              ],
+              "rows": 13,
+              "size": 19.0,
+              "title": "tui · ~/code/opencode",
+              "width": 935.0
+            }
+          },
+          {
+            "id": "kicker",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "DEFAULT FOREGROUND LIMIT",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                1115.0,
+                224.0
+              ],
+              "size": 19.0
+            }
+          },
+          {
+            "id": "limit-roll",
+            "recipe": "rolling-number",
+            "data": {
+              "bold": true,
+              "durationNanos": 580000000,
+              "origin": [
+                1115.0,
+                304.0
+              ],
+              "rolls": [
+                {
+                  "atNanos": 4850000000,
+                  "value": "SIGTERM"
+                }
+              ],
+              "size": 62.0,
+              "suffix": [
+                {
+                  "text": " @ 2m",
+                  "tone": "muted"
+                }
+              ],
+              "tone": "error",
+              "value": "120,000 ms"
+            }
+          },
+          {
+            "id": "checks",
+            "recipe": "checklist",
+            "data": {
+              "items": [
+                {
+                  "failure": "SIGTERM",
+                  "id": "kill",
+                  "label": "2m shell timeout",
+                  "result": "SIGTERM"
+                },
+                {
+                  "failure": "web only",
+                  "id": "steer",
+                  "label": "steer-background.ts",
+                  "result": "web only"
+                },
+                {
+                  "failure": "dropped",
+                  "id": "reload",
+                  "label": "notifyWhenDone scope",
+                  "result": "dropped"
+                }
+              ],
+              "origin": [
+                1115.0,
+                415.0
+              ],
+              "panel": true,
+              "rail": true,
+              "size": 23.0,
+              "title": "three gaps on dev",
+              "width": 680.0
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "origin/dev · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "shell.ts:182",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · app/src/session/requests/steer-background.ts · #56729",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "term.line.cmd1.reveal",
+            "actorId": "term",
+            "property": "line.cmd1.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.caret",
+            "actorId": "term",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "durationNanos": 60000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 1979601629,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 6660000000,
+                "target": 1.0,
+                "durationNanos": 60000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 8640748812,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "term.line.cmd1.typed",
+            "actorId": "term",
+            "property": "line.cmd1.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 1012840677,
+                "value": 0.045454547
+              },
+              {
+                "operation": "set",
+                "atNanos": 1045383056,
+                "value": 0.09090909
+              },
+              {
+                "operation": "set",
+                "atNanos": 1082804825,
+                "value": 0.13636364
+              },
+              {
+                "operation": "set",
+                "atNanos": 1108407862,
+                "value": 0.18181819
+              },
+              {
+                "operation": "set",
+                "atNanos": 1141895266,
+                "value": 0.22727273
+              },
+              {
+                "operation": "set",
+                "atNanos": 1171121769,
+                "value": 0.27272728
+              },
+              {
+                "operation": "set",
+                "atNanos": 1225839126,
+                "value": 0.3181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 1251458487,
+                "value": 0.36363637
+              },
+              {
+                "operation": "set",
+                "atNanos": 1280978399,
+                "value": 0.4090909
+              },
+              {
+                "operation": "set",
+                "atNanos": 1316326429,
+                "value": 0.45454547
+              },
+              {
+                "operation": "set",
+                "atNanos": 1351257265,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 1395807929,
+                "value": 0.54545456
+              },
+              {
+                "operation": "set",
+                "atNanos": 1435645864,
+                "value": 0.59090906
+              },
+              {
+                "operation": "set",
+                "atNanos": 1479354805,
+                "value": 0.6363636
+              },
+              {
+                "operation": "set",
+                "atNanos": 1501856935,
+                "value": 0.6818182
+              },
+              {
+                "operation": "set",
+                "atNanos": 1524982293,
+                "value": 0.72727275
+              },
+              {
+                "operation": "set",
+                "atNanos": 1552830268,
+                "value": 0.77272725
+              },
+              {
+                "operation": "set",
+                "atNanos": 1594122315,
+                "value": 0.8181818
+              },
+              {
+                "operation": "set",
+                "atNanos": 1623222961,
+                "value": 0.8636364
+              },
+              {
+                "operation": "set",
+                "atNanos": 1652462613,
+                "value": 0.90909094
+              },
+              {
+                "operation": "set",
+                "atNanos": 1677833021,
+                "value": 0.95454544
+              },
+              {
+                "operation": "set",
+                "atNanos": 1719601629,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "term.line.task2.reveal",
+            "actorId": "term",
+            "property": "line.task2.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 2129601629,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.task2.spin",
+            "actorId": "term",
+            "property": "line.task2.spin",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 2129601629,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 2129601629,
+                "target": 20.439,
+                "durationNanos": 20439000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 6983033807,
+                "value": 4.853432
+              }
+            ]
+          },
+          {
+            "id": "term.line.task2.mark",
+            "actorId": "term",
+            "property": "line.task2.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 5223033817,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 5223033817,
+                "target": 1.76,
+                "durationNanos": 1760000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "term.line.task2.status",
+            "actorId": "term",
+            "property": "line.task2.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5453033821,
+                "target": 1.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.cmd3.reveal",
+            "actorId": "term",
+            "property": "line.cmd3.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 6660000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.cmd3.typed",
+            "actorId": "term",
+            "property": "line.cmd3.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 7006683959,
+                "value": 0.025641026
+              },
+              {
+                "operation": "set",
+                "atNanos": 7029795799,
+                "value": 0.051282052
+              },
+              {
+                "operation": "set",
+                "atNanos": 7054536754,
+                "value": 0.07692308
+              },
+              {
+                "operation": "set",
+                "atNanos": 7089347622,
+                "value": 0.102564104
+              },
+              {
+                "operation": "set",
+                "atNanos": 7132738455,
+                "value": 0.12820514
+              },
+              {
+                "operation": "set",
+                "atNanos": 7155013840,
+                "value": 0.15384616
+              },
+              {
+                "operation": "set",
+                "atNanos": 7222415813,
+                "value": 0.17948718
+              },
+              {
+                "operation": "set",
+                "atNanos": 7268648857,
+                "value": 0.20512821
+              },
+              {
+                "operation": "set",
+                "atNanos": 7312149875,
+                "value": 0.23076923
+              },
+              {
+                "operation": "set",
+                "atNanos": 7343415047,
+                "value": 0.25641027
+              },
+              {
+                "operation": "set",
+                "atNanos": 7374385505,
+                "value": 0.2820513
+              },
+              {
+                "operation": "set",
+                "atNanos": 7399638991,
+                "value": 0.30769232
+              },
+              {
+                "operation": "set",
+                "atNanos": 7430476267,
+                "value": 0.33333334
+              },
+              {
+                "operation": "set",
+                "atNanos": 7474663338,
+                "value": 0.35897437
+              },
+              {
+                "operation": "set",
+                "atNanos": 7502418162,
+                "value": 0.3846154
+              },
+              {
+                "operation": "set",
+                "atNanos": 7538768936,
+                "value": 0.41025642
+              },
+              {
+                "operation": "set",
+                "atNanos": 7580653020,
+                "value": 0.43589744
+              },
+              {
+                "operation": "set",
+                "atNanos": 7625361150,
+                "value": 0.46153846
+              },
+              {
+                "operation": "set",
+                "atNanos": 7657373120,
+                "value": 0.4871795
+              },
+              {
+                "operation": "set",
+                "atNanos": 7686762581,
+                "value": 0.51282054
+              },
+              {
+                "operation": "set",
+                "atNanos": 7729777452,
+                "value": 0.53846157
+              },
+              {
+                "operation": "set",
+                "atNanos": 7758118560,
+                "value": 0.5641026
+              },
+              {
+                "operation": "set",
+                "atNanos": 7787734991,
+                "value": 0.5897436
+              },
+              {
+                "operation": "set",
+                "atNanos": 7825146645,
+                "value": 0.61538464
+              },
+              {
+                "operation": "set",
+                "atNanos": 7850844855,
+                "value": 0.64102566
+              },
+              {
+                "operation": "set",
+                "atNanos": 7887793551,
+                "value": 0.6666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 7932066509,
+                "value": 0.6923077
+              },
+              {
+                "operation": "set",
+                "atNanos": 7958854394,
+                "value": 0.71794873
+              },
+              {
+                "operation": "set",
+                "atNanos": 7991068776,
+                "value": 0.74358976
+              },
+              {
+                "operation": "set",
+                "atNanos": 8031295305,
+                "value": 0.7692308
+              },
+              {
+                "operation": "set",
+                "atNanos": 8055403165,
+                "value": 0.7948718
+              },
+              {
+                "operation": "set",
+                "atNanos": 8091429769,
+                "value": 0.82051283
+              },
+              {
+                "operation": "set",
+                "atNanos": 8152048579,
+                "value": 0.84615386
+              },
+              {
+                "operation": "set",
+                "atNanos": 8185966162,
+                "value": 0.8717949
+              },
+              {
+                "operation": "set",
+                "atNanos": 8215315156,
+                "value": 0.8974359
+              },
+              {
+                "operation": "set",
+                "atNanos": 8259265491,
+                "value": 0.9230769
+              },
+              {
+                "operation": "set",
+                "atNanos": 8298911252,
+                "value": 0.94871795
+              },
+              {
+                "operation": "set",
+                "atNanos": 8331903747,
+                "value": 0.974359
+              },
+              {
+                "operation": "set",
+                "atNanos": 8380748812,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "term.line.out4.reveal",
+            "actorId": "term",
+            "property": "line.out4.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8640748812,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.out5.reveal",
+            "actorId": "term",
+            "property": "line.out5.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8685748812,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.out6.reveal",
+            "actorId": "term",
+            "property": "line.out6.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18050000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.out7.reveal",
+            "actorId": "term",
+            "property": "line.out7.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18095000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.opacity",
+            "actorId": "checks",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 570000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.y",
+            "actorId": "checks",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 570000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.kill.reveal",
+            "actorId": "checks",
+            "property": "item.kill.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 750000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.steer.reveal",
+            "actorId": "checks",
+            "property": "item.steer.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 870000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.reload.reveal",
+            "actorId": "checks",
+            "property": "item.reload.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 990000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.kill.spinner",
+            "actorId": "checks",
+            "property": "item.kill.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 2129601629,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 2129601629,
+                "target": 20.439,
+                "durationNanos": 20439000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.kill.mark",
+            "actorId": "checks",
+            "property": "item.kill.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 5223033817,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 5223033817,
+                "target": 17.345,
+                "durationNanos": 17345000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.kill.outcome",
+            "actorId": "checks",
+            "property": "item.kill.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 5223033817,
+                "value": 2.0
+              }
+            ]
+          },
+          {
+            "id": "checks.item.steer.spinner",
+            "actorId": "checks",
+            "property": "item.steer.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8640748812,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 8640748812,
+                "target": 13.928,
+                "durationNanos": 13928000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.steer.mark",
+            "actorId": "checks",
+            "property": "item.steer.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 9330964221,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 9330964221,
+                "target": 13.238,
+                "durationNanos": 13238000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.steer.outcome",
+            "actorId": "checks",
+            "property": "item.steer.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 9330964221,
+                "value": 2.0
+              }
+            ]
+          },
+          {
+            "id": "checks.item.reload.spinner",
+            "actorId": "checks",
+            "property": "item.reload.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 17600000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 17600000000,
+                "target": 4.968,
+                "durationNanos": 4968000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.reload.mark",
+            "actorId": "checks",
+            "property": "item.reload.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18693264341,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 18693264341,
+                "target": 3.875,
+                "durationNanos": 3875000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.reload.outcome",
+            "actorId": "checks",
+            "property": "item.reload.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 18693264341,
+                "value": 2.0
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8640748812,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8640748812,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "problem",
+            "startNanos": 0,
+            "endNanos": 22568999999
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg1_problem",
+            "path": "media/8e31145785f5a928.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 20718999999,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 21168999999,
+            "gainDb": 0.0
+          },
+          {
+            "id": "kill-sfx",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 4850000000,
+            "timelineEndNanos": 5330000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "steer-sfx",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 8640748812,
+            "timelineEndNanos": 8780748812,
+            "gainDb": -16.5
+          },
+          {
+            "id": "reload-sfx",
+            "path": "../../assets/pr-walkthrough/glitch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 200000000,
+            "timelineStartNanos": 18050000000,
+            "timelineEndNanos": 18250000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 800000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "BLOCKED & KILLED",
+          "STEER & YIELD"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "02-live-card",
+        "durationNanos": 29229000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "#60367 + #60375",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Server steer & 30s yield_after"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "stacked on dev"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    300.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "session",
+                  "kind": "card",
+                  "size": [
+                    370.0,
+                    142.0
+                  ],
+                  "status": [
+                    {
+                      "text": "foreground turn",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "#60367 · user steer",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "−334 LOC client glue",
+                      "tone": "success"
+                    },
+                    {
+                      "text": "#60375 · 30s yield_after",
+                      "tone": "request"
+                    },
+                    {
+                      "text": "returns { jobID, output }",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "Session.prompt / block"
+                },
+                {
+                  "at": [
+                    1155.0,
+                    525.0,
+                    30.0
+                  ],
+                  "corner": 24.0,
+                  "framed": true,
+                  "id": "jobs",
+                  "kind": "rune-card",
+                  "size": [
+                    990.0,
+                    620.0
+                  ],
+                  "surface": {
+                    "commits": [
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 1,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "hint": "steered → background",
+                              "hint_tone": "accent",
+                              "key": "sh",
+                              "op": "set-row",
+                              "selected": true
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 5330000000,
+                        "label": "steer moves blocking work to background"
+                      },
+                      {
+                        "action": {
+                          "key": "glue",
+                          "op": "set-visible",
+                          "visible": false
+                        },
+                        "atNanos": 11530000000,
+                        "label": "delete web-only steer-background.ts"
+                      },
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 2,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "hint": "running · jobID + snapshot",
+                              "hint_tone": "success",
+                              "key": "sh",
+                              "op": "set-row",
+                              "selected": false
+                            },
+                            {
+                              "hint": "running · logs + toolCalls",
+                              "hint_tone": "success",
+                              "key": "ex",
+                              "op": "set-row",
+                              "selected": true
+                            },
+                            {
+                              "hint": "running · child progress",
+                              "hint_tone": "success",
+                              "key": "sub",
+                              "op": "set-row",
+                              "selected": false
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 15250000000,
+                        "label": "30s yield_after across all 3 tools"
+                      }
+                    ],
+                    "origin": [
+                      495.0,
+                      310.0
+                    ],
+                    "size": [
+                      990.0,
+                      620.0
+                    ],
+                    "surface": {
+                      "recipe": "kit",
+                      "root": {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "kind": "text",
+                                "size": 15.0,
+                                "text": "Session · Active Jobs",
+                                "tone": "base",
+                                "weight": 600.0
+                              },
+                              {
+                                "kind": "spacer"
+                              },
+                              {
+                                "kind": "badge",
+                                "label": "busy · 3 jobs",
+                                "tone": "accent"
+                              }
+                            ],
+                            "gap": 8.0,
+                            "key": "hdr",
+                            "kind": "row",
+                            "padding": 0.0
+                          },
+                          {
+                            "children": [
+                              {
+                                "kind": "text",
+                                "size": 12.0,
+                                "text": "Lifecycle",
+                                "tone": "muted",
+                                "weight": 500.0
+                              },
+                              {
+                                "kind": "spacer"
+                              },
+                              {
+                                "key": "tabs",
+                                "kind": "segmented",
+                                "selected": 0,
+                                "tabs": [
+                                  "Blocking",
+                                  "Steered",
+                                  "Yield 30s"
+                                ],
+                                "width": 330.0
+                              }
+                            ],
+                            "gap": 8.0,
+                            "key": "seg-row",
+                            "kind": "row",
+                            "padding": 0.0
+                          },
+                          {
+                            "children": [
+                              {
+                                "hint": "334 LOC web-only glue",
+                                "hint_tone": "muted",
+                                "key": "glue",
+                                "kind": "list-row",
+                                "title": "app/steer-background.ts",
+                                "tone": "danger"
+                              },
+                              {
+                                "hint": "blocking turn",
+                                "hint_tone": "muted",
+                                "key": "sh",
+                                "kind": "list-row",
+                                "selected": true,
+                                "title": "sh_01 · cargo test",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "yield_after: 30s",
+                                "hint_tone": "muted",
+                                "key": "ex",
+                                "kind": "list-row",
+                                "title": "ex_02 · execute (Code Mode)",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "yield_after: 30s",
+                                "hint_tone": "muted",
+                                "key": "sub",
+                                "kind": "list-row",
+                                "title": "ses_c3 · subagent",
+                                "tone": "base"
+                              }
+                            ],
+                            "gap": 5.0,
+                            "key": "rows",
+                            "kind": "col",
+                            "padding": 0.0
+                          }
+                        ],
+                        "gap": 12.0,
+                        "key": "dialog",
+                        "kind": "dialog",
+                        "padding": 18.0,
+                        "width": 500.0
+                      }
+                    },
+                    "theme": "opencode"
+                  }
+                },
+                {
+                  "bend": 0.0,
+                  "from": "session",
+                  "id": "beam",
+                  "kind": "beam",
+                  "to": "jobs::rows/sh",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "beam",
+                  "id": "steer-pkt",
+                  "kind": "packet",
+                  "label": "steer",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "beam",
+                  "id": "yield-pkt",
+                  "kind": "packet",
+                  "label": "yield 30s",
+                  "tone": "success"
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "pin-note",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "actor": "jobs",
+                  "edge": "bottom",
+                  "id": "pin-sub",
+                  "key": "rows/sub",
+                  "kind": "rune",
+                  "side": "bottom"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "TUI, Desktop, Web, iOS & SDK ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "· one server path",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "reach": 44.0,
+              "side": "top-right",
+              "size": 24.0
+            }
+          },
+          {
+            "id": "tabs-loupe",
+            "recipe": "lens",
+            "data": {
+              "anchors": [
+                {
+                  "actor": "jobs",
+                  "id": "pin-seg0",
+                  "key": "tabs/segment0",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "jobs",
+                  "id": "pin-seg1",
+                  "key": "tabs/segment1",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "jobs",
+                  "id": "pin-seg2",
+                  "key": "tabs/segment2",
+                  "kind": "rune"
+                }
+              ],
+              "dispersion": 0.03999999910593033,
+              "magnification": 1.4199999570846558,
+              "refraction": 0.6000000238418579,
+              "shadow": 0.5,
+              "size": [
+                230.0,
+                88.0
+              ]
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "anomalyco/opencode#60367",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " (+867 / −334) → ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "anomalyco/opencode#60375",
+                    "tone": "success"
+                  },
+                  {
+                    "text": " (+2,821 / −353)",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.beam.draw",
+            "actorId": "stage",
+            "property": "beam.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 750000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 750000000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -65.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 22.0,
+                "responseSeconds": 2.76,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.jobs.rotation",
+            "actorId": "stage",
+            "property": "jobs.rotation",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 300000000,
+                "target": -0.022,
+                "responseSeconds": 2.16,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.beam.port",
+            "actorId": "stage",
+            "property": "beam.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.session.status-from",
+            "actorId": "stage",
+            "property": "session.status-from",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 5330000000,
+                "value": 0.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 5680000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 11530000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 11880000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 15250000000,
+                "value": 2.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 15600000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 23970000000,
+                "value": 3.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 24320000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.session.status",
+            "actorId": "stage",
+            "property": "session.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 5330000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 11530000000,
+                "value": 2.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 15250000000,
+                "value": 3.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 23970000000,
+                "value": 4.0
+              }
+            ]
+          },
+          {
+            "id": "stage.session.swap",
+            "actorId": "stage",
+            "property": "session.swap",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 5330000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 5330000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 11530000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 11530000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 15250000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 15250000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 23970000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 23970000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.steer-pkt.age",
+            "actorId": "stage",
+            "property": "steer-pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 4990000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 4990000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.steer-pkt.flight",
+            "actorId": "stage",
+            "property": "steer-pkt.flight",
+            "initial": 0.75,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 4990000000,
+                "value": 0.75
+              }
+            ]
+          },
+          {
+            "id": "stage.yield-pkt.age",
+            "actorId": "stage",
+            "property": "yield-pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 14910000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 14910000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.yield-pkt.flight",
+            "actorId": "stage",
+            "property": "yield-pkt.flight",
+            "initial": 0.78,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 14910000000,
+                "value": 0.78
+              }
+            ]
+          },
+          {
+            "id": "pin-note.draw",
+            "actorId": "pin-note",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 23970000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "pin-note.label",
+            "actorId": "pin-note",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 24150000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.presence",
+            "actorId": "tabs-loupe",
+            "property": "presence",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 800000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 0.86,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 28379000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg0",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg0",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5330000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 15250000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg1",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg1",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5330000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 15250000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg2",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg2",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5330000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 15250000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5330000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 5330000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "live-card",
+            "startNanos": 0,
+            "endNanos": 29229000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg2_live_card",
+            "path": "media/4f8ddd9697bd54b3.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 27279000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 27729000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "sfx-steer",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 5330000000,
+            "timelineEndNanos": 5630000000,
+            "gainDb": -15.5
+          },
+          {
+            "id": "sfx-drop",
+            "path": "../../assets/psychopomp-intro/whoosh.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 612208333,
+            "timelineStartNanos": 11530000000,
+            "timelineEndNanos": 12142208333,
+            "gainDb": -17.0
+          },
+          {
+            "id": "sfx-yield",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 15250000000,
+            "timelineEndNanos": 15590000000,
+            "gainDb": -15.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 600000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "03-job-race",
+        "durationNanos": 25949000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "job.ts",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Steer guard & post-race lock in Job.block"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "request"
+                  },
+                  {
+                    "text": "core/src/job.ts"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "editor",
+            "recipe": "editor",
+            "data": {
+              "additionalInlineReveals": [
+                {
+                  "channel": "inlay.dekker_hint",
+                  "lineId": "line-0",
+                  "rangeId": "inlay:dekker_hint"
+                }
+              ],
+              "enteringOffsetX": 0.0,
+              "fileName": "packages/core/src/job.ts",
+              "finalLineIds": [
+                "line-0",
+                "line-1",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-7",
+                "line-8",
+                "line-9",
+                "line-10",
+                "line-11",
+                "line-12"
+              ],
+              "focusHeight": 44.0,
+              "focusLineId": "line-0",
+              "initialLineIds": [
+                "line-0",
+                "line-1",
+                "line-2",
+                "line-3"
+              ],
+              "lineHeight": 44.0,
+              "lines": [
+                {
+                  "id": "line-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ("
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "steer_guard",
+                      "spans": [
+                        {
+                          "style": "accent",
+                          "text": "hasUserSteer"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "inlay:dekker_hint",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              140,
+                              146,
+                              158
+                            ]
+                          },
+                          "text": " // streaming steer"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "(db, input.sessionID))"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "steer_guard",
+                      "id": "steer_guard",
+                      "lastPartId": "steer_guard"
+                    },
+                    {
+                      "firstPartId": "inlay:dekker_hint",
+                      "id": "inlay:dekker_hint",
+                      "lastPartId": "inlay:dekker_hint"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-1",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "backgroundAll"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "({ sessionID: input.sessionID })"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-2",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " settled = "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "old_race",
+                      "spans": [
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "raceFirst"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(done, backgrounded)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "old_race",
+                      "id": "old_race",
+                      "lastPartId": "old_race"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-3",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " { "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "type"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ": "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"finished\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", info: settled }"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-4",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " settled = "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "raceFirst"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-5",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "type",
+                          "text": "Effect"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "raceFirst"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(done, backgrounded), waitYield,"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-6",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": ")"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-7",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "yield"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "* "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "lock_mod",
+                      "spans": [
+                        {
+                          "style": "type",
+                          "text": "SynchronizedRef"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "modify"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "(state.jobs, (jobs) => {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "lock_mod",
+                      "id": "lock_mod",
+                      "lastPartId": "lock_mod"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-8",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "const"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " job = jobs."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "get"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(input.id)"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-9",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ("
+                        }
+                      ]
+                    },
+                    {
+                      "id": "bg_owner",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "job?.isBackgrounded"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": ")"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "bg_owner",
+                      "id": "bg_owner",
+                      "lastPartId": "bg_owner"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-10",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " [{ "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "type"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ": "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"backgrounded\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", info: "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "snap"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(job) }, jobs]"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-11",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " [{ "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "type"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ": "
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"finished\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ", info: settled }, "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "consume"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(jobs)]"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-12",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "})"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                }
+              ],
+              "snapshots": [
+                {
+                  "atNanos": 18930000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-1",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-9",
+                    "line-10",
+                    "line-11",
+                    "line-12"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "caret",
+            "recipe": "cursor",
+            "data": {
+              "anchors": [
+                {
+                  "id": "steer_guard",
+                  "target": "steer_guard"
+                },
+                {
+                  "id": "old_race",
+                  "target": "old_race"
+                },
+                {
+                  "id": "bg_owner",
+                  "target": "bg_owner"
+                }
+              ]
+            }
+          },
+          {
+            "id": "err",
+            "recipe": "diagnostic",
+            "data": {
+              "target": "old_race"
+            }
+          },
+          {
+            "id": "race-hover",
+            "recipe": "hover-card",
+            "data": {
+              "sections": [
+                {
+                  "code": [
+                    [
+                      {
+                        "style": "type",
+                        "text": "Review"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " "
+                      },
+                      {
+                        "style": "type",
+                        "text": "Finding"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " #"
+                      },
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "2"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " · simultaneous yield_after & done"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "text": [
+                    [
+                      {
+                        "text": "If "
+                      },
+                      {
+                        "text": "yieldRunning",
+                        "tone": "warning"
+                      },
+                      {
+                        "text": " commits "
+                      },
+                      {
+                        "text": "isBackgrounded = true",
+                        "tone": "error"
+                      },
+                      {
+                        "text": " in the same tick "
+                      },
+                      {
+                        "text": "done",
+                        "tone": "accent"
+                      },
+                      {
+                        "text": " resolves,"
+                      }
+                    ],
+                    [
+                      {
+                        "text": "returning 'finished' inline would also fire onSettle twice.",
+                        "tone": "muted"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "side": "below",
+              "target": "old_race"
+            }
+          },
+          {
+            "id": "resolved",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "edge": "bottom",
+                  "id": "bg_owner",
+                  "kind": "editor",
+                  "target": "bg_owner"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "1 owner under state.jobs lock ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "· 0 duplicate notices or leaked KV markers"
+                  }
+                ]
+              ],
+              "reach": 52.0,
+              "side": "bottom",
+              "size": 24.0,
+              "tone": "success"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "packages/core/src/job.ts:621–648 · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "job.test.ts",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · simultaneous yield & settle stress-tested",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [
+          {
+            "id": "steer_guard",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-0",
+              "rangeId": "steer_guard"
+            }
+          },
+          {
+            "id": "old_race",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-2",
+              "rangeId": "old_race"
+            }
+          },
+          {
+            "id": "lock_mod",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-7",
+              "rangeId": "lock_mod"
+            }
+          },
+          {
+            "id": "bg_owner",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-9",
+              "rangeId": "bg_owner"
+            }
+          }
+        ],
+        "continuousChannels": [
+          {
+            "id": "editor.mark.line-2",
+            "actorId": "editor",
+            "property": "mark.line-2",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.mark.line-3",
+            "actorId": "editor",
+            "property": "mark.line-3",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.panel-y",
+            "actorId": "editor",
+            "property": "panel-y",
+            "initial": 70.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 0.84000003,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.panel-opacity",
+            "actorId": "editor",
+            "property": "panel-opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.inlay.dekker_hint",
+            "actorId": "editor",
+            "property": "inlay.dekker_hint",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7650000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.opacity",
+            "actorId": "caret",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.192,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 24090000000,
+                "target": 0.0,
+                "responseSeconds": 0.192,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.blink",
+            "actorId": "caret",
+            "property": "blink",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 650000000,
+                "target": 25.299,
+                "durationNanos": 25299000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 14090000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 14410000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 14410000000,
+                "target": 11.539,
+                "durationNanos": 11539000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 19350000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 19670000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 19670000000,
+                "target": 6.279,
+                "durationNanos": 6279000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 24090000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.steer_guard",
+            "actorId": "caret",
+            "property": "anchor.steer_guard",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19350000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.old_race",
+            "actorId": "caret",
+            "property": "anchor.old_race",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19350000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.bg_owner",
+            "actorId": "caret",
+            "property": "anchor.bg_owner",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19350000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.head",
+            "actorId": "caret",
+            "property": "head",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19350000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.tail",
+            "actorId": "caret",
+            "property": "tail",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 19350000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.draw",
+            "actorId": "err",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 14290000000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "race-hover.presence",
+            "actorId": "race-hover",
+            "property": "presence",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14540000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 0.82,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 18730000000,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.wave",
+            "actorId": "err",
+            "property": "wave",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 19580000000,
+                "target": 0.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.opacity",
+            "actorId": "err",
+            "property": "opacity",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 19700000000,
+                "target": 0.0,
+                "durationNanos": 320000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "resolved.draw",
+            "actorId": "resolved",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 23490000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "resolved.label",
+            "actorId": "resolved",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 23670000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "job-race",
+            "startNanos": 0,
+            "endNanos": 25949000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg3_job_race",
+            "path": "media/30c724198edada8b.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 23999000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 24449000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "dekker-tick",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 7650000000,
+            "timelineEndNanos": 7790000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "race-warn",
+            "path": "../../assets/pr-walkthrough/glitch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 200000000,
+            "timelineStartNanos": 14290000000,
+            "timelineEndNanos": 14490000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "lock-fix",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 18930000000,
+            "timelineEndNanos": 19270000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "once-ok",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 23490000000,
+            "timelineEndNanos": 24285000000,
+            "gainDb": -16.5
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 600000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "04-rune-diff",
+        "durationNanos": 25389000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "shell.ts",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Explicit timeouts, onSettle & job_* tools"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "rune_kit::DiffView"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "shell-diff",
+            "recipe": "rune-surface",
+            "data": {
+              "commits": [
+                {
+                  "action": {
+                    "op": "select-diff-lines",
+                    "selection": {
+                      "endLine": 10,
+                      "file": 0,
+                      "newSide": true,
+                      "startLine": 8
+                    }
+                  },
+                  "atNanos": 5330000000,
+                  "label": "highlight explicit timeout guard"
+                },
+                {
+                  "action": {
+                    "annotations": [
+                      {
+                        "author": "Review #1 & #3",
+                        "body": "onSettle runs in global Job.Service scope; explicit timeouts stay armed after yield_after.",
+                        "file": 0,
+                        "line": 3,
+                        "newSide": true
+                      }
+                    ],
+                    "op": "set-diff-annotations"
+                  },
+                  "atNanos": 9170000000,
+                  "label": "annotate global onSettle"
+                },
+                {
+                  "action": {
+                    "mode": "split",
+                    "op": "set-diff-mode"
+                  },
+                  "atNanos": 15730000000,
+                  "label": "toggle to split diff"
+                }
+              ],
+              "origin": [
+                960.0,
+                530.0
+              ],
+              "scaleFactor": 1.7200000286102295,
+              "surface": {
+                "files": [
+                  {
+                    "after": "const job = yield* jobs.start<Output>({\n  id: info.id, run, output: shell.snapshot(info.id),\n  onSettle: (s) => deliverShellNotice(sessions, sessionID, s),\n})\nconst res = yield* jobs.block<Output>({\n  id: job.id, sessionID, yield_after: input.yield_after ?? 30_000,\n})\nif (res?.type === \"backgrounded\") {\n  if (input.timeout === undefined) yield* shell.timeout(info.id, 0)\n  return backgroundResult(info.id, info.file, yield* snapshot)\n}\n",
+                    "before": "const job = yield* jobs.start({ id: info.id, run })\nyield* notifyWhenDone(ctx.sessionID, info.id, settled)\nconst res = yield* jobs.block({ id: job.id, sessionID })\nif (res?.type === \"backgrounded\") {\n  return backgroundResult(info.id, info.file)\n}\n",
+                    "path": "packages/core/src/tool/plugin/shell.ts"
+                  }
+                ],
+                "height": 415.0,
+                "mode": "unified",
+                "recipe": "diff",
+                "title": "packages/core/src/tool/plugin/shell.ts",
+                "width": 880.0
+              },
+              "theme": "opencode"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "tools.opencode.{",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "job_list, job_output, job_wait, job_stop",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "} · stopSubtree cancels nested child jobs",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "shell-diff.opacity",
+            "actorId": "shell-diff",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "shell-diff.y",
+            "actorId": "shell-diff",
+            "property": "y",
+            "initial": 18.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "shell-diff.scale",
+            "actorId": "shell-diff",
+            "property": "scale",
+            "initial": 0.985,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 15430000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 15430000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "rune-diff",
+            "startNanos": 0,
+            "endNanos": 25389000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg4_rune_diff",
+            "path": "media/ffbc5cd522bb8fda.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 23439000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 23889000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "sel-lines",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 5330000000,
+            "timelineEndNanos": 5630000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "note-pop",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 9170000000,
+            "timelineEndNanos": 9310000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "split-mode",
+            "path": "../../assets/psychopomp-intro/whoosh.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 612208333,
+            "timelineStartNanos": 15730000000,
+            "timelineEndNanos": 16342208333,
+            "gainDb": -16.5
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 750000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "CODE RECEIPTS",
+          "READY FOR #CORE"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "05-seer-card",
+        "durationNanos": 21248999999,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "stack ready",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Honest spinners & verified PR stack"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "21/21 CI · 260× stress"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "seer-summary",
+            "recipe": "rune-surface",
+            "data": {
+              "commits": [
+                {
+                  "action": {
+                    "markdown": "Sessions stay busy until both foreground turns and background jobs settle.\n\n```facts\nPR #60367 (t901): {verified} +867 / −334 · 21/21 GitHub Actions green\nPR #60375 (t900): {verified} 30s yield_after · 260/260 randomized runs\nAgent controls: {verified} job_list · job_output · job_wait · job_stop\n```\n\n```compare\nBefore on dev: 2m SIGTERM kill, web-only steer, and idle spinners while jobs run.\nAfter (#60367 + #60375): Server steer + 30s yield_after + global onSettle + /jobs SSE.\n```\n\n```steps\n{built} #60367 · Server steer-to-background + delete app glue\n{built} #60375 · 30s yield_after on shell, execute & subagent\n{built} All 5 independent review findings fixed with regression tests\n```",
+                    "op": "set-markdown"
+                  },
+                  "atNanos": 9890000000,
+                  "label": "reveal verified PR stack"
+                }
+              ],
+              "origin": [
+                960.0,
+                520.0
+              ],
+              "scaleFactor": 1.559999942779541,
+              "surface": {
+                "markdown": "Sessions stay busy until both foreground turns and background jobs settle.\n\n```facts\nPR #60367 (t901): {verified} +867 / −334 · 21/21 GitHub Actions green\nPR #60375 (t900): {verified} 30s yield_after · 260/260 randomized runs\nAgent controls: {verified} job_list · job_output · job_wait · job_stop\n```\n\n```compare\nBefore on dev: 2m SIGTERM kill, web-only steer, and idle spinners while jobs run.\nAfter (#60367 + #60375): Server steer + 30s yield_after + global onSettle + /jobs SSE.\n```",
+                "recipe": "note",
+                "title": "t900 & t901 · Background Jobs Stack on dev",
+                "width": 650.0
+              },
+              "theme": "opencode"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "GET /api/experimental/session/:id/jobs · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "#60367",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " + ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "#60375",
+                    "tone": "success"
+                  },
+                  {
+                    "text": " targeting anomalyco/opencode dev",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "seer-summary.opacity",
+            "actorId": "seer-summary",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "seer-summary.y",
+            "actorId": "seer-summary",
+            "property": "y",
+            "initial": 18.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "seer-summary.scale",
+            "actorId": "seer-summary",
+            "property": "scale",
+            "initial": 0.985,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 9890000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 9890000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "seer-card",
+            "startNanos": 0,
+            "endNanos": 21248999999
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg5_seer_card",
+            "path": "media/a8449a9c223a6885.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 19198999999,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 19648999999,
+            "gainDb": 0.0
+          },
+          {
+            "id": "ci-mark",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 9890000000,
+            "timelineEndNanos": 10190000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "stack-reveal",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 16690000000,
+            "timelineEndNanos": 17030000000,
+            "gainDb": -15.0
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -2525,6 +2525,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-background-jobs"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-balls-v3"
 version = "0.1.0"
 dependencies = [
