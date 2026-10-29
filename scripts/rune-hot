@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Hot-patch psychopomp-studio views in < 1.5s via Rune's scripts/rune-hot:
+#   scripts/rune-hot --manifest crates/psychopomp-studio/Cargo.toml --patch src/main.rs -- ARGS
+set -euo pipefail
+export RUNE_DEV_WRAP=${RUNE_DEV_WRAP-hivemind run --kind cargo --worker ${HOT_WORKER:-studio} --no-sync --}
+exec "$("$(dirname "$0")/rune-path" rune-hot)" "$@"

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Prints the path of Rune's scripts/NAME from the checkout pinned in Cargo.toml.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [[ -n "${RUNE:-}" ]]; then
+  root=$RUNE
+else
+  meta=$(cargo metadata --format-version 1 --locked 2>/dev/null || cargo metadata --format-version 1 --offline 2>/dev/null)
+  manifest=$(python3 -c '
+import json, sys
+for p in json.load(sys.stdin)["packages"]:
+    if p["name"] == "rune-mac":
+        print(p["manifest_path"])
+        break
+' <<<"$meta")
+  [[ -n $manifest ]] || { echo "rune-path: rune-mac not found in cargo metadata" >&2; exit 1; }
+  root=$(dirname "$(dirname "$(dirname "$manifest")")")
+fi
+f="$root/scripts/$1"
+[[ -e $f ]] || { echo "rune-path: no $f" >&2; exit 1; }
+echo "$f"

@@ -39,6 +39,8 @@ Lightweight crate (`crates/psychopomp/src`):
 - `crates/psychopomp/src/caption.rs`: Caption recipe values and the `CaptionActor` authoring handle (typing, show, hide)
 - `crates/psychopomp/src/chrome.rs`: an explainer film's fixed captions (header, chips, footer) at their shared positions
 - `crates/psychopomp/src/rolling.rs`: Rolling Number recipe values, value tokenization, the closed-form roll compiler, and the `RollingNumberActor` handle (`roll`, show, hide)
+- `crates/psychopomp/src/rune_surface.rs`: declarative `RuneSurfacePlan` (`Note` Seer communication primitives, `Diff` `rune_kit::DiffView`, and `Kit` `@opencode/ui` widget trees), discrete `RuneAction` commits, `RuneSurfaceActor`, and `score::RuneSurface` beat handles
+- `crates/psychopomp-studio/`: Rune preview window and `App::playground` component workbench (`⌘⇧K` `rune-knobs`, `R` deterministic beat replay, live `960×540` plan/reel scrubber, and `scripts/rune-hot` live patching)
 - `crates/psychopomp/src/tree.rs`: Tree recipe values, JSONPath identity, the fold-driven pure layout, and the `TreeActor` handle (`open`, `close`, `highlight`, `set`, `scroll_to`, `reveal`, show, hide)
 - `crates/psychopomp/src/axis.rs`: `AxisPlan` (range, ticks, label, unit), `nice_ticks`, and tabular tick labels shared by Plot and Lanes
 - `crates/psychopomp/src/plot.rs`: Plot recipe values (frame, axes, sampled series with optional exact slopes, marks), interpolation, strict channel matching, and the `PlotActor` handle (`show`, `draw`, `fade`, `ride`, `velocity`, `mark`)
@@ -157,6 +159,7 @@ Renderer crate, pixels and delivery:
 - `crates/psychopomp-render/src/video.rs`: FFmpeg-decoded seekable RGBA frame cache for input video and image sequences, keyed by source content and decode contract
 - `crates/psychopomp-render/src/footage.rs`: the footage store: every source a plan shows, opened once and shared, with frames read through one bounded LRU
 - `crates/psychopomp-render/src/exposure.rs`: delivery dimensions, shutter samples and weights, linear-light accumulation, and encoding a timeline one exposed frame at a time
+- `crates/psychopomp-render/src/exposure_gpu.rs`, `render/rune_timeline.rs`, `render/rune_surface.rs`, and `render/rune_notes.rs`: shared `wgpu` `Rgba16Float` shutter accumulator, commit-replay `RuneTimeline`, `AnchorPlan::Rune` and 2.5D `StageElement::RuneCard` resolution, and `rune::motion_gate` verification
 - `crates/psychopomp-render/src/encode.rs`: concrete FFmpeg subprocess, raw RGBA protocol, and compiled audio placement
 
 Scene Programs (`scenes/`), each emitting a Scene Plan, Deck, or Reel:

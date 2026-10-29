@@ -8,3 +8,9 @@ rune = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d1
 rune-kit = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402", features = ["markdown", "mermaid"] }
 rune-theme-opencode = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402" }
 rune-knobs = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402" }
+rune-mac = { git = "https://github.com/anomalyco/rune", rev = "bfb8facae2e4665e5e6d17afe85561884a7fd402" }
+
+[profile.rune-hot]
+inherits = "dev"
+debug = 0
+incremental = true

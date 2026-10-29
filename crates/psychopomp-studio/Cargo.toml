@@ -1,0 +1,23 @@
+[package]
+name = "psychopomp-studio"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[[bin]]
+name = "psychopomp-studio"
+path = "src/main.rs"
+
+[features]
+default = []
+hot = ["rune/hot"]
+
+[dependencies]
+anyhow = "1.0"
+psychopomp = { path = "../psychopomp" }
+psychopomp-render = { path = "../psychopomp-render" }
+rune = { workspace = true }
+rune-kit = { workspace = true }
+rune-knobs = { workspace = true, features = ["panel"] }
+rune-mac = { workspace = true }
+rune-theme-opencode = { workspace = true }

@@ -1919,6 +1919,91 @@ fn seconds_f64(nanos: u64) -> f64 {
     nanos as f64 / 1_000_000_000.0
 }
 
+/// Persistent interactive preview session for `psychopomp-studio`: holds a
+/// loaded Plan or Reel and its warm `HeadlessRenderer` so timeline scrubbing
+/// and cue jumps render viewport frames without reopening fonts or the GPU.
+pub struct PreviewSession {
+    title: String,
+    cues: Vec<(String, f64)>,
+    loaded: still::Loaded,
+    renderer: HeadlessRenderer,
+}
+
+impl PreviewSession {
+    pub fn open(path: &Path, theme: Theme) -> Result<Self> {
+        let raw = PlanFile::read(path)?;
+        let (title, cues) = match &raw {
+            PlanFile::Plan(plan) => {
+                let mut cues: Vec<(String, f64)> = plan
+                    .cues
+                    .iter()
+                    .map(|c| (c.id.clone(), seconds_f64(c.start_nanos)))
+                    .collect();
+                cues.sort_by(|a, b| a.1.total_cmp(&b.1));
+                (plan.id.clone(), cues)
+            }
+            PlanFile::Reel(reel) => {
+                let cues = reel
+                    .segments
+                    .iter()
+                    .zip(reel.spans())
+                    .map(|(seg, span)| (seg.plan.id.clone(), seconds_f64(span.start_nanos)))
+                    .collect();
+                (reel.id.clone(), cues)
+            }
+            PlanFile::Deck(_) => bail!(DECK_UNSUPPORTED),
+        };
+        let base = path.parent().unwrap_or_else(|| Path::new("."));
+        let (loaded, renderer) = pollster::block_on(still::Loaded::prepare(raw, base, theme))?;
+        Ok(Self {
+            title,
+            cues,
+            loaded,
+            renderer,
+        })
+    }
+
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    pub fn duration_seconds(&self) -> f64 {
+        self.loaded.duration_seconds()
+    }
+
+    pub fn cues(&self) -> &[(String, f64)] {
+        &self.cues
+    }
+
+    /// Render the frame at `seconds` (1-sample draft or full shutter exposure)
+    /// and box-downsample `1920×1080` → `960×540` RGBA8 to fit Rune's
+    /// `IMAGE_ATLAS_SIZE` (`1024`) viewport slot cleanly.
+    pub fn render_preview_960x540(&mut self, seconds: f64, shutter: bool) -> Result<Vec<u8>> {
+        let clamped = seconds.clamp(0.0, self.duration_seconds());
+        let full = self.loaded.still(&mut self.renderer, clamped, shutter)?;
+        let out_w = (WIDTH / 2) as usize;
+        let out_h = (HEIGHT / 2) as usize;
+        let stride = WIDTH as usize * 4;
+        let mut half = vec![0_u8; out_w * out_h * 4];
+        for y in 0..out_h {
+            let r0 = (y * 2) * stride;
+            let r1 = r0 + stride;
+            for x in 0..out_w {
+                let c0 = x * 8;
+                let dst = (y * out_w + x) * 4;
+                for ch in 0..4 {
+                    let sum = u16::from(full[r0 + c0 + ch])
+                        + u16::from(full[r0 + c0 + 4 + ch])
+                        + u16::from(full[r1 + c0 + ch])
+                        + u16::from(full[r1 + c0 + 4 + ch]);
+                    half[dst + ch] = ((sum + 2) >> 2) as u8;
+                }
+            }
+        }
+        Ok(half)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
