@@ -27,10 +27,12 @@ use crate::{
 
 mod anchor;
 mod attachments;
+mod audio_check;
 mod callout;
 mod caption;
 mod changed_files;
 mod chat;
+mod check;
 mod component_prototype;
 pub(crate) mod delivery;
 mod editor;
@@ -56,6 +58,7 @@ mod sequence;
 mod stability_tests;
 mod stage;
 mod still;
+mod strip;
 mod task;
 mod terminal;
 mod tree;
@@ -93,11 +96,13 @@ pub(crate) async fn render_builtin_hero(output: &Path) -> Result<()> {
     loaded.render_video(&mut renderer, output, window)
 }
 
-const FRAME_USAGE: &str =
-    "psychopomp plan frame <plan-or-reel.json> <seconds> [output.png] [--shutter] [--theme NAME]";
-const ONION_USAGE: &str = "psychopomp plan onion <plan-or-reel.json> <a,b,c | from:to:step> [output.png] [--shutter] [--theme NAME]";
+const FRAME_USAGE: &str = "psychopomp plan frame <plan-or-reel.json> <time[,time...]> [output.png|dir] [--crop x,y,w,h] [--shutter] [--theme NAME]";
+const STRIP_USAGE: &str = "psychopomp plan strip <plan-or-reel.json> [range|times] [output.png] [-n COUNT] [--cols N] [--width PX] [--crop x,y,w,h] [--shutter] [--theme NAME]";
+const CHECK_USAGE: &str = "psychopomp plan check <plan-or-reel.json> [range] [--every SPEC] [--pops] [--audio] [--fail-on error|warning|never] [--theme NAME]";
+const AUDIO_USAGE: &str = "psychopomp plan audio <plan-or-reel.json> [range] [--at TIMES]";
+const ONION_USAGE: &str = "psychopomp plan onion <plan-or-reel.json> <range | a,b,c | from:to:step> [output.png] [--shutter] [--theme NAME]";
 const SNAPSHOT_USAGE: &str = "psychopomp plan snapshot <plan-or-reel.json> <a,b,c | from:to:step> <dir> [--compare] [--shutter] [--theme NAME]";
-const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range START..END] [--theme NAME] [--draft]";
+const RENDER_USAGE: &str = "psychopomp plan render <plan-or-reel.json> [output] [--cue ID | --range SPEC] [--theme NAME] [--draft]";
 const PRESENT_USAGE: &str = "psychopomp plan present <plan.json> [--theme NAME] [--speed 1|0.5|0.25|0.1] [--debug] [--reduced-motion] [--full-quality] [--fps FPS] [--benchmark | --benchmark-gpu]";
 
 fn usage() -> String {
@@ -106,9 +111,12 @@ fn usage() -> String {
         "psychopomp plan schema",
         "psychopomp plan validate <plan.json>",
         "psychopomp plan inspect <plan.json>",
+        CHECK_USAGE,
+        AUDIO_USAGE,
         "psychopomp plan steps <plan.json>",
         "psychopomp plan diff <before.json> <after.json>",
         FRAME_USAGE,
+        STRIP_USAGE,
         ONION_USAGE,
         SNAPSHOT_USAGE,
         RENDER_USAGE,
@@ -130,6 +138,15 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
             let (arguments, theme) = delivery_theme(arguments)?;
             frame_command(&arguments, theme)
         }
+        ("strip", arguments) => {
+            let (arguments, theme) = delivery_theme(arguments)?;
+            strip_command(&arguments, theme)
+        }
+        ("check", arguments) => {
+            let (arguments, theme) = delivery_theme(arguments)?;
+            check_command(&arguments, theme)
+        }
+        ("audio", arguments) => audio_command(arguments),
         ("onion", arguments) => {
             let (arguments, theme) = delivery_theme(arguments)?;
             let (arguments, [shutter]) = flags(&arguments, &["--shutter"]);
@@ -143,13 +160,7 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
                 .first()
                 .map_or_else(|| PathBuf::from("output/onion.png"), PathBuf::from);
             create_output_directory(&output)?;
-            still::onion(
-                Path::new(path),
-                &still::parse_times(times)?,
-                &output,
-                shutter,
-                theme,
-            )
+            still::onion(Path::new(path), times, &output, shutter, theme)
         }
         ("snapshot", arguments) => {
             let (arguments, theme) = delivery_theme(arguments)?;
@@ -159,7 +170,7 @@ pub(crate) fn command(arguments: &[String]) -> Result<()> {
             };
             still::snapshot(
                 Path::new(path),
-                &still::parse_times(times)?,
+                times,
                 Path::new(dir),
                 flags[0],
                 flags[1],
@@ -258,25 +269,222 @@ fn flags<const N: usize>(arguments: &[String], names: &[&str; N]) -> (Vec<String
     (rest, present)
 }
 
+fn take_option(arguments: &[String], names: &[&str]) -> Result<(Vec<String>, Option<String>)> {
+    let mut rest = Vec::new();
+    let mut found = None;
+    let mut iter = arguments.iter();
+    while let Some(arg) = iter.next() {
+        if names.contains(&arg.as_str()) {
+            anyhow::ensure!(found.is_none(), "{} may be specified once", arg);
+            found = Some(
+                iter.next()
+                    .with_context(|| format!("{arg} requires a value"))?
+                    .clone(),
+            );
+        } else {
+            rest.push(arg.clone());
+        }
+    }
+    Ok((rest, found))
+}
+
 fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
     let (arguments, [shutter]) = flags(arguments, &["--shutter"]);
-    let [plan, seconds, rest @ ..] = arguments.as_slice() else {
+    let (arguments, crop_opt) = take_option(&arguments, &["--crop"])?;
+    let crop = crop_opt
+        .as_deref()
+        .map(strip::CropRect::parse)
+        .transpose()?;
+    let [plan, times_spec, rest @ ..] = arguments.as_slice() else {
         bail!("usage: {FRAME_USAGE}");
     };
     if rest.len() > 1 {
         bail!("usage: {FRAME_USAGE}");
     }
-    let seconds = seconds
-        .parse::<f64>()
-        .context("parse frame time in seconds")?;
-    Time::try_seconds(seconds)
-        .context("frame time must be finite, non-negative, and representable")?;
-    let output = rest
-        .first()
-        .map_or_else(|| PathBuf::from("output/scene-plan.png"), PathBuf::from);
-    create_output_directory(&output)?;
     let (loaded, mut renderer) = pollster::block_on(still::Loaded::load(Path::new(plan), theme))?;
-    delivery::write_png(&output, &loaded.still(&mut renderer, seconds, shutter)?)
+    let times = loaded.time_index().resolve_times(times_spec)?;
+    if let &[seconds] = times.as_slice() {
+        let output = rest
+            .first()
+            .map_or_else(|| PathBuf::from("output/scene-plan.png"), PathBuf::from);
+        create_output_directory(&output)?;
+        let pixels = loaded.still(&mut renderer, seconds, shutter)?;
+        return match crop {
+            Some(c) => {
+                let cropped = strip::crop_rgba(&pixels, WIDTH, HEIGHT, c);
+                delivery::write_rgba_png(&output, c.width, c.height, &cropped)
+            }
+            None => delivery::write_png(&output, &pixels),
+        };
+    }
+    let dir = rest
+        .first()
+        .map_or_else(|| PathBuf::from("output/frames"), PathBuf::from);
+    fs::create_dir_all(&dir).with_context(|| format!("create {}", dir.display()))?;
+    let mut written = Vec::with_capacity(times.len());
+    for &seconds in &times {
+        let file = dir.join(still::frame_name(seconds));
+        let pixels = loaded.still(&mut renderer, seconds, shutter)?;
+        match crop {
+            Some(c) => {
+                let cropped = strip::crop_rgba(&pixels, WIDTH, HEIGHT, c);
+                delivery::write_rgba_png(&file, c.width, c.height, &cropped)?;
+            }
+            None => delivery::write_png(&file, &pixels)?,
+        }
+        written.push(json!({ "time": seconds, "path": file }));
+    }
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&json!({ "frames": written }))?
+    );
+    Ok(())
+}
+
+fn strip_command(arguments: &[String], theme: Theme) -> Result<()> {
+    let (arguments, [shutter]) = flags(arguments, &["--shutter"]);
+    let (arguments, count_opt) = take_option(&arguments, &["-n", "--count"])?;
+    let (arguments, cols_opt) = take_option(&arguments, &["--cols", "--columns"])?;
+    let (arguments, width_opt) = take_option(&arguments, &["--width"])?;
+    let (arguments, out_opt) = take_option(&arguments, &["-o", "--out", "--output"])?;
+    let (arguments, crop_opt) = take_option(&arguments, &["--crop"])?;
+    let count = count_opt
+        .as_deref()
+        .map(|s| s.parse::<usize>().context("parse -n/--count"))
+        .transpose()?
+        .unwrap_or(12);
+    let columns = cols_opt
+        .as_deref()
+        .map(|s| s.parse::<usize>().context("parse --cols"))
+        .transpose()?
+        .unwrap_or(4);
+    let cell_width = width_opt
+        .as_deref()
+        .map(|s| s.parse::<u32>().context("parse --width"))
+        .transpose()?
+        .unwrap_or(480);
+    let crop = crop_opt
+        .as_deref()
+        .map(strip::CropRect::parse)
+        .transpose()?;
+
+    let (plan, spec, pos_out) = match arguments.as_slice() {
+        [plan] => (plan.as_str(), "all", None),
+        [plan, second] => {
+            if second.ends_with(".png") {
+                (plan.as_str(), "all", Some(PathBuf::from(second)))
+            } else {
+                (plan.as_str(), second.as_str(), None)
+            }
+        }
+        [plan, spec, out] => (plan.as_str(), spec.as_str(), Some(PathBuf::from(out))),
+        _ => bail!("usage: {STRIP_USAGE}"),
+    };
+    let output = out_opt
+        .map(PathBuf::from)
+        .or(pos_out)
+        .unwrap_or_else(|| PathBuf::from("output/strip.png"));
+    create_output_directory(&output)?;
+    strip::render_strip(strip::StripOptions {
+        plan_path: Path::new(plan),
+        spec,
+        output: &output,
+        count,
+        columns,
+        cell_width,
+        crop,
+        shutter,
+        theme,
+    })
+}
+
+fn check_command(arguments: &[String], theme: Theme) -> Result<()> {
+    let (arguments, [pops, audio]) = flags(arguments, &["--pops", "--audio"]);
+    let (arguments, every_opt) = take_option(&arguments, &["--every"])?;
+    let (arguments, fail_opt) = take_option(&arguments, &["--fail-on"])?;
+    let (plan, range_spec) = match arguments.as_slice() {
+        [plan] => (plan.as_str(), "all"),
+        [plan, range] => (plan.as_str(), range.as_str()),
+        _ => bail!("usage: {CHECK_USAGE}"),
+    };
+    let fail_on = fail_opt
+        .as_deref()
+        .map(check::FailOn::parse)
+        .transpose()?
+        .unwrap_or(check::FailOn::Error);
+    check::run_check(check::CheckOptions {
+        plan_path: Path::new(plan),
+        range_spec,
+        every_spec: every_opt.as_deref().unwrap_or("0.25s"),
+        pops,
+        audio,
+        fail_on,
+        theme,
+    })
+}
+
+fn audio_command(arguments: &[String]) -> Result<()> {
+    let (arguments, at_opt) = take_option(arguments, &["--at"])?;
+    let (plan, range_spec) = match arguments.as_slice() {
+        [plan] => (plan.as_str(), "all"),
+        [plan, range] => (plan.as_str(), range.as_str()),
+        _ => bail!("usage: {AUDIO_USAGE}"),
+    };
+    let path = Path::new(plan);
+    let base = path.parent().unwrap_or_else(|| Path::new("."));
+    let (index, placements) = match PlanFile::read(path)? {
+        PlanFile::Plan(plan) => {
+            let index = psychopomp::time_spec::TimeIndex::from_plan(&plan);
+            let media = plan_audio_placements(&plan, base);
+            (index, media)
+        }
+        PlanFile::Reel(reel) => {
+            let index = psychopomp::time_spec::TimeIndex::from_reel(&reel);
+            let mut media = Vec::new();
+            for (seg, span) in reel.segments.iter().zip(reel.spans()) {
+                let offset = Duration::from_nanos(span.start_nanos);
+                media.extend(
+                    plan_audio_placements(&seg.plan, base)
+                        .into_iter()
+                        .map(|p| p.shifted(offset)),
+                );
+            }
+            (index, media)
+        }
+        PlanFile::Deck(_) => bail!(DECK_UNSUPPORTED),
+    };
+    if let Some(at_spec) = at_opt {
+        let times = index.resolve_times(&at_spec)?;
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&audio_check::active_at(&placements, &index, &times))?
+        );
+        return Ok(());
+    }
+    let window = index.resolve_range(range_spec)?;
+    let report = audio_check::analyze_placements(&placements, &index, window)?;
+    println!("{}", serde_json::to_string_pretty(&report)?);
+    Ok(())
+}
+
+fn plan_audio_placements(plan: &ScenePlan, base: &Path) -> Vec<MediaPlacement> {
+    plan.media
+        .iter()
+        .filter(|media| matches!(media.kind, MediaKindPlan::Audio))
+        .map(|media| {
+            let clip = Asset::audio(media.id.clone(), resolve_media_path(base, media))
+                .clip(TimeRange::new(
+                    Time::from_nanos(media.source_start_nanos),
+                    Time::from_nanos(media.source_end_nanos),
+                ))
+                .gain_db(media.gain_db);
+            let role = match media.role {
+                MediaRolePlan::Script => MediaRole::Script,
+                MediaRolePlan::Layer => MediaRole::Layer,
+            };
+            MediaPlacement::new(clip, role, Time::from_nanos(media.timeline_start_nanos))
+        })
+        .collect()
 }
 
 fn render_command(arguments: &[String], theme: Theme) -> Result<()> {
@@ -308,9 +516,10 @@ fn render_command(arguments: &[String], theme: Theme) -> Result<()> {
         Some("--range") => {
             let range = arguments
                 .get(cursor + 1)
-                .context("--range requires START..END seconds")?;
+                .context("--range requires a range specification (e.g. 1.0..4.0 or intro..outro)")?
+                .clone();
             cursor += 2;
-            WindowSelection::Range(parse_range(range)?)
+            WindowSelection::RangeSpec(range)
         }
         Some(argument) => bail!("unknown plan render option '{argument}'"),
     };
@@ -339,8 +548,10 @@ enum WindowSelection {
     Full,
     Cue(String),
     Range(TimeRange),
+    RangeSpec(String),
 }
 
+#[cfg(test)]
 fn parse_range(value: &str) -> Result<TimeRange> {
     let (start, end) = value
         .split_once("..")
@@ -370,6 +581,9 @@ fn plan_window(plan: &ScenePlan, selection: WindowSelection) -> Result<TimeRange
             )
         }
         WindowSelection::Range(range) => range,
+        WindowSelection::RangeSpec(spec) => {
+            psychopomp::time_spec::TimeIndex::from_plan(plan).resolve_range(&spec)?
+        }
     })
 }
 
@@ -414,6 +628,9 @@ impl PlanFile {
             )),
             (Self::Reel(reel), WindowSelection::Cue(id)) => reel::segment_window(reel, &id),
             (Self::Reel(_), WindowSelection::Range(range)) => Ok(range),
+            (Self::Reel(reel), WindowSelection::RangeSpec(spec)) => {
+                psychopomp::time_spec::TimeIndex::from_reel(reel).resolve_range(&spec)
+            }
             (Self::Deck(_), _) => bail!(DECK_UNSUPPORTED),
         }
     }
@@ -1121,7 +1338,7 @@ impl PreparedPlan {
 
     /// An overlay's origin at `time`: `literal` while it has no anchors, else
     /// its weighted anchors blended; `None` when none of them can be placed.
-    fn pin(
+    pub(super) fn pin(
         &self,
         actor: &str,
         anchors: &[AnchorPlan],
@@ -1224,7 +1441,7 @@ impl PreparedPlan {
         }
     }
 
-    fn callout_pose(
+    pub(super) fn callout_pose(
         &self,
         callout: &callout::PreparedCallout,
         time: f64,
@@ -1513,7 +1730,7 @@ impl PreparedPlan {
         Ok(())
     }
 
-    fn property_value(
+    pub(super) fn property_value(
         &self,
         timeline: &Timeline,
         actor_id: &str,

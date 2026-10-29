@@ -25,14 +25,16 @@ cargo fmt --check
 cargo clippy --workspace --all-targets --all-features -- -D warnings
 cargo run -p <scene-crate>                                   # write a plan or reel
 cargo run --release -- plan validate <plan-or-reel.json>
+cargo run --release -- plan check <plan-or-reel.json> [--pops] [--audio] --theme neutral
+cargo run --release -- plan audio <plan-or-reel.json> [range | --at TIMES]
+cargo run --release -- plan strip <plan-or-reel.json> [range|times] out.png [-n 16] --shutter
 cargo run --release -- plan render <plan-or-reel.json> output/<name>.mp4 --theme neutral [--draft]
 cargo run --release -- plan present <deck.json>              # native presentation
-cargo run --release -- plan frame <plan-or-reel.json> <seconds> out.png --shutter
-cargo run --release -- plan onion <plan-or-reel.json> <times> out.png --shutter
+cargo run --release -- plan frame <plan-or-reel.json> <time[,time...]> out.png [--crop x,y,w,h] --shutter
+cargo run --release -- plan onion <plan-or-reel.json> <range|times> out.png --shutter
 cargo run --release -- plan snapshot <plan-or-reel.json> <times> <dir> [--compare]
 cargo run --release -- verify baseline [LABEL | --out DIR]   # every plan in verify.json + key frames
 cargo run --release -- verify compare [LABEL | DIR] [--expect NAME,..]
-bun scripts/sheet.ts <plan-or-reel.json> <t1,t2,... | from:to:step> --shutter
 bun scripts/narrate.ts <scene>/narration/script.json [--draft]
 ```
 

@@ -58,26 +58,17 @@ impl FfmpegEncoder {
         .into_iter()
         .map(str::to_owned)
         .collect::<Vec<_>>();
-        let mut filters = Vec::with_capacity(media.len());
-        for (index, placement) in media.iter().enumerate() {
+        for placement in media {
             let asset = placement.clip().asset();
             arguments.push("-i".to_owned());
             arguments.push(asset.path().to_string_lossy().into_owned());
-            filters.push(audio_clip_filter(index, index + 1, placement));
         }
         if media.is_empty() {
             arguments.push("-an".to_owned());
         } else {
-            let inputs = (0..media.len())
-                .map(|index| format!("[a{index}]"))
-                .collect::<String>();
-            filters.push(format!(
-                "{inputs}amix=inputs={}:duration=longest:normalize=0,alimiter=limit=0.95:level=0:latency=1[aout]",
-                media.len()
-            ));
             arguments.extend([
                 "-filter_complex".to_owned(),
-                filters.join(";"),
+                audio_filter_graph(media, 1),
                 "-map".to_owned(),
                 "0:v:0".to_owned(),
                 "-map".to_owned(),
@@ -175,6 +166,22 @@ fn temporary_output_path(output: &Path, file_name: &str) -> PathBuf {
         ".{file_name}.psychopomp-tmp-{}-{nonce}.mp4",
         std::process::id()
     ))
+}
+
+pub(crate) fn audio_filter_graph(media: &[MediaPlacement], first_input: usize) -> String {
+    let mut filters = media
+        .iter()
+        .enumerate()
+        .map(|(index, placement)| audio_clip_filter(index, first_input + index, placement))
+        .collect::<Vec<_>>();
+    let inputs = (0..media.len())
+        .map(|index| format!("[a{index}]"))
+        .collect::<String>();
+    filters.push(format!(
+        "{inputs}amix=inputs={}:duration=longest:normalize=0,alimiter=limit=0.95:level=0:latency=1[aout]",
+        media.len()
+    ));
+    filters.join(";")
 }
 
 fn audio_clip_filter(

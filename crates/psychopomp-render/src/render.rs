@@ -66,7 +66,7 @@ pub(crate) use lower_third::LowerThirdGlyphs;
 pub(crate) use rich_text::{RichTextGlyphs, RichTextSource, parse as parse_rich_text};
 #[cfg(test)]
 pub(crate) use stage::{POST_SHADER, PRIMITIVE_SHADER, SHADER_STRUCTS};
-pub(crate) use stage::{StageGpu, icon_svg, stage_anchor};
+pub(crate) use stage::{StageBoundsItem, StageGpu, icon_svg, stage_anchor, stage_bounds};
 pub use task::{BubblePose, ContentPose, TaskContentFrame, TaskVisualFrame};
 pub(crate) use terminal::TerminalNames;
 pub use theme::Theme;

@@ -6,10 +6,13 @@ use std::{fs, path::Path};
 use anyhow::{Context, Result, bail, ensure};
 use serde_json::json;
 
-use psychopomp::composition::TimeRange;
+use psychopomp::{
+    composition::{MediaPlacement, TimeRange},
+    time_spec::TimeIndex,
+};
 
 use super::{
-    DECK_UNSUPPORTED, PlanFile, PreparedPlan, Theme, delivery, new_renderer, preflight, reel,
+    DECK_UNSUPPORTED, PlanFile, PreparedPlan, Theme, check, delivery, new_renderer, preflight, reel,
 };
 use crate::{
     exposure::{HEIGHT, WIDTH, exposure, merge_equal_samples},
@@ -112,6 +115,36 @@ impl Loaded {
         }
     }
 
+    pub(super) fn time_index(&self) -> TimeIndex {
+        match self {
+            Self::Plan(plan) => TimeIndex::from_plan(&plan.plan),
+            Self::Reel(reel) => TimeIndex::from_reel(reel.reel()),
+        }
+    }
+
+    pub(super) fn media(&self) -> &[MediaPlacement] {
+        match self {
+            Self::Plan(plan) => &plan.media,
+            Self::Reel(reel) => reel.media(),
+        }
+    }
+
+    pub(super) fn inspect_bounds_at(
+        &self,
+        renderer: &mut HeadlessRenderer,
+        at: f64,
+        plan_path: &Path,
+    ) -> Vec<check::Finding> {
+        match self {
+            Self::Plan(plan) => {
+                check::inspect_prepared_plan(plan, renderer, at, at, None, plan_path)
+            }
+            Self::Reel(reel) => {
+                check::inspect_reel_at(reel.reel(), reel.segments(), renderer, at, plan_path)
+            }
+        }
+    }
+
     /// The frame at `at`: one instant, or with `shutter` the exposure a video
     /// frame centered there receives on export.
     pub(super) fn still(
@@ -144,6 +177,7 @@ impl Loaded {
 }
 
 /// `a,b,c` seconds, or `from:to:step`.
+#[cfg(test)]
 pub(super) fn parse_times(value: &str) -> Result<Vec<f64>> {
     let number = |text: &str| {
         text.trim()
@@ -169,23 +203,24 @@ pub(super) fn frame_name(at: f64) -> String {
     format!("{at:09.3}.png")
 }
 
-/// Write frames at `times` into `dir`, or with `compare` render them again
+/// Write frames at `times_spec` into `dir`, or with `compare` render them again
 /// and compare against the frames already there.
 pub(super) fn snapshot(
     path: &Path,
-    times: &[f64],
+    times_spec: &str,
     dir: &Path,
     compare: bool,
     shutter: bool,
     theme: Theme,
 ) -> Result<()> {
     let (loaded, mut renderer) = pollster::block_on(Loaded::load(path, theme))?;
+    let times = loaded.time_index().resolve_times(times_spec)?;
     if !compare {
         fs::create_dir_all(dir).with_context(|| format!("create {}", dir.display()))?;
     }
     let mut reports = Vec::new();
     let mut differing = 0;
-    for &at in times {
+    for &at in &times {
         let pixels = loaded.still(&mut renderer, at, shutter)?;
         let file = dir.join(frame_name(at));
         if !compare {
@@ -282,21 +317,27 @@ pub(super) fn read_png(path: &Path) -> Result<Vec<u8>> {
     Ok(pixels)
 }
 
-/// Composite `times` into one onion-skin PNG: stationary pixels keep their
+/// Composite `times_spec` into one onion-skin PNG: stationary pixels keep their
 /// median color, while moving pixels leave progressively brighter ghosts
 /// leading into the final sample at full opacity.
 pub(super) fn onion(
     path: &Path,
-    times: &[f64],
+    times_spec: &str,
     output: &Path,
     shutter: bool,
     theme: Theme,
 ) -> Result<()> {
+    let (loaded, mut renderer) = pollster::block_on(Loaded::load(path, theme))?;
+    let index = loaded.time_index();
+    let times = if times_spec.contains(',') || times_spec.contains(':') {
+        index.resolve_times(times_spec)?
+    } else {
+        index.resolve_strip_times(times_spec, 6)?
+    };
     ensure!(
         times.len() >= 2,
         "plan onion needs at least two sample times"
     );
-    let (loaded, mut renderer) = pollster::block_on(Loaded::load(path, theme))?;
     let frames = times
         .iter()
         .map(|&at| loaded.still(&mut renderer, at, shutter))

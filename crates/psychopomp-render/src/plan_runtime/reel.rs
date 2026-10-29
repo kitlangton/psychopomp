@@ -104,6 +104,14 @@ impl PreparedReel {
         &self.media
     }
 
+    pub(super) fn reel(&self) -> &ReelPlan {
+        &self.reel
+    }
+
+    pub(super) fn segments(&self) -> &[PreparedPlan] {
+        &self.segments
+    }
+
     pub(super) fn visual_sample_key(&self, time: f64) -> Result<ReelSampleKey> {
         self.reel
             .layers_at(time)
