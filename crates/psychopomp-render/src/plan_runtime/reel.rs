@@ -11,10 +11,7 @@ use psychopomp::{
 use serde_json::{Value, json};
 
 use super::{PreparedPlan, VisualSampleKey, inspect_plan, validate_renderer_plan};
-use crate::{
-    exposure::{HEIGHT, WIDTH},
-    render::HeadlessRenderer,
-};
+use crate::render::HeadlessRenderer;
 
 pub(super) fn validate(reel: &ReelPlan) -> Result<()> {
     for segment in &reel.segments {
@@ -224,14 +221,15 @@ impl PreparedReel {
             }
             let (pixels, coverage) = match layer.zoom {
                 Some(phase) => {
+                    let [rw, rh] = renderer.size();
                     let zoom = ReelZoom::at(
                         phase.focus,
-                        WIDTH as f32,
-                        HEIGHT as f32,
+                        rw as f32,
+                        rh as f32,
                         phase.progress,
                         phase.incoming,
                     );
-                    let (warped, coverage) = warp(&pixels, zoom);
+                    let (warped, coverage) = warp(&pixels, [rw, rh], zoom);
                     (warped, Some(coverage))
                 }
                 None => (pixels, None),
@@ -260,8 +258,8 @@ impl PreparedReel {
 /// A frame magnified or shrunk on screen: `output = source * scale + offset`,
 /// sampled bilinearly, with per-pixel coverage that is zero outside the source
 /// and rounded at `radius` (in output pixels) while the frame is card-sized.
-fn warp(source: &[u8], zoom: ReelZoom) -> (Vec<u8>, Vec<f32>) {
-    let (width, height) = (WIDTH as usize, HEIGHT as usize);
+fn warp(source: &[u8], [w_px, h_px]: [u32; 2], zoom: ReelZoom) -> (Vec<u8>, Vec<f32>) {
+    let (width, height) = (w_px as usize, h_px as usize);
     let mut pixels = vec![0_u8; width * height * 4];
     let mut coverage = vec![0.0_f32; width * height];
     let inverse = 1.0 / zoom.scale;
