@@ -1,0 +1,4239 @@
+{
+  "version": 1,
+  "id": "kaizen-rsi-v2",
+  "segments": [
+    {
+      "transitionNanos": 0,
+      "transitionStyle": "crossfade",
+      "plan": {
+        "version": 2,
+        "id": "01-inversion",
+        "durationNanos": 30508999999,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "rsi · oct 22–29",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "The inversion: production outran verification"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "warning"
+                  },
+                  {
+                    "text": "68h desk trace"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "kicker",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "DESK HOURS WITH FINISHED WORK WAITING",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                268.0
+              ],
+              "size": 20.0
+            }
+          },
+          {
+            "id": "wait-pct",
+            "recipe": "rolling-number",
+            "data": {
+              "bold": true,
+              "durationNanos": 650000000,
+              "origin": [
+                150.0,
+                358.0
+              ],
+              "rolls": [
+                {
+                  "atNanos": 18130000000,
+                  "value": "63.0"
+                }
+              ],
+              "size": 98.0,
+              "suffix": [
+                {
+                  "text": "%",
+                  "tone": "accent"
+                }
+              ],
+              "tone": "accent",
+              "value": "1.5"
+            }
+          },
+          {
+            "id": "scale-line",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "43 of 68h"
+                  },
+                  {
+                    "text": " · 2,038 human · 2,798 subagents",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                456.0
+              ],
+              "size": 21.0
+            }
+          },
+          {
+            "id": "pile-chip",
+            "recipe": "caption",
+            "data": {
+              "chip": true,
+              "glass": true,
+              "lines": [
+                [
+                  {
+                    "text": "p90 = 7 sessions ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "backed up on Kit at once"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                560.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "switch-chip",
+            "recipe": "caption",
+            "data": {
+              "chip": true,
+              "glass": true,
+              "lines": [
+                [
+                  {
+                    "text": "51% turn switches ",
+                    "tone": "warning"
+                  },
+                  {
+                    "text": "· median 41s apart",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                642.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "inv-bars",
+            "recipe": "bars",
+            "data": {
+              "axis": {
+                "label": "measured 7-day share (%)",
+                "range": [
+                  0.0,
+                  70.0
+                ],
+                "ticks": [
+                  0.0,
+                  20.0,
+                  40.0,
+                  60.0
+                ],
+                "unit": "%"
+              },
+              "origin": [
+                1120.0,
+                275.0
+              ],
+              "readout": {
+                "decimals": 1,
+                "unit": "%"
+              },
+              "rowHeight": 106.0,
+              "rows": [
+                {
+                  "id": "agent-wait",
+                  "label": "Kit waits on agents"
+                },
+                {
+                  "id": "rework",
+                  "label": "Seer 2+ round cards"
+                },
+                {
+                  "id": "kit-wait",
+                  "label": "Work waits on Kit"
+                },
+                {
+                  "id": "cargo-q",
+                  "label": "HiveMind queue share"
+                }
+              ],
+              "series": [
+                {
+                  "id": "pct",
+                  "label": "measured %",
+                  "tone": "accent"
+                }
+              ],
+              "size": 22.0,
+              "width": 570.0
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "2026-10-29-rsi-engineering · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "523.9h queued",
+                    "tone": "error"
+                  },
+                  {
+                    "text": " vs 290.5h run across 8,000 HiveMind jobs"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "pile-chip.opacity",
+            "actorId": "pile-chip",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18480000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "pile-chip.y",
+            "actorId": "pile-chip",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18480000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "switch-chip.opacity",
+            "actorId": "switch-chip",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 21730000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "switch-chip.y",
+            "actorId": "switch-chip",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 21730000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.axes",
+            "actorId": "inv-bars",
+            "property": "axes",
+            "initial": 1.0,
+            "events": []
+          },
+          {
+            "id": "inv-bars.row.agent-wait.opacity",
+            "actorId": "inv-bars",
+            "property": "row.agent-wait.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.row.rework.opacity",
+            "actorId": "inv-bars",
+            "property": "row.rework.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 690000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.row.kit-wait.opacity",
+            "actorId": "inv-bars",
+            "property": "row.kit-wait.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 780000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.row.cargo-q.opacity",
+            "actorId": "inv-bars",
+            "property": "row.cargo-q.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 870000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.bar.agent-wait.pct",
+            "actorId": "inv-bars",
+            "property": "bar.agent-wait.pct",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 12610000000,
+                "target": 1.5,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.bar.kit-wait.pct",
+            "actorId": "inv-bars",
+            "property": "bar.kit-wait.pct",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18130000000,
+                "target": 63.0,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.bar.rework.pct",
+            "actorId": "inv-bars",
+            "property": "bar.rework.pct",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 21730000000,
+                "target": 46.3,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "inv-bars.bar.cargo-q.pct",
+            "actorId": "inv-bars",
+            "property": "bar.cargo-q.pct",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25330000000,
+                "target": 64.3,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25330000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25330000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "inversion",
+            "startNanos": 0,
+            "endNanos": 30508999999
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg1_inversion",
+            "path": "media/23559d176876609f.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 28558999999,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 29008999999,
+            "gainDb": 0.0
+          },
+          {
+            "id": "tick-15",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 12610000000,
+            "timelineEndNanos": 12750000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "roll-63",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 18130000000,
+            "timelineEndNanos": 18430000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "warn-rework",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 21730000000,
+            "timelineEndNanos": 22210000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "hit-cargo",
+            "path": "../../assets/opencode-hot-reload/impact.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 520000000,
+            "timelineStartNanos": 25330000000,
+            "timelineEndNanos": 25850000000,
+            "gainDb": -15.5
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 800000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "63% WAIT",
+          "FIX 1 · LIVELOCK"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "02-livelock-rig",
+        "durationNanos": 31148999999,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "fix 1 · hivemind",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "The 47-minute head-of-line core-budget livelock"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "cluster.rs:2460"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "livelock-stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    960.0,
+                    268.0,
+                    3.0
+                  ],
+                  "corner": 18.0,
+                  "fill": "well",
+                  "id": "mini-bay",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      1460.0,
+                      152.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    960.0,
+                    214.0,
+                    0.0
+                  ],
+                  "id": "mini-title",
+                  "kind": "label",
+                  "size": 19.0,
+                  "spans": [
+                    {
+                      "text": "WORKER mini · "
+                    },
+                    {
+                      "text": "8 / 10 CORES CHARGED (glyph-cache 28m)  ·  ",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "2 CORES + 1 SLOT FREE",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    352.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-0",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    352.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-0",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    487.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-1",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    487.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-1",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    622.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-2",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    622.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-2",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    757.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-3",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    757.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-3",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    892.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-4",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    892.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-4",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1027.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-5",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1027.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-5",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1162.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-6",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1162.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-6",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1297.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.25999999046325684,
+                  "id": "core-7",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1297.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-7",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "BUSY",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1432.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "success",
+                  "fillOpacity": 0.2199999988079071,
+                  "id": "core-8",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1432.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-8",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "FREE",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1567.0,
+                    286.0,
+                    1.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "success",
+                  "fillOpacity": 0.2199999988079071,
+                  "id": "core-9",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      112.0,
+                      62.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1567.0,
+                    286.0,
+                    0.0
+                  ],
+                  "id": "core-lbl-9",
+                  "kind": "label",
+                  "size": 16.0,
+                  "spans": [
+                    {
+                      "text": "FREE",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    510.0,
+                    488.0,
+                    0.0
+                  ],
+                  "corner": 14.0,
+                  "fill": "raised",
+                  "id": "big-job",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      640.0,
+                      92.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    510.0,
+                    474.0,
+                    -1.0
+                  ],
+                  "id": "big-txt",
+                  "kind": "label",
+                  "size": 20.0,
+                  "spans": [
+                    {
+                      "text": "[high] perf-init-and-poll  ",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "needs 7 cores"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    510.0,
+                    506.0,
+                    -1.0
+                  ],
+                  "id": "big-sub",
+                  "kind": "label",
+                  "size": 17.0,
+                  "spans": [
+                    {
+                      "text": "stalled 47m 23s — 7 cores > 2 free on mini",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    510.0,
+                    656.0,
+                    0.0
+                  ],
+                  "corner": 14.0,
+                  "fill": "raised",
+                  "id": "small-job",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      640.0,
+                      92.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    510.0,
+                    642.0,
+                    -1.0
+                  ],
+                  "id": "small-txt",
+                  "kind": "label",
+                  "size": 20.0,
+                  "spans": [
+                    {
+                      "text": "9 × [normal] Cargo checks  ",
+                      "tone": "request"
+                    },
+                    {
+                      "text": "need 2 cores each"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    510.0,
+                    674.0,
+                    -1.0
+                  ],
+                  "id": "small-sub",
+                  "kind": "label",
+                  "size": 17.0,
+                  "spans": [
+                    {
+                      "text": "fits mini's 2 free cores right now",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    980.0,
+                    656.0,
+                    -1.0
+                  ],
+                  "corner": 8.0,
+                  "fill": "error",
+                  "fillOpacity": 0.8500000238418579,
+                  "id": "yield-gate",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      26.0,
+                      118.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1355.0,
+                    656.0,
+                    0.0
+                  ],
+                  "id": "yield-lbl",
+                  "kind": "label",
+                  "size": 20.0,
+                  "spans": [
+                    {
+                      "text": "ahead >= cand_free_slots  ",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "→ blind yield!"
+                    }
+                  ]
+                },
+                {
+                  "arrow": "end",
+                  "corner": 24.0,
+                  "dash": [
+                    10.0,
+                    8.0
+                  ],
+                  "id": "route",
+                  "kind": "path",
+                  "through": [
+                    [
+                      835.0,
+                      656.0,
+                      1.0
+                    ],
+                    [
+                      1552.0,
+                      656.0,
+                      1.0
+                    ],
+                    [
+                      1552.0,
+                      326.0,
+                      1.0
+                    ]
+                  ],
+                  "tone": "success",
+                  "width": 2.4000000953674316
+                },
+                {
+                  "at": [
+                    1180.0,
+                    656.0,
+                    -2.0
+                  ],
+                  "corner": 10.0,
+                  "fill": "success",
+                  "fillOpacity": 0.2800000011920929,
+                  "id": "runner",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      220.0,
+                      54.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1180.0,
+                    656.0,
+                    -3.0
+                  ],
+                  "id": "runner-txt",
+                  "kind": "label",
+                  "size": 18.0,
+                  "spans": [
+                    {
+                      "text": "2c job → ADMITTED",
+                      "tone": "success"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1355.0,
+                    488.0,
+                    0.0
+                  ],
+                  "corner": 14.0,
+                  "fill": "surface",
+                  "id": "drain-chip",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      660.0,
+                      76.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1355.0,
+                    488.0,
+                    -1.0
+                  ],
+                  "id": "drain-txt",
+                  "kind": "label",
+                  "size": 19.0,
+                  "spans": [
+                    {
+                      "text": "studio core-drain reserved (>120s) ",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "→ 7c runs next"
+                    }
+                  ]
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "main-watch aborted at 1,800s · ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "seer land & Hex auto-installs timed out"
+                  },
+                  {
+                    "text": " behind this livelock",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "livelock-stage.yield-gate.opacity",
+            "actorId": "livelock-stage",
+            "property": "yield-gate.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 20130000000,
+                "target": 1.0,
+                "durationNanos": 180000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 24050000000,
+                "target": 0.0,
+                "durationNanos": 250000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.yield-lbl.opacity",
+            "actorId": "livelock-stage",
+            "property": "yield-lbl.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 20250000000,
+                "target": 1.0,
+                "durationNanos": 240000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 24050000000,
+                "target": 0.0,
+                "durationNanos": 220000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.route.draw",
+            "actorId": "livelock-stage",
+            "property": "route.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24200000000,
+                "target": 1.0,
+                "durationNanos": 650000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.runner.opacity",
+            "actorId": "livelock-stage",
+            "property": "runner.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24400000000,
+                "target": 1.0,
+                "durationNanos": 250000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.runner-txt.opacity",
+            "actorId": "livelock-stage",
+            "property": "runner-txt.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24400000000,
+                "target": 1.0,
+                "durationNanos": 250000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.drain-chip.opacity",
+            "actorId": "livelock-stage",
+            "property": "drain-chip.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24550000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.drain-txt.opacity",
+            "actorId": "livelock-stage",
+            "property": "drain-txt.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24550000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.runner.x",
+            "actorId": "livelock-stage",
+            "property": "runner.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24450000000,
+                "target": 372.0,
+                "durationNanos": 950000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "livelock-stage.runner-txt.x",
+            "actorId": "livelock-stage",
+            "property": "runner-txt.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 24450000000,
+                "target": 372.0,
+                "durationNanos": 950000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 12690000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 12690000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "livelock-rig",
+            "startNanos": 0,
+            "endNanos": 31148999999
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg2_livelock_rig",
+            "path": "media/b596339cfaee7594.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 29198999999,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 29648999999,
+            "gainDb": 0.0
+          },
+          {
+            "id": "tick-stall",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 7410000000,
+            "timelineEndNanos": 7550000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "gate-shut",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 20130000000,
+            "timelineEndNanos": 20610000000,
+            "gainDb": -15.5
+          },
+          {
+            "id": "gate-open",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 24300000000,
+            "timelineEndNanos": 24640000000,
+            "gainDb": -15.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 550000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "03-livelock-diff",
+        "durationNanos": 26269000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "fix 1 · code receipt",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Filter ahead-waiters by core fit in hivemind/src/cluster.rs"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "line 2460"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "editor",
+            "recipe": "editor",
+            "data": {
+              "enteringOffsetX": 0.0,
+              "fileName": "hivemind/src/cluster.rs",
+              "finalLineIds": [
+                "line-0",
+                "line-2",
+                "line-3",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-7",
+                "line-8",
+                "line-9"
+              ],
+              "focusHeight": 44.0,
+              "focusLineId": "line-0",
+              "initialLineIds": [
+                "line-0",
+                "line-1",
+                "line-3",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-8",
+                "line-9"
+              ],
+              "lineHeight": 44.0,
+              "lines": [
+                {
+                  "id": "line-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "for"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " (_, cand_name, cand_is_warm, cand_free_slots) "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "in"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " candidates {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-1",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "let"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ahead = "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "bug_call",
+                      "spans": [
+                        {
+                          "style": "accent",
+                          "text": "waiters_ahead_of"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "(ticket, &waiters, "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "Some"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(&cand_name));"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "bug_call",
+                      "id": "bug_call",
+                      "lastPartId": "bug_call"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-2",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "let"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ahead = "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "fix_call",
+                      "spans": [
+                        {
+                          "style": "accent",
+                          "text": "fitting_waiters_ahead"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "(ticket, &waiters, &cand_name, st);"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "fix_call",
+                      "id": "fix_call",
+                      "lastPartId": "fix_call"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-3",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " ahead >= cand_free_slots {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-4",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    yielded_reason = "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "Some"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(format!("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"yielding to {ahead} on {cand_name}\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": "));"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-5",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "continue"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ";"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-6",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  }"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-7",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "drain_line",
+                      "spans": [
+                        {
+                          "style": "accent",
+                          "text": "reserved_for_high_drain"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "(&cand_name, &waiters) { "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "continue"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "; }"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "drain_line",
+                      "id": "drain_line",
+                      "lastPartId": "drain_line"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-8",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "return"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "Ok"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(cand_name);"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-9",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "}"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                }
+              ],
+              "snapshots": [
+                {
+                  "atNanos": 7890000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-2",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8",
+                    "line-9"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "caret",
+            "recipe": "cursor",
+            "data": {
+              "anchors": [
+                {
+                  "id": "bug_call",
+                  "target": "bug_call"
+                },
+                {
+                  "id": "fix_call",
+                  "target": "fix_call"
+                },
+                {
+                  "id": "drain_line",
+                  "target": "drain_line"
+                }
+              ]
+            }
+          },
+          {
+            "id": "err",
+            "recipe": "diagnostic",
+            "data": {
+              "target": "bug_call"
+            }
+          },
+          {
+            "id": "why-card",
+            "recipe": "hover-card",
+            "data": {
+              "sections": [
+                {
+                  "code": [
+                    [
+                      {
+                        "style": "plain",
+                        "text": "cluster.rs:"
+                      },
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "2460"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " · blind slot yielding"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "text": [
+                    [
+                      {
+                        "text": "Counts "
+                      },
+                      {
+                        "text": "7-core",
+                        "tone": "error"
+                      },
+                      {
+                        "text": " waiters against "
+                      },
+                      {
+                        "text": "mini (2 free cores)",
+                        "tone": "success"
+                      },
+                      {
+                        "text": "."
+                      }
+                    ],
+                    [
+                      {
+                        "text": "9 normal 2-core jobs yield forever while mini's slot sits idle.",
+                        "tone": "muted"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "side": "below",
+              "target": "bug_call"
+            }
+          },
+          {
+            "id": "resolved",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "edge": "bottom",
+                  "id": "drain_line",
+                  "kind": "editor",
+                  "target": "drain_line"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "Cargo queue p95: 15+ min → < 2 min ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "· seer land + Hex unblocked"
+                  }
+                ]
+              ],
+              "reach": 96.0,
+              "side": "bottom",
+              "size": 24.0,
+              "tone": "success"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "hivemind/src/cluster.rs:2460 · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "2-line filter + 120s high-priority drain",
+                    "tone": "accent"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [
+          {
+            "id": "bug_call",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-1",
+              "rangeId": "bug_call"
+            }
+          },
+          {
+            "id": "fix_call",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-2",
+              "rangeId": "fix_call"
+            }
+          },
+          {
+            "id": "drain_line",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-7",
+              "rangeId": "drain_line"
+            }
+          }
+        ],
+        "continuousChannels": [
+          {
+            "id": "editor.mark.line-1",
+            "actorId": "editor",
+            "property": "mark.line-1",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7890000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.panel-y",
+            "actorId": "editor",
+            "property": "panel-y",
+            "initial": 70.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 0.84000003,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.panel-opacity",
+            "actorId": "editor",
+            "property": "panel-opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.opacity",
+            "actorId": "caret",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 650000000,
+                "target": 1.0,
+                "responseSeconds": 0.192,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 20390000000,
+                "target": 0.0,
+                "responseSeconds": 0.192,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.blink",
+            "actorId": "caret",
+            "property": "blink",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 650000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 650000000,
+                "target": 25.619,
+                "durationNanos": 25619000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 8290000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 8610000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 8610000000,
+                "target": 17.659,
+                "durationNanos": 17659000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 20390000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "err.draw",
+            "actorId": "err",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 3970000000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "why-card.presence",
+            "actorId": "why-card",
+            "property": "presence",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 4470000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 0.82,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 7670000000,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.bug_call",
+            "actorId": "caret",
+            "property": "anchor.bug_call",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8290000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.fix_call",
+            "actorId": "caret",
+            "property": "anchor.fix_call",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8290000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.drain_line",
+            "actorId": "caret",
+            "property": "anchor.drain_line",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8290000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.head",
+            "actorId": "caret",
+            "property": "head",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8290000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.tail",
+            "actorId": "caret",
+            "property": "tail",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8290000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.wave",
+            "actorId": "err",
+            "property": "wave",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8540000000,
+                "target": 0.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.opacity",
+            "actorId": "err",
+            "property": "opacity",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 8660000000,
+                "target": 0.0,
+                "durationNanos": 320000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "resolved.draw",
+            "actorId": "resolved",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 19890000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "resolved.label",
+            "actorId": "resolved",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 20070000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7890000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7890000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "livelock-diff",
+            "startNanos": 0,
+            "endNanos": 26269000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg3_livelock_diff",
+            "path": "media/076e0e6f14d8e513.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 24319000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 24769000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "err-buzz",
+            "path": "../../assets/pr-walkthrough/glitch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 200000000,
+            "timelineStartNanos": 3970000000,
+            "timelineEndNanos": 4170000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "diff-step",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 7890000000,
+            "timelineEndNanos": 8230000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "res-bloom",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 19890000000,
+            "timelineEndNanos": 20685000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 800000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "FIX 1 · QUEUE",
+          "FIX 2 · 30 GB"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "04-reclaim-30gb",
+        "durationNanos": 48349000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "fix 2 · ~30 gb",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Sweep leaked daemons and 6.56M Motel spans/day"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "warning"
+                  },
+                  {
+                    "text": "8.9G swap · pro thrm 2"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "leak-grid",
+            "recipe": "keyed-grid",
+            "data": {
+              "axes": [
+                {
+                  "name": "Col",
+                  "values": [
+                    "C1",
+                    "C2",
+                    "C3"
+                  ]
+                },
+                {
+                  "name": "Row",
+                  "values": [
+                    "Idle",
+                    "Orphan",
+                    "Index",
+                    "Pro",
+                    "Motel"
+                  ]
+                },
+                {
+                  "name": "Layer",
+                  "values": [
+                    "Host"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "atNanos": 14050000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      2,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 18210000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      3,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 21930000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      4,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 32770000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      5,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 36210000000,
+                  "snapshot": {
+                    "arrangement": "layers",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      5,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 38610000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      5,
+                      1
+                    ]
+                  }
+                }
+              ],
+              "initial": {
+                "arrangement": "table",
+                "focusSlice": null,
+                "visible": [
+                  3,
+                  1,
+                  1
+                ]
+              },
+              "labels": [
+                {
+                  "indices": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "primary": "Studio · cua-driver + Codex",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    0,
+                    0
+                  ],
+                  "primary": "3.56 GB idle RAM (up 3d)",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    0,
+                    0
+                  ],
+                  "primary": "Quit + build <15 MB Rust mac-ax",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    1,
+                    0
+                  ],
+                  "primary": "Studio · 13 workerd + 5 nexus",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    1,
+                    0
+                  ],
+                  "primary": "4.30 GB leaked (PPID 1)",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    1,
+                    0
+                  ],
+                  "primary": "Process-group reap in Rust devd",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    2,
+                    0
+                  ],
+                  "primary": "Studio · Spotlight + Audio",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    2,
+                    0
+                  ],
+                  "primary": "12.3 CPU-h indexing trees",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    2,
+                    0
+                  ],
+                  "primary": "Add .metadata_never_index roots",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    3,
+                    0
+                  ],
+                  "primary": "Pro · VM + spaceman + ng",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    3,
+                    0
+                  ],
+                  "primary": "24 GB + thermal level 2",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    3,
+                    0
+                  ],
+                  "primary": "Stop leaks → +6 fast Cargo slots",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    4,
+                    0
+                  ],
+                  "primary": "Motel · FileSystem.resolve",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    4,
+                    0
+                  ],
+                  "primary": "6.56M spans (1.7 GB/day)",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    4,
+                    0
+                  ],
+                  "primary": "Drop <10ms FS spans → 30 MB/day",
+                  "secondary": ""
+                }
+              ],
+              "style": {
+                "fill": {
+                  "color": [
+                    22,
+                    24,
+                    29
+                  ],
+                  "kind": "banded"
+                },
+                "lineOpacity": 0.4000000059604645,
+                "lineWidth": 1.0,
+                "rules": "rows",
+                "table": {
+                  "alignments": [
+                    "left",
+                    "left",
+                    "left"
+                  ],
+                  "columnWidths": [
+                    390.0,
+                    430.0,
+                    620.0
+                  ],
+                  "fontSize": 22.0,
+                  "headers": [
+                    "Host & Culprit",
+                    "Live Cost (17:22 PT)",
+                    "Countermeasure"
+                  ],
+                  "padding": 22.0,
+                  "rowHeight": 76.0
+                }
+              }
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "Studio swap 8.88 GB → < 2 GB · ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "Motel −98% disk writes",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · Pro thermal gate cleared"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 36210000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 36210000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "reclaim-30gb",
+            "startNanos": 0,
+            "endNanos": 48349000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg4_reclaim_30gb",
+            "path": "media/fab445faf041187f.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 46399000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 46849000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "leak-tick-0",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 14050000000,
+            "timelineEndNanos": 14190000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "leak-tick-1",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 18210000000,
+            "timelineEndNanos": 18350000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "leak-tick-2",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 21930000000,
+            "timelineEndNanos": 22070000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "leak-tick-3",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 32770000000,
+            "timelineEndNanos": 32910000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "sweep-tilt",
+            "path": "../../assets/psychopomp-intro/whoosh.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 612208333,
+            "timelineStartNanos": 36210000000,
+            "timelineEndNanos": 36822208333,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 550000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "05-seer-rune",
+        "durationNanos": 36829000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "fix 3 · seer & rune",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Pre-gate Seer reviews and pin Rune once daily"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "46.3% → <20% rework"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "seer-gate-note",
+            "recipe": "rune-surface",
+            "data": {
+              "commits": [
+                {
+                  "action": {
+                    "markdown": "Verify UI diffs automatically before waking Kit, and pin Rune once daily across apps.\n\n```facts\nSeer rework rate: {verified} 365 / 789 cards (46.3%) needed 2+ Kit rounds\nZombie working cards: {verified} 52 / 80 have no active session · main-watch exit 78\nRune git-SHA churn: {verified} 34 checkouts · 478 bumps · 11.3 GB rustc spikes\n```\n\n```compare\nToday (unverified): 0%-delta stills reach Kit & every bump recompiles wgpu x10.\nPre-gated + pinned: Rune --snap diff gate + 1 daily rune-pinned tag on Pro/mini.\n```\n\n```steps\n{built} Reject 0%-pixel-delta stills & text overflows before Needs-you\n{built} Reap dead working sessions every 2m + fix main-watch path\n{built} Cut 1 daily rune-pinned tag + cap Studio to 2 local Cargo jobs\n```",
+                    "op": "set-markdown"
+                  },
+                  "atNanos": 15650000000,
+                  "label": "reveal 3 steps"
+                }
+              ],
+              "origin": [
+                960.0,
+                520.0
+              ],
+              "scaleFactor": 1.559999942779541,
+              "surface": {
+                "markdown": "Verify UI diffs automatically before waking Kit, and pin Rune once daily across apps.\n\n```facts\nSeer rework rate: {verified} 365 / 789 cards (46.3%) needed 2+ Kit rounds\nZombie working cards: {verified} 52 / 80 have no active session · main-watch exit 78\nRune git-SHA churn: {verified} 34 checkouts · 478 bumps · 11.3 GB rustc spikes\n```\n\n```compare\nToday (unverified): 0%-delta stills reach Kit & every bump recompiles wgpu x10.\nPre-gated + pinned: Rune --snap diff gate + 1 daily rune-pinned tag on Pro/mini.\n```",
+                "recipe": "note",
+                "title": "RSI Fix #3 · Seer Pre-Gate & Daily Rune Pin",
+                "width": 650.0
+              },
+              "theme": "opencode"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "41 open OpenCode PRs → ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "kit-live shadow batch card",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · 40–60% less Cargo compile volume"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "seer-gate-note.opacity",
+            "actorId": "seer-gate-note",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "seer-gate-note.y",
+            "actorId": "seer-gate-note",
+            "property": "y",
+            "initial": 18.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "seer-gate-note.scale",
+            "actorId": "seer-gate-note",
+            "property": "scale",
+            "initial": 0.985,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 28210000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 28210000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "seer-rune",
+            "startNanos": 0,
+            "endNanos": 36829000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg5_seer_rune",
+            "path": "media/d54bdc33402c922f.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 34879000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 35329000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "dead-warn",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 9410000000,
+            "timelineEndNanos": 9890000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "gate-commit",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 15650000000,
+            "timelineEndNanos": 15990000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "pin-mark",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 28210000000,
+            "timelineEndNanos": 28510000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 800000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "FIX 3 · GATES",
+          "SHIP ORDER"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "06-close-plan",
+        "durationNanos": 19128999999,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "execution order",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Three Kaizen moves to clear the 63% landing bottleneck"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "single-pass flow"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    310.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "desk",
+                  "kind": "card",
+                  "size": [
+                    325.0,
+                    136.0
+                  ],
+                  "status": [
+                    {
+                      "text": "63% waiting · 7 deep",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "1 · merge train live",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "2 · +6 Pro slots cool",
+                      "tone": "request"
+                    },
+                    {
+                      "text": "3 · single-pass ship",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "Kit's desk queue"
+                },
+                {
+                  "at": [
+                    1140.0,
+                    525.0,
+                    28.0
+                  ],
+                  "corner": 24.0,
+                  "framed": true,
+                  "id": "plan-card",
+                  "kind": "rune-card",
+                  "size": [
+                    990.0,
+                    580.0
+                  ],
+                  "surface": {
+                    "commits": [
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 0,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "f1",
+                              "op": "set-selected",
+                              "selected": true
+                            },
+                            {
+                              "key": "f2",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "f3",
+                              "op": "set-selected",
+                              "selected": false
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 3970000000,
+                        "label": "move 1"
+                      },
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 1,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "f1",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "f2",
+                              "op": "set-selected",
+                              "selected": true
+                            },
+                            {
+                              "key": "f3",
+                              "op": "set-selected",
+                              "selected": false
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 7970000000,
+                        "label": "move 2"
+                      },
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 2,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "f1",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "f2",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "f3",
+                              "op": "set-selected",
+                              "selected": true
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 13010000000,
+                        "label": "move 3"
+                      }
+                    ],
+                    "origin": [
+                      495.0,
+                      290.0
+                    ],
+                    "size": [
+                      990.0,
+                      580.0
+                    ],
+                    "surface": {
+                      "recipe": "kit",
+                      "root": {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "kind": "text",
+                                "size": 15.0,
+                                "text": "Engineering RSI · Next 3 Moves",
+                                "tone": "base",
+                                "weight": 600.0
+                              },
+                              {
+                                "kind": "spacer"
+                              },
+                              {
+                                "kind": "badge",
+                                "label": "ready",
+                                "tone": "success"
+                              }
+                            ],
+                            "gap": 8.0,
+                            "key": "hdr",
+                            "kind": "row",
+                            "padding": 0.0
+                          },
+                          {
+                            "children": [
+                              {
+                                "kind": "text",
+                                "size": 12.0,
+                                "text": "Order",
+                                "tone": "muted",
+                                "weight": 500.0
+                              },
+                              {
+                                "kind": "spacer"
+                              },
+                              {
+                                "key": "tabs",
+                                "kind": "segmented",
+                                "selected": 0,
+                                "tabs": [
+                                  "1 · Cluster",
+                                  "2 · 30 GB",
+                                  "3 · Seer/Rune"
+                                ],
+                                "width": 360.0
+                              }
+                            ],
+                            "gap": 8.0,
+                            "key": "seg-row",
+                            "kind": "row",
+                            "padding": 0.0
+                          },
+                          {
+                            "children": [
+                              {
+                                "hint": "Cargo p95: 15m → < 2m",
+                                "hint_tone": "muted",
+                                "key": "f1",
+                                "kind": "list-row",
+                                "selected": true,
+                                "title": "1 · Fix cluster.rs:2460 Livelock",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "swap < 2 GB · 30 MB/day",
+                                "hint_tone": "muted",
+                                "key": "f2",
+                                "kind": "list-row",
+                                "title": "2 · Reclaim 30 GB & Filter Motel",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "rework < 20% · 0 storms",
+                                "hint_tone": "muted",
+                                "key": "f3",
+                                "kind": "list-row",
+                                "title": "3 · Pre-Gate Seer & Pin Rune Daily",
+                                "tone": "base"
+                              }
+                            ],
+                            "gap": 6.0,
+                            "key": "rows",
+                            "kind": "col",
+                            "padding": 0.0
+                          }
+                        ],
+                        "gap": 12.0,
+                        "key": "dialog",
+                        "kind": "dialog",
+                        "padding": 18.0,
+                        "width": 492.0
+                      }
+                    },
+                    "theme": "opencode"
+                  }
+                },
+                {
+                  "bend": 0.0,
+                  "from": "desk",
+                  "id": "beam",
+                  "kind": "beam",
+                  "to": "plan-card::tabs",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "beam",
+                  "id": "pkt",
+                  "kind": "packet",
+                  "label": "ship",
+                  "tone": "success"
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "done-pin",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "actor": "plan-card",
+                  "edge": "bottom",
+                  "id": "pin-f3",
+                  "key": "rows/f3",
+                  "kind": "rune",
+                  "side": "bottom"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "63% wait → calm single-pass cockpit ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "· zero new features required",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "reach": 82.0,
+              "side": "top-right",
+              "size": 24.0
+            }
+          },
+          {
+            "id": "step-loupe",
+            "recipe": "lens",
+            "data": {
+              "anchors": [
+                {
+                  "actor": "plan-card",
+                  "id": "s0",
+                  "key": "tabs/segment0",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "plan-card",
+                  "id": "s1",
+                  "key": "tabs/segment1",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "plan-card",
+                  "id": "s2",
+                  "key": "tabs/segment2",
+                  "kind": "rune"
+                }
+              ],
+              "dispersion": 0.03999999910593033,
+              "magnification": 1.4199999570846558,
+              "refraction": 0.6000000238418579,
+              "shadow": 0.5,
+              "size": [
+                258.0,
+                90.0
+              ]
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "1 cluster.rs:2460 · ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "2 30 GB + Motel filter · "
+                  },
+                  {
+                    "text": "3 Seer snap-gate & daily Rune pin",
+                    "tone": "success"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.beam.draw",
+            "actorId": "stage",
+            "property": "beam.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 720000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 720000000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -55.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 22.0,
+                "responseSeconds": 2.64,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.plan-card.rotation",
+            "actorId": "stage",
+            "property": "plan-card.rotation",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 300000000,
+                "target": -0.02,
+                "responseSeconds": 2.16,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.beam.port",
+            "actorId": "stage",
+            "property": "beam.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 420000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.desk.status-from",
+            "actorId": "stage",
+            "property": "desk.status-from",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3970000000,
+                "value": 0.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 4320000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 7970000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 8320000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 13010000000,
+                "value": 2.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 13360000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.desk.status",
+            "actorId": "stage",
+            "property": "desk.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3970000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 7970000000,
+                "value": 2.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 13010000000,
+                "value": 3.0
+              }
+            ]
+          },
+          {
+            "id": "stage.desk.swap",
+            "actorId": "stage",
+            "property": "desk.swap",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3970000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 3970000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 7970000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 7970000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 13010000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 13010000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.pkt.age",
+            "actorId": "stage",
+            "property": "pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3630000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 3630000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 7630000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 7630000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 12670000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 12670000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.pkt.flight",
+            "actorId": "stage",
+            "property": "pkt.flight",
+            "initial": 0.72,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 3630000000,
+                "value": 0.72
+              },
+              {
+                "operation": "set",
+                "atNanos": 7630000000,
+                "value": 0.72
+              },
+              {
+                "operation": "set",
+                "atNanos": 12670000000,
+                "value": 0.72
+              }
+            ]
+          },
+          {
+            "id": "done-pin.draw",
+            "actorId": "done-pin",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 13560000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "done-pin.label",
+            "actorId": "done-pin",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 13740000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "step-loupe.presence",
+            "actorId": "step-loupe",
+            "property": "presence",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 3970000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 0.86,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 18228999999,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "step-loupe.anchor.s0",
+            "actorId": "step-loupe",
+            "property": "anchor.s0",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7970000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 13010000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "step-loupe.anchor.s1",
+            "actorId": "step-loupe",
+            "property": "anchor.s1",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7970000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 13010000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "step-loupe.anchor.s2",
+            "actorId": "step-loupe",
+            "property": "anchor.s2",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7970000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 13010000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7970000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7970000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "close-plan",
+            "startNanos": 0,
+            "endNanos": 19128999999
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg6_close_plan",
+            "path": "media/322ff1d116ac72dd.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 16878999999,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 17328999999,
+            "gainDb": 0.0
+          },
+          {
+            "id": "step-mark-1",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 3970000000,
+            "timelineEndNanos": 4270000000,
+            "gainDb": -15.5
+          },
+          {
+            "id": "step-mark-2",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 7970000000,
+            "timelineEndNanos": 8270000000,
+            "gainDb": -15.5
+          },
+          {
+            "id": "step-mark-3",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 13010000000,
+            "timelineEndNanos": 13310000000,
+            "gainDb": -15.5
+          },
+          {
+            "id": "final-bloom",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 13560000000,
+            "timelineEndNanos": 14355000000,
+            "gainDb": -15.5
+          }
+        ]
+      }
+    }
+  ]
+}
