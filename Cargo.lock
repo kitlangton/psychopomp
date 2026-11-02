@@ -3243,7 +3243,7 @@ dependencies = [
 [[package]]
 name = "rune"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "arboard",
  "blake3",
@@ -3270,12 +3270,15 @@ dependencies = [
  "objc2-foundation 0.3.2",
  "objc2-io-surface",
  "objc2-metal 0.3.2",
+ "objc2-quartz-core 0.3.2",
  "opuscule",
+ "parking_lot",
  "parley",
  "png 0.18.1",
  "pollster 1.0.1",
  "portable-atomic",
  "raw-window-handle",
+ "raw-window-metal",
  "resvg 0.45.1",
  "rune-motion",
  "rune-staging",
@@ -3299,6 +3302,7 @@ dependencies = [
  "wgpu",
  "wgpu-core",
  "wgpu-hal",
+ "wgpu-naga-bridge",
  "windows-sys 0.59.0",
  "winit",
  "x11rb",
@@ -3310,7 +3314,7 @@ dependencies = [
 [[package]]
 name = "rune-kit"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "pulldown-cmark",
  "rune",
@@ -3322,7 +3326,7 @@ dependencies = [
 [[package]]
 name = "rune-knobs"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "rune",
 ]
@@ -3330,7 +3334,7 @@ dependencies = [
 [[package]]
 name = "rune-mac"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "block2 0.5.1",
  "objc2 0.5.2",
@@ -3339,7 +3343,7 @@ dependencies = [
 [[package]]
 name = "rune-mermaid"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "rune",
 ]
@@ -3347,12 +3351,12 @@ dependencies = [
 [[package]]
 name = "rune-motion"
 version = "0.1.0"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 
 [[package]]
 name = "rune-staging"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "wgpu",
 ]
@@ -3360,7 +3364,7 @@ dependencies = [
 [[package]]
 name = "rune-theme-opencode"
 version = "0.0.1"
-source = "git+https://github.com/anomalyco/rune?rev=5dad9547#5dad9547a4af837de7b89be98f7bb43cd7360eea"
+source = "git+https://github.com/anomalyco/rune?rev=ad605f9c#ad605f9c9e3473a7ed639ac7db3c955316f24e28"
 dependencies = [
  "rune",
  "rune-kit",
@@ -3812,7 +3816,7 @@ version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c2499c2d826531388872b2268718aed907a39bd785ab0dcfe57fab26283f92e"
 dependencies = [
- "skrifa 0.40.0",
+ "skrifa 0.44.0",
  "yazi",
  "zeno",
 ]
@@ -4808,9 +4812,9 @@ dependencies = [
 
 [[package]]
 name = "wgpu-naga-bridge"
-version = "30.0.0"
+version = "30.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9eaac644e5008925c78567d272b9d66ef83da55a53cc17fc7daade7bb6e66e5"
+checksum = "d2f62e73117bb7a62bfd9c5a5841438a823f6566c6442a808ee269d2d055c081"
 dependencies = [
  "naga",
  "wgpu-types",
