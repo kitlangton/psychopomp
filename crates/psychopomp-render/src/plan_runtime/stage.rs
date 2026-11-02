@@ -5,13 +5,16 @@ use std::collections::HashMap;
 use anyhow::{Context, Result};
 use psychopomp::{
     plan::{ActorPlan, ContinuousChannelPlan},
+    rig::ClipMask,
     stage::{StageElement, StagePlan},
 };
 
 use super::preflight::{decode, strict_channels};
 use crate::{
     footage::StageFootageFrame,
-    render::{HeadlessRenderer, StageBoundsItem, StageGpu, icon_svg, stage_bounds},
+    render::{
+        HeadlessRenderer, StageBoundsItem, StageGpu, icon_svg, matte_path_bounds, stage_bounds,
+    },
 };
 
 pub(super) fn audit_stage_rune_cards(plan: &StagePlan, duration_secs: f64) -> Result<()> {
@@ -83,6 +86,14 @@ pub(super) fn validate_recipe(
                 tree.root().has_children(),
                 "stage icon '{id}' path data draws nothing"
             );
+        }
+        if let StageElement::Group {
+            id,
+            clip: Some(ClipMask::Path { d, .. }),
+            ..
+        } = element
+        {
+            matte_path_bounds(d).with_context(|| format!("stage group '{id}' path clip"))?;
         }
     }
     Ok(plan)

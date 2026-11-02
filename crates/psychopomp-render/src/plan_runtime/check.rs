@@ -238,7 +238,13 @@ fn block_diffs(a: &[u8], b: &[u8], width: u32, cols: usize, rows: usize) -> Vec<
     let mut sums = vec![0.0_f32; cols * rows];
     let mut counts = vec![0_u32; cols * rows];
     let w = width as usize;
-    for (i, (pa, pb)) in a.chunks_exact(4).zip(b.chunks_exact(4)).enumerate() {
+    for (i, (pa, pb)) in a
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .zip(b.as_chunks::<4>().0)
+        .enumerate()
+    {
         let (x, y) = (i % w, i / w);
         let blk =
             (y / POP_BLOCK as usize).min(rows - 1) * cols + (x / POP_BLOCK as usize).min(cols - 1);
@@ -668,7 +674,7 @@ mod tests {
 
     fn test_frame(w: u32, h: u32, square: Option<(u32, u32, u32)>) -> Vec<u8> {
         let mut px = vec![40_u8; (w * h * 4) as usize];
-        for p in px.chunks_exact_mut(4) {
+        for p in px.as_chunks_mut::<4>().0 {
             p[3] = 255;
         }
         if let Some((sx, sy, sz)) = square {

@@ -8,6 +8,7 @@ use serde::Serialize;
 use serde_json::json;
 
 use super::{Theme, delivery::write_rgba_png, still::Loaded};
+#[cfg(test)]
 use crate::exposure::{HEIGHT, WIDTH};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -157,7 +158,7 @@ pub(crate) fn render_strip(options: StripOptions<'_>) -> Result<()> {
     let sheet_h = rows * (cell_h + label_h) + (rows + 1) * gap;
 
     let mut sheet = vec![0_u8; (sheet_w * sheet_h * 4) as usize];
-    for px in sheet.chunks_exact_mut(4) {
+    for px in sheet.as_chunks_mut::<4>().0 {
         px.copy_from_slice(&[17, 17, 16, 255]);
     }
 
@@ -264,7 +265,7 @@ mod tests {
     #[test]
     fn crop_and_downscale_preserve_constant_colors_and_bounds() {
         let mut frame = vec![0_u8; (WIDTH * HEIGHT * 4) as usize];
-        for px in frame.chunks_exact_mut(4) {
+        for px in frame.as_chunks_mut::<4>().0 {
             px.copy_from_slice(&[40, 120, 200, 255]);
         }
         let crop = CropRect::parse("100, 200, 400, 200").unwrap();

@@ -348,8 +348,9 @@ pub enum StageElement {
         at: [f32; 3],
         spec: TypePlan,
     },
-    /// Hierarchical transform rig with an optional `pivot` and GPU `ClipMask`
-    /// (`Rect`, `Circle`, or `TextMatte` glyph silhouette) applied to all `children`.
+    /// A transform rig: `children` sit in its local space (their `at` relative
+    /// to the group's), its channels compose down the hierarchy about `pivot`,
+    /// and an optional GPU `ClipMask` mattes everything inside it.
     #[serde(rename_all = "camelCase")]
     Group {
         id: String,
@@ -1022,7 +1023,7 @@ impl StageElement {
         self
     }
 
-    /// Attach a GPU `ClipMask` (`Rect`, `Circle`, or `TextMatte`) to a `Group`.
+    /// Matte a `Group`'s children with a GPU `ClipMask`.
     pub fn clip(mut self, mask: ClipMask) -> Self {
         let Self::Group { clip, .. } = &mut self else {
             panic!("only groups take clip(), not '{}'", self.id());
@@ -1359,8 +1360,8 @@ impl StageElement {
                 "opacity", "x", "y", "z", "scale", "rotation", "blur", "tracking",
             ],
             Self::Group { .. } => &[
-                "opacity", "x", "y", "z", "scale", "scale-x", "scale-y", "rotation", "blur",
-                "clip-x", "clip-y", "clip-w",
+                "opacity", "x", "y", "z", "scale", "scale-x", "scale-y", "rotation", "skew",
+                "blur", "clip-x", "clip-y", "clip-w",
             ],
         }
     }
@@ -1628,7 +1629,9 @@ impl StagePlan {
     }
 
     pub fn element(&self, id: &str) -> Option<&StageElement> {
-        self.all_elements().into_iter().find(|element| element.id() == id)
+        self.all_elements()
+            .into_iter()
+            .find(|element| element.id() == id)
     }
 
     /// What a stage channel (`camera.z`) or an element's (`client.opacity`)
@@ -3353,11 +3356,11 @@ mod tests {
                   "clip": { "media": "clip" }, "mask": { "shape": "circle" } },
                 { "kind": "rune-card", "id": "rune", "at": [1200, 500, 0], "size": [480, 320],
                   "surface": { "surface": { "recipe": "note", "markdown": "ok" } } },
-                { "kind": "backdrop", "id": "wash", "paint": "#111827" },
+                { "kind": "backdrop", "id": "wash", "paint": { "kind": "solid", "rgba": [17, 24, 39, 255] } },
                 { "kind": "type", "id": "headline", "at": [960, 200, 0],
                   "spec": { "text": "HELLO WORLD", "size": 64.0, "split": "word" } },
                 { "kind": "group", "id": "rig", "at": [960, 540, 0],
-                  "clip": { "kind": "text-matte", "text": "MOTION", "size": 120.0 },
+                  "clip": { "kind": "type", "text": "MOTION", "size": 120.0 },
                   "children": [
                     { "kind": "shape", "id": "rig-fill", "at": [0, 0, 0], "shape": { "rect": [400, 140] } }
                   ] }

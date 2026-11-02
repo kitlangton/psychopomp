@@ -1358,6 +1358,24 @@ their fuller documentation elsewhere.
     for shapes. Channels: `opacity` 1, `draw` 1, `trim` 0 (erases from the start),
     `flow` 0, `emphasis` 0, `surge` 0. Arrowheads ride the drawn tip and sit on a
     body's silhouette. `StageActor::connect` draws a path without a port.
+  - `group` (`scenes/groups`; `cargo run -p psychopomp-groups` writes
+    `target/groups.json`): a transform rig. `children` sit in its local space,
+    their `at` relative to its own, and groups nest. Channels compose down the
+    hierarchy about `pivot` (local [x, y]): `opacity` 1 (multiplies), `x`/`y`/`z`
+    0, `scale` 1, `scale-x`/`scale-y` 1, `rotation` 0 (radians), `skew` 0
+    (x shear, radians, within ±1.4), `blur` 0 (adds), and the matte's `clip-x`/
+    `clip-y` 0 (shift) and `clip-w` 0 (widens a rect or circle). Shapes, type,
+    footage, and Rune cards turn themselves; any other leaf a group skews,
+    stretches, or turns is warped in pixels about its center. Optional `clip` is
+    a GPU matte in local space that moves with the group: `{ "kind": "rect",
+    "size", "corner", "offset", "feather" }`, `{ "kind": "circle", "radius",
+    "offset", "feather" }`, `{ "kind": "polygon", "points" }`, `{ "kind":
+    "path", "d" }` (SVG path data, validated before rendering), or `{ "kind":
+    "type", "text", "face", "size", "weight", "tracking" }` (footage inside
+    display type); each takes `invert`. An inner group's matte claims its own
+    children; outer mattes still cut their bounds. A child easing out from
+    behind a rect's edge is a masked rise; `wipe_open` and `hinge_in` animate a
+    group. `stage_anchor` and `plan check` see composed, clipped bounds.
   - A `packet` rides a beam or a path (its `beam` field names either). An element
     waypoint between a path's ends is a stop: each leg is a whole packet life,
     the route's `flight` shared equally by its legs, and each next leg gathers

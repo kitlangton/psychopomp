@@ -70,7 +70,8 @@ pub(crate) use rich_text::{RichTextGlyphs, RichTextSource, parse as parse_rich_t
 #[cfg(test)]
 pub(crate) use stage::{POST_SHADER, PRIMITIVE_SHADER, SHADER_STRUCTS};
 pub(crate) use stage::{
-    StageBoundsItem, StageGpu, icon_svg, stage_anchor, stage_bounds, stage_rune_anchor,
+    StageBoundsItem, StageGpu, icon_svg, matte_path_bounds, stage_anchor, stage_bounds,
+    stage_rune_anchor,
 };
 pub use task::{BubblePose, ContentPose, TaskContentFrame, TaskVisualFrame};
 pub(crate) use terminal::TerminalNames;

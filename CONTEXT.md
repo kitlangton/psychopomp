@@ -276,6 +276,15 @@ their center; an arc may carry arrowheads. Like a card, a figure's outline catch
 a passing packet's reflection and its fill takes an arrival's flood; a flash lifts
 its stroke, not the whole fill.
 
+## Group
+
+A Stage element that holds other elements in its own local space: a transform
+rig. Its position, scale, stretch, skew, rotation, opacity, and blur compose
+down the hierarchy about its pivot, so a hand turns with its arm. A group may
+carry a **Matte** (`ClipMask`): a rect, circle, polygon, SVG path, or display
+type, in the group's local space, outside of which (or inside, inverted) its
+children do not show. Elements slide in from behind a matte's invisible edge.
+
 ## Path
 
 A drawn Stage connection through **Waypoints**: world points and positioned

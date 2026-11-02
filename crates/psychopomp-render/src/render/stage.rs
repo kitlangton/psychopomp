@@ -29,6 +29,7 @@ use psychopomp::{
         shapes::{Box2, Polygon, Port, Shape, connect, fit_between_ports, sphere_ring},
         smoothstep, stops, vec2, vec3,
     },
+    rig::{ClipMask, GroupXform, group_step},
     stage::{
         Arrow, BoltEnd, Camera, Curve, Figure, Fill, Material, OrbPoint, StageElement, StagePlan,
         StatusText, TRACK, Waypoint, form_points, morph_point, orb_points, packet, shatter_offset,
@@ -68,9 +69,18 @@ struct Prim {
     mask_color: [f32; 4],
     grad_a: [f32; 4],
     grad_b: [f32; 4],
+    /// A group matte (`GroupClip`): mode, screen center, pixels per local unit;
+    /// shape parameters in local units; screen-to-local columns; atlas rect.
     clip_a: [f32; 4],
     clip_b: [f32; 4],
+    clip_m: [f32; 4],
     clip_uv: [f32; 4],
+    /// A skewed or unevenly scaled group's leftover map, inverted (columns),
+    /// applied to pixels about `warp_c.xy`; `warp_c.z` turns it on and
+    /// `warp_c.w` rasterizes `raster` instead of `bbox`.
+    warp: [f32; 4],
+    warp_c: [f32; 4],
+    raster: [f32; 4],
 }
 
 #[repr(C)]
@@ -96,6 +106,8 @@ struct AtlasText {
     rect: [f32; 4],
     /// Raster density relative to 1× logical pixels (`TEXT_RASTER` for normal text).
     raster: f32,
+    /// A matte sprite's center relative to its group's origin, in local pixels.
+    offset: [f32; 2],
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -288,6 +300,29 @@ pub(crate) fn icon_svg(icon: &str, path: &str, view: f32) -> Option<String> {
     } else {
         bundled_icon(icon).map(str::to_owned)
     }
+}
+
+/// The local box SVG path data `d` covers, as left, top, width, height, or
+/// why it covers none.
+pub(crate) fn matte_path_bounds(d: &str) -> Result<[f32; 4]> {
+    const HALF: f32 = 16384.0;
+    let probe = format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{0}" height="{0}"><g transform="translate({HALF} {HALF})"><path d="{d}"/></g></svg>"#,
+        HALF * 2.0
+    );
+    let tree = resvg::usvg::Tree::from_str(&probe, &resvg::usvg::Options::default())
+        .context("SVG path data does not parse")?;
+    let bounds = tree.root().abs_bounding_box();
+    anyhow::ensure!(
+        tree.root().has_children() && bounds.width() > 0.25 && bounds.height() > 0.25,
+        "path data draws nothing"
+    );
+    Ok([
+        bounds.left() - HALF,
+        bounds.top() - HALF,
+        bounds.width(),
+        bounds.height(),
+    ])
 }
 
 /// Rasterize an icon's coverage at `pixels` square, for the atlas.
@@ -834,10 +869,10 @@ impl HeadlessRenderer {
                     .clone()
             })
             .collect::<Vec<_>>();
-        // Icons, kinetic `Type` units, and `TextMatte` silhouettes follow.
-        let mut keys: Vec<(String, f32)> = strings
+        // Icons, kinetic `Type` units, and group matte silhouettes follow.
+        let mut keys: Vec<(String, f32, [f32; 2])> = strings
             .into_iter()
-            .map(|(key, ..)| (key, TEXT_RASTER))
+            .map(|(key, ..)| (key, TEXT_RASTER, [0.0, 0.0]))
             .collect();
         for element in &all_elements {
             if let StageElement::Type { id, spec, .. } = element {
@@ -867,48 +902,22 @@ impl HeadlessRenderer {
                         spec.tracking * raster,
                     );
                     sprites.push(sprite);
-                    keys.push((text_key(id, &format!("u{}", unit.index)), TEXT_RASTER));
+                    keys.push((
+                        text_key(id, &format!("u{}", unit.index)),
+                        TEXT_RASTER,
+                        [0.0, 0.0],
+                    ));
                 }
             }
             if let StageElement::Group {
                 id,
-                clip:
-                    Some(psychopomp::rig::ClipMask::TextMatte {
-                        text,
-                        face,
-                        family,
-                        size,
-                        weight,
-                        tracking,
-                        ..
-                    }),
+                clip: Some(mask),
                 ..
             } = element
+                && let Some((sprite, density, offset)) = self.matte_sprite(id, mask)?
             {
-                let est_advance = (text.chars().count().max(1) as f32 * size * 0.82).max(1.0);
-                let density = TEXT_RASTER.min(3800.0 / est_advance).max(0.5);
-                let raster = (size * density).clamp(8.0, 1024.0);
-                let line = (raster * 1.32).ceil();
-                let attrs = match family {
-                    Some(name) => Attrs::new().family(cosmic_text::Family::Name(name.as_str())),
-                    None => fonts::attrs(*face),
-                }
-                .weight(Weight(*weight))
-                .color(Color::rgb(255, 255, 255));
-                let width = ((text.chars().count() as f32 * raster * 0.9) as u32 + 96).min(4096);
-                let sprite = super::smoothing::make_smoothed_sprite(
-                    &mut self.font_system,
-                    &mut self.swash_cache,
-                    vec![(text.as_str(), attrs.clone())],
-                    attrs,
-                    Metrics::new(raster, line),
-                    width,
-                    line as u32,
-                    density,
-                    tracking * raster,
-                );
                 sprites.push(sprite);
-                keys.push((text_key(id, "matte"), density));
+                keys.push((text_key(id, "matte"), density, offset));
             }
         }
         for element in &all_elements {
@@ -926,7 +935,7 @@ impl HeadlessRenderer {
                 let pixels = ((size * TEXT_RASTER).ceil() as u32).clamp(4, 2048);
                 sprites
                     .push(icon_sprite(&svg, pixels).with_context(|| format!("icon '{id}' SVG"))?);
-                keys.push((text_key(id, "icon"), TEXT_RASTER));
+                keys.push((text_key(id, "icon"), TEXT_RASTER, [0.0, 0.0]));
             }
         }
         // Shelf packing, rows of the tallest sprite.
@@ -967,17 +976,88 @@ impl HeadlessRenderer {
         let rects = keys
             .into_iter()
             .zip(placements)
-            .map(|((key, raster), (x, y, w, h))| {
+            .map(|((key, raster, offset), (x, y, w, h))| {
                 (
                     key,
                     AtlasText {
                         rect: [x as f32, y as f32, w as f32, h as f32],
                         raster,
+                        offset,
                     },
                 )
             })
             .collect();
         Ok((atlas, [atlas_width as f32, atlas_height as f32], rects))
+    }
+
+    /// A group matte's coverage sprite, its density in texels per local pixel,
+    /// and its center relative to the group's origin. `Rect` and `Circle`
+    /// mattes are analytic and need none.
+    fn matte_sprite(
+        &mut self,
+        id: &str,
+        mask: &ClipMask,
+    ) -> Result<Option<(TextSprite, f32, [f32; 2])>> {
+        let d = match mask {
+            ClipMask::Rect { .. } | ClipMask::Circle { .. } => return Ok(None),
+            ClipMask::Type {
+                text,
+                face,
+                family,
+                size,
+                weight,
+                tracking,
+                ..
+            } => {
+                let est_advance = (text.chars().count().max(1) as f32 * size * 0.82).max(1.0);
+                let density = TEXT_RASTER.min(3800.0 / est_advance).max(0.5);
+                let raster = (size * density).clamp(8.0, 1024.0);
+                let line = (raster * 1.32).ceil();
+                let attrs = match family {
+                    Some(name) => Attrs::new().family(cosmic_text::Family::Name(name.as_str())),
+                    None => fonts::attrs(*face),
+                }
+                .weight(Weight(*weight))
+                .color(Color::rgb(255, 255, 255));
+                let width = ((text.chars().count() as f32 * raster * 0.9) as u32 + 96).min(4096);
+                let sprite = super::smoothing::make_smoothed_sprite(
+                    &mut self.font_system,
+                    &mut self.swash_cache,
+                    vec![(text.as_str(), attrs.clone())],
+                    attrs,
+                    Metrics::new(raster, line),
+                    width,
+                    line as u32,
+                    density,
+                    tracking * raster,
+                );
+                // The atlas keeps 4 texels past the ink; center the ink.
+                return Ok(Some((sprite, density, [2.0 / density, 0.0])));
+            }
+            ClipMask::Polygon { points, .. } => {
+                let mut d = String::new();
+                for (i, [x, y]) in points.iter().enumerate() {
+                    d.push_str(&format!("{}{x} {y} ", if i == 0 { "M" } else { "L" }));
+                }
+                d.push('Z');
+                d
+            }
+            ClipMask::Path { d, .. } => d.clone(),
+        };
+        let bounds = matte_path_bounds(&d).with_context(|| format!("group '{id}' path clip"))?;
+        const PAD: f32 = 4.0;
+        let [left, top, width, height] = bounds;
+        let (w, h) = (width + PAD * 2.0, height + PAD * 2.0);
+        let density = TEXT_RASTER.min(2048.0 / w.max(h));
+        let (pw, ph) = ((w * density).ceil() as u32, (h * density).ceil() as u32);
+        let (vw, vh) = (pw as f32 / density, ph as f32 / density);
+        let (x0, y0) = (left - PAD, top - PAD);
+        let svg = format!(
+            r#"<svg xmlns="http://www.w3.org/2000/svg" width="{vw}" height="{vh}" viewBox="{x0} {y0} {vw} {vh}"><path d="{d}" fill="white"/></svg>"#
+        );
+        let sprite = super::rasterize_svg(&svg, pw.max(1), ph.max(1))
+            .with_context(|| format!("group '{id}' path clip"))?;
+        Ok(Some((sprite, density, [x0 + vw * 0.5, y0 + vh * 0.5])))
     }
 
     #[cfg(test)]
@@ -1551,6 +1631,11 @@ pub(crate) fn stage_bounds(
                 )
             }
         };
+        let corners = match scene.warp_of(id) {
+            Some([wx, wy]) => corners
+                .map(|p| place.center + wx * (p.x - place.center.x) + wy * (p.y - place.center.y)),
+            None => corners,
+        };
         let projected = corners.map(project_point);
         if projected
             .iter()
@@ -1991,8 +2076,10 @@ struct Scene<'a> {
     camera: Camera,
     focus: f32,
     dof: f32,
-    parent_xforms: HashMap<&'a str, psychopomp::rig::GroupXform>,
-    group_xforms: HashMap<&'a str, psychopomp::rig::GroupXform>,
+    /// Each grouped element's composed parent transform, and whether the
+    /// element turns itself in the screen plane (`turns_on_screen`).
+    parent_xforms: HashMap<&'a str, (GroupXform, bool)>,
+    group_xforms: HashMap<&'a str, GroupXform>,
     placements: HashMap<&'a str, Placement>,
     links: HashMap<&'a str, Link>,
     /// Each path's legs, split at its stops.
@@ -2059,33 +2146,19 @@ impl<'a> Scene<'a> {
             plan: &'a StagePlan,
             value: &'a dyn Fn(&str, f32) -> f32,
             items: &'a [StageElement],
-            parent: Option<psychopomp::rig::GroupXform>,
-            parents: &mut HashMap<&'a str, psychopomp::rig::GroupXform>,
-            groups: &mut HashMap<&'a str, psychopomp::rig::GroupXform>,
+            parent: Option<GroupXform>,
+            parents: &mut HashMap<&'a str, (GroupXform, bool)>,
+            groups: &mut HashMap<&'a str, GroupXform>,
         ) {
             for item in items {
                 if let Some(gx) = parent {
-                    parents.insert(item.id(), gx);
+                    parents.insert(item.id(), (gx, turns_on_screen(item)));
                 }
-                if let StageElement::Group {
-                    id,
-                    at,
-                    pivot,
-                    children,
-                    ..
-                } = item
-                {
-                    let base = parent.unwrap_or_default();
-                    let rv = |prop: &str| read(plan, value, &format!("{id}.{prop}"));
-                    let offset = vec3(rv("x"), rv("y"), rv("z"));
-                    let s = rv("scale").max(0.01);
-                    let sx = rv("scale-x").max(0.01);
-                    let sy = rv("scale-y").max(0.01);
-                    let rot = rv("rotation");
-                    let op = rv("opacity").clamp(0.0, 1.0);
-                    let blur = rv("blur").max(0.0);
+                if let StageElement::Group { id, children, .. } = item {
                     let child_gx =
-                        base.child_group(*at, *pivot, offset, vec2(s * sx, s * sy), rot, op, blur);
+                        group_step(parent.unwrap_or_default(), item, |element, property| {
+                            read(plan, value, &format!("{element}.{property}"))
+                        });
                     groups.insert(id.as_str(), child_gx);
                     walk(plan, value, children, Some(child_gx), parents, groups);
                 }
@@ -2255,13 +2328,14 @@ impl<'a> Scene<'a> {
     }
 
     /// An element's channel, or its Stage channel default when nothing writes it,
-    /// composed with any ancestor `Group` transform (`opacity`, `rotation`, `blur`).
+    /// composed with any ancestor `Group` transform: opacity multiplies, blur
+    /// adds, and an element that turns on screen turns with its groups.
     fn v(&self, id: &str, property: &str) -> f32 {
         let raw = self.raw_v(id, property);
-        if let Some(gx) = self.parent_xforms.get(id) {
+        if let Some(&(gx, turns)) = self.parent_xforms.get(id) {
             match property {
                 "opacity" => return raw.clamp(0.0, 1.0) * gx.opacity,
-                "rotation" => return raw + gx.rotation,
+                "rotation" if turns => return raw + gx.rotation(),
                 "blur" => return raw.max(0.0) + gx.blur,
                 _ => {}
             }
@@ -2299,8 +2373,15 @@ impl<'a> Scene<'a> {
     fn place(&self, element: &StageElement) -> Option<Placement> {
         let id = element.id();
         let anchor = Vec3::from(element.anchor()?);
-        let offset = vec3(self.raw_v(id, "x"), self.raw_v(id, "y"), self.raw_v(id, "z"));
-        let (world, group_scale) = if let Some(gx) = self.parent_xforms.get(id) {
+        let offset = vec3(
+            self.raw_v(id, "x"),
+            self.raw_v(id, "y"),
+            self.raw_v(id, "z"),
+        );
+        if let StageElement::Group { .. } = element {
+            return self.group_place(element);
+        }
+        let (world, group_scale) = if let Some(&(gx, _)) = self.parent_xforms.get(id) {
             (gx.transform_point(anchor + offset), gx.uniform_scale())
         } else {
             (anchor + offset, 1.0)
@@ -2345,6 +2426,70 @@ impl<'a> Scene<'a> {
             scale,
             outline,
         })
+    }
+
+    /// A group's handle: its own origin, at its composed scale, outlined by
+    /// its shaped matte or else by the outlines of what it holds.
+    fn group_place(&self, element: &StageElement) -> Option<Placement> {
+        let StageElement::Group {
+            id, clip, children, ..
+        } = element
+        else {
+            return None;
+        };
+        let gx = self
+            .group_xforms
+            .get(id.as_str())
+            .copied()
+            .unwrap_or_default();
+        let world = gx.transform_point(Vec3::ZERO);
+        let (center, perspective) = self.camera.project(world)?;
+        let project = |local: Vec2| {
+            self.camera
+                .project(gx.transform_point(local.extend(0.0)))
+                .map(|(point, _)| point)
+        };
+        let outline =
+            if let Some((middle, half)) = clip.as_ref().and_then(|clip| clip.local_extent()) {
+                let corners = [
+                    vec2(-1.0, -1.0),
+                    vec2(1.0, -1.0),
+                    vec2(1.0, 1.0),
+                    vec2(-1.0, 1.0),
+                ]
+                .map(|sign| project(middle + half * sign));
+                match corners {
+                    [Some(a), Some(b), Some(c), Some(d)] => {
+                        Shape::Polygon(Polygon::hull(center, [a, b, c, d]))
+                    }
+                    _ => Shape::Point(center),
+                }
+            } else {
+                children
+                    .iter()
+                    .filter_map(|child| self.place(child))
+                    .map(|place| shape_box(&place.outline))
+                    .reduce(|a, b| Box2 {
+                        min: a.min.min(b.min),
+                        max: a.max.max(b.max),
+                    })
+                    .map_or(Shape::Point(center), Shape::Box)
+            };
+        Some(Placement {
+            world,
+            depth: self.camera.depth(world),
+            center,
+            scale: perspective * gx.uniform_scale(),
+            outline,
+        })
+    }
+
+    /// The screen-space map a grouped element's pixels still need (columns),
+    /// when its groups skew, stretch, or turn it in ways it cannot draw itself.
+    fn warp_of(&self, id: &str) -> Option<[Vec2; 2]> {
+        let &(gx, turns) = self.parent_xforms.get(id)?;
+        let drawn_turn = if turns { gx.rotation() } else { 0.0 };
+        gx.has_residual(drawn_turn).then(|| gx.residual(drawn_turn))
     }
 
     /// A shield is centered on what it surrounds, at its own scale.
@@ -3213,124 +3358,157 @@ impl CardInk {
     }
 }
 
+/// A group's matte on screen this sample.
 enum GroupClipEval {
+    /// Nothing is cut away.
     Open,
+    /// Everything is cut away.
     Closed,
+    /// Prim fields `clip_a`, `clip_b`, `clip_m`, `clip_uv`, and the screen box
+    /// outside of which nothing shows (none for an inverted matte).
     Active {
-        clip_a: [f32; 4],
-        clip_b: [f32; 4],
-        clip_uv: [f32; 4],
+        clip: [[f32; 4]; 4],
         aabb: Option<[f32; 4]>,
     },
 }
 
+/// Mode 1 is a rounded rect, 2 a circle, 3 an atlas coverage sprite (polygon,
+/// path, or type). The shader maps each pixel into the group's local space with
+/// the inverse of its composed transform, so the matte moves, turns, scales,
+/// and skews with the group.
 fn resolve_group_clip(
     scene: &Scene<'_>,
     texts: &HashMap<String, AtlasText>,
     id: &str,
-    mask: &psychopomp::rig::ClipMask,
+    mask: &ClipMask,
 ) -> GroupClipEval {
     let gx = scene.group_xforms.get(id).copied().unwrap_or_default();
-    let cx = scene.raw_v(id, "clip-x");
-    let cy = scene.raw_v(id, "clip-y");
-    let cw = scene.raw_v(id, "clip-w");
-    match mask {
-        psychopomp::rig::ClipMask::Rect {
+    let shift = vec2(scene.raw_v(id, "clip-x"), scene.raw_v(id, "clip-y"));
+    let widen = scene.raw_v(id, "clip-w");
+    let invert = mask.is_inverted();
+    let closed = if invert {
+        GroupClipEval::Open
+    } else {
+        GroupClipEval::Closed
+    };
+    let flag = if invert { 1.0 } else { 0.0 };
+    let (mode, center, half, params, uv) = match mask {
+        ClipMask::Rect {
             size,
             corner,
             offset,
             feather,
-            invert,
+            ..
         } => {
-            let w = size[0] + cw;
-            if w <= 0.001 {
-                return if *invert {
-                    GroupClipEval::Open
-                } else {
-                    GroupClipEval::Closed
-                };
+            let half = vec2(size[0] + widen, size[1]) * 0.5;
+            if half.x <= 0.0005 {
+                return closed;
             }
-            let local_center = vec3(offset[0] + cx, offset[1] + cy, 0.0);
-            let Some((screen_center, persp)) = scene.camera.project(gx.transform_point(local_center))
-            else {
-                return GroupClipEval::Closed;
-            };
-            let half = vec2(
-                w * 0.5 * gx.scale.x.abs() * persp,
-                size[1] * 0.5 * gx.scale.y.abs() * persp,
-            );
-            let r = corner * gx.uniform_scale() * persp;
-            let f = feather * gx.uniform_scale() * persp;
-            let rot = gx.rotation;
-            let (c, s) = (rot.cos().abs(), rot.sin().abs());
-            let ext = vec2(half.x * c + half.y * s, half.x * s + half.y * c)
-                + Vec2::splat(f + 2.0);
-            GroupClipEval::Active {
-                clip_a: [1.0, screen_center.x, screen_center.y, rot],
-                clip_b: [half.x, half.y, r, f],
-                clip_uv: [if *invert { 1.0 } else { 0.0 }, 0.0, 0.0, 0.0],
-                aabb: (!*invert).then_some(around(screen_center, ext)),
-            }
+            let params = [half.x, half.y, *corner, *feather];
+            let pad = half + Vec2::splat(*feather);
+            (
+                1.0,
+                Vec2::from(*offset) + shift,
+                pad,
+                params,
+                [flag, 0.0, 0.0, 0.0],
+            )
         }
-        psychopomp::rig::ClipMask::Circle {
+        ClipMask::Circle {
             radius,
             offset,
             feather,
-            invert,
+            ..
         } => {
-            let rad = radius + cw;
-            if rad <= 0.001 {
-                return if *invert {
-                    GroupClipEval::Open
-                } else {
-                    GroupClipEval::Closed
-                };
+            let radius = radius + widen;
+            if radius <= 0.001 {
+                return closed;
             }
-            let local_center = vec3(offset[0] + cx, offset[1] + cy, 0.0);
-            let Some((screen_center, persp)) = scene.camera.project(gx.transform_point(local_center))
-            else {
-                return GroupClipEval::Closed;
-            };
-            let sr = rad * gx.uniform_scale() * persp;
-            let f = feather * gx.uniform_scale() * persp;
-            GroupClipEval::Active {
-                clip_a: [2.0, screen_center.x, screen_center.y, gx.rotation],
-                clip_b: [sr, 0.0, 0.0, f],
-                clip_uv: [if *invert { 1.0 } else { 0.0 }, 0.0, 0.0, 0.0],
-                aabb: (!*invert).then_some(around(screen_center, Vec2::splat(sr + f + 2.0))),
-            }
+            let params = [radius, 0.0, 0.0, *feather];
+            let pad = Vec2::splat(radius + feather);
+            (
+                2.0,
+                Vec2::from(*offset) + shift,
+                pad,
+                params,
+                [flag, 0.0, 0.0, 0.0],
+            )
         }
-        psychopomp::rig::ClipMask::TextMatte { invert, .. } => {
+        ClipMask::Polygon { .. } | ClipMask::Path { .. } | ClipMask::Type { .. } => {
             let Some(atlas) = texts.get(&text_key(id, "matte")) else {
-                return GroupClipEval::Closed;
+                return closed;
             };
-            let local_center = vec3(cx, cy, 0.0);
-            let Some((screen_center, persp)) = scene.camera.project(gx.transform_point(local_center))
-            else {
-                return GroupClipEval::Closed;
-            };
-            let draw_scale = gx.uniform_scale() * persp;
-            let tex_scale = draw_scale / atlas.raster;
-            let box_size = vec2(atlas.rect[2], atlas.rect[3]) * tex_scale;
-            let ink_w = (atlas.rect[2] - 4.0).max(0.0) * tex_scale;
-            let rot = gx.rotation;
-            let pad_shift = Vec2::from_angle(rot).rotate(vec2((box_size.x - ink_w) * 0.5, 0.0));
-            let matte_center = screen_center + pad_shift;
-            let half = box_size * 0.5;
-            let (c, s) = (rot.cos().abs(), rot.sin().abs());
-            let ext = vec2(half.x * c + half.y * s, half.x * s + half.y * c) + Vec2::splat(2.0);
-            GroupClipEval::Active {
-                clip_a: [3.0, matte_center.x, matte_center.y, rot],
-                clip_b: [half.x, half.y, 1.0, if *invert { 1.0 } else { 0.0 }],
-                clip_uv: [
-                    atlas.rect[0],
-                    atlas.rect[1],
-                    atlas.rect[0] + atlas.rect[2],
-                    atlas.rect[1] + atlas.rect[3],
-                ],
-                aabb: (!*invert).then_some(around(matte_center, ext)),
-            }
+            let half = vec2(atlas.rect[2], atlas.rect[3]) / atlas.raster * 0.5;
+            let [x, y, w, h] = atlas.rect;
+            (
+                3.0,
+                Vec2::from(atlas.offset) + shift,
+                half,
+                [half.x, half.y, 0.0, flag],
+                [x, y, x + w, y + h],
+            )
         }
+    };
+    let Some((screen, perspective)) = scene.camera.project(gx.transform_point(center.extend(0.0)))
+    else {
+        return closed;
+    };
+    let (ax, ay) = (gx.x_axis * perspective, gx.y_axis * perspective);
+    let det = ax.perp_dot(ay);
+    if det.abs() < 1e-6 {
+        return closed;
+    }
+    let inverse = [ay.y / det, -ax.y / det, -ay.x / det, ax.x / det];
+    let aa = det.abs().sqrt();
+    let reach = half + Vec2::splat(2.0 / aa);
+    let corners = [
+        vec2(-reach.x, -reach.y),
+        vec2(reach.x, -reach.y),
+        vec2(reach.x, reach.y),
+        vec2(-reach.x, reach.y),
+    ]
+    .map(|corner| screen + ax * corner.x + ay * corner.y);
+    let (low, high) = corners.iter().fold(
+        (Vec2::splat(f32::INFINITY), Vec2::splat(f32::NEG_INFINITY)),
+        |(low, high), &point| (low.min(point), high.max(point)),
+    );
+    GroupClipEval::Active {
+        clip: [[mode, screen.x, screen.y, aa], params, inverse, uv],
+        aabb: (!invert).then_some([low.x, low.y, high.x, high.y]),
+    }
+}
+
+/// Whether an element turns itself in the screen plane when its `rotation`
+/// channel changes. Others (cards, labels, icons, and orbs and forms, whose
+/// rotation is a turn in depth) are turned by their group's pixel warp.
+fn turns_on_screen(element: &StageElement) -> bool {
+    matches!(
+        element,
+        StageElement::Shape { .. }
+            | StageElement::Type { .. }
+            | StageElement::Footage { .. }
+            | StageElement::RuneCard { .. }
+    )
+}
+
+/// The axis-aligned box around an outline.
+fn shape_box(shape: &Shape) -> Box2 {
+    match shape {
+        Shape::Box(bounds) => *bounds,
+        Shape::Circle(circle) => {
+            Box2::from_center_size(circle.center, Vec2::splat(circle.radius * 2.0))
+        }
+        Shape::Point(point) => Box2::from_center_size(*point, Vec2::ZERO),
+        Shape::Polygon(polygon) => polygon.bounds(),
+    }
+}
+
+/// The screen rectangle a primitive rasterizes.
+fn raster_of(prim: &Prim) -> [f32; 4] {
+    if prim.warp_c[3] > 0.5 {
+        prim.raster
+    } else {
+        prim.bbox
     }
 }
 
@@ -3345,57 +3523,93 @@ struct Painter<'a> {
 }
 
 impl<'a> Painter<'a> {
+    /// Paint elements in declaration order, descending into groups: each
+    /// leaf is warped by what its groups' transform leaves over, then each
+    /// group's matte applies to every primitive drawn inside it that no inner
+    /// matte claimed (an outer matte still bounds them by its screen box).
     fn paint_tree(&mut self, elements: &[StageElement]) {
         for element in elements {
-            if let StageElement::Group {
+            let start = self.frame.prims.len();
+            let StageElement::Group {
                 id, clip, children, ..
             } = element
-            {
-                if self.scene.unit(id, "opacity") <= 0.001 {
-                    continue;
-                }
-                let eval = match clip {
-                    Some(mask) => resolve_group_clip(self.scene, self.frame.texts, id, mask),
-                    None => GroupClipEval::Open,
-                };
-                if matches!(eval, GroupClipEval::Closed) {
-                    continue;
-                }
-                let start = self.frame.prims.len();
-                self.paint_tree(children);
-                if let GroupClipEval::Active {
-                    clip_a,
-                    clip_b,
-                    clip_uv,
-                    aabb,
-                } = eval
-                {
-                    for prim in &mut self.frame.prims[start..] {
-                        if prim.clip_a[0] == 0.0 {
-                            prim.clip_a = clip_a;
-                            prim.clip_b = clip_b;
-                            prim.clip_uv = clip_uv;
-                        }
-                        if let Some(aabb) = aabb {
-                            prim.bbox = [
-                                prim.bbox[0].max(aabb[0]),
-                                prim.bbox[1].max(aabb[1]),
-                                prim.bbox[2].min(aabb[2]),
-                                prim.bbox[3].min(aabb[3]),
-                            ];
-                            if prim.bbox[0] >= prim.bbox[2] || prim.bbox[1] >= prim.bbox[3] {
-                                prim.bbox = [0.0; 4];
-                            }
-                        }
-                    }
-                }
-            } else {
+            else {
                 let order = self.next_order;
                 self.next_order += 1;
                 self.element(order, element);
+                self.warp_leaf(element, start);
+                continue;
+            };
+            if self.scene.unit(id, "opacity") <= 0.001 {
+                continue;
+            }
+            let eval = match clip {
+                Some(mask) => resolve_group_clip(self.scene, self.frame.texts, id, mask),
+                None => GroupClipEval::Open,
+            };
+            if matches!(eval, GroupClipEval::Closed) {
+                continue;
+            }
+            self.paint_tree(children);
+            let GroupClipEval::Active { clip, aabb } = eval else {
+                continue;
+            };
+            for prim in &mut self.frame.prims[start..] {
+                if prim.clip_a[0] == 0.0 {
+                    [prim.clip_a, prim.clip_b, prim.clip_m, prim.clip_uv] = clip;
+                }
+                if let Some(aabb) = aabb {
+                    let r = raster_of(prim);
+                    let cut = [
+                        r[0].max(aabb[0]),
+                        r[1].max(aabb[1]),
+                        r[2].min(aabb[2]),
+                        r[3].min(aabb[3]),
+                    ];
+                    prim.raster = if cut[0] < cut[2] && cut[1] < cut[3] {
+                        cut
+                    } else {
+                        [0.0; 4]
+                    };
+                    prim.warp_c[3] = 1.0;
+                }
             }
         }
     }
+
+    /// Warp a grouped leaf's primitives about its center by what its groups'
+    /// transform leaves over once it has drawn itself scaled and turned.
+    fn warp_leaf(&mut self, element: &StageElement, start: usize) {
+        let id = element.id();
+        let (Some([wx, wy]), Some(place)) = (self.scene.warp_of(id), self.scene.placements.get(id))
+        else {
+            return;
+        };
+        let det = wx.perp_dot(wy);
+        if det.abs() < 1e-6 {
+            return;
+        }
+        let c = place.center;
+        let inverse = [wy.y / det, -wx.y / det, -wy.x / det, wx.x / det];
+        for prim in &mut self.frame.prims[start..] {
+            let r = raster_of(prim);
+            let corners = [
+                vec2(r[0], r[1]),
+                vec2(r[2], r[1]),
+                vec2(r[2], r[3]),
+                vec2(r[0], r[3]),
+            ]
+            .map(|p| c + wx * (p.x - c.x) + wy * (p.y - c.y));
+            let (low, high) = corners.iter().fold(
+                (Vec2::splat(f32::INFINITY), Vec2::splat(f32::NEG_INFINITY)),
+                |(low, high), &point| (low.min(point), high.max(point)),
+            );
+            prim.warp = inverse;
+            prim.warp_c = [c.x, c.y, 1.0, 1.0];
+            prim.raster = [low.x - 1.0, low.y - 1.0, high.x + 1.0, high.y + 1.0];
+        }
+    }
+
     /// A faint neutral light behind the scene. Warmth comes only from the bloom
     /// of what is actually lit.
     fn backdrop(&mut self, amount: f32) {
@@ -6247,6 +6461,7 @@ mod tests {
             super::AtlasText {
                 rect: [0.0, 0.0, 220.0, 48.0],
                 raster: super::TEXT_RASTER,
+                offset: [0.0, 0.0],
             },
         )]);
         let mut frame = super::StageFrame::new(&texts, super::Vec3::ZERO);
@@ -6436,6 +6651,63 @@ mod tests {
         assert!(
             sprite.pixels.chunks(4).all(|p| p[3] == 255),
             "path data fills its view"
+        );
+    }
+
+    #[test]
+    fn matte_path_bounds_are_local_and_reject_empty_paths() {
+        let [left, top, width, height] =
+            super::matte_path_bounds("M -40 -10 L 60 -10 L 60 30 L -40 30 Z").unwrap();
+        assert!((left + 40.0).abs() < 0.01 && (top + 10.0).abs() < 0.01);
+        assert!((width - 100.0).abs() < 0.01 && (height - 40.0).abs() < 0.01);
+        assert!(super::matte_path_bounds("M 0 0 Q oops").is_err());
+        assert!(super::matte_path_bounds("M 0 0 L 0 0 Z").is_err());
+    }
+
+    #[test]
+    #[ignore = "requires a headless GPU; group mattes cut pixels in local space and bounds"]
+    fn group_mattes_clip_pixels_and_bounds() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "group", "id": "slot", "at": [80, 90, 0],
+                  "clip": { "kind": "rect", "size": [100, 40] }, "children": [
+                    { "kind": "shape", "id": "bar", "at": [0, 30, 0], "shape": { "rect": [100, 60] },
+                      "stroke": null, "fill": { "kind": "solid", "rgba": [255, 255, 255, 255] } }
+                ] },
+                { "kind": "group", "id": "tri", "at": [240, 90, 0],
+                  "clip": { "kind": "polygon", "points": [[-50, 40], [50, 40], [0, -40]] }, "children": [
+                    { "kind": "shape", "id": "fill", "at": [0, 0, 0], "shape": { "rect": [120, 120] },
+                      "stroke": null, "fill": { "kind": "solid", "rgba": [255, 255, 255, 255] } }
+                ] }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "group-matte-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let frame = renderer
+            .render_stage(&plan, &gpu, 0.0, |_, rest| rest)
+            .unwrap();
+        let lit = |x: usize, y: usize| frame[(y * 320 + x) * 4] > 200;
+        // The bar starts at y 60 locally but the slot ends at y 20.
+        assert!(lit(80, 105), "inside the slot");
+        assert!(!lit(80, 125), "below the slot's edge");
+        assert!(lit(240, 120), "triangle base");
+        assert!(!lit(200, 60), "outside the triangle's slope");
+        assert!(lit(240, 60), "triangle apex column");
+        let bounds = super::stage_bounds(&plan, &gpu, &|_, rest| rest, 0.0, vec2(320.0, 180.0));
+        let bar = bounds.iter().find(|item| item.id == "bar").unwrap();
+        let bottom = bar.bbox[1] + bar.bbox[3];
+        assert!(
+            (bottom - 110.0).abs() < 3.0,
+            "bar bounds clip: {:?}",
+            bar.bbox
         );
     }
 

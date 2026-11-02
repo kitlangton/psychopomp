@@ -26,9 +26,13 @@ struct Prim {
     mask_color: vec4<f32>, // dissolve: rim tone, linear RGB
     grad_a: vec4<f32>,     // fill gradient: mode (0 solid, 1 linear, 2 radial), dx/cx, dy/cy, span/radius
     grad_b: vec4<f32>,     // fill gradient end/outer straight linear RGBA
-    clip_a: vec4<f32>,     // group matte: mode (0 none, 1 rect, 2 circle, 3 text-matte), cx, cy, rotation_rad
-    clip_b: vec4<f32>,     // rect: (half w, half h, corner, feather); circle: (r, 0, 0, feather); text: (half w, half h, gamma, invert)
-    clip_uv: vec4<f32>,    // text-matte: atlas (u0, v0, u1, v1); rect/circle: (invert, 0, 0, 0)
+    clip_a: vec4<f32>,     // group matte: mode (0 none, 1 rect, 2 circle, 3 atlas sprite), screen center, pixels per local unit
+    clip_b: vec4<f32>,     // local units. rect: (half w, half h, corner, feather); circle: (r, 0, 0, feather); sprite: (half w, half h, 0, invert)
+    clip_m: vec4<f32>,     // screen-to-local linear map, columns (x.x, x.y, y.x, y.y)
+    clip_uv: vec4<f32>,    // sprite: atlas (u0, v0, u1, v1); rect/circle: (invert, 0, 0, 0)
+    warp: vec4<f32>,       // grouped leaf: inverse leftover map, columns, about warp_c.xy
+    warp_c: vec4<f32>,     // warp center x, y, warp on, rasterize `raster` instead of `bbox`
+    raster: vec4<f32>,     // screen rectangle to rasterize when warp_c.w is set
 };
 
 @group(0) @binding(0) var<uniform> globals: Globals;
@@ -43,13 +47,16 @@ struct VOut {
     @builtin(position) position: vec4<f32>,
     @location(0) px: vec2<f32>,
     @location(1) @interpolate(flat) index: u32,
+    // Where the primitive is evaluated: `px` through a grouped leaf's warp.
+    @location(2) src: vec2<f32>,
 };
 
 @vertex
 fn vs(@builtin(vertex_index) vertex: u32, @builtin(instance_index) instance: u32) -> VOut {
     let prim = prims[instance];
     let corner = vec2<f32>(f32(vertex & 1u), f32((vertex >> 1u) & 1u));
-    let px = mix(prim.bbox.xy, prim.bbox.zw, corner);
+    let rect = select(prim.bbox, prim.raster, prim.warp_c.w > 0.5);
+    let px = mix(rect.xy, rect.zw, corner);
     var out: VOut;
     out.position = vec4<f32>(
         px.x / globals.viewport.x * 2.0 - 1.0,
@@ -59,6 +66,10 @@ fn vs(@builtin(vertex_index) vertex: u32, @builtin(instance_index) instance: u32
     );
     out.px = px;
     out.index = instance;
+    out.src = px;
+    if prim.warp_c.z > 0.5 {
+        out.src = prim.warp_c.xy + mat2x2<f32>(prim.warp.xy, prim.warp.zw) * (px - prim.warp_c.xy);
+    }
     return out;
 }
 
@@ -230,37 +241,25 @@ fn eval_clip(prim: Prim, px: vec2<f32>) -> f32 {
     if mode == 0u {
         return 1.0;
     }
-    let rel = px - prim.clip_a.yz;
-    let c = cos(-prim.clip_a.w);
-    let s = sin(-prim.clip_a.w);
-    let local = vec2<f32>(rel.x * c - rel.y * s, rel.x * s + rel.y * c);
+    let local = mat2x2<f32>(prim.clip_m.xy, prim.clip_m.zw) * (px - prim.clip_a.yz);
+    let aa = prim.clip_a.w;
+    var cov = 0.0;
+    var invert = prim.clip_uv.x > 0.5;
     if mode == 1u {
         let d = sd_round_box(local, prim.clip_b.xy, prim.clip_b.z);
-        var cov = coverage(d, prim.clip_b.w);
-        if prim.clip_uv.x > 0.5 {
-            cov = 1.0 - cov;
+        cov = coverage(d * aa, prim.clip_b.w * aa);
+    } else if mode == 2u {
+        cov = coverage((length(local) - prim.clip_b.x) * aa, prim.clip_b.w * aa);
+    } else {
+        let half = max(prim.clip_b.xy, vec2<f32>(0.5));
+        let f = (local + half) / (2.0 * half);
+        if all(f >= vec2<f32>(0.0)) && all(f <= vec2<f32>(1.0)) {
+            let uv = mix(prim.clip_uv.xy, prim.clip_uv.zw, f) / globals.viewport.zw;
+            cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
         }
-        return cov;
+        invert = prim.clip_b.w > 0.5;
     }
-    if mode == 2u {
-        let d = length(local) - prim.clip_b.x;
-        var cov = coverage(d, prim.clip_b.w);
-        if prim.clip_uv.x > 0.5 {
-            cov = 1.0 - cov;
-        }
-        return cov;
-    }
-    let half = max(prim.clip_b.xy, vec2<f32>(0.5));
-    let f = (local + half) / (2.0 * half);
-    var cov = 0.0;
-    if all(f >= vec2<f32>(0.0)) && all(f <= vec2<f32>(1.0)) {
-        let uv = mix(prim.clip_uv.xy, prim.clip_uv.zw, f) / globals.viewport.zw;
-        cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
-        if prim.clip_b.z > 0.0 {
-            cov = pow(clamp(cov, 0.0, 1.0), prim.clip_b.z);
-        }
-    }
-    if prim.clip_b.w > 0.5 {
+    if invert {
         cov = 1.0 - cov;
     }
     return cov;
@@ -562,5 +561,5 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
     if clip_cov <= 0.0 {
         return vec4<f32>(0.0);
     }
-    return eval_prim_unclipped(prim, in.px) * clip_cov;
+    return eval_prim_unclipped(prim, in.src) * clip_cov;
 }

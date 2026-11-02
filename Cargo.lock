@@ -2683,6 +2683,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-groups"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-hello"
 version = "0.1.0"
 dependencies = [

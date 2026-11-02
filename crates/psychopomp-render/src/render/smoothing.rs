@@ -7,7 +7,7 @@
 //!    washout (~3% weight error vs 30% uncalibrated) while keeping bright ink on
 //!    obsidian free of halo bloat.
 
-use cosmic_text::{Attrs, Buffer, Color, FontSystem, Metrics, Shaping, SwashCache, Wrap};
+use cosmic_text::{Attrs, Buffer, FontSystem, Metrics, Shaping, SwashCache, Wrap};
 use swash::{
     FontRef,
     scale::{Render, ScaleContext, Source},
@@ -34,6 +34,7 @@ pub(crate) fn glyph_coverage_exponent(linear_rgb: [f32; 3], scale: f32) -> f32 {
 }
 
 /// CoreText-calibrated coverage exponent from 8-bit sRGB foreground color.
+#[cfg(test)]
 pub(crate) fn glyph_coverage_exponent_srgb(rgb: [u8; 3], scale: f32) -> f32 {
     let lin = super::theme::linear(rgb);
     glyph_coverage_exponent(lin, scale)
@@ -256,7 +257,7 @@ mod tests {
         let mut fonts = crate::render::fonts::font_system();
         let mut swash = SwashCache::new();
         let attrs = crate::render::fonts::attrs(psychopomp::face::Face::SansBold)
-            .color(Color::rgb(255, 255, 255));
+            .color(cosmic_text::Color::rgb(255, 255, 255));
         let tight = make_smoothed_sprite(
             &mut fonts,
             &mut swash,
@@ -280,6 +281,6 @@ mod tests {
             8.0,
         );
         assert!(wide.advance > tight.advance + 40.0);
-        assert!(tight.pixels.chunks_exact(4).any(|px| px[3] > 0));
+        assert!(tight.pixels.as_chunks::<4>().0.iter().any(|px| px[3] > 0));
     }
 }

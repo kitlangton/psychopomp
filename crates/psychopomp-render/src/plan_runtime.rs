@@ -629,6 +629,7 @@ const DECK_UNSUPPORTED: &str =
 
 /// A plan file, recognized by its top-level key: reels have `segments`, decks
 /// have `slides`.
+#[allow(clippy::large_enum_variant)]
 enum PlanFile {
     Plan(ScenePlan),
     Reel(ReelPlan),
