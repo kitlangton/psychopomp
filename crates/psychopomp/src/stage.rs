@@ -25,6 +25,7 @@ use crate::{
         },
         vec3,
     },
+    paint::Paint,
     plan::MediaPlan,
     plan::SpringPlan,
     tone::Tone,
@@ -332,6 +333,10 @@ pub enum StageElement {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         framed: bool,
     },
+    /// Full-canvas backdrop painted in linear HDR (solid sRGB/hex, linear
+    /// gradient, or radial gradient) behind Stage elements.
+    #[serde(rename_all = "camelCase")]
+    Backdrop { id: String, paint: Paint },
 }
 
 fn default_rune_corner() -> f32 {
@@ -598,13 +603,15 @@ impl Figure {
     }
 }
 
-/// What fills a shape: a tone, or the theme's card `surface` or `background`
-/// (an opaque panel that hides what is behind it).
+/// What fills a shape: a semantic tone, a theme material (`surface`,
+/// `background`, `raised`, `well`), or an explicit `Paint` (solid sRGB/hex,
+/// linear gradient, or radial gradient).
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum Fill {
     Tone(Tone),
     Material(Material),
+    Paint(Paint),
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
@@ -951,6 +958,23 @@ impl StageElement {
         self
     }
 
+    /// Full-canvas linear/radial/solid backdrop painted behind all Stage elements.
+    pub fn backdrop(id: &str, paint: Paint) -> Self {
+        Self::Backdrop {
+            id: id.into(),
+            paint,
+        }
+    }
+
+    /// Fill of a flat shape with an explicit `Paint` (solid hex, linear, or radial gradient).
+    pub fn paint(mut self, paint: Paint) -> Self {
+        let Self::Shape { fill, .. } = &mut self else {
+            panic!("only shapes take paint(), not '{}'", self.id());
+        };
+        *fill = Some(Fill::Paint(paint));
+        self
+    }
+
     /// Fill of a flat shape (`Some(Fill::Material(Material::Surface))` or `Some(Fill::Tone(Tone::...))`).
     pub fn fill(mut self, value: Option<Fill>) -> Self {
         let Self::Shape { fill, .. } = &mut self else {
@@ -1095,7 +1119,8 @@ impl StageElement {
             | Self::Path { id, .. }
             | Self::Icon { id, .. }
             | Self::Footage { id, .. }
-            | Self::RuneCard { id, .. } => id,
+            | Self::RuneCard { id, .. }
+            | Self::Backdrop { id, .. } => id,
         }
     }
 
@@ -1116,7 +1141,8 @@ impl StageElement {
             | Self::Packet { .. }
             | Self::Path { .. }
             | Self::Bolt { .. }
-            | Self::Shield { .. } => None,
+            | Self::Shield { .. }
+            | Self::Backdrop { .. } => None,
         }
     }
 
@@ -1139,7 +1165,8 @@ impl StageElement {
             | Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
-            | Self::Bolt { .. } => Shape::Point(center),
+            | Self::Bolt { .. }
+            | Self::Backdrop { .. } => Shape::Point(center),
             // The resting silhouette of the first shape; the renderer attaches
             // to the sampled, turned silhouette instead.
             Self::Form { shapes, .. } => match shapes.first() {
@@ -1238,6 +1265,7 @@ impl StageElement {
                 "tint",
                 "dim",
             ],
+            Self::Backdrop { .. } => &["opacity"],
         }
     }
 
@@ -1416,6 +1444,7 @@ impl StageElement {
                 ("tint", 0.0),
                 ("dim", 0.0),
             ],
+            Self::Backdrop { .. } => &[("opacity", 1.0)],
         }
     }
 
@@ -1698,6 +1727,9 @@ impl StagePlan {
                         fill.is_some() || stroke.is_some(),
                         "shape '{id}' needs a fill or a stroke"
                     );
+                    if let Some(Fill::Paint(p)) = fill {
+                        p.validate().with_context(|| format!("shape '{id}' fill"))?;
+                    }
                     ensure!(
                         (0.0..=400.0).contains(corner) && (0.0..=1.0).contains(fill_opacity),
                         "shape '{id}' corner or fill opacity is out of range"
@@ -1811,6 +1843,11 @@ impl StagePlan {
                     surface
                         .validate()
                         .with_context(|| format!("stage rune-card '{id}'"))?;
+                }
+                StageElement::Backdrop { paint, .. } => {
+                    paint
+                        .validate()
+                        .with_context(|| format!("stage backdrop '{id}'"))?;
                 }
                 StageElement::Label { size, spans, .. } => {
                     ensure!(

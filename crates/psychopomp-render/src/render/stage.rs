@@ -66,6 +66,8 @@ struct Prim {
     mask: [f32; 4],
     mask_shape: [f32; 4],
     mask_color: [f32; 4],
+    grad_a: [f32; 4],
+    grad_b: [f32; 4],
 }
 
 #[repr(C)]
@@ -962,7 +964,7 @@ impl HeadlessRenderer {
         value: impl Fn(f64, &str, f32) -> f32,
         footage: impl Fn(f64) -> Result<Vec<StageFootageFrame>>,
     ) -> Result<Vec<u8>> {
-        let look = Look::new(self.theme);
+        let look = Look::with_palette(self.theme, self.palette_override);
         let size = vec2(self.spec.width as f32, self.spec.height as f32);
         let mean = exposure
             .iter()
@@ -1503,10 +1505,11 @@ fn post_settings(
     [params, grade, shock, rewind, motion]
 }
 
-/// The theme's colors in linear light.
+/// The theme's or custom palette's colors in linear light.
 #[derive(Clone, Copy)]
 struct Look {
     theme: Theme,
+    palette_override: Option<psychopomp::paint::PalettePlan>,
     background: Vec3,
     surface: Vec3,
     raised: Vec3,
@@ -1515,10 +1518,25 @@ struct Look {
 }
 
 impl Look {
-    fn new(theme: Theme) -> Self {
+    fn with_palette(
+        theme: Theme,
+        palette_override: Option<psychopomp::paint::PalettePlan>,
+    ) -> Self {
+        if let Some(p) = palette_override {
+            return Self {
+                theme,
+                palette_override: Some(p),
+                background: linear3(p.background),
+                surface: linear3(p.surface),
+                raised: linear3(p.raised),
+                text: linear3(p.text),
+                muted: linear3(p.muted),
+            };
+        }
         let palette = theme.palette();
         Self {
             theme,
+            palette_override: None,
             background: linear3(palette.background),
             surface: linear3(palette.surface),
             raised: linear3(palette.raised),
@@ -1528,7 +1546,52 @@ impl Look {
     }
 
     fn tone(&self, tone: Tone) -> Vec3 {
-        linear3(self.theme.tone(tone))
+        match self.palette_override {
+            Some(p) => linear3(p.tone(tone)),
+            None => linear3(self.theme.tone(tone)),
+        }
+    }
+
+    fn resolve_paint(
+        &self,
+        paint: psychopomp::paint::Paint,
+        alpha_scale: f32,
+    ) -> ([f32; 4], [f32; 4], [f32; 4]) {
+        use psychopomp::paint::Paint as P;
+        let rgba8_to_lin = |[r, g, b, a]: [u8; 4]| {
+            let lin = linear3([r, g, b]);
+            [lin.x, lin.y, lin.z, (f32::from(a) / 255.0) * alpha_scale]
+        };
+        match paint {
+            P::Tone { tone, alpha } => (
+                rgba(self.tone(tone), alpha * alpha_scale),
+                [0.0; 4],
+                [0.0; 4],
+            ),
+            P::Solid { rgba: c } => (rgba8_to_lin(c), [0.0; 4], [0.0; 4]),
+            P::Linear {
+                angle_deg,
+                from,
+                to,
+            } => {
+                let rad = angle_deg.to_radians();
+                (
+                    rgba8_to_lin(from),
+                    [1.0, rad.cos(), rad.sin(), 0.0],
+                    rgba8_to_lin(to),
+                )
+            }
+            P::Radial {
+                center,
+                radius,
+                inner,
+                outer,
+            } => (
+                rgba8_to_lin(inner),
+                [2.0, center[0], center[1], radius],
+                rgba8_to_lin(outer),
+            ),
+        }
     }
 }
 
@@ -3098,6 +3161,33 @@ impl<'a> Painter<'a> {
                 Tone::Accent,
                 place,
             ),
+            (StageElement::Backdrop { paint, .. }, _) => {
+                let opacity = scene.unit(id, "opacity");
+                if opacity > 0.001 {
+                    let size = self.scene.camera.size;
+                    let (fill, grad_a, grad_b) = self.look.resolve_paint(*paint, opacity);
+                    let prim = if grad_a[0] < 0.5 {
+                        Prim {
+                            bbox: [0.0, 0.0, size.x, size.y],
+                            a: [5.0, size.x * 0.5, size.y * 0.5, size.x.max(size.y)],
+                            fill,
+                            stroke: fill,
+                            ..Default::default()
+                        }
+                    } else {
+                        Prim {
+                            bbox: [0.0, 0.0, size.x, size.y],
+                            a: [5.0, size.x * 0.5, size.y * 0.5, size.x.max(size.y)],
+                            fill,
+                            grad_a,
+                            grad_b,
+                            ..Default::default()
+                        }
+                    };
+                    self.frame.prims.push(prim);
+                    self.frame.close(f32::INFINITY, order + 1);
+                }
+            }
             // A positioned element behind the camera.
             _ => {}
         }
@@ -3189,6 +3279,7 @@ impl<'a> Painter<'a> {
                 light_color: reflection_color,
                 pool,
                 pool_color,
+                ..Default::default()
             },
         );
         // The diagrams' double frame: a quiet rule 3 px inside the edge.
@@ -4470,12 +4561,13 @@ impl<'a> Painter<'a> {
                 } else {
                     width * shown as f32 / count as f32
                 };
+                let ink_rgb = span.color.map_or_else(|| look.tone(span.tone), linear3);
                 self.frame.text(
                     key,
                     vec2(x, place.center.y),
                     place.scale,
                     CaptionAlign::Left,
-                    rgba(look.tone(span.tone), opacity),
+                    rgba(ink_rgb, opacity),
                     reveal,
                     blur,
                 );
@@ -4638,6 +4730,7 @@ impl Painter<'_> {
                     light_color,
                     pool,
                     pool_color,
+                    ..Default::default()
                 },
             );
             if settled_border {
@@ -4670,18 +4763,25 @@ impl Painter<'_> {
         } else if let Some(fill) = style.fill
             && closed
         {
-            let color = match fill {
-                Fill::Tone(tone) => look.tone(tone),
-                Fill::Material(Material::Surface | Material::Raised) => look.surface,
-                Fill::Material(Material::Background | Material::Well) => look.background,
-            };
             let amount = scene.unit(id, "fill") * style.fill_opacity * opacity;
+            let (fill_rgba, grad_a, grad_b) = match fill {
+                Fill::Tone(tone) => (rgba(look.tone(tone), amount), [0.0; 4], [0.0; 4]),
+                Fill::Material(Material::Surface | Material::Raised) => {
+                    (rgba(look.surface, amount), [0.0; 4], [0.0; 4])
+                }
+                Fill::Material(Material::Background | Material::Well) => {
+                    (rgba(look.background, amount), [0.0; 4], [0.0; 4])
+                }
+                Fill::Paint(p) => look.resolve_paint(p, amount),
+            };
             self.frame.polygon(
                 &outline,
                 0.0,
                 blur,
                 Paint {
-                    fill: rgba(color, amount),
+                    fill: fill_rgba,
+                    grad_a,
+                    grad_b,
                     pool,
                     pool_color,
                     ..Default::default()
@@ -5176,6 +5276,8 @@ struct Paint {
     light_color: [f32; 4],
     pool: [f32; 4],
     pool_color: [f32; 4],
+    grad_a: [f32; 4],
+    grad_b: [f32; 4],
 }
 
 /// How a lightning channel shines: core half width and its taper toward the
@@ -5254,6 +5356,8 @@ impl<'a> StageFrame<'a> {
             light_color: paint.light_color,
             pool: paint.pool,
             pool_color: paint.pool_color,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
             ..Default::default()
         });
     }
@@ -5270,6 +5374,8 @@ impl<'a> StageFrame<'a> {
             fill: paint.fill,
             stroke: paint.stroke,
             glow: paint.glow,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
             ..Default::default()
         });
     }
@@ -5278,6 +5384,7 @@ impl<'a> StageFrame<'a> {
     /// first), filled, with an optional `border` of that many pixels.
     fn polygon(&mut self, points: &[Vec2], border: f32, blur: f32, paint: Paint) {
         let visible = paint.fill[3] > 0.001
+            || (paint.grad_a[0] > 0.5 && paint.grad_b[3] > 0.001)
             || (border > 0.0 && paint.stroke[3] > 0.001)
             || paint.glow[..3].iter().any(|v| *v > 0.0);
         if points.len() < 3 || !visible {
@@ -5302,6 +5409,8 @@ impl<'a> StageFrame<'a> {
             uv: [first as f32, points.len() as f32, 0.0, 0.0],
             pool: paint.pool,
             pool_color: paint.pool_color,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
             ..Default::default()
         });
     }

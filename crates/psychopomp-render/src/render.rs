@@ -330,6 +330,7 @@ pub struct HeadlessRenderer {
     grid_line_palette: Option<GridLinePalette>,
     rune_gpu: Option<rune_timeline::RuneGpu>,
     theme: Theme,
+    palette_override: Option<psychopomp::paint::PalettePlan>,
 }
 
 impl HeadlessRenderer {
@@ -469,6 +470,7 @@ impl HeadlessRenderer {
             grid_line_palette: None,
             rune_gpu: None,
             theme: Theme::default(),
+            palette_override: None,
         })
     }
 
@@ -480,6 +482,40 @@ impl HeadlessRenderer {
 
     pub(crate) fn theme(&self) -> Theme {
         self.theme
+    }
+
+    pub(crate) fn set_palette_override(&mut self, palette: Option<psychopomp::paint::PalettePlan>) {
+        if self.palette_override == palette {
+            return;
+        }
+        self.palette_override = palette;
+        self.plain_text_sprites.clear();
+        self.preview_editor_backgrounds.clear();
+        self.editor_background_pixels.clear();
+    }
+
+    pub(crate) fn effective_palette(&self) -> theme::Palette {
+        match self.palette_override {
+            Some(p) => theme::Palette {
+                background: p.background,
+                surface: p.surface,
+                raised: p.raised,
+                text: p.text,
+                muted: p.muted,
+                accent: p.accent,
+                keyword: p.request,
+                types: p.warning,
+                string: p.success,
+            },
+            None => self.theme.palette(),
+        }
+    }
+
+    pub(crate) fn effective_tone(&self, tone: psychopomp::tone::Tone) -> [u8; 3] {
+        match self.palette_override {
+            Some(p) => p.tone(tone),
+            None => self.theme.tone(tone),
+        }
     }
 
     pub fn set_theme(&mut self, theme: Theme) {
@@ -547,8 +583,10 @@ impl HeadlessRenderer {
         opacity: f32,
     ) -> Vec<u8> {
         let mut pixels = vec![0_u8; self.spec.width as usize * self.spec.height as usize * 4];
+        let [r, g, b] = self
+            .palette_override
+            .map_or_else(|| self.theme.background([1, 2, 4]), |p| p.background);
         for pixel in pixels.as_chunks_mut::<4>().0 {
-            let [r, g, b] = self.theme.background([1, 2, 4]);
             pixel.copy_from_slice(&[r, g, b, 255]);
         }
         let center_x = self.spec.width as f32 * 0.5;

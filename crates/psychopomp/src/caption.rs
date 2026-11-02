@@ -42,6 +42,9 @@ pub struct CaptionSpanPlan {
     pub text: String,
     #[serde(default, skip_serializing_if = "Tone::is_default")]
     pub tone: Tone,
+    /// Explicit sRGB pigment overriding `tone` when set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color: Option<[u8; 3]>,
 }
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
@@ -64,7 +67,22 @@ impl CaptionSpanPlan {
         Self {
             text: text.into(),
             tone,
+            color: None,
         }
+    }
+
+    pub fn rgb(text: impl Into<String>, rgb: [u8; 3]) -> Self {
+        Self {
+            text: text.into(),
+            tone: Tone::Plain,
+            color: Some(rgb),
+        }
+    }
+
+    pub fn hex(text: impl Into<String>, hex: &str) -> Self {
+        let rgb =
+            crate::paint::parse_hex_rgb(hex).unwrap_or_else(|e| panic!("invalid hex '{hex}': {e}"));
+        Self::rgb(text, rgb)
     }
 }
 

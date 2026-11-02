@@ -331,10 +331,6 @@ fn take_option(arguments: &[String], names: &[&str]) -> Result<(Vec<String>, Opt
 fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
     let (arguments, [shutter]) = flags(arguments, &["--shutter"]);
     let (arguments, crop_opt) = take_option(&arguments, &["--crop"])?;
-    let crop = crop_opt
-        .as_deref()
-        .map(strip::CropRect::parse)
-        .transpose()?;
     let [plan, times_spec, rest @ ..] = arguments.as_slice() else {
         bail!("usage: {FRAME_USAGE}");
     };
@@ -342,6 +338,11 @@ fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
         bail!("usage: {FRAME_USAGE}");
     }
     let (loaded, mut renderer) = pollster::block_on(still::Loaded::load(Path::new(plan), theme))?;
+    let [cw, ch] = loaded.canvas().size();
+    let crop = crop_opt
+        .as_deref()
+        .map(|s| strip::CropRect::parse_in(s, [cw, ch]))
+        .transpose()?;
     let times = loaded.time_index().resolve_times(times_spec)?;
     if let &[seconds] = times.as_slice() {
         let output = rest
@@ -351,10 +352,10 @@ fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
         let pixels = loaded.still(&mut renderer, seconds, shutter)?;
         return match crop {
             Some(c) => {
-                let cropped = strip::crop_rgba(&pixels, WIDTH, HEIGHT, c);
+                let cropped = strip::crop_rgba(&pixels, cw, ch, c);
                 delivery::write_rgba_png(&output, c.width, c.height, &cropped)
             }
-            None => delivery::write_png(&output, &pixels),
+            None => delivery::write_rgba_png(&output, cw, ch, &pixels),
         };
     }
     let dir = rest
@@ -367,10 +368,10 @@ fn frame_command(arguments: &[String], theme: Theme) -> Result<()> {
         let pixels = loaded.still(&mut renderer, seconds, shutter)?;
         match crop {
             Some(c) => {
-                let cropped = strip::crop_rgba(&pixels, WIDTH, HEIGHT, c);
+                let cropped = strip::crop_rgba(&pixels, cw, ch, c);
                 delivery::write_rgba_png(&file, c.width, c.height, &cropped)?;
             }
-            None => delivery::write_png(&file, &pixels)?,
+            None => delivery::write_rgba_png(&file, cw, ch, &pixels)?,
         }
         written.push(json!({ "time": seconds, "path": file }));
     }
@@ -403,10 +404,6 @@ fn strip_command(arguments: &[String], theme: Theme) -> Result<()> {
         .map(|s| s.parse::<u32>().context("parse --width"))
         .transpose()?
         .unwrap_or(480);
-    let crop = crop_opt
-        .as_deref()
-        .map(strip::CropRect::parse)
-        .transpose()?;
 
     let (plan, spec, pos_out) = match arguments.as_slice() {
         [plan] => (plan.as_str(), "all", None),
@@ -432,7 +429,7 @@ fn strip_command(arguments: &[String], theme: Theme) -> Result<()> {
         count,
         columns,
         cell_width,
-        crop,
+        crop_spec: crop_opt.as_deref(),
         shutter,
         theme,
     })
@@ -694,9 +691,16 @@ fn plan_from_json(json: &str) -> Result<ScenePlan> {
 }
 
 pub(crate) async fn new_renderer(file_name: &str) -> Result<HeadlessRenderer> {
+    new_renderer_sized(file_name, [WIDTH, HEIGHT]).await
+}
+
+pub(crate) async fn new_renderer_sized(
+    file_name: &str,
+    [width, height]: [u32; 2],
+) -> Result<HeadlessRenderer> {
     HeadlessRenderer::new(RenderSpec {
-        width: WIDTH,
-        height: HEIGHT,
+        width,
+        height,
         file_name: file_name.to_owned(),
     })
     .await
@@ -1181,6 +1185,7 @@ impl PreparedPlan {
         renderer: &mut HeadlessRenderer,
         exposure: &[(f64, f32)],
     ) -> Result<Vec<u8>> {
+        renderer.set_palette_override(self.plan.palette);
         let timeline = &self.timeline;
         let (mut base, root_actor) = match &self.root {
             PreparedRoot::Stage(stage) => {
@@ -1298,7 +1303,7 @@ impl PreparedPlan {
                 *moves || bounds.iter().any(|a| moving.iter().any(|b| overlaps(a, b)))
             })
             .collect::<Vec<_>>();
-        let region = crate::exposure::Region::covering(moving);
+        let region = crate::exposure::Region::covering_in(size, moving);
         let mut first = base.clone();
         self.render_overlays_with(
             &mut first,
@@ -1632,6 +1637,7 @@ impl PreparedPlan {
         time: f64,
         timeline: &Timeline,
     ) -> Result<Vec<u8>> {
+        renderer.set_palette_override(self.plan.palette);
         let mut pixels = self.render_root(renderer, time, timeline)?;
         self.render_overlays(&mut pixels, renderer, time, timeline)?;
         Ok(pixels)

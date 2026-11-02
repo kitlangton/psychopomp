@@ -5,6 +5,7 @@ use std::{ops::Range, path::Path, time::Instant};
 
 use anyhow::{Result, bail};
 use psychopomp::{
+    canvas::CanvasPlan,
     composition::{Duration, MediaPlacement, Time, TimeRange},
     math::{Vec2, shapes::Box2, vec2},
 };
@@ -40,7 +41,8 @@ pub(crate) fn plan_temporal_samples(center: f64) -> u32 {
 /// `sample_key`s merge their weights; `render_exposure` turns one frame's
 /// weighted samples into pixels.
 #[allow(clippy::too_many_arguments)]
-pub(crate) fn encode_exposures<K: PartialEq>(
+pub(crate) fn encode_exposures_for<K: PartialEq>(
+    canvas: CanvasPlan,
     renderer: &mut HeadlessRenderer,
     output: &Path,
     duration: Duration,
@@ -63,7 +65,9 @@ pub(crate) fn encode_exposures<K: PartialEq>(
         );
     }
     let started = Instant::now();
-    let frame_count = window.duration().frame_count(FPS);
+    let fps = canvas.fps.max(1);
+    let shutter_sec = canvas.shutter_seconds();
+    let frame_count = window.duration().frame_count(fps);
     let media = media
         .iter()
         .filter_map(|placement| placement.for_window(window))
@@ -71,24 +75,24 @@ pub(crate) fn encode_exposures<K: PartialEq>(
     let mut encoder = FfmpegEncoder::start_with_media(
         output,
         VideoSpec {
-            width: WIDTH,
-            height: HEIGHT,
-            fps: FPS,
+            width: canvas.width,
+            height: canvas.height,
+            fps,
         },
         &media,
     )?;
     for frame in 0..frame_count {
-        let frame_start = window.start().as_seconds() + frame as f64 / f64::from(FPS);
-        let frame_end = (window.start().as_seconds() + (frame + 1) as f64 / f64::from(FPS))
+        let frame_start = window.start().as_seconds() + frame as f64 / f64::from(fps);
+        let frame_end = (window.start().as_seconds() + (frame + 1) as f64 / f64::from(fps))
             .min(window.end().as_seconds());
         let center = (frame_start + frame_end) * 0.5;
         let samples = samples_at(center).max(1);
         let exposure = merge_equal_samples(
-            exposure(center, frame_end - frame_start, samples),
+            exposure_with_shutter(center, frame_end - frame_start, shutter_sec, samples),
             &mut sample_key,
         )?;
         encoder.write_frame(&render_exposure(renderer, &exposure)?)?;
-        if frame % u64::from(FPS) == 0 || frame + 1 == frame_count {
+        if frame % u64::from(fps) == 0 || frame + 1 == frame_count {
             eprintln!(
                 "Rendered {:>3}/{frame_count} frames ({center:.1}s, {samples} samples, {} unique)",
                 frame + 1,
@@ -110,7 +114,17 @@ pub(crate) fn encode_exposures<K: PartialEq>(
 /// to 1. The weights ease off over the outer quarter at each end, so a fast
 /// highlight's streak fades out instead of ending on a hard copy.
 pub(crate) fn exposure(center: f64, span: f64, samples: u32) -> Vec<(f64, f32)> {
-    let shutter = (f64::from(SHUTTER_ANGLE) / 360.0 / f64::from(FPS)).min(span);
+    let default_shutter = f64::from(SHUTTER_ANGLE) / 360.0 / f64::from(FPS);
+    exposure_with_shutter(center, span, default_shutter, samples)
+}
+
+pub(crate) fn exposure_with_shutter(
+    center: f64,
+    span: f64,
+    shutter_seconds: f64,
+    samples: u32,
+) -> Vec<(f64, f32)> {
+    let shutter = shutter_seconds.min(span);
     let (start, end) = (center - span * 0.5, center + span * 0.5);
     let mut weighted = (0..samples)
         .map(|sample| {
@@ -161,11 +175,13 @@ pub(crate) fn accumulate(
     if let [(time, _)] = exposure {
         return render_sample(renderer, *time);
     }
+    let [w, h] = renderer.size();
+    let expected_bytes = w as usize * h as usize * 4;
     let tables = linear_tables();
-    let mut sum = vec![0.0_f32; FRAME_BYTES];
+    let mut sum = vec![0.0_f32; expected_bytes];
     for &(time, weight) in exposure {
         let pixels = render_sample(renderer, time)?;
-        check_frame(&pixels)?;
+        check_frame_size(&pixels, expected_bytes)?;
         let weighted = WeightedLinear::new(tables, weight);
         for (sum, pixel) in sum
             .as_chunks_mut::<4>()
@@ -190,12 +206,15 @@ pub(crate) fn accumulate_region(
     first: Vec<u8>,
     mut render_sample: impl FnMut(&mut [u8], f64) -> Result<()>,
 ) -> Result<Vec<u8>> {
-    check_frame(&first)?;
+    let frame_bytes = first.len();
+    if frame_bytes == 0 || !frame_bytes.is_multiple_of(4) {
+        bail!("invalid RGBA frame byte length {frame_bytes}");
+    }
     if exposure.len() == 1 {
         return Ok(first);
     }
     let tables = linear_tables();
-    let mut frame = vec![0_u8; FRAME_BYTES];
+    let mut frame = vec![0_u8; frame_bytes];
     let mut sum = vec![0.0_f32; region.pixel_count() * 4];
     for (index, &(time, weight)) in exposure.iter().enumerate() {
         let source = if index == 0 {
@@ -252,10 +271,17 @@ pub(crate) struct Region {
 }
 
 impl Region {
-    /// The frame pixels any of `bounds` touches; empty for none.
+    /// The frame pixels any of `bounds` touches in a default 1080p frame; empty for none.
+    #[cfg(test)]
     pub(crate) fn covering(bounds: impl IntoIterator<Item = Box2>) -> Self {
-        let frame = vec2(WIDTH as f32, HEIGHT as f32);
-        let mut by_row = vec![Vec::<Range<usize>>::new(); HEIGHT as usize];
+        Self::covering_in([WIDTH, HEIGHT], bounds)
+    }
+
+    /// The frame pixels any of `bounds` touches inside a `size` frame; empty for none.
+    pub(crate) fn covering_in(size: [u32; 2], bounds: impl IntoIterator<Item = Box2>) -> Self {
+        let [w, h] = size;
+        let frame = vec2(w as f32, h as f32);
+        let mut by_row = vec![Vec::<Range<usize>>::new(); h as usize];
         for bounds in bounds {
             let min = bounds.min.floor().clamp(Vec2::ZERO, frame);
             let max = bounds.max.ceil().clamp(min, frame);
@@ -273,7 +299,7 @@ impl Region {
                 continue;
             }
             spans.sort_by_key(|span| span.start);
-            let row = y * WIDTH as usize;
+            let row = y * w as usize;
             let mut spans = spans.into_iter();
             let Some(mut merged) = spans.next() else {
                 continue;
@@ -308,12 +334,13 @@ impl Region {
     }
 }
 
+#[cfg(test)]
 const FRAME_BYTES: usize = WIDTH as usize * HEIGHT as usize * 4;
 
-fn check_frame(pixels: &[u8]) -> Result<()> {
-    if pixels.len() != FRAME_BYTES {
+fn check_frame_size(pixels: &[u8], expected_bytes: usize) -> Result<()> {
+    if pixels.len() != expected_bytes {
         bail!(
-            "renderer returned {} bytes for a {FRAME_BYTES}-byte RGBA frame",
+            "renderer returned {} bytes for a {expected_bytes}-byte RGBA frame",
             pixels.len()
         );
     }

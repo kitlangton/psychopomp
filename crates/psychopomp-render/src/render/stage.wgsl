@@ -24,6 +24,8 @@ struct Prim {
     mask: vec4<f32>,       // dissolve: age (0 for none), card center x, y, scale
     mask_shape: vec4<f32>, // dissolve: card half size in world pixels, field seed, 0
     mask_color: vec4<f32>, // dissolve: rim tone, linear RGB
+    grad_a: vec4<f32>,     // fill gradient: mode (0 solid, 1 linear, 2 radial), dx/cx, dy/cy, span/radius
+    grad_b: vec4<f32>,     // fill gradient end/outer straight linear RGBA
 };
 
 @group(0) @binding(0) var<uniform> globals: Globals;
@@ -108,6 +110,26 @@ fn card_light(prim: Prim, px: vec2<f32>, band: f32, inside: f32) -> vec3<f32> {
 
 fn direction(angle: f32) -> vec2<f32> {
     return vec2<f32>(cos(angle), sin(angle));
+}
+
+// Evaluate solid, linear-gradient, or radial-gradient straight linear RGBA fill.
+fn eval_fill(prim: Prim, px: vec2<f32>) -> vec4<f32> {
+    let mode = u32(prim.grad_a.x + 0.5);
+    if mode == 0u {
+        return prim.fill;
+    }
+    let span = max(prim.bbox.zw - prim.bbox.xy, vec2<f32>(1.0));
+    let uv = clamp((px - prim.bbox.xy) / span, vec2<f32>(0.0), vec2<f32>(1.0));
+    if mode == 1u {
+        let dir = prim.grad_a.yz;
+        let reach = max(abs(dir.x) + abs(dir.y), 1.0e-4);
+        let t = clamp(dot(uv - vec2<f32>(0.5), dir) / reach + 0.5, 0.0, 1.0);
+        return mix(prim.fill, prim.grad_b, t);
+    }
+    let center = prim.grad_a.yz;
+    let radius = max(prim.grad_a.w, 1.0e-4);
+    let t = clamp(length(uv - center) / radius, 0.0, 1.0);
+    return mix(prim.fill, prim.grad_b, smoothstep(0.0, 1.0, t));
 }
 
 // Nearest point of the first `drawn` pixels of a polyline: (distance, length
@@ -214,7 +236,8 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
             let d = sd_round_box(px - prim.a.yz, prim.b.xy, prim.a.w);
             let outer = coverage(d, prim.b.w);
             let inner = coverage(d + prim.b.z, prim.b.w);
-            let fill_a = prim.fill.a * inner;
+            let fcol = eval_fill(prim, px);
+            let fill_a = fcol.a * inner;
             let stroke_a = prim.stroke.a * max(outer - inner, 0.0);
             alpha = fill_a + stroke_a * (1.0 - fill_a);
             // A restrained overhead key gives the panel thickness without an
@@ -222,7 +245,7 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
             let height = clamp((px.y - prim.a.z) / max(prim.b.y, 1.0), -1.0, 1.0);
             let key = mix(1.08, 0.92, height * 0.5 + 0.5);
             let rim = mix(1.2, 0.7, height * 0.5 + 0.5);
-            color = prim.fill.rgb * fill_a * key + prim.stroke.rgb * stroke_a * (1.0 - fill_a) * rim;
+            color = fcol.rgb * fill_a * key + prim.stroke.rgb * stroke_a * (1.0 - fill_a) * rim;
             color += prim.glow.rgb * halo(d, prim.glow.w) * smoothstep(-1.0, 1.5, d);
             color += card_light(prim, px, max(outer - inner, 0.0), inner);
         }
@@ -231,10 +254,11 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
             let d = length(px - prim.a.yz) - prim.a.w;
             let outer = coverage(d, prim.b.w);
             let inner = coverage(d + prim.b.x, prim.b.w);
-            let fill_a = prim.fill.a * inner;
+            let fcol = eval_fill(prim, px);
+            let fill_a = fcol.a * inner;
             let stroke_a = prim.stroke.a * max(outer - inner, 0.0);
             alpha = fill_a + stroke_a * (1.0 - fill_a);
-            color = prim.fill.rgb * fill_a + prim.stroke.rgb * stroke_a * (1.0 - fill_a);
+            color = fcol.rgb * fill_a + prim.stroke.rgb * stroke_a * (1.0 - fill_a);
             color += prim.glow.rgb * halo(d, prim.glow.w);
         }
         // Arc: a = (kind, cx, cy, radius), b = (thickness, start angle, sweep, blur)
@@ -349,12 +373,18 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                 }
             }
         }
-        // Backdrop: a radial gradient from fill (center) to stroke (edge).
+        // Backdrop: radial gradient from fill (center) to stroke (edge), or custom Paint gradient.
         // a = (kind, cx, cy, radius)
         case 5u: {
-            let t = clamp(length(px - prim.a.yz) / prim.a.w, 0.0, 1.0);
-            color = mix(prim.fill.rgb, prim.stroke.rgb, smoothstep(0.0, 1.0, t));
-            alpha = 1.0;
+            if prim.grad_a.x > 0.5 {
+                let fcol = eval_fill(prim, px);
+                alpha = fcol.a;
+                color = fcol.rgb * alpha;
+            } else {
+                let t = clamp(length(px - prim.a.yz) / max(prim.a.w, 1.0), 0.0, 1.0);
+                alpha = prim.fill.a;
+                color = mix(prim.fill.rgb, prim.stroke.rgb, smoothstep(0.0, 1.0, t)) * alpha;
+            }
         }
         // Raymarched fire and smoke: a = (kind, cx, cy, radius), b = (age, opacity, 0, 0)
         case 6u: {
@@ -366,10 +396,11 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
             let d = sd_polygon(px, u32(prim.uv.x + 0.5), u32(prim.uv.y + 0.5));
             let outer = coverage(d, prim.a.w);
             let inner = coverage(d + prim.a.y, prim.a.w);
-            let fill_a = prim.fill.a * select(outer, inner, prim.a.y > 0.0);
+            let fcol = eval_fill(prim, px);
+            let fill_a = fcol.a * select(outer, inner, prim.a.y > 0.0);
             let stroke_a = prim.stroke.a * max(outer - inner, 0.0) * select(0.0, 1.0, prim.a.y > 0.0);
             alpha = fill_a + stroke_a * (1.0 - fill_a);
-            color = prim.fill.rgb * fill_a + prim.stroke.rgb * stroke_a * (1.0 - fill_a);
+            color = fcol.rgb * fill_a + prim.stroke.rgb * stroke_a * (1.0 - fill_a);
             color += prim.glow.rgb * halo(d, prim.glow.w);
             // An arrival's flood enters the filled glass, as on a card.
             if prim.pool.w > 0.0 {
