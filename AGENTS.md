@@ -1,3 +1,4 @@
+<!-- tallow -->
 # Psychopomp Agent Guide
 
 Psychopomp is a Rust prototype for deterministic, code-first motion graphics:
