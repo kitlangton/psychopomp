@@ -15,7 +15,7 @@ use crate::{
 };
 
 pub(super) fn audit_stage_rune_cards(plan: &StagePlan, duration_secs: f64) -> Result<()> {
-    for element in &plan.elements {
+    for element in plan.all_elements() {
         if let StageElement::RuneCard { id, surface, .. } = element {
             let tl = crate::render::rune_surface::build_surface_timeline(surface);
             let mut rules: Vec<rune::motion_gate::Allow> = vec![
@@ -66,7 +66,7 @@ pub(super) fn validate_recipe(
     })?;
     // Icon SVG must parse before any GPU work, so a typo in path data fails
     // validation rather than the first render.
-    for element in &plan.elements {
+    for element in plan.all_elements() {
         if let StageElement::Icon {
             id,
             icon,
@@ -103,7 +103,7 @@ impl PreparedStage {
         renderer: &mut HeadlessRenderer,
     ) -> Result<Self> {
         let mut sizes = footage.clone();
-        for element in &plan.elements {
+        for element in plan.all_elements() {
             if let StageElement::RuneCard { id, surface, .. } = element {
                 sizes.insert(
                     id.clone(),

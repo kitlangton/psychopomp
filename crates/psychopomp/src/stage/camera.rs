@@ -404,6 +404,15 @@ fn footprint(element: &StageElement, at: Vec3, scale: f32) -> Option<Footprint> 
             let h = lines.len().max(1) as f32 * spec.size * spec.line_height;
             (vec2(w * 0.5, h * 0.5), Vec2::ZERO)
         }
+        StageElement::Group { clip, .. } => match clip {
+            Some(crate::rig::ClipMask::Rect { size, offset, .. }) => {
+                (Vec2::from(*size) * 0.5, Vec2::from(*offset))
+            }
+            Some(crate::rig::ClipMask::Circle { radius, offset, .. }) => {
+                (Vec2::splat(*radius), Vec2::from(*offset))
+            }
+            _ => return None,
+        },
         StageElement::Beam { .. }
         | StageElement::Packet { .. }
         | StageElement::Path { .. }

@@ -26,6 +26,9 @@ struct Prim {
     mask_color: vec4<f32>, // dissolve: rim tone, linear RGB
     grad_a: vec4<f32>,     // fill gradient: mode (0 solid, 1 linear, 2 radial), dx/cx, dy/cy, span/radius
     grad_b: vec4<f32>,     // fill gradient end/outer straight linear RGBA
+    clip_a: vec4<f32>,     // group matte: mode (0 none, 1 rect, 2 circle, 3 text-matte), cx, cy, rotation_rad
+    clip_b: vec4<f32>,     // rect: (half w, half h, corner, feather); circle: (r, 0, 0, feather); text: (half w, half h, gamma, invert)
+    clip_uv: vec4<f32>,    // text-matte: atlas (u0, v0, u1, v1); rect/circle: (invert, 0, 0, 0)
 };
 
 @group(0) @binding(0) var<uniform> globals: Globals;
@@ -222,11 +225,49 @@ fn footage_sample(at: vec2<f32>, slot: vec4<f32>, radius: f32) -> vec4<f32> {
     return sum / 16.0;
 }
 
-@fragment
-fn fs(in: VOut) -> @location(0) vec4<f32> {
-    let prim = prims[in.index];
+fn eval_clip(prim: Prim, px: vec2<f32>) -> f32 {
+    let mode = u32(prim.clip_a.x + 0.5);
+    if mode == 0u {
+        return 1.0;
+    }
+    let rel = px - prim.clip_a.yz;
+    let c = cos(-prim.clip_a.w);
+    let s = sin(-prim.clip_a.w);
+    let local = vec2<f32>(rel.x * c - rel.y * s, rel.x * s + rel.y * c);
+    if mode == 1u {
+        let d = sd_round_box(local, prim.clip_b.xy, prim.clip_b.z);
+        var cov = coverage(d, prim.clip_b.w);
+        if prim.clip_uv.x > 0.5 {
+            cov = 1.0 - cov;
+        }
+        return cov;
+    }
+    if mode == 2u {
+        let d = length(local) - prim.clip_b.x;
+        var cov = coverage(d, prim.clip_b.w);
+        if prim.clip_uv.x > 0.5 {
+            cov = 1.0 - cov;
+        }
+        return cov;
+    }
+    let half = max(prim.clip_b.xy, vec2<f32>(0.5));
+    let f = (local + half) / (2.0 * half);
+    var cov = 0.0;
+    if all(f >= vec2<f32>(0.0)) && all(f <= vec2<f32>(1.0)) {
+        let uv = mix(prim.clip_uv.xy, prim.clip_uv.zw, f) / globals.viewport.zw;
+        cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
+        if prim.clip_b.z > 0.0 {
+            cov = pow(clamp(cov, 0.0, 1.0), prim.clip_b.z);
+        }
+    }
+    if prim.clip_b.w > 0.5 {
+        cov = 1.0 - cov;
+    }
+    return cov;
+}
+
+fn eval_prim_unclipped(prim: Prim, px: vec2<f32>) -> vec4<f32> {
     let kind = u32(prim.a.x + 0.5);
-    let px = in.px;
     var color = vec3<f32>(0.0);
     var alpha = 0.0;
 
@@ -512,4 +553,14 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
         alpha = alpha * burn.x;
     }
     return vec4<f32>(color, alpha);
+}
+
+@fragment
+fn fs(in: VOut) -> @location(0) vec4<f32> {
+    let prim = prims[in.index];
+    let clip_cov = eval_clip(prim, in.px);
+    if clip_cov <= 0.0 {
+        return vec4<f32>(0.0);
+    }
+    return eval_prim_unclipped(prim, in.px) * clip_cov;
 }

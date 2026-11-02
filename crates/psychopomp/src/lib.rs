@@ -35,6 +35,7 @@ pub mod plan;
 pub mod playback;
 pub mod plot;
 pub mod readout;
+pub mod rig;
 pub mod rolling;
 pub mod rune_surface;
 pub mod score;

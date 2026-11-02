@@ -28,6 +28,7 @@ use crate::{
     paint::Paint,
     plan::MediaPlan,
     plan::SpringPlan,
+    rig::{ClipMask, GROUP_DEFAULTS},
     tone::Tone,
     typography::{TYPE_BASE_DEFAULTS, TypePlan},
 };
@@ -347,6 +348,22 @@ pub enum StageElement {
         at: [f32; 3],
         spec: TypePlan,
     },
+    /// Hierarchical transform rig with an optional `pivot` and GPU `ClipMask`
+    /// (`Rect`, `Circle`, or `TextMatte` glyph silhouette) applied to all `children`.
+    #[serde(rename_all = "camelCase")]
+    Group {
+        id: String,
+        at: [f32; 3],
+        #[serde(default, skip_serializing_if = "is_zero2")]
+        pivot: [f32; 2],
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        clip: Option<ClipMask>,
+        children: Vec<StageElement>,
+    },
+}
+
+fn is_zero2(v: &[f32; 2]) -> bool {
+    v[0].abs() <= f32::EPSILON && v[1].abs() <= f32::EPSILON
 }
 
 fn default_rune_corner() -> f32 {
@@ -985,6 +1002,53 @@ impl StageElement {
         }
     }
 
+    /// Hierarchical transform group at `at`.
+    pub fn group(id: &str, at: [f32; 3]) -> Self {
+        Self::Group {
+            id: id.into(),
+            at,
+            pivot: [0.0, 0.0],
+            clip: None,
+            children: Vec::new(),
+        }
+    }
+
+    /// Pivot offset (in local pixels relative to `at`) around which a `Group` scales and rotates.
+    pub fn pivot(mut self, xy: [f32; 2]) -> Self {
+        let Self::Group { pivot, .. } = &mut self else {
+            panic!("only groups take pivot(), not '{}'", self.id());
+        };
+        *pivot = xy;
+        self
+    }
+
+    /// Attach a GPU `ClipMask` (`Rect`, `Circle`, or `TextMatte`) to a `Group`.
+    pub fn clip(mut self, mask: ClipMask) -> Self {
+        let Self::Group { clip, .. } = &mut self else {
+            panic!("only groups take clip(), not '{}'", self.id());
+        };
+        *clip = Some(mask);
+        self
+    }
+
+    /// Append a child element to a `Group` (with `child.at` in local coordinates relative to the group).
+    pub fn child(mut self, element: StageElement) -> Self {
+        let Self::Group { children, .. } = &mut self else {
+            panic!("only groups take child(), not '{}'", self.id());
+        };
+        children.push(element);
+        self
+    }
+
+    /// Append multiple children to a `Group`.
+    pub fn children(mut self, elements: impl IntoIterator<Item = StageElement>) -> Self {
+        let Self::Group { children, .. } = &mut self else {
+            panic!("only groups take children(), not '{}'", self.id());
+        };
+        children.extend(elements);
+        self
+    }
+
     /// Fill of a flat shape with an explicit `Paint` (solid hex, linear, or radial gradient).
     pub fn paint(mut self, paint: Paint) -> Self {
         let Self::Shape { fill, .. } = &mut self else {
@@ -1140,7 +1204,8 @@ impl StageElement {
             | Self::Footage { id, .. }
             | Self::RuneCard { id, .. }
             | Self::Backdrop { id, .. }
-            | Self::Type { id, .. } => id,
+            | Self::Type { id, .. }
+            | Self::Group { id, .. } => id,
         }
     }
 
@@ -1157,7 +1222,8 @@ impl StageElement {
             | Self::Icon { at, .. }
             | Self::Footage { at, .. }
             | Self::RuneCard { at, .. }
-            | Self::Type { at, .. } => Some(*at),
+            | Self::Type { at, .. }
+            | Self::Group { at, .. } => Some(*at),
             Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
@@ -1184,6 +1250,7 @@ impl StageElement {
             }),
             Self::Label { .. }
             | Self::Type { .. }
+            | Self::Group { .. }
             | Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
@@ -1290,6 +1357,10 @@ impl StageElement {
             Self::Backdrop { .. } => &["opacity"],
             Self::Type { .. } => &[
                 "opacity", "x", "y", "z", "scale", "rotation", "blur", "tracking",
+            ],
+            Self::Group { .. } => &[
+                "opacity", "x", "y", "z", "scale", "scale-x", "scale-y", "rotation", "blur",
+                "clip-x", "clip-y", "clip-w",
             ],
         }
     }
@@ -1471,6 +1542,7 @@ impl StageElement {
             ],
             Self::Backdrop { .. } => &[("opacity", 1.0)],
             Self::Type { .. } => &TYPE_BASE_DEFAULTS,
+            Self::Group { .. } => &GROUP_DEFAULTS,
         }
     }
 
@@ -1540,8 +1612,23 @@ impl StagePost {
 }
 
 impl StagePlan {
+    /// Preorder traversal of all elements, including children nested inside `Group`s.
+    pub fn all_elements(&self) -> Vec<&StageElement> {
+        fn collect<'a>(items: &'a [StageElement], out: &mut Vec<&'a StageElement>) {
+            for item in items {
+                out.push(item);
+                if let StageElement::Group { children, .. } = item {
+                    collect(children, out);
+                }
+            }
+        }
+        let mut out = Vec::with_capacity(self.elements.len());
+        collect(&self.elements, &mut out);
+        out
+    }
+
     pub fn element(&self, id: &str) -> Option<&StageElement> {
-        self.elements.iter().find(|element| element.id() == id)
+        self.all_elements().into_iter().find(|element| element.id() == id)
     }
 
     /// What a stage channel (`camera.z`) or an element's (`client.opacity`)
@@ -1611,12 +1698,23 @@ impl StagePlan {
                 && (0.0..=1.0).contains(&self.post.backdrop),
             "stage post values are out of range"
         );
+        let all = self.all_elements();
         ensure!(
-            !self.elements.is_empty() && self.elements.len() <= 128,
-            "a stage has one to 128 elements"
+            !all.is_empty() && all.len() <= 256,
+            "a stage has one to 256 total elements"
         );
+        fn check_group_depth(items: &[StageElement], depth: usize) -> Result<()> {
+            ensure!(depth <= 8, "stage group nesting exceeds maximum depth 8");
+            for item in items {
+                if let StageElement::Group { children, .. } = item {
+                    check_group_depth(children, depth + 1)?;
+                }
+            }
+            Ok(())
+        }
+        check_group_depth(&self.elements, 0)?;
         let mut ids = HashSet::new();
-        for element in &self.elements {
+        for element in all {
             let id = element.id();
             if id.is_empty()
                 || id.chars().any(|c| c.is_whitespace() || c == '.')
@@ -1881,6 +1979,24 @@ impl StagePlan {
                 }
                 StageElement::Type { spec, .. } => {
                     spec.validate(id)?;
+                }
+                StageElement::Group {
+                    pivot,
+                    clip,
+                    children,
+                    ..
+                } => {
+                    ensure!(
+                        pivot.iter().all(|v| v.is_finite()),
+                        "group '{id}' pivot must be finite"
+                    );
+                    ensure!(
+                        !children.is_empty(),
+                        "group '{id}' must contain at least one child element"
+                    );
+                    if let Some(mask) = clip {
+                        mask.validate(id)?;
+                    }
                 }
                 StageElement::Label { size, spans, .. } => {
                     ensure!(
@@ -2624,6 +2740,57 @@ impl StageActor {
         scene.ease(&ch, at_nanos, to_em, seconds, Ease::Smootherstep);
         at_nanos + whole_millis(seconds)
     }
+
+    /// Open a `Group`'s `Rect` or `Circle` `ClipMask` from closed (`-aperture`) to
+    /// full aperture (`0.0`) over `seconds`.
+    pub fn wipe_open(
+        &mut self,
+        scene: &mut PlanBuilder,
+        group: &str,
+        at_nanos: u64,
+        seconds: f32,
+    ) -> u64 {
+        let closed = match self.plan.element(group) {
+            Some(StageElement::Group {
+                clip: Some(ClipMask::Rect { size, .. }),
+                ..
+            }) => -size[0],
+            Some(StageElement::Group {
+                clip: Some(ClipMask::Circle { radius, .. }),
+                ..
+            }) => -*radius,
+            _ => panic!("wipe_open requires a Group '{group}' with a Rect or Circle ClipMask"),
+        };
+        let cw = self.channel(scene, &format!("{group}.clip-w"), closed);
+        scene.set(&cw, at_nanos, closed);
+        scene.ease(&cw, at_nanos, 0.0, seconds, Ease::Smootherstep);
+        at_nanos + whole_millis(seconds)
+    }
+
+    /// Spring a `Group` into place around its `pivot` from `from_offset` and `from_deg`.
+    pub fn hinge_in(
+        &mut self,
+        scene: &mut PlanBuilder,
+        group: &str,
+        at_nanos: u64,
+        from_offset: [f32; 2],
+        from_deg: f32,
+        spring: SpringPlan,
+    ) -> u64 {
+        let op = self.channel(scene, &format!("{group}.opacity"), 0.0);
+        scene.set(&op, at_nanos, 0.0);
+        scene.ease(&op, at_nanos, 1.0, 0.22, Ease::Smootherstep);
+        let xc = self.channel(scene, &format!("{group}.x"), from_offset[0]);
+        scene.set(&xc, at_nanos, from_offset[0]);
+        scene.spring_with(&xc, at_nanos, 0.0, spring);
+        let yc = self.channel(scene, &format!("{group}.y"), from_offset[1]);
+        scene.set(&yc, at_nanos, from_offset[1]);
+        scene.spring_with(&yc, at_nanos, 0.0, spring);
+        let rc = self.channel(scene, &format!("{group}.rotation"), from_deg.to_radians());
+        scene.set(&rc, at_nanos, from_deg.to_radians());
+        scene.spring_with(&rc, at_nanos, 0.0, spring);
+        at_nanos + whole_millis(0.55)
+    }
 }
 
 /// Effect beats: lightning, charge, dissolve, scans, and shields. Each writes
@@ -3185,7 +3352,15 @@ mod tests {
                 { "kind": "footage", "id": "clip", "at": [1600, 900, -200], "size": [320, 180],
                   "clip": { "media": "clip" }, "mask": { "shape": "circle" } },
                 { "kind": "rune-card", "id": "rune", "at": [1200, 500, 0], "size": [480, 320],
-                  "surface": { "surface": { "recipe": "note", "markdown": "ok" } } }
+                  "surface": { "surface": { "recipe": "note", "markdown": "ok" } } },
+                { "kind": "backdrop", "id": "wash", "paint": "#111827" },
+                { "kind": "type", "id": "headline", "at": [960, 200, 0],
+                  "spec": { "text": "HELLO WORLD", "size": 64.0, "split": "word" } },
+                { "kind": "group", "id": "rig", "at": [960, 540, 0],
+                  "clip": { "kind": "text-matte", "text": "MOTION", "size": 120.0 },
+                  "children": [
+                    { "kind": "shape", "id": "rig-fill", "at": [0, 0, 0], "shape": { "rect": [400, 140] } }
+                  ] }
             ]))
             .unwrap(),
         );
@@ -3205,10 +3380,13 @@ mod tests {
             "icon",
             "footage",
             "rune-card",
+            "backdrop",
+            "type",
+            "group",
         ];
         for kind in kinds {
             assert!(
-                plan.elements
+                plan.all_elements()
                     .iter()
                     .any(|e| serde_json::to_value(e).unwrap()["kind"] == kind),
                 "the test plan lacks a {kind}"
@@ -3226,7 +3404,7 @@ mod tests {
                 "stage property '{property}' has no default"
             );
         }
-        for element in &plan.elements {
+        for element in plan.all_elements() {
             let defaults = element.channel_defaults();
             let names = defaults.iter().map(|(name, _)| *name).collect::<Vec<_>>();
             let properties = element.properties();
