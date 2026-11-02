@@ -221,6 +221,17 @@ impl PlanBuilder {
         self
     }
 
+    pub fn add_font(
+        &mut self,
+        family: impl Into<String>,
+        path: impl Into<std::path::PathBuf>,
+    ) -> &mut Self {
+        self.plan
+            .fonts
+            .push(crate::face::FontFacePlan::new(family, path));
+        self
+    }
+
     pub fn actor(
         &mut self,
         id: impl Into<String>,

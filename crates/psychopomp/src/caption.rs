@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     anchor::{self, AnchorPlan},
     author::{ActorHandle, ContinuousHandle, PlanBuilder},
+    face::Face,
     tone::Tone,
 };
 
@@ -20,6 +21,8 @@ pub struct CaptionPlan {
     pub origin: [f32; 2],
     #[serde(default, skip_serializing_if = "CaptionAlign::is_default")]
     pub align: CaptionAlign,
+    #[serde(default, skip_serializing_if = "Face::is_mono")]
+    pub face: Face,
     pub size: f32,
     pub lines: Vec<Vec<CaptionSpanPlan>>,
     /// A rounded surface behind the text, as for a status chip.
@@ -92,12 +95,18 @@ impl CaptionPlan {
         Self {
             origin,
             align: CaptionAlign::Left,
+            face: Face::Mono,
             size,
             lines: vec![spans],
             chip: false,
             anchors: Vec::new(),
             glass: false,
         }
+    }
+
+    pub fn face(mut self, face: Face) -> Self {
+        self.face = face;
+        self
     }
 
     pub fn aligned(mut self, align: CaptionAlign) -> Self {

@@ -28,6 +28,21 @@ pub(super) enum Loaded {
 }
 
 impl Loaded {
+    /// The plan, or each of a reel's segment plans.
+    pub(super) fn plans(&self) -> Box<dyn Iterator<Item = &PreparedPlan> + '_> {
+        match self {
+            Self::Plan(plan) => Box::new(std::iter::once(plan.as_ref())),
+            Self::Reel(reel) => Box::new(reel.segments().iter()),
+        }
+    }
+
+    pub(super) fn set_overrides(&mut self, overrides: &std::collections::HashMap<String, f32>) {
+        match self {
+            Self::Plan(plan) => plan.overrides.clone_from(overrides),
+            Self::Reel(reel) => reel.set_overrides(overrides),
+        }
+    }
+
     pub(super) async fn load(path: &Path, theme: Theme) -> Result<(Self, HeadlessRenderer)> {
         let base = path.parent().unwrap_or_else(|| Path::new("."));
         Self::prepare(PlanFile::read(path)?, base, theme).await

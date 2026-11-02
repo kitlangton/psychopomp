@@ -405,7 +405,7 @@ pub(crate) fn analyze_placements(
     let sample_pairs = out.stdout.len() / 8;
     let mut left = Vec::with_capacity(sample_pairs);
     let mut right = Vec::with_capacity(sample_pairs);
-    for frame in out.stdout.chunks_exact(8) {
+    for frame in out.stdout.as_chunks::<8>().0 {
         left.push(f32::from_le_bytes(frame[0..4].try_into().unwrap()));
         right.push(f32::from_le_bytes(frame[4..8].try_into().unwrap()));
     }

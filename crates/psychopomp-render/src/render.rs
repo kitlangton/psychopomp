@@ -11,6 +11,7 @@ use wgpu::util::DeviceExt;
 
 use psychopomp::code::{CodeLine, LineId, PlacedLine, StyledSpan, SyntaxStyle};
 
+mod art;
 mod callout;
 mod caption;
 mod changed_files;
@@ -35,6 +36,9 @@ pub(crate) mod rune_notes;
 pub(crate) mod rune_surface;
 pub(crate) mod rune_timeline;
 mod sequence;
+mod shader_layer;
+pub(crate) use shader_layer::validate_layer as validate_stage_shader;
+mod smoothing;
 mod stage;
 mod task;
 mod terminal;
@@ -50,6 +54,7 @@ mod window;
 mod wipe;
 use text::{PlainTextSpec, TextSprite, blend_pixel, blend_pixel_at, make_sprite, paint_rect};
 
+pub(crate) use art::PreparedArt;
 pub(crate) use callout::CalloutPose;
 pub(crate) use changed_files::ChangedFilesLayout;
 pub(crate) use chat::ChatGlyphs;
@@ -69,7 +74,8 @@ pub(crate) use rich_text::{RichTextGlyphs, RichTextSource, parse as parse_rich_t
 #[cfg(test)]
 pub(crate) use stage::{POST_SHADER, PRIMITIVE_SHADER, SHADER_STRUCTS};
 pub(crate) use stage::{
-    StageBoundsItem, StageGpu, icon_svg, stage_anchor, stage_bounds, stage_rune_anchor,
+    StageBoundsItem, StageGpu, icon_svg, matte_path_bounds, stage_anchor, stage_bounds,
+    stage_rune_anchor,
 };
 pub use task::{BubblePose, ContentPose, TaskContentFrame, TaskVisualFrame};
 pub(crate) use terminal::TerminalNames;
@@ -516,6 +522,19 @@ impl HeadlessRenderer {
             Some(p) => p.tone(tone),
             None => self.theme.tone(tone),
         }
+    }
+
+    pub(crate) fn load_plan_fonts(
+        &mut self,
+        base: &std::path::Path,
+        fonts: &[psychopomp::face::FontFacePlan],
+    ) -> Result<()> {
+        if fonts.is_empty() {
+            return Ok(());
+        }
+        fonts::load_custom_fonts(&mut self.font_system, base, fonts)?;
+        self.plain_text_sprites.clear();
+        Ok(())
     }
 
     pub fn set_theme(&mut self, theme: Theme) {

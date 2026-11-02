@@ -241,7 +241,7 @@ impl FootageInputs {
         media: &[MediaPlan],
         channels: &[ContinuousChannelPlan],
     ) -> Result<()> {
-        for element in &recipe.elements {
+        for element in recipe.all_elements() {
             let StageElement::Footage {
                 id,
                 size,

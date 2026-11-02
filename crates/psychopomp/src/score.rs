@@ -948,10 +948,17 @@ impl Stage {
         })
     }
 
-    /// Morph `form` to shape `index` over `seconds`; spans `seconds`.
+    /// Morph a form to shape `index`, or an art to morph target `index` (0 is
+    /// the art itself), over `seconds`; spans `seconds`.
     pub fn morph(&self, form: impl Into<String>, index: usize, seconds: f32) -> impl Beat + '_ {
         let form = form.into();
         action(move |scene, at| self.inner.clone().morph(scene, &form, at, index, seconds))
+    }
+
+    /// Draw an art's strokes on (`trim-end` 0 → 1) over `seconds`; spans `seconds`.
+    pub fn trim_in(&self, art: impl Into<String>, seconds: f32) -> impl Beat + '_ {
+        let art = art.into();
+        action(move |scene, at| self.inner.clone().trim_in(scene, &art, at, seconds))
     }
 
     /// Strike lightning along `bolt`; spans until the first return stroke connects.

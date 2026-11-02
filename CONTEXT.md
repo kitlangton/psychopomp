@@ -161,6 +161,15 @@ file delivery selects a theme explicitly so a personal preference cannot silentl
 change an export. Original preserves existing scene colors. Semantic status colors
 and explicit non-palette art colors are not indiscriminately tinted.
 
+## Style Kit
+
+A look picked from the brief (`psychopomp::kit`): canvas, palette, frame post,
+Stage ground, a display and a text type voice with their bundled fonts, and a
+few primitives that suit them. Explainer (dark CommitMono cards, orbs, and
+header/chip/footer captions), Editorial (warm paper, serif), Kinetic Poster
+(portrait Swiss type), and Product Showcase (bright, footage in display type).
+A kit is a value, not a framework; the explainer kit writes nothing to a plan.
+
 ## Rich Text
 
 Immutable Markdown in a bounded overlay, shaped as proportional rich runs with
@@ -225,6 +234,9 @@ the rim it crawls. A **Shield** is a forcefield bubble around an element that
 ripples where packets cross it or bolts strike it. A card's **Dissolve** is a
 reversible burn clock: a noisy front with a hot rim and ash; played backwards it
 materializes the card. A **Scan** sweeps a line down a card.
+**Art** is vector artwork from an SVG: its strokes **trim** (draw on and off by
+arc length, each on its own or as one pen line) and it **morphs** to other
+SVGs, each subpath matched to a target subpath and cut to equal-length curves.
 
 ## Stage Camera
 
@@ -275,6 +287,24 @@ stroke that draws on along its outline from twelve o'clock. Figures turn about
 their center; an arc may carry arrowheads. Like a card, a figure's outline catches
 a passing packet's reflection and its fill takes an arrival's flood; a flash lifts
 its stroke, not the whole fill.
+
+## Group
+
+A Stage element that holds other elements in its own local space: a transform
+rig. Its position, scale, stretch, skew, rotation, opacity, and blur compose
+down the hierarchy about its pivot, so a hand turns with its arm. A group may
+carry a **Matte** (`ClipMask`): a rect, circle, polygon, SVG path, or display
+type, in the group's local space, outside of which (or inside, inverted) its
+children do not show. Elements slide in from behind a matte's invisible edge.
+
+## Shader Layer
+
+A Stage element that paints a custom WGSL fragment module on a camera-facing
+rounded quad. It is light in the linear-HDR Stage like any other: it moves,
+sorts by depth, blurs through the shutter, blooms above 1, and takes its
+groups' Matte. Its typed **Shader Parameters** (scalars and sRGB colors) are
+ordinary channels, so a layer is animated like everything else and tuned live
+in Studio, where a moved knob pins its channel for the whole film.
 
 ## Path
 

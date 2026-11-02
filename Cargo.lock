@@ -2509,6 +2509,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-art"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-background-compaction"
 version = "0.1.0"
 dependencies = [
@@ -2627,6 +2635,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-editorial"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-effect-succeed-slides"
 version = "0.1.0"
 dependencies = [
@@ -2679,6 +2695,15 @@ dependencies = [
  "anyhow",
  "psychopomp",
  "psychopomp-media",
+ "serde_json",
+]
+
+[[package]]
+name = "psychopomp-groups"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
  "serde_json",
 ]
 
@@ -2746,6 +2771,14 @@ dependencies = [
  "anyhow",
  "psychopomp",
  "serde_json",
+]
+
+[[package]]
+name = "psychopomp-kinetic-poster"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
 ]
 
 [[package]]
@@ -2817,6 +2850,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-product-launch"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-quark-before-after"
 version = "0.1.0"
 dependencies = [
@@ -2850,6 +2891,7 @@ dependencies = [
  "rune-theme-opencode",
  "serde",
  "serde_json",
+ "swash",
  "wgpu",
  "winit",
  "zune-jpeg",
@@ -2874,6 +2916,15 @@ dependencies = [
 
 [[package]]
 name = "psychopomp-rune-surfaces"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "serde_json",
+]
+
+[[package]]
+name = "psychopomp-shaders"
 version = "0.1.0"
 dependencies = [
  "anyhow",

@@ -113,6 +113,7 @@ pub(crate) fn encode_exposures_for<K: PartialEq>(
 /// shutter centered on `center` (clamped to `span`), with weights summing
 /// to 1. The weights ease off over the outer quarter at each end, so a fast
 /// highlight's streak fades out instead of ending on a hard copy.
+#[cfg(test)]
 pub(crate) fn exposure(center: f64, span: f64, samples: u32) -> Vec<(f64, f32)> {
     let default_shutter = f64::from(SHUTTER_ANGLE) / 360.0 / f64::from(FPS);
     exposure_with_shutter(center, span, default_shutter, samples)

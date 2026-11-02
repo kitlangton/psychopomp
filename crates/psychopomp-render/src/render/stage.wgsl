@@ -26,6 +26,13 @@ struct Prim {
     mask_color: vec4<f32>, // dissolve: rim tone, linear RGB
     grad_a: vec4<f32>,     // fill gradient: mode (0 solid, 1 linear, 2 radial), dx/cx, dy/cy, span/radius
     grad_b: vec4<f32>,     // fill gradient end/outer straight linear RGBA
+    clip_a: vec4<f32>,     // group matte: mode (0 none, 1 rect, 2 circle, 3 atlas sprite), screen center, pixels per local unit
+    clip_b: vec4<f32>,     // local units. rect: (half w, half h, corner, feather); circle: (r, 0, 0, feather); sprite: (half w, half h, 0, invert)
+    clip_m: vec4<f32>,     // screen-to-local linear map, columns (x.x, x.y, y.x, y.y)
+    clip_uv: vec4<f32>,    // sprite: atlas (u0, v0, u1, v1); rect/circle: (invert, 0, 0, 0)
+    warp: vec4<f32>,       // grouped leaf: inverse leftover map, columns, about warp_c.xy
+    warp_c: vec4<f32>,     // warp center x, y, warp on, rasterize `raster` instead of `bbox`
+    raster: vec4<f32>,     // screen rectangle to rasterize when warp_c.w is set
 };
 
 @group(0) @binding(0) var<uniform> globals: Globals;
@@ -40,13 +47,16 @@ struct VOut {
     @builtin(position) position: vec4<f32>,
     @location(0) px: vec2<f32>,
     @location(1) @interpolate(flat) index: u32,
+    // Where the primitive is evaluated: `px` through a grouped leaf's warp.
+    @location(2) src: vec2<f32>,
 };
 
 @vertex
 fn vs(@builtin(vertex_index) vertex: u32, @builtin(instance_index) instance: u32) -> VOut {
     let prim = prims[instance];
     let corner = vec2<f32>(f32(vertex & 1u), f32((vertex >> 1u) & 1u));
-    let px = mix(prim.bbox.xy, prim.bbox.zw, corner);
+    let rect = select(prim.bbox, prim.raster, prim.warp_c.w > 0.5);
+    let px = mix(rect.xy, rect.zw, corner);
     var out: VOut;
     out.position = vec4<f32>(
         px.x / globals.viewport.x * 2.0 - 1.0,
@@ -56,6 +66,10 @@ fn vs(@builtin(vertex_index) vertex: u32, @builtin(instance_index) instance: u32
     );
     out.px = px;
     out.index = instance;
+    out.src = px;
+    if prim.warp_c.z > 0.5 {
+        out.src = prim.warp_c.xy + mat2x2<f32>(prim.warp.xy, prim.warp.zw) * (px - prim.warp_c.xy);
+    }
     return out;
 }
 
@@ -114,12 +128,17 @@ fn direction(angle: f32) -> vec2<f32> {
 
 // Evaluate solid, linear-gradient, or radial-gradient straight linear RGBA fill.
 fn eval_fill(prim: Prim, px: vec2<f32>) -> vec4<f32> {
+    return eval_fill_in(prim, px, prim.bbox);
+}
+
+// `eval_fill` with the gradient laid across `frame` (x0, y0, x1, y1).
+fn eval_fill_in(prim: Prim, px: vec2<f32>, frame: vec4<f32>) -> vec4<f32> {
     let mode = u32(prim.grad_a.x + 0.5);
     if mode == 0u {
         return prim.fill;
     }
-    let span = max(prim.bbox.zw - prim.bbox.xy, vec2<f32>(1.0));
-    let uv = clamp((px - prim.bbox.xy) / span, vec2<f32>(0.0), vec2<f32>(1.0));
+    let span = max(frame.zw - frame.xy, vec2<f32>(1.0));
+    let uv = clamp((px - frame.xy) / span, vec2<f32>(0.0), vec2<f32>(1.0));
     if mode == 1u {
         let dir = prim.grad_a.yz;
         let reach = max(abs(dir.x) + abs(dir.y), 1.0e-4);
@@ -185,6 +204,39 @@ fn sd_polygon(p: vec2<f32>, first: u32, count: u32) -> f32 {
     return s * sqrt(d);
 }
 
+// Signed distance to rings filled as one shape: negative inside by nonzero
+// winding, or by alternation when `even_odd`. Points are (x, y, ring start, 0),
+// each ring closed; the edge into a ring's first point is no edge.
+fn sd_compound(p: vec2<f32>, first: u32, count: u32, even_odd: bool) -> f32 {
+    var d = 1.0e12;
+    var winding = 0;
+    for (var k = 0u; k + 1u < count; k = k + 1u) {
+        let next = points[first + k + 1u];
+        if next.z > 0.5 {
+            continue;
+        }
+        let a = points[first + k].xy;
+        let b = next.xy;
+        let e = b - a;
+        let w = p - a;
+        let q = w - e * clamp(dot(w, e) / max(dot(e, e), 1.0e-6), 0.0, 1.0);
+        d = min(d, dot(q, q));
+        let side = e.x * w.y - e.y * w.x;
+        if a.y <= p.y {
+            if b.y > p.y && side > 0.0 {
+                winding = winding + 1;
+            }
+        } else if b.y <= p.y && side < 0.0 {
+            winding = winding - 1;
+        }
+    }
+    var inside = winding != 0;
+    if even_odd {
+        inside = (winding & 1) != 0;
+    }
+    return select(1.0, -1.0, inside) * sqrt(d);
+}
+
 // One footage texel as premultiplied linear light, held inside its slot
 // (x0, y0, x1, y1) so neighbors in the atlas never bleed in.
 fn footage_texel(p: vec2<i32>, slot: vec4<f32>) -> vec4<f32> {
@@ -222,11 +274,37 @@ fn footage_sample(at: vec2<f32>, slot: vec4<f32>, radius: f32) -> vec4<f32> {
     return sum / 16.0;
 }
 
-@fragment
-fn fs(in: VOut) -> @location(0) vec4<f32> {
-    let prim = prims[in.index];
+fn eval_clip(prim: Prim, px: vec2<f32>) -> f32 {
+    let mode = u32(prim.clip_a.x + 0.5);
+    if mode == 0u {
+        return 1.0;
+    }
+    let local = mat2x2<f32>(prim.clip_m.xy, prim.clip_m.zw) * (px - prim.clip_a.yz);
+    let aa = prim.clip_a.w;
+    var cov = 0.0;
+    var invert = prim.clip_uv.x > 0.5;
+    if mode == 1u {
+        let d = sd_round_box(local, prim.clip_b.xy, prim.clip_b.z);
+        cov = coverage(d * aa, prim.clip_b.w * aa);
+    } else if mode == 2u {
+        cov = coverage((length(local) - prim.clip_b.x) * aa, prim.clip_b.w * aa);
+    } else {
+        let half = max(prim.clip_b.xy, vec2<f32>(0.5));
+        let f = (local + half) / (2.0 * half);
+        if all(f >= vec2<f32>(0.0)) && all(f <= vec2<f32>(1.0)) {
+            let uv = mix(prim.clip_uv.xy, prim.clip_uv.zw, f) / globals.viewport.zw;
+            cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
+        }
+        invert = prim.clip_b.w > 0.5;
+    }
+    if invert {
+        cov = 1.0 - cov;
+    }
+    return cov;
+}
+
+fn eval_prim_unclipped(prim: Prim, px: vec2<f32>) -> vec4<f32> {
     let kind = u32(prim.a.x + 0.5);
-    let px = in.px;
     var color = vec3<f32>(0.0);
     var alpha = 0.0;
 
@@ -337,11 +415,27 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                 color += prim.light_color.rgb * prim.light.w * reflection(r) * coverage(d, prim.a.w) * strength * 0.6;
             }
         }
-        // Text: a = (kind, left, top, blur), b = (width, height, revealed width, 0)
-        // uv = atlas rectangle in texels. light = (shimmer phase, strength, 0, 0).
+        // Text: a = (kind, left, top, blur), b = (width, height, revealed width, rotation_rad)
+        // uv = atlas rectangle in texels.
+        // light = (shimmer phase, shimmer strength, glyph_gamma, 0).
+        // pool = optional stationary clip box (min_x, min_y, max_x, max_y) when pool.z > pool.x.
         case 4u: {
-            let local = (px - prim.a.yz) / prim.b.xy;
-            if all(local >= vec2<f32>(0.0)) && all(local <= vec2<f32>(1.0)) && px.x <= prim.a.y + prim.b.z {
+            var sample_px = px;
+            if abs(prim.b.w) > 1.0e-5 {
+                let center = prim.a.yz + prim.b.xy * 0.5;
+                let rel = px - center;
+                let c = cos(-prim.b.w);
+                let s = sin(-prim.b.w);
+                sample_px = center + vec2<f32>(rel.x * c - rel.y * s, rel.x * s + rel.y * c);
+            }
+            var slit = 1.0;
+            if prim.pool.z > prim.pool.x && prim.pool.w > prim.pool.y {
+                let dx = min(px.x - prim.pool.x, prim.pool.z - px.x);
+                let dy = min(px.y - prim.pool.y, prim.pool.w - px.y);
+                slit = clamp(min(dx, dy) + 0.5, 0.0, 1.0);
+            }
+            let local = (sample_px - prim.a.yz) / prim.b.xy;
+            if slit > 0.0 && all(local >= vec2<f32>(0.0)) && all(local <= vec2<f32>(1.0)) && sample_px.x <= prim.a.y + prim.b.z {
                 let uv = mix(prim.uv.xy, prim.uv.zw, local) / globals.viewport.zw;
                 var cov = textureSampleLevel(atlas, atlas_sampler, uv, 0.0).r;
                 let blur = prim.a.w;
@@ -357,18 +451,19 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                     }
                     cov = sum / 16.0;
                 }
-                alpha = prim.fill.a * cov;
-                color = prim.fill.rgb * alpha;
+                if prim.light.z > 0.0 {
+                    cov = pow(clamp(cov, 0.0, 1.0), prim.light.z);
+                }
+                let fcol = eval_fill(prim, px);
+                alpha = fcol.a * cov * slit;
+                color = fcol.rgb * alpha;
                 if prim.light.y > 0.0 {
-                    // The blog's "broad" ShimmerText: the ink dims by 40% and a
-                    // raised-cosine sheen 0.84 text widths wide sweeps left to
-                    // right once per phase unit.
                     let strength = prim.light.y;
                     let band = (fract(local.x - prim.light.x) - 0.5) / 0.84 + 0.5;
                     let sheen = select(0.0, 0.5 - 0.5 * cos(band * 6.2831853), band > 0.0 && band < 1.0);
                     let base = 1.0 - 0.4 * strength;
                     let lit = 0.85 * strength * sheen;
-                    color = alpha * (prim.fill.rgb * base * (1.0 - lit) + vec3<f32>(0.8) * lit);
+                    color = alpha * (fcol.rgb * base * (1.0 - lit) + vec3<f32>(0.8) * lit);
                     alpha = alpha * (base + lit * (1.0 - base));
                 }
             }
@@ -483,6 +578,14 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
                 alpha = band + alpha * (1.0 - band);
             }
         }
+        // Compound fill: a = (kind, even-odd, 0, blur), uv = (first point, count),
+        // light = the gradient's frame (x0, y0, x1, y1). See `sd_compound`.
+        case 14u: {
+            let d = sd_compound(px, u32(prim.uv.x + 0.5), u32(prim.uv.y + 0.5), prim.a.y > 0.5);
+            let fcol = eval_fill_in(prim, px, prim.light);
+            alpha = fcol.a * coverage(d, prim.a.w);
+            color = fcol.rgb * alpha;
+        }
         default: {}
     }
     if prim.mask.x > 0.0 {
@@ -495,4 +598,14 @@ fn fs(in: VOut) -> @location(0) vec4<f32> {
         alpha = alpha * burn.x;
     }
     return vec4<f32>(color, alpha);
+}
+
+@fragment
+fn fs(in: VOut) -> @location(0) vec4<f32> {
+    let prim = prims[in.index];
+    let clip_cov = eval_clip(prim, in.px);
+    if clip_cov <= 0.0 {
+        return vec4<f32>(0.0);
+    }
+    return eval_prim_unclipped(prim, in.src) * clip_cov;
 }
