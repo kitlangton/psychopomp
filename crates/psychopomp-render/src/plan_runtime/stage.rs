@@ -14,7 +14,7 @@ use crate::{
     footage::StageFootageFrame,
     render::{
         HeadlessRenderer, PreparedArt, StageBoundsItem, StageGpu, icon_svg, matte_path_bounds,
-        stage_bounds,
+        stage_bounds, validate_stage_shader,
     },
 };
 
@@ -106,6 +106,14 @@ pub(super) fn validate_recipe(
         } = element
         {
             matte_path_bounds(d).with_context(|| format!("stage group '{id}' path clip"))?;
+        }
+        // Custom shader WGSL compiles with naga here, so a typo names its
+        // line before any GPU work.
+        if let StageElement::Shader {
+            id, wgsl, params, ..
+        } = element
+        {
+            validate_stage_shader(id, wgsl, params)?;
         }
     }
     Ok(plan)
@@ -243,6 +251,35 @@ mod tests {
             let result = validate_renderer_plan(&scene.finish().unwrap());
             assert_eq!(result.is_ok(), valid, "{path}: {result:?}");
         }
+    }
+
+    #[test]
+    fn shader_wgsl_and_parameter_channels_check_at_preflight() {
+        let scene = |body: &str, channel: &str| {
+            let recipe = serde_json::from_value(serde_json::json!({
+                "elements": [
+                    { "kind": "shader", "id": "fx", "at": [960, 540, 0], "size": [400, 300],
+                      "wgsl": format!("fn shade(s: ShaderIn, p: Params) -> vec4<f32> {{ {body} }}"),
+                      "params": [{ "type": "color", "name": "tint", "default": [255, 0, 0] }] }
+                ]
+            }))
+            .unwrap();
+            let mut scene = PlanBuilder::new("shader-preflight", 1_000_000_000);
+            let mut stage = StageActor::declare(&mut scene, "stage", &recipe).unwrap();
+            stage.to(&mut scene, channel, 0, 0.5, 0.3);
+            validate_renderer_plan(&scene.finish().unwrap())
+        };
+        scene("return vec4<f32>(p.tint, 1.0);", "fx.tint.g").unwrap();
+        let error = format!(
+            "{:#}",
+            scene("return vec4<f32>(p.tnit, 1.0);", "fx.tint.g").unwrap_err()
+        );
+        assert!(error.contains("'fx'") && error.contains("tnit"), "{error}");
+        let error = format!(
+            "{:#}",
+            scene("return vec4<f32>(p.tint, 1.0);", "fx.tint").unwrap_err()
+        );
+        assert!(error.contains("unknown property"), "{error}");
     }
 
     #[test]

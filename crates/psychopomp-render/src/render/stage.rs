@@ -32,8 +32,9 @@ use psychopomp::{
     },
     rig::{ClipMask, GroupXform, group_step},
     stage::{
-        Arrow, BoltEnd, Camera, Curve, Figure, Fill, Material, OrbPoint, StageElement, StagePlan,
-        StatusText, TRACK, Waypoint, form_points, morph_point, orb_points, packet, shatter_offset,
+        Arrow, BoltEnd, Camera, Curve, Figure, Fill, Material, OrbPoint, ShaderParam, StageElement,
+        StagePlan, StatusText, TRACK, Waypoint, form_points, morph_point, orb_points, packet,
+        shatter_offset,
     },
     tone::Tone,
 };
@@ -131,6 +132,9 @@ struct PostPass {
 
 pub(crate) struct StageGpu {
     primitives: wgpu::RenderPipeline,
+    /// One pipeline per custom `Shader` layer, and each layer's slot in it.
+    shaders: Vec<wgpu::RenderPipeline>,
+    shader_slots: HashMap<String, usize>,
     primitive_binding: wgpu::BindGroup,
     prims: wgpu::Buffer,
     points: wgpu::Buffer,
@@ -384,7 +388,7 @@ pub(crate) const SHADER_STRUCTS: [(&str, usize); 3] = [
 ];
 
 /// One shader from its modules, each read live under `PSYCHOPOMP_SHADER_DIR`.
-fn compose(modules: &[(&str, &'static str)]) -> String {
+pub(super) fn compose(modules: &[(&str, &'static str)]) -> String {
     modules
         .iter()
         .map(|(file, builtin)| shader(file, builtin))
@@ -569,40 +573,61 @@ impl HeadlessRenderer {
                 operation: wgpu::BlendOperation::Add,
             },
         };
-        let primitives = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("stage primitives"),
-            layout: Some(
-                &device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                    label: None,
-                    bind_group_layouts: &[Some(&primitive_layout)],
-                    immediate_size: 0,
+        let primitive_pipeline_layout =
+            device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: None,
+                bind_group_layouts: &[Some(&primitive_layout)],
+                immediate_size: 0,
+            });
+        let primitive_pipeline = |label: &str, module: &wgpu::ShaderModule, fragment: &str| {
+            device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                label: Some(label),
+                layout: Some(&primitive_pipeline_layout),
+                vertex: wgpu::VertexState {
+                    module,
+                    entry_point: Some("vs"),
+                    compilation_options: Default::default(),
+                    buffers: &[],
+                },
+                primitive: wgpu::PrimitiveState {
+                    topology: wgpu::PrimitiveTopology::TriangleStrip,
+                    ..Default::default()
+                },
+                depth_stencil: None,
+                multisample: Default::default(),
+                fragment: Some(wgpu::FragmentState {
+                    module,
+                    entry_point: Some(fragment),
+                    compilation_options: Default::default(),
+                    targets: &[Some(wgpu::ColorTargetState {
+                        format: HDR_FORMAT,
+                        blend: Some(premultiplied),
+                        write_mask: wgpu::ColorWrites::ALL,
+                    })],
                 }),
-            ),
-            vertex: wgpu::VertexState {
-                module: &primitive_shader,
-                entry_point: Some("vs"),
-                compilation_options: Default::default(),
-                buffers: &[],
-            },
-            primitive: wgpu::PrimitiveState {
-                topology: wgpu::PrimitiveTopology::TriangleStrip,
-                ..Default::default()
-            },
-            depth_stencil: None,
-            multisample: Default::default(),
-            fragment: Some(wgpu::FragmentState {
-                module: &primitive_shader,
-                entry_point: Some("fs"),
-                compilation_options: Default::default(),
-                targets: &[Some(wgpu::ColorTargetState {
-                    format: HDR_FORMAT,
-                    blend: Some(premultiplied),
-                    write_mask: wgpu::ColorWrites::ALL,
-                })],
-            }),
-            multiview_mask: None,
-            cache: None,
-        });
+                multiview_mask: None,
+                cache: None,
+            })
+        };
+        let primitives = primitive_pipeline("stage primitives", &primitive_shader, "fs");
+        let primitive_source = compose(&PRIMITIVE_SHADER);
+        let mut shaders = Vec::new();
+        let mut shader_slots = HashMap::new();
+        for element in plan.all_elements() {
+            if let StageElement::Shader {
+                id, wgsl, params, ..
+            } = element
+            {
+                let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+                    label: Some(id),
+                    source: wgpu::ShaderSource::Wgsl(
+                        shader_layer::layer_source(&primitive_source, wgsl, params).into(),
+                    ),
+                });
+                shader_slots.insert(id.clone(), shaders.len());
+                shaders.push(primitive_pipeline(id, &module, "fs_shader"));
+            }
+        }
 
         let post_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("stage post"),
@@ -796,6 +821,8 @@ impl HeadlessRenderer {
             .collect::<Result<_>>()?;
         Ok(StageGpu {
             primitives,
+            shaders,
+            shader_slots,
             primitive_binding,
             prims,
             points,
@@ -1191,6 +1218,7 @@ impl HeadlessRenderer {
                 orbs: &gpu.orbs,
                 arts: &gpu.arts,
                 footage: &gpu.slots,
+                shaders: &gpu.shader_slots,
                 frame: StageFrame::new(&gpu.texts, look.background),
                 next_order: 0,
             };
@@ -1264,9 +1292,25 @@ impl HeadlessRenderer {
                 occlusion_query_set: None,
                 multiview_mask: None,
             });
-            pass.set_pipeline(&gpu.primitives);
             pass.set_bind_group(0, &gpu.primitive_binding, &[]);
-            pass.draw(0..4, 0..prims.len() as u32);
+            // Runs of ordinary primitives draw instanced; each custom shader
+            // layer draws alone with its own pipeline, in depth order.
+            let mut start = 0;
+            while start < prims.len() {
+                let slot = shader_layer::slot(prims[start].a[0]);
+                let end = match slot {
+                    Some(_) => start + 1,
+                    None => (start..prims.len())
+                        .find(|&i| shader_layer::slot(prims[i].a[0]).is_some())
+                        .unwrap_or(prims.len()),
+                };
+                let pipeline = slot
+                    .and_then(|slot| gpu.shaders.get(slot))
+                    .unwrap_or(&gpu.primitives);
+                pass.set_pipeline(pipeline);
+                pass.draw(0..4, start as u32..end as u32);
+                start = end;
+            }
         }
         fullscreen(
             &mut encoder,
@@ -1634,6 +1678,7 @@ pub(crate) fn stage_bounds(
                     StageElement::Form { .. } => "form",
                     StageElement::Footage { .. } => "footage",
                     StageElement::Art { .. } => "art",
+                    StageElement::Shader { .. } => "shader",
                     _ => "element",
                 };
                 let l = CalloutSide::Left.on(place.outline);
@@ -3511,6 +3556,7 @@ fn turns_on_screen(element: &StageElement) -> bool {
             | StageElement::Art { .. }
             | StageElement::Footage { .. }
             | StageElement::RuneCard { .. }
+            | StageElement::Shader { .. }
     )
 }
 
@@ -3542,6 +3588,7 @@ struct Painter<'a> {
     orbs: &'a HashMap<String, Vec<OrbPoint>>,
     arts: &'a HashMap<String, PreparedArt>,
     footage: &'a HashMap<String, FootageSlot>,
+    shaders: &'a HashMap<String, usize>,
     frame: StageFrame<'a>,
     next_order: usize,
 }
@@ -3829,6 +3876,15 @@ impl<'a> Painter<'a> {
                 Tone::Accent,
                 place,
             ),
+            (
+                StageElement::Shader {
+                    size,
+                    corner,
+                    params,
+                    ..
+                },
+                Some(place),
+            ) => self.shader(order, id, Vec2::from(*size), *corner, params, place),
             (StageElement::Backdrop { paint, .. }, _) => {
                 let opacity = scene.unit(id, "opacity");
                 if opacity > 0.001 {
@@ -3859,6 +3915,52 @@ impl<'a> Painter<'a> {
             // A positioned element behind the camera.
             _ => {}
         }
+    }
+
+    /// A custom shader layer: one primitive its own pipeline draws, carrying
+    /// its placement, the sample time, and its packed parameters.
+    fn shader(
+        &mut self,
+        order: usize,
+        id: &str,
+        size: Vec2,
+        corner: f32,
+        params: &[ShaderParam],
+        place: Placement,
+    ) {
+        let scene = self.scene;
+        let opacity = scene.unit(id, "opacity");
+        let Some(&slot) = self.shaders.get(id) else {
+            return;
+        };
+        if opacity > 0.001 {
+            let scale = place.scale;
+            let blur = scene.blur_at(place.depth) + scene.v(id, "blur").max(0.0) * scale;
+            let half = size * 0.5 * scale;
+            let [fill, stroke, glow, uv, light, light_color, pool, pool_color] =
+                shader_layer::pack_params(params, |property| scene.raw_v(id, property));
+            self.frame.prims.push(Prim {
+                bbox: around(place.center, Vec2::splat(half.length() + blur + 2.0)),
+                a: [
+                    shader_layer::SHADER_KIND + slot as f32,
+                    place.center.x,
+                    place.center.y,
+                    scene.v(id, "rotation"),
+                ],
+                b: [half.x, half.y, corner * scale, blur],
+                grad_a: [scene.time, scale, opacity, 0.0],
+                fill,
+                stroke,
+                glow,
+                uv,
+                light,
+                light_color,
+                pool,
+                pool_color,
+                ..Default::default()
+            });
+        }
+        self.frame.close(place.depth, order);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -6918,6 +7020,66 @@ mod tests {
             (bottom - 110.0).abs() < 3.0,
             "bar bounds clip: {:?}",
             bar.bbox
+        );
+    }
+
+    #[test]
+    #[ignore = "requires a headless GPU; a custom shader layer draws its parameters, in order, clipped"]
+    fn shader_layers_draw_params_in_depth_order_inside_mattes() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "group", "id": "slot", "at": [160, 90, 0],
+                  "clip": { "kind": "rect", "size": [100, 60] }, "children": [
+                    { "kind": "shader", "id": "fx", "at": [0, 0, 0], "size": [200, 120],
+                      "wgsl": "fn shade(s: ShaderIn, p: Params) -> vec4<f32> { return vec4<f32>(p.tint * p.gain, 1.0); }",
+                      "params": [{ "type": "scalar", "name": "gain", "default": 1.0 },
+                                 { "type": "color", "name": "tint", "default": [255, 0, 0] }] },
+                    { "kind": "shape", "id": "dot", "at": [20, 0, 0], "shape": { "rect": [16, 16] },
+                      "stroke": null, "fill": { "kind": "solid", "rgba": [255, 255, 255, 255] } }
+                ] }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "shader-layer-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let frame = renderer
+            .render_stage(&plan, &gpu, 0.0, |_, rest| rest)
+            .unwrap();
+        let pixel = |frame: &[u8], x: usize, y: usize| {
+            let i = (y * 320 + x) * 4;
+            [frame[i], frame[i + 1], frame[i + 2]]
+        };
+        let red = pixel(&frame, 140, 90);
+        assert!(red[0] > 200 && red[1] < 60, "the tint: {red:?}");
+        let dot = pixel(&frame, 180, 90);
+        assert!(
+            dot.iter().all(|&c| c > 235),
+            "the later shape on top: {dot:?}"
+        );
+        assert_eq!(
+            pixel(&frame, 140, 130),
+            pixel(&frame, 10, 10),
+            "the matte cuts the layer"
+        );
+        let green = renderer
+            .render_stage(&plan, &gpu, 0.0, |property, rest| match property {
+                "fx.tint.r" => 0.0,
+                "fx.tint.g" => 1.0,
+                "fx.gain" => 0.5,
+                _ => rest,
+            })
+            .unwrap();
+        let green = pixel(&green, 140, 90);
+        assert!(
+            green[1] > 120 && green[1] < 230 && green[0] < 60,
+            "channels drive the parameters: {green:?}"
         );
     }
 

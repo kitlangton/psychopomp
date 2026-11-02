@@ -66,6 +66,12 @@ pub(super) struct PreparedReel {
 pub(super) struct ReelSampleKey(Vec<(usize, u32, Option<u32>, VisualSampleKey)>);
 
 impl PreparedReel {
+    pub(super) fn set_overrides(&mut self, overrides: &std::collections::HashMap<String, f32>) {
+        for segment in &mut self.segments {
+            segment.overrides.clone_from(overrides);
+        }
+    }
+
     pub(super) fn prepare(
         reel: ReelPlan,
         base: &Path,

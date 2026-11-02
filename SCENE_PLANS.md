@@ -1395,6 +1395,27 @@ their fuller documentation elsewhere.
     children; outer mattes still cut their bounds. A child easing out from
     behind a rect's edge is a masked rise; `wipe_open` and `hinge_in` animate a
     group. `stage_anchor` and `plan check` see composed, clipped bounds.
+  - `shader` (`scenes/shaders`; `cargo run -p psychopomp-shaders` writes
+    `target/shaders.json`): a custom WGSL layer `size` [w, h] world pixels at
+    `at`, with rounded `corner` (0). `StageElement::shader(id, at, size, wgsl,
+    params)` builds one; scenes keep the module beside them and
+    `include_str!` it. `params` are `{ "type": "scalar", "name", "default",
+    "range" }` (range [0, 1], for Studio's knob only) or `{ "type": "color",
+    "name", "default": [r, g, b] }`: snake_case names, at most 32 floats (a
+    color takes 3). The module defines `fn shade(s: ShaderIn, p: Params) ->
+    vec4<f32>` and returns straight linear RGBA; values above 1 bloom.
+    Psychopomp generates `Params` (an `f32` per scalar, a linear `vec3<f32>`
+    per color, in order) and `ShaderIn { uv (0..1, y down), local (world px
+    from the center, unturned), size (world px), px (frame px), time (the
+    shutter sample's seconds), scale (frame px per world px) }`, and wraps the
+    result in the rounded edge, opacity, and any group matte. The Stage's
+    noise helpers (`fx_hash2`, `fx_hash3`, `fx_noise3`, `fx_fbm3`) are in
+    scope; avoid their names and the Stage's own (`Prim`, `prims`, `vs`, `fs`,
+    `coverage`, `eval_clip`). Channels: `opacity` 1, `x`/`y`/`z` 0, `scale` 1,
+    `rotation` 0, `blur` 0 (softens the edge), then `<param>` per scalar and
+    `<param>.r`/`.g`/`.b` (sRGB 0..1) per color. Preflight compiles the module
+    with naga, so a WGSL error names the layer and line before any GPU work.
+    Each layer is its own pipeline and one draw, so keep a scene to a few.
   - A `packet` rides a beam or a path (its `beam` field names either). An element
     waypoint between a path's ends is a stop: each leg is a whole packet life,
     the route's `flight` shared equally by its legs, and each next leg gathers

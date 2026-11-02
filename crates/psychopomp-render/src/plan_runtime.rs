@@ -14,6 +14,7 @@ use psychopomp::{
         DeckPlan, MediaKindPlan, MediaRolePlan, ReadPlanError, ReelPlan, ScalarPlan, ScenePlan,
         TargetComponentPlan,
     },
+    stage::{ShaderParam, StageElement},
     state::{StateTrack, TimedState},
     timeline::{PropertyId, Timeline},
 };
@@ -757,6 +758,21 @@ struct PreparedPlan {
     lower_thirds: Vec<lower_third::PreparedLowerThird>,
     viz: viz::PreparedViz,
     rune_surfaces: Vec<rune_surface::PreparedRuneSurface>,
+    /// Channel values Studio's knobs pin for the whole film, by
+    /// `<actor>.<property>`; empty outside Studio.
+    overrides: HashMap<String, f32>,
+}
+
+/// A channel Studio can tune live: one parameter channel of a custom Stage
+/// shader layer, with the range its knob spans.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Tunable {
+    /// `<actor>.<property>`, the key `PreviewSession::set_overrides` takes.
+    pub key: String,
+    /// `<element>.<param>` as the plan names the channel.
+    pub label: String,
+    pub range: [f32; 2],
+    pub default: f32,
 }
 
 // A prepared scene exposes a read-only view of its compiled data. There is no
@@ -932,7 +948,34 @@ impl PreparedPlan {
             lower_thirds,
             viz,
             rune_surfaces,
+            overrides: HashMap::new(),
         })
+    }
+
+    /// Every parameter channel of the plan's custom shader layers.
+    fn tunables(&self) -> Vec<Tunable> {
+        let PreparedRoot::Stage(stage) = &self.root else {
+            return Vec::new();
+        };
+        stage
+            .plan()
+            .all_elements()
+            .into_iter()
+            .filter_map(|element| match element {
+                StageElement::Shader { id, params, .. } => Some((id, params)),
+                _ => None,
+            })
+            .flat_map(|(id, params)| {
+                params.iter().flat_map(ShaderParam::channels).map(
+                    move |(property, default, range)| Tunable {
+                        key: format!("{}.{id}.{property}", stage.id()),
+                        label: format!("{id}.{property}"),
+                        range,
+                        default,
+                    },
+                )
+            })
+            .collect()
     }
 }
 
@@ -1870,6 +1913,11 @@ impl PreparedPlan {
         time: f64,
         default: f32,
     ) -> f32 {
+        if !self.overrides.is_empty()
+            && let Some(&value) = self.overrides.get(&format!("{actor_id}.{property_name}"))
+        {
+            return value;
+        }
         self.motion_value(timeline, actor_id, property_name, time)
             .map_or(default, |state| state.position)
     }
@@ -2200,6 +2248,24 @@ impl PreviewSession {
         &self.cues
     }
 
+    /// The channels Studio can tune live (custom shader parameters), once
+    /// each across a reel's segments.
+    pub fn tunables(&self) -> Vec<Tunable> {
+        let mut out: Vec<Tunable> = Vec::new();
+        for tunable in self.loaded.plans().flat_map(PreparedPlan::tunables) {
+            if !out.iter().any(|seen| seen.key == tunable.key) {
+                out.push(tunable);
+            }
+        }
+        out
+    }
+
+    /// Pin channels (keys from [`Self::tunables`]) to fixed values for every
+    /// later frame; an empty map restores the plan's own motion.
+    pub fn set_overrides(&mut self, overrides: &HashMap<String, f32>) {
+        self.loaded.set_overrides(overrides);
+    }
+
     /// Render the frame at `seconds` (1-sample draft or full shutter exposure)
     /// and box-downsample `1920×1080` → `960×540` RGBA8 to fit Rune's
     /// `IMAGE_ATLAS_SIZE` (`1024`) viewport slot cleanly.
@@ -2242,6 +2308,53 @@ mod tests {
     use super::{
         BUILTIN_HERO_PLAN, CompiledPlan, TargetGeometry, parse_range, validate_renderer_plan,
     };
+
+    #[test]
+    #[ignore = "requires a headless GPU; Studio's shader knobs pin channels through overrides"]
+    fn preview_overrides_pin_shader_parameter_channels() {
+        use psychopomp::{author::PlanBuilder, stage::StageActor};
+        let recipe = serde_json::from_value(json!({
+            "elements": [
+                { "kind": "shader", "id": "fx", "at": [960, 540, 0], "size": [1920, 1080],
+                  "wgsl": "fn shade(s: ShaderIn, p: Params) -> vec4<f32> { return vec4<f32>(p.tint * p.gain, 1.0); }",
+                  "params": [{ "type": "scalar", "name": "gain", "default": 1.0, "range": [0, 2] },
+                             { "type": "color", "name": "tint", "default": [255, 0, 0] }] }
+            ]
+        }))
+        .unwrap();
+        let mut scene = PlanBuilder::new("shader-overrides", 1_000_000_000);
+        StageActor::declare(&mut scene, "stage", &recipe).unwrap();
+        let dir = std::env::temp_dir().join(format!("psychopomp-overrides-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("plan.json");
+        scene.finish().unwrap().write_or_print(Some(&path)).unwrap();
+        let mut session = super::PreviewSession::open(&path, super::Theme::Neutral).unwrap();
+        let tunables = session.tunables();
+        let keys = tunables.iter().map(|t| t.key.as_str()).collect::<Vec<_>>();
+        assert_eq!(
+            keys,
+            [
+                "stage.fx.gain",
+                "stage.fx.tint.r",
+                "stage.fx.tint.g",
+                "stage.fx.tint.b"
+            ]
+        );
+        assert_eq!(tunables[0].range, [0.0, 2.0]);
+        let center = |rgba: &[u8]| rgba[(270 * 960 + 480) * 4..][..3].to_vec();
+        let red = center(&session.render_preview_960x540(0.5, false).unwrap());
+        session.set_overrides(&HashMap::from([
+            ("stage.fx.tint.r".to_owned(), 0.0),
+            ("stage.fx.tint.g".to_owned(), 1.0),
+        ]));
+        let green = center(&session.render_preview_960x540(0.5, false).unwrap());
+        session.set_overrides(&HashMap::new());
+        let back = center(&session.render_preview_960x540(0.5, false).unwrap());
+        std::fs::remove_dir_all(&dir).ok();
+        assert!(red[0] > 200 && red[1] < 60, "{red:?}");
+        assert!(green[1] > 200 && green[0] < 60, "{green:?}");
+        assert_eq!(back, red);
+    }
 
     #[test]
     fn plan_channels_compile_through_the_shared_timeline() {

@@ -288,6 +288,15 @@ carry a **Matte** (`ClipMask`): a rect, circle, polygon, SVG path, or display
 type, in the group's local space, outside of which (or inside, inverted) its
 children do not show. Elements slide in from behind a matte's invisible edge.
 
+## Shader Layer
+
+A Stage element that paints a custom WGSL fragment module on a camera-facing
+rounded quad. It is light in the linear-HDR Stage like any other: it moves,
+sorts by depth, blurs through the shutter, blooms above 1, and takes its
+groups' Matte. Its typed **Shader Parameters** (scalars and sRGB colors) are
+ordinary channels, so a layer is animated like everything else and tuned live
+in Studio, where a moved knob pins its channel for the whole film.
+
 ## Path
 
 A drawn Stage connection through **Waypoints**: world points and positioned

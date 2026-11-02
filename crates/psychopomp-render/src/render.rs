@@ -36,6 +36,8 @@ pub(crate) mod rune_notes;
 pub(crate) mod rune_surface;
 pub(crate) mod rune_timeline;
 mod sequence;
+mod shader_layer;
+pub(crate) use shader_layer::validate_layer as validate_stage_shader;
 mod smoothing;
 mod stage;
 mod task;

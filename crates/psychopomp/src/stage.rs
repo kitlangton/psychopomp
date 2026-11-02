@@ -386,6 +386,24 @@ pub enum StageElement {
         clip: Option<ClipMask>,
         children: Vec<StageElement>,
     },
+    /// A custom WGSL fragment module painted on a camera-facing quad `size`
+    /// world pixels with rounded `corner`s, in the linear-HDR Stage like any
+    /// other light: it moves, blurs through the shutter, and takes its
+    /// groups' `ClipMask`. `wgsl` defines
+    /// `fn shade(s: ShaderIn, p: Params) -> vec4<f32>` returning straight
+    /// linear RGBA (values above 1 bloom); each of `params` is a field of
+    /// `Params` and a channel (`<id>.<param>`, colors `<id>.<param>.r|g|b`).
+    #[serde(rename_all = "camelCase")]
+    Shader {
+        id: String,
+        at: [f32; 3],
+        size: [f32; 2],
+        #[serde(default, skip_serializing_if = "is_zero")]
+        corner: f32,
+        wgsl: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        params: Vec<ShaderParam>,
+    },
 }
 
 fn is_zero2(v: &[f32; 2]) -> bool {
@@ -1005,7 +1023,8 @@ impl StageElement {
         match &mut self {
             Self::Shape { corner, .. }
             | Self::Path { corner, .. }
-            | Self::RuneCard { corner, .. } => *corner = radius,
+            | Self::RuneCard { corner, .. }
+            | Self::Shader { corner, .. } => *corner = radius,
             other => panic!("stage element '{}' has no corner", other.id()),
         }
         self
@@ -1025,6 +1044,24 @@ impl StageElement {
             id: id.into(),
             at,
             spec,
+        }
+    }
+
+    /// A custom WGSL layer `size` world pixels at `at` (see [`Self::Shader`]).
+    pub fn shader(
+        id: &str,
+        at: [f32; 3],
+        size: [f32; 2],
+        wgsl: impl Into<String>,
+        params: Vec<ShaderParam>,
+    ) -> Self {
+        Self::Shader {
+            id: id.into(),
+            at,
+            size,
+            corner: 0.0,
+            wgsl: wgsl.into(),
+            params,
         }
     }
 
@@ -1281,6 +1318,7 @@ impl StageElement {
             | Self::Backdrop { id, .. }
             | Self::Type { id, .. }
             | Self::Art { id, .. }
+            | Self::Shader { id, .. }
             | Self::Group { id, .. } => id,
         }
     }
@@ -1300,6 +1338,7 @@ impl StageElement {
             | Self::RuneCard { at, .. }
             | Self::Type { at, .. }
             | Self::Art { at, .. }
+            | Self::Shader { at, .. }
             | Self::Group { at, .. } => Some(*at),
             Self::Beam { .. }
             | Self::Packet { .. }
@@ -1358,7 +1397,9 @@ impl StageElement {
                 center,
                 radius: size[0].min(size[1]) * 0.5 * scale,
             }),
-            Self::Footage { size, .. } | Self::RuneCard { size, .. } => {
+            Self::Footage { size, .. }
+            | Self::RuneCard { size, .. }
+            | Self::Shader { size, .. } => {
                 Shape::Box(Box2::from_center_size(center, Vec2::from(*size) * scale))
             }
         }
@@ -1454,6 +1495,8 @@ impl StageElement {
                 "opacity", "x", "y", "z", "scale", "scale-x", "scale-y", "rotation", "skew",
                 "blur", "clip-x", "clip-y", "clip-w",
             ],
+            // Parameters are per-layer: see `channel_default`.
+            Self::Shader { .. } => &["opacity", "x", "y", "z", "scale", "rotation", "blur"],
         }
     }
 
@@ -1649,6 +1692,7 @@ impl StageElement {
                 ("morph", 0.0),
             ],
             Self::Group { .. } => &GROUP_DEFAULTS,
+            Self::Shader { .. } => &SHADER_BASE_DEFAULTS,
         }
     }
 
@@ -1656,6 +1700,9 @@ impl StageElement {
     pub fn channel_default(&self, property: &str) -> Option<f32> {
         if let Self::Type { spec, .. } = self {
             return spec.property_default(property);
+        }
+        if let Self::Shader { params, .. } = self {
+            return shader_property_default(params, property);
         }
         self.channel_defaults()
             .iter()
@@ -2113,6 +2160,15 @@ impl StagePlan {
                         );
                     }
                 }
+                StageElement::Shader {
+                    size,
+                    corner,
+                    wgsl,
+                    params,
+                    ..
+                } => {
+                    shader::validate_shader(id, *size, *corner, wgsl, params)?;
+                }
                 StageElement::Group {
                     pivot,
                     clip,
@@ -2218,7 +2274,9 @@ fn line(id: &str, text: &str, max: usize) -> Result<()> {
 }
 
 mod camera;
+pub mod shader;
 pub use camera::{CAMERA_CHANNELS, Camera, CameraRig, Footprint, Move, TRACK, camera_default};
+pub use shader::{SHADER_BASE_DEFAULTS, ShaderParam, shader_property_default};
 
 /// One point of an orb's shell and the seeds that shape its shatter.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -3507,7 +3565,11 @@ mod tests {
                 { "kind": "group", "id": "rig", "at": [960, 540, 0],
                   "clip": { "kind": "type", "text": "MOTION", "size": 120.0 },
                   "children": [
-                    { "kind": "shape", "id": "rig-fill", "at": [0, 0, 0], "shape": { "rect": [400, 140] } }
+                    { "kind": "shape", "id": "rig-fill", "at": [0, 0, 0], "shape": { "rect": [400, 140] } },
+                    { "kind": "shader", "id": "rig-field", "at": [0, 0, 0], "size": [400, 140],
+                      "wgsl": "fn shade(s: ShaderIn, p: Params) -> vec4<f32> { return vec4<f32>(p.tint * p.amount, 1.0); }",
+                      "params": [{ "type": "scalar", "name": "amount", "default": 0.5 },
+                                 { "type": "color", "name": "tint", "default": [255, 0, 51] }] }
                   ] }
             ]))
             .unwrap(),
@@ -3531,6 +3593,7 @@ mod tests {
             "backdrop",
             "type",
             "group",
+            "shader",
         ];
         for kind in kinds {
             assert!(
@@ -3582,6 +3645,10 @@ mod tests {
             "cards have no age"
         );
         assert_eq!(plan.channel_default("missing.opacity"), None);
+        assert_eq!(plan.channel_default("rig-field.amount"), Some(0.5));
+        assert_eq!(plan.channel_default("rig-field.tint.b"), Some(0.2));
+        assert_eq!(plan.channel_default("rig-field.tint"), None);
+        assert!(plan.accepts("rig-field.tint.r"));
     }
 
     #[test]

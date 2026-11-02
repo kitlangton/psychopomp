@@ -13,7 +13,7 @@ use std::{fs, path::PathBuf};
 
 use anyhow::{Context, Result, bail};
 
-pub use plan_runtime::PreviewSession;
+pub use plan_runtime::{PreviewSession, Tunable};
 pub use render::Theme;
 
 /// Shared Seer communication primitives (`facts`, `compare`, `steps`, `size`,
