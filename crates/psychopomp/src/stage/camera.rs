@@ -413,6 +413,7 @@ fn footprint(element: &StageElement, at: Vec3, scale: f32) -> Option<Footprint> 
         | StageElement::Path { .. }
         | StageElement::Bolt { .. }
         | StageElement::Shield { .. }
+        | StageElement::Art { .. }
         | StageElement::Backdrop { .. } => return None,
     };
     Some(Footprint {

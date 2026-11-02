@@ -13,7 +13,8 @@ use super::preflight::{decode, strict_channels};
 use crate::{
     footage::StageFootageFrame,
     render::{
-        HeadlessRenderer, StageBoundsItem, StageGpu, icon_svg, matte_path_bounds, stage_bounds,
+        HeadlessRenderer, PreparedArt, StageBoundsItem, StageGpu, icon_svg, matte_path_bounds,
+        stage_bounds,
     },
 };
 
@@ -86,6 +87,17 @@ pub(super) fn validate_recipe(
                 tree.root().has_children(),
                 "stage icon '{id}' path data draws nothing"
             );
+        }
+        if let StageElement::Art {
+            id,
+            art,
+            morphs,
+            stroke,
+            ..
+        } = element
+        {
+            PreparedArt::new(art, morphs, stroke.is_some())
+                .with_context(|| format!("stage art '{id}'"))?;
         }
         if let StageElement::Group {
             id,

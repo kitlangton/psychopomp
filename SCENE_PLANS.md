@@ -19,6 +19,7 @@ machinery:
 | A system, as a 3D film of cards, orbs, and packets | `scenes/opencode-jr-architecture`, `scenes/pr-walkthrough/src/flagship.rs` | `stage::StageActor` (`settle_in`, `send`, `hit`, `jolt`, `orb_in`, `rewind`), `StageElement` constructors, `sfx`, `chrome` |
 | Lightning, charge, a forcefield, a burn-away, a scan | `scenes/effects-showroom` | `stage::StageActor` (`zap`, `charge`, `hum`, `raise`, `dissolve`, `materialize`, `scan`) |
 | A diagram of shapes, icons, arrows, and particle forms | `scenes/stage-forms` | `stage` `form`/`shape`/`path`/`icon`, `StageActor` (`connect`, `relay`, `morph`) |
+| Vector SVG art that draws on, fills, and morphs | `scenes/art` | `stage` `art`, `SvgArt`, `.stroke_paint`, `.morph_to`, `trim_in`, `morph` |
 | Code changing step by step, presented live | `scenes/effect-succeed-slides`, `scenes/interactive-showcase` | `editor` recipes, `PresentationStepPlan` |
 | Springs, easing, retargeting, or a metric as curves; a plan's channels over time | `scenes/charts` | `plot::PlotActor` (`draw`, `ride`, `velocity`), `lanes::LanesPlan::from_scene_plan` |
 | A payload, config, or emitted plan as structured data | `scenes/tree` | `tree::TreeActor` (`open`, `reveal`, `highlight`, `set`) |
@@ -1358,6 +1359,24 @@ their fuller documentation elsewhere.
     for shapes. Channels: `opacity` 1, `draw` 1, `trim` 0 (erases from the start),
     `flow` 0, `emphasis` 0, `surge` 0. Arrowheads ride the drawn tip and sit on a
     body's silhouette. `StageActor::connect` draws a path without a port.
+  - `art` (`scenes/art`; `cargo run -p psychopomp-art` writes `target/art.json`):
+    vector artwork. `art` is an SVG document embedded in the plan
+    (`SvgArt::new(svg)` or `SvgArt::from_file(path)`), parsed at preflight and
+    drawn centered on `at` in its own size units (use `scale` to resize). Every
+    path keeps its own fill and stroke; gradients in the SVG fill with their
+    mean color, and text and images are ignored. `fill` (any `Paint`,
+    `.paint(..)`) repaints the paths the SVG fills, its gradient spanning the
+    whole art; `stroke` (a `Paint`) and `width` (`.stroke_paint(paint, width)`)
+    stroke every path so a filled logo can draw on. `morphs` (`.morph_to(svg)`)
+    are targets matched curve for curve by arc length; `trim` is `each` (every
+    stroke trims on its own) or `sequence` (all strokes trim as one pen line).
+    Channels: `opacity` 1, `x`/`y`/`z` 0, `scale` 1, `rotation` 0 (radians),
+    `blur` 0, `trim-start` 0, `trim-end` 1, `trim-offset` 0 (shifts the window,
+    wrapping past the end back to the start), `fill` 1 (fades fills; trim touches
+    strokes only), and `morph` 0 (a fractional index into the art, then
+    `morphs`). `StageActor::trim_in(art, at, seconds)` (score:
+    `stage.trim_in(art, seconds)`) draws the strokes on from `trim-end` 0 on
+    `Ease::DRAW`; `morph(art, at, index, seconds)` works as for forms.
   - `group` (`scenes/groups`; `cargo run -p psychopomp-groups` writes
     `target/groups.json`): a transform rig. `children` sit in its local space,
     their `at` relative to its own, and groups nest. Channels compose down the

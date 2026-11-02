@@ -9,6 +9,7 @@ use std::f32::consts::{FRAC_PI_2, PI, TAU};
 use super::*;
 use crate::footage::StageFootageFrame;
 use psychopomp::{
+    art::{FillRule, Trim, TrimMode},
     callout::CalloutSide,
     caption::{CaptionAlign, CaptionSpanPlan},
     effects::combustion::{self, Burst},
@@ -147,6 +148,7 @@ pub(crate) struct StageGpu {
     texts: HashMap<String, AtlasText>,
     orbs: HashMap<String, Vec<OrbPoint>>,
     forms: HashMap<String, FormGeometry>,
+    arts: HashMap<String, PreparedArt>,
     /// Every footage element's frames share one sRGB atlas; each sample
     /// uploads only the slots whose frame changed.
     footage: wgpu::Texture,
@@ -775,6 +777,23 @@ impl HeadlessRenderer {
                 _ => None,
             })
             .collect();
+        let arts = all_elements
+            .iter()
+            .filter_map(|element| match element {
+                StageElement::Art {
+                    id,
+                    art,
+                    morphs,
+                    stroke,
+                    ..
+                } => Some(
+                    PreparedArt::new(art, morphs, stroke.is_some())
+                        .with_context(|| format!("stage art '{id}'"))
+                        .map(|art| (id.clone(), art)),
+                ),
+                _ => None,
+            })
+            .collect::<Result<_>>()?;
         Ok(StageGpu {
             primitives,
             primitive_binding,
@@ -793,6 +812,7 @@ impl HeadlessRenderer {
             texts: rects,
             orbs,
             forms,
+            arts,
             footage,
             slots,
         })
@@ -1169,6 +1189,7 @@ impl HeadlessRenderer {
                 scene: &scene,
                 look,
                 orbs: &gpu.orbs,
+                arts: &gpu.arts,
                 footage: &gpu.slots,
                 frame: StageFrame::new(&gpu.texts, look.background),
                 next_order: 0,
@@ -1612,6 +1633,7 @@ pub(crate) fn stage_bounds(
                     StageElement::Shape { .. } => "shape",
                     StageElement::Form { .. } => "form",
                     StageElement::Footage { .. } => "footage",
+                    StageElement::Art { .. } => "art",
                     _ => "element",
                 };
                 let l = CalloutSide::Left.on(place.outline);
@@ -3486,6 +3508,7 @@ fn turns_on_screen(element: &StageElement) -> bool {
         element,
         StageElement::Shape { .. }
             | StageElement::Type { .. }
+            | StageElement::Art { .. }
             | StageElement::Footage { .. }
             | StageElement::RuneCard { .. }
     )
@@ -3517,6 +3540,7 @@ struct Painter<'a> {
     scene: &'a Scene<'a>,
     look: Look,
     orbs: &'a HashMap<String, Vec<OrbPoint>>,
+    arts: &'a HashMap<String, PreparedArt>,
     footage: &'a HashMap<String, FootageSlot>,
     frame: StageFrame<'a>,
     next_order: usize,
@@ -3649,6 +3673,26 @@ impl<'a> Painter<'a> {
             (StageElement::Type { spec, .. }, Some(place)) => {
                 self.kinetic_type(order, id, spec, place)
             }
+            (
+                StageElement::Art {
+                    fill,
+                    stroke,
+                    width,
+                    trim,
+                    ..
+                },
+                Some(place),
+            ) => self.art(
+                order,
+                id,
+                ArtStyle {
+                    fill: *fill,
+                    stroke: *stroke,
+                    width: *width,
+                    trim: *trim,
+                },
+                place,
+            ),
             (
                 StageElement::Ring {
                     radius,
@@ -5378,6 +5422,120 @@ struct Shell {
     blur: f32,
 }
 
+/// An art element's paint overrides and trim mode, from its payload.
+#[derive(Clone, Copy)]
+struct ArtStyle {
+    fill: Option<psychopomp::paint::Paint>,
+    stroke: Option<psychopomp::paint::Paint>,
+    width: Option<f32>,
+    trim: TrimMode,
+}
+
+impl Painter<'_> {
+    /// Vector art: each path's fill (one compound primitive, gradients
+    /// spanning the whole art), then its strokes cut to the trim window. It
+    /// turns about its center and morphs by its `morph` channel.
+    fn art(&mut self, order: usize, id: &str, style: ArtStyle, place: Placement) {
+        let (scene, look) = (self.scene, self.look);
+        let opacity = scene.unit(id, "opacity");
+        let Some(prepared) = self.arts.get(id) else {
+            return;
+        };
+        if opacity <= 0.001 {
+            return;
+        }
+        let scale = place.scale;
+        let blur = scene.blur_at(place.depth) + scene.v(id, "blur").max(0.0) * scale;
+        let turn = Vec2::from_angle(scene.v(id, "rotation"));
+        let to_screen = |p: Vec2| place.center + turn.rotate(p) * scale;
+        let art = prepared.at(scene.v(id, "morph"));
+        let frame = art.bounds().map(|(low, high)| {
+            let corners = [low, vec2(high.x, low.y), high, vec2(low.x, high.y)].map(to_screen);
+            let (low, high) = corners.iter().fold((Vec2::MAX, Vec2::MIN), |(lo, hi), p| {
+                (lo.min(*p), hi.max(*p))
+            });
+            [low.x, low.y, high.x, high.y]
+        });
+        let fill_amount = scene.unit(id, "fill") * opacity;
+        let trim = Trim {
+            start: scene.v(id, "trim-start"),
+            end: scene.v(id, "trim-end"),
+            offset: scene.v(id, "trim-offset"),
+        };
+        let mut strokes = art
+            .trimmed_strokes(trim, style.trim, scale)
+            .into_iter()
+            .peekable();
+        let srgb = |[r, g, b, a]: [f32; 4], alpha: f32| {
+            let lin = Vec3::from(super::theme::linear(
+                [r, g, b].map(|v| (v * 255.0).round() as u8),
+            ));
+            rgba(lin, a * alpha)
+        };
+        for (index, path) in art.paths.iter().enumerate() {
+            if let (Some(frame), Some(own), true) = (frame, path.fill, fill_amount > 0.001) {
+                let (fill, grad_a, grad_b) = match style.fill {
+                    Some(paint) => look.resolve_paint(paint, fill_amount),
+                    None => (srgb(own, fill_amount), [0.0; 4], [0.0; 4]),
+                };
+                let rings = path
+                    .subpaths
+                    .iter()
+                    .map(|sub| {
+                        sub.flatten(scale)
+                            .points()
+                            .iter()
+                            .map(|p| to_screen(*p))
+                            .collect::<Vec<_>>()
+                    })
+                    .collect::<Vec<_>>();
+                self.frame.compound_fill(
+                    &rings,
+                    path.rule == FillRule::EvenOdd,
+                    blur,
+                    frame,
+                    Paint {
+                        fill,
+                        grad_a,
+                        grad_b,
+                        ..Default::default()
+                    },
+                );
+            }
+            let width = style.width.unwrap_or(path.width) * scale;
+            let color = match (style.stroke, path.stroke) {
+                (Some(paint), _) => {
+                    let (from, grad, to) = look.resolve_paint(paint, opacity);
+                    if grad[0] > 0.5 {
+                        std::array::from_fn(|i| lerp(from[i], to[i], 0.5))
+                    } else {
+                        from
+                    }
+                }
+                (None, Some(own)) => srgb(own, opacity),
+                (None, None) => [0.0; 4],
+            };
+            while let Some((_, line)) = strokes.next_if(|(path, _)| *path == index) {
+                if width <= 0.01 {
+                    continue;
+                }
+                let line = Polyline::new(line.points().iter().map(|p| to_screen(*p)).collect());
+                self.frame.polyline(
+                    &line,
+                    1.0,
+                    [width, blur],
+                    Paint {
+                        stroke: color,
+                        ..Default::default()
+                    },
+                    SOLID,
+                );
+            }
+        }
+        self.frame.close(place.depth, order);
+    }
+}
+
 /// A shape element's figure and paint, from its payload.
 #[derive(Clone, Copy)]
 struct FigureStyle<'a> {
@@ -6175,6 +6333,46 @@ impl<'a> StageFrame<'a> {
         });
     }
 
+    /// Closed `rings` filled together as one shape (holes by winding: nonzero,
+    /// or alternating with `even_odd`), with a gradient laid across `frame`
+    /// (x0, y0, x1, y1) rather than this primitive's own box.
+    fn compound_fill(
+        &mut self,
+        rings: &[Vec<Vec2>],
+        even_odd: bool,
+        blur: f32,
+        frame: [f32; 4],
+        paint: Paint,
+    ) {
+        let visible = paint.fill[3] > 0.001 || (paint.grad_a[0] > 0.5 && paint.grad_b[3] > 0.001);
+        let rings = rings.iter().filter(|ring| ring.len() >= 3);
+        if !visible || rings.clone().next().is_none() {
+            return;
+        }
+        let first = self.points.len();
+        let (mut low, mut high) = (Vec2::MAX, Vec2::MIN);
+        for ring in rings {
+            let closing = (ring[0].distance(ring[ring.len() - 1]) > 1e-4).then_some(ring[0]);
+            for (index, point) in ring.iter().chain(closing.iter()).enumerate() {
+                (low, high) = (low.min(*point), high.max(*point));
+                let start = if index == 0 { 1.0 } else { 0.0 };
+                self.points.push([point.x, point.y, start, 0.0]);
+            }
+        }
+        let pad = Vec2::splat(blur + 2.0);
+        let (low, high) = (low - pad, high + pad);
+        self.prims.push(Prim {
+            bbox: [low.x, low.y, high.x, high.y],
+            a: [14.0, if even_odd { 1.0 } else { 0.0 }, 0.0, blur],
+            fill: paint.fill,
+            uv: [first as f32, (self.points.len() - first) as f32, 0.0, 0.0],
+            light: frame,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
+            ..Default::default()
+        });
+    }
+
     /// A ring, or an arc clockwise from twelve o'clock over `sweep` of a turn.
     /// `shape` is the radius and thickness.
     fn arc(&mut self, center: Vec2, shape: [f32; 2], sweep: f32, blur: f32, paint: Paint) {
@@ -6328,7 +6526,8 @@ impl<'a> StageFrame<'a> {
             if copy.bbox[0] >= copy.bbox[2] || copy.bbox[1] >= copy.bbox[3] {
                 continue;
             }
-            if matches!(prim.a[0] as u32, 3 | 7) {
+            let kind = prim.a[0] as u32;
+            if matches!(kind, 3 | 7 | 14) {
                 let first = prim.uv[0] as usize;
                 let count = prim.uv[1] as usize;
                 copy.uv[0] = self.points.len() as f32;
@@ -6340,10 +6539,21 @@ impl<'a> StageFrame<'a> {
                 copy.a[1] += offset.x;
                 copy.a[2] += offset.y;
             }
-            for light in [&mut copy.light, &mut copy.pool] {
-                light[0] += offset.x;
-                light[1] += offset.y;
-                light[3] *= alpha;
+            if kind == 14 {
+                // A compound fill's `light` is its gradient frame.
+                copy.light = [
+                    prim.light[0] + offset.x,
+                    prim.light[1] + offset.y,
+                    prim.light[2] + offset.x,
+                    prim.light[3] + offset.y,
+                ];
+                copy.grad_b[3] *= alpha;
+            } else {
+                for light in [&mut copy.light, &mut copy.pool] {
+                    light[0] += offset.x;
+                    light[1] += offset.y;
+                    light[3] *= alpha;
+                }
             }
             copy.fill[3] *= alpha;
             copy.stroke[3] *= alpha;
@@ -6709,6 +6919,44 @@ mod tests {
             "bar bounds clip: {:?}",
             bar.bbox
         );
+    }
+
+    #[test]
+    fn vector_art_fills_with_holes_and_trims_its_strokes() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "art", "id": "frame", "at": [80, 90, 0],
+                  "fill": { "kind": "solid", "rgba": [255, 0, 0, 255] },
+                  "art": r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><path fill-rule="evenodd" fill="#fff" d="M0 0H120V120H0Z M40 40V80H80V40Z"/></svg>"## },
+                { "kind": "art", "id": "line", "at": [240, 90, 0],
+                  "art": r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 10"><path d="M0 5H120" fill="none" stroke="#fff" stroke-width="6"/></svg>"## }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "art-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let frame = renderer
+            .render_stage(&plan, &gpu, 0.0, |name, rest| {
+                if name == "line.trim-end" { 0.5 } else { rest }
+            })
+            .unwrap();
+        let pixel = |x: usize, y: usize| &frame[(y * 320 + x) * 4..(y * 320 + x) * 4 + 3];
+        let red = pixel(30, 90);
+        assert!(red[0] > 200 && red[1] < 60, "override fill: {red:?}");
+        assert_eq!(
+            pixel(80, 90),
+            pixel(5, 5),
+            "the even-odd hole is background"
+        );
+        assert!(pixel(200, 90)[1] > 200, "drawn half of the stroke");
+        assert_eq!(pixel(280, 90), pixel(5, 5), "trimmed half of the stroke");
     }
 
     #[test]

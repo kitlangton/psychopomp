@@ -1,4 +1,5 @@
 pub mod anchor;
+pub mod art;
 pub mod author;
 pub mod axis;
 pub mod bars;

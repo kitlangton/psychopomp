@@ -225,6 +225,9 @@ the rim it crawls. A **Shield** is a forcefield bubble around an element that
 ripples where packets cross it or bolts strike it. A card's **Dissolve** is a
 reversible burn clock: a noisy front with a hot rim and ash; played backwards it
 materializes the card. A **Scan** sweeps a line down a card.
+**Art** is vector artwork from an SVG: its strokes **trim** (draw on and off by
+arc length, each on its own or as one pen line) and it **morphs** to other
+SVGs, each subpath matched to a target subpath and cut to equal-length curves.
 
 ## Stage Camera
 

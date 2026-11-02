@@ -10,6 +10,7 @@ use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    art::{SvgArt, TrimMode},
     author::{ActorHandle, ContinuousHandle, PlanBuilder, whole_millis},
     caption::{self, CaptionAlign, CaptionSpanPlan},
     effects::{dissolve, lightning, shield, spinner::Mark},
@@ -347,6 +348,30 @@ pub enum StageElement {
         id: String,
         at: [f32; 3],
         spec: TypePlan,
+    },
+    /// Vector artwork from an SVG document, centered on its view box: every
+    /// path filled and stroked in its own colors. `fill` (any `Paint`, its
+    /// gradient spanning the whole art) repaints the paths the SVG fills;
+    /// `stroke` and `width` stroke every path, so a filled logo can draw on. `trim-start`, `trim-end`, and `trim-offset` window the strokes
+    /// (`trim` says whether per subpath or over all of them in order), `fill`
+    /// fades the fills, and `morph` carries the art through `morphs` as a
+    /// form moves through its shapes: 1 is the first morph target.
+    #[serde(rename_all = "camelCase")]
+    Art {
+        id: String,
+        at: [f32; 3],
+        art: SvgArt,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        morphs: Vec<SvgArt>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        fill: Option<Paint>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        stroke: Option<Paint>,
+        /// Stroke width in art units, for every stroked path.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        width: Option<f32>,
+        #[serde(default, skip_serializing_if = "TrimMode::is_each")]
+        trim: TrimMode,
     },
     /// A transform rig: `children` sit in its local space (their `at` relative
     /// to the group's), its channels compose down the hierarchy about `pivot`,
@@ -1050,12 +1075,60 @@ impl StageElement {
         self
     }
 
-    /// Fill of a flat shape with an explicit `Paint` (solid hex, linear, or radial gradient).
+    /// Fill of a flat shape or art with an explicit `Paint` (solid hex, linear,
+    /// or radial gradient); on art it repaints every path the SVG fills.
     pub fn paint(mut self, paint: Paint) -> Self {
-        let Self::Shape { fill, .. } = &mut self else {
-            panic!("only shapes take paint(), not '{}'", self.id());
+        match &mut self {
+            Self::Shape { fill, .. } => *fill = Some(Fill::Paint(paint)),
+            Self::Art { fill, .. } => *fill = Some(paint),
+            other => panic!("only shapes and art take paint(), not '{}'", other.id()),
+        }
+        self
+    }
+
+    /// Vector artwork from SVG at `at`, centered on its view box.
+    pub fn art(id: &str, at: [f32; 3], art: SvgArt) -> Self {
+        Self::Art {
+            id: id.into(),
+            at,
+            art,
+            morphs: Vec::new(),
+            fill: None,
+            stroke: None,
+            width: None,
+            trim: TrimMode::Each,
+        }
+    }
+
+    /// Stroke every path of an art in `paint`, `width` art units wide.
+    pub fn stroke_paint(mut self, paint: Paint, width: f32) -> Self {
+        let Self::Art {
+            stroke, width: own, ..
+        } = &mut self
+        else {
+            panic!("only art takes stroke_paint(), not '{}'", self.id());
         };
-        *fill = Some(Fill::Paint(paint));
+        *stroke = Some(paint);
+        *own = Some(width);
+        self
+    }
+
+    /// Add a morph target to an art: its `morph` channel at `n` shows the
+    /// `n`th target added (0 is the art itself).
+    pub fn morph_to(mut self, target: SvgArt) -> Self {
+        let Self::Art { morphs, .. } = &mut self else {
+            panic!("only art takes morph_to(), not '{}'", self.id());
+        };
+        morphs.push(target);
+        self
+    }
+
+    /// How an art's trim window covers its subpaths.
+    pub fn trim_mode(mut self, mode: TrimMode) -> Self {
+        let Self::Art { trim, .. } = &mut self else {
+            panic!("only art takes trim_mode(), not '{}'", self.id());
+        };
+        *trim = mode;
         self
     }
 
@@ -1090,6 +1163,7 @@ impl StageElement {
     pub fn stroke_width(mut self, value: f32) -> Self {
         match &mut self {
             Self::Shape { width, .. } | Self::Path { width, .. } => *width = value,
+            Self::Art { width, .. } => *width = Some(value),
             other => panic!("stage element '{}' has no stroke_width", other.id()),
         }
         self
@@ -1206,6 +1280,7 @@ impl StageElement {
             | Self::RuneCard { id, .. }
             | Self::Backdrop { id, .. }
             | Self::Type { id, .. }
+            | Self::Art { id, .. }
             | Self::Group { id, .. } => id,
         }
     }
@@ -1224,6 +1299,7 @@ impl StageElement {
             | Self::Footage { at, .. }
             | Self::RuneCard { at, .. }
             | Self::Type { at, .. }
+            | Self::Art { at, .. }
             | Self::Group { at, .. } => Some(*at),
             Self::Beam { .. }
             | Self::Packet { .. }
@@ -1251,6 +1327,7 @@ impl StageElement {
             }),
             Self::Label { .. }
             | Self::Type { .. }
+            | Self::Art { .. }
             | Self::Group { .. }
             | Self::Beam { .. }
             | Self::Packet { .. }
@@ -1358,6 +1435,20 @@ impl StageElement {
             Self::Backdrop { .. } => &["opacity"],
             Self::Type { .. } => &[
                 "opacity", "x", "y", "z", "scale", "rotation", "blur", "tracking",
+            ],
+            Self::Art { .. } => &[
+                "opacity",
+                "x",
+                "y",
+                "z",
+                "scale",
+                "rotation",
+                "blur",
+                "trim-start",
+                "trim-end",
+                "trim-offset",
+                "fill",
+                "morph",
             ],
             Self::Group { .. } => &[
                 "opacity", "x", "y", "z", "scale", "scale-x", "scale-y", "rotation", "skew",
@@ -1543,6 +1634,20 @@ impl StageElement {
             ],
             Self::Backdrop { .. } => &[("opacity", 1.0)],
             Self::Type { .. } => &TYPE_BASE_DEFAULTS,
+            Self::Art { .. } => &[
+                ("opacity", 1.0),
+                ("x", 0.0),
+                ("y", 0.0),
+                ("z", 0.0),
+                ("scale", 1.0),
+                ("rotation", 0.0),
+                ("blur", 0.0),
+                ("trim-start", 0.0),
+                ("trim-end", 1.0),
+                ("trim-offset", 0.0),
+                ("fill", 1.0),
+                ("morph", 0.0),
+            ],
             Self::Group { .. } => &GROUP_DEFAULTS,
         }
     }
@@ -1982,6 +2087,31 @@ impl StagePlan {
                 }
                 StageElement::Type { spec, .. } => {
                     spec.validate(id)?;
+                }
+                StageElement::Art {
+                    art,
+                    morphs,
+                    fill,
+                    stroke,
+                    width,
+                    ..
+                } => {
+                    ensure!(morphs.len() <= 16, "art '{id}' has over 16 morph targets");
+                    for svg in std::iter::once(art).chain(morphs) {
+                        svg.validate()
+                            .with_context(|| format!("stage art '{id}'"))?;
+                    }
+                    for paint in [fill, stroke].into_iter().flatten() {
+                        paint
+                            .validate()
+                            .with_context(|| format!("stage art '{id}'"))?;
+                    }
+                    if let Some(width) = width {
+                        ensure!(
+                            width.is_finite() && (0.0..=256.0).contains(width),
+                            "art '{id}' stroke width is out of range"
+                        );
+                    }
                 }
                 StageElement::Group {
                     pivot,
@@ -2564,9 +2694,24 @@ impl StageActor {
             .collect()
     }
 
-    /// Carry `form`'s points to its shape `index` over `seconds` on a
-    /// minimum-jerk curve; each point's own move is staggered inside it.
-    /// Returns when every point has arrived.
+    /// Draw `art`'s strokes on over `seconds`: `trim-end` starts at 0 (the
+    /// first write declares it there, though art rests drawn) and runs to 1
+    /// on the draw-on curve ([`Ease::DRAW`]). Returns when the strokes are whole.
+    pub fn trim_in(
+        &mut self,
+        scene: &mut PlanBuilder,
+        art: &str,
+        at_nanos: u64,
+        seconds: f32,
+    ) -> u64 {
+        let channel = self.channel(scene, &format!("{art}.trim-end"), 0.0);
+        scene.ease(&channel, at_nanos, 1.0, seconds, Ease::DRAW);
+        at_nanos + whole_millis(seconds)
+    }
+
+    /// Carry `form`'s points (or `art`'s curves) to its shape (or morph
+    /// target) `index` over `seconds` on a minimum-jerk curve; a form's
+    /// points each move staggered inside it. Returns when it has arrived.
     pub fn morph(
         &mut self,
         scene: &mut PlanBuilder,

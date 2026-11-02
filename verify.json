@@ -11,6 +11,7 @@
     { "name": "effects-showroom", "package": "psychopomp-effects-showroom", "plan": "target/effects-showroom.json", "times": [2, 4, 8.5, 11, 15, 18, 23], "shutter": [3] },
     { "name": "stage-forms", "package": "psychopomp-stage-forms", "plan": "target/stage-forms.json", "times": [1, 3.5, 6, 9, 12, 15], "shutter": [7] },
     { "name": "groups", "package": "psychopomp-groups", "plan": "target/groups.json", "times": [0.7, 1.0, 2.4, 4.2, 6.5], "shutter": [0.7, 3.0] },
+    { "name": "art", "package": "psychopomp-art", "plan": "target/art.json", "times": [0.9, 2.0, 2.8, 4.9], "shutter": [1.0] },
     { "name": "anchors", "package": "psychopomp-anchors", "plan": "target/anchors.json", "times": [2, 6, 9.7, 12, 15.5, 19, 22.5] },
     { "name": "text-surfaces", "package": "psychopomp-text-surfaces", "plan": "target/text-surfaces.json", "times": [3, 10, 17, 24, 30, 37, 41, 46, 50] },
     { "name": "viz-components", "package": "psychopomp-viz-components", "plan": "target/viz-components/reel.json", "times": [3, 9, 16, 21, 27, 32, 38, 46, 52] },

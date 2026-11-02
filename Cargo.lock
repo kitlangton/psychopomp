@@ -2509,6 +2509,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-art"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-background-compaction"
 version = "0.1.0"
 dependencies = [

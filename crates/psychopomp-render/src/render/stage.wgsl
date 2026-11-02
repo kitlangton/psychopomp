@@ -128,12 +128,17 @@ fn direction(angle: f32) -> vec2<f32> {
 
 // Evaluate solid, linear-gradient, or radial-gradient straight linear RGBA fill.
 fn eval_fill(prim: Prim, px: vec2<f32>) -> vec4<f32> {
+    return eval_fill_in(prim, px, prim.bbox);
+}
+
+// `eval_fill` with the gradient laid across `frame` (x0, y0, x1, y1).
+fn eval_fill_in(prim: Prim, px: vec2<f32>, frame: vec4<f32>) -> vec4<f32> {
     let mode = u32(prim.grad_a.x + 0.5);
     if mode == 0u {
         return prim.fill;
     }
-    let span = max(prim.bbox.zw - prim.bbox.xy, vec2<f32>(1.0));
-    let uv = clamp((px - prim.bbox.xy) / span, vec2<f32>(0.0), vec2<f32>(1.0));
+    let span = max(frame.zw - frame.xy, vec2<f32>(1.0));
+    let uv = clamp((px - frame.xy) / span, vec2<f32>(0.0), vec2<f32>(1.0));
     if mode == 1u {
         let dir = prim.grad_a.yz;
         let reach = max(abs(dir.x) + abs(dir.y), 1.0e-4);
@@ -197,6 +202,39 @@ fn sd_polygon(p: vec2<f32>, first: u32, count: u32) -> f32 {
         j = i;
     }
     return s * sqrt(d);
+}
+
+// Signed distance to rings filled as one shape: negative inside by nonzero
+// winding, or by alternation when `even_odd`. Points are (x, y, ring start, 0),
+// each ring closed; the edge into a ring's first point is no edge.
+fn sd_compound(p: vec2<f32>, first: u32, count: u32, even_odd: bool) -> f32 {
+    var d = 1.0e12;
+    var winding = 0;
+    for (var k = 0u; k + 1u < count; k = k + 1u) {
+        let next = points[first + k + 1u];
+        if next.z > 0.5 {
+            continue;
+        }
+        let a = points[first + k].xy;
+        let b = next.xy;
+        let e = b - a;
+        let w = p - a;
+        let q = w - e * clamp(dot(w, e) / max(dot(e, e), 1.0e-6), 0.0, 1.0);
+        d = min(d, dot(q, q));
+        let side = e.x * w.y - e.y * w.x;
+        if a.y <= p.y {
+            if b.y > p.y && side > 0.0 {
+                winding = winding + 1;
+            }
+        } else if b.y <= p.y && side < 0.0 {
+            winding = winding - 1;
+        }
+    }
+    var inside = winding != 0;
+    if even_odd {
+        inside = (winding & 1) != 0;
+    }
+    return select(1.0, -1.0, inside) * sqrt(d);
 }
 
 // One footage texel as premultiplied linear light, held inside its slot
@@ -539,6 +577,14 @@ fn eval_prim_unclipped(prim: Prim, px: vec2<f32>) -> vec4<f32> {
                 color = prim.stroke.rgb * band + color * (1.0 - band);
                 alpha = band + alpha * (1.0 - band);
             }
+        }
+        // Compound fill: a = (kind, even-odd, 0, blur), uv = (first point, count),
+        // light = the gradient's frame (x0, y0, x1, y1). See `sd_compound`.
+        case 14u: {
+            let d = sd_compound(px, u32(prim.uv.x + 0.5), u32(prim.uv.y + 0.5), prim.a.y > 0.5);
+            let fcol = eval_fill_in(prim, px, prim.light);
+            alpha = fcol.a * coverage(d, prim.a.w);
+            color = fcol.rgb * alpha;
         }
         default: {}
     }

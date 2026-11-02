@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320">
+  <circle cx="160" cy="160" r="150" fill="none" stroke="#000" stroke-width="3"/>
+  <circle cx="160" cy="160" r="122" fill="none" stroke="#000" stroke-width="2"/>
+  <path d="M160.00 56.00 L175.31 123.04 L233.54 86.46 L196.96 144.69 L264.00 160.00 L196.96 175.31 L233.54 233.54 L175.31 196.96 L160.00 264.00 L144.69 196.96 L86.46 233.54 L123.04 175.31 L56.00 160.00 L123.04 144.69 L86.46 86.46 L144.69 123.04 Z" fill="#000" stroke="#000" stroke-width="3"/>
+  <path d="M160 6 V34 M160 286 V314 M6 160 H34 M286 160 H314" fill="none" stroke="#000" stroke-width="3"/>
+</svg>
