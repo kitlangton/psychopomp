@@ -2635,6 +2635,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-editorial"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-effect-succeed-slides"
 version = "0.1.0"
 dependencies = [
@@ -2766,6 +2774,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-kinetic-poster"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+]
+
+[[package]]
 name = "psychopomp-loupe"
 version = "0.1.0"
 dependencies = [
@@ -2831,6 +2847,14 @@ dependencies = [
  "anyhow",
  "psychopomp",
  "serde_json",
+]
+
+[[package]]
+name = "psychopomp-product-launch"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
 ]
 
 [[package]]

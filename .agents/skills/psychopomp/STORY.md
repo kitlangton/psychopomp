@@ -21,18 +21,28 @@
 
 Check every contact sheet (`plan strip`) against these before rendering MP4:
 
-- **Frame 0 is alive.** Show header chrome and the primary surface at `t = 0`;
-  avoid starting a video on dead black.
+- **The look comes from the brief.** Pick the Style Kit (`psychopomp::kit`)
+  whose palette, typography, and aspect the brief calls for. A launch, essay,
+  or poster on the dark CommitMono explainer look is slop.
+- **Frame 0 is alive.** Show the kit's ground and the primary surface (header
+  chrome in an explainer) at `t = 0`; avoid starting a video on a dead field.
 - **No generic box-and-arrow wallpaper.** If swapping the text strings would make
   the diagram fit another product, pick a truer form (actual UI anatomy, a native
   chat thread, a stepped code diff with red error waves, or a physical orb/form
   breakdown).
-- **Clear Neutral (`--theme neutral`) palette.** Warm obsidian `#080807` canvas,
-  1px graphite borders, warm bone `#e2dfd9` ink, and one semantic accent per beat
-  (`Tone::Accent` gold for the hero, `Tone::Error` coral for failure, `Tone::Success`
-  sage for resolution, `Tone::Request` blue for neutral signals).
-- **Generous margins and optical balance.** Keep content inside `x = 140..1780`,
-  `y = 130..950` so headers (`y ~ 72`) and footers (`y ~ 1010`) breathe. Size
+- **One accent per kit.** Explainers use Clear Neutral (`--theme neutral`):
+  warm obsidian `#080807`, 1px graphite borders, warm bone `#e2dfd9` ink, and one
+  semantic accent per beat (`Tone::Accent` gold hero, `Tone::Error` coral,
+  `Tone::Success` sage, `Tone::Request` blue). Editorial uses carbon ink and one
+  vermilion; the poster ink and one signal orange; the showcase ink, muted grey,
+  and one blue, with color carried by footage inside type.
+- **Type does the work outside explainers.** Display type is large and set tight
+  (poster stacks at 0.9 leading, serif headlines with an italic turn); text type
+  stays small and quiet. Lines enter through slits (`rise_type` on a masked
+  split) or wipes, not fades.
+- **Generous margins and optical balance.** Explainers keep content inside
+  `x = 140..1780`, `y = 130..950` so headers (`y ~ 72`) and footers (`y ~ 1010`)
+  breathe; portrait posters keep an 80 px margin and a top masthead rule. Size
   Stage cards wide enough (`330..480 px`) that titles and statuses pass
   `plan check`'s `card_text_overflow` gate without cramping.
 - **Continuity.** Elements travel one smooth monotonic path (`plan onion`);
@@ -51,6 +61,7 @@ Check every contact sheet (`plan strip`) against these before rendering MP4:
   `"sixty F P S"`, `"spring dot R S"`) when TTS would misread them, and keep
   burned-in `SubtitlesActor` off when phonetic spellings are used so on-screen
   captions (`header`, `chip`, `footer`, cards) keep exact code spelling.
+- Not every film needs a voice. Kit reels can be silent; let type carry the copy.
 - Direct ElevenLabs `eleven_v4` with sparse, specific `[...]` tags immediately
   before clauses (`[calm, deadpan]`, `[dryly amused]`, `[excited, building]`,
   `[playful, direct]`). Always pass fallback slices in `spoken.at_any(&["twenty-four", "twenty four"])`

@@ -161,6 +161,15 @@ file delivery selects a theme explicitly so a personal preference cannot silentl
 change an export. Original preserves existing scene colors. Semantic status colors
 and explicit non-palette art colors are not indiscriminately tinted.
 
+## Style Kit
+
+A look picked from the brief (`psychopomp::kit`): canvas, palette, frame post,
+Stage ground, a display and a text type voice with their bundled fonts, and a
+few primitives that suit them. Explainer (dark CommitMono cards, orbs, and
+header/chip/footer captions), Editorial (warm paper, serif), Kinetic Poster
+(portrait Swiss type), and Product Showcase (bright, footage in display type).
+A kit is a value, not a framework; the explainer kit writes nothing to a plan.
+
 ## Rich Text
 
 Immutable Markdown in a bounded overlay, shaped as proportional rich runs with

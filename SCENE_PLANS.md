@@ -17,6 +17,7 @@ machinery:
 | --- | --- | --- |
 | A pull request: broken behavior, the fix, the diff | `scenes/config-migration` (smallest) or `scenes/pr-walkthrough` | `psychopomp_pr_walkthrough::film`, `narration`, `editor::diff`, `sequence` rows |
 | A system, as a 3D film of cards, orbs, and packets | `scenes/opencode-jr-architecture`, `scenes/pr-walkthrough/src/flagship.rs` | `stage::StageActor` (`settle_in`, `send`, `hit`, `jolt`, `orb_in`, `rewind`), `StageElement` constructors, `sfx`, `chrome` |
+| An essay, poster, or product launch rather than an explainer | `scenes/editorial`, `scenes/kinetic-poster`, `scenes/product-launch` | `kit::{editorial, kinetic_poster, product_showcase}` (`kit().begin`, `headline`, `caption`, `matte`), `StageActor::rise_type`, `trim_in` |
 | Lightning, charge, a forcefield, a burn-away, a scan | `scenes/effects-showroom` | `stage::StageActor` (`zap`, `charge`, `hum`, `raise`, `dissolve`, `materialize`, `scan`) |
 | A diagram of shapes, icons, arrows, and particle forms | `scenes/stage-forms` | `stage` `form`/`shape`/`path`/`icon`, `StageActor` (`connect`, `relay`, `morph`) |
 | Vector SVG art that draws on, fills, and morphs | `scenes/art` | `stage` `art`, `SvgArt`, `.stroke_paint`, `.morph_to`, `trim_in`, `morph` |
@@ -534,7 +535,7 @@ reusable for any code explainer:
   builds participants; `SequenceActor::row_channel`/`participant_channel` address
   their channels.
 - `ReelPlan::dipped(id, plans, transition_nanos)` joins segments with dips.
-- `psychopomp::chrome` places a film's fixed captions: `header(scene, label,
+- `psychopomp::chrome` (the explainer kit, `kit::explainer`) places a film's fixed captions: `header(scene, label,
   title)` top left, `chip(scene, id, dot, text)` top right, and `footer(scene,
   id, spans)` bottom left; each returns its Caption to type in, show, or hide.
 - `psychopomp_pr_walkthrough::film` is the PR-film template itself (`header`

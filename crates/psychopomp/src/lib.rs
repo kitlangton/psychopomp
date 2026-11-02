@@ -22,6 +22,7 @@ pub mod grid;
 pub mod highlight;
 pub mod ide;
 pub mod image;
+pub mod kit;
 pub mod lanes;
 pub mod layout;
 pub mod lens;

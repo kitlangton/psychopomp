@@ -38,7 +38,8 @@ Lightweight crate (`crates/psychopomp/src`):
 - `crates/psychopomp/src/tone.rs`: semantic Tone roles shared by explainer recipes
 - `crates/psychopomp/src/sequence.rs`: Sequence Diagram recipe values and row constructors, slot, header, and row-box geometry, validation, and the `SequenceActor` authoring handle
 - `crates/psychopomp/src/caption.rs`: Caption recipe values and the `CaptionActor` authoring handle (typing, show, hide)
-- `crates/psychopomp/src/chrome.rs`: an explainer film's fixed captions (header, chips, footer) at their shared positions
+- `crates/psychopomp/src/kit.rs` and `kit/`: Style Kits (`explainer`, `editorial`, `kinetic_poster`, `product_showcase`): canvas, palette, post, ground, type voices with bundled OFL fonts, and each kit's primitives
+- `crates/psychopomp/src/chrome.rs`: re-exports the explainer kit's fixed captions (header, chips, footer) at their shared positions
 - `crates/psychopomp/src/rolling.rs`: Rolling Number recipe values, value tokenization, the closed-form roll compiler, and the `RollingNumberActor` handle (`roll`, show, hide)
 - `crates/psychopomp/src/rune_surface.rs`: declarative `RuneSurfacePlan` (`Note` Seer communication primitives, `Diff` `rune_kit::DiffView`, and `Kit` `@opencode/ui` widget trees), discrete `RuneAction` commits, `RuneSurfaceActor`, and `score::RuneSurface` beat handles
 - `crates/psychopomp-studio/`: Rune preview window and `App::playground` component workbench (`⌘⇧K` `rune-knobs`, `R` deterministic beat replay, live `960×540` plan/reel scrubber, and `scripts/rune-hot` live patching)
@@ -193,6 +194,7 @@ Scene Programs (`scenes/`), each emitting a Scene Plan, Deck, or Reel:
 - `scenes/generated-media/`: Generated Resource showroom: an ElevenLabs line, a Fish Audio chant whose every "balls" spawns an orb and a generated pop, and a pitched-down derivation, all in `media.lock.json`
 - `scenes/camera/`: camera showroom: establish, frame, follow a packet, rack focus, orbit an orb, dolly zoom on an impact, whip, handheld drift, and a push-in, all `CameraRig` shots
 - `scenes/effects-showroom/`: Stage effects reel: a charged build zaps a deploy, a shield blocks an attack and passes a request, a stale config burns away and its replacement materializes and is scanned, a live link hums
+- `scenes/editorial/`, `scenes/kinetic-poster/`, `scenes/product-launch/`: silent Style Kit reels: a warm-paper serif essay with SVG trim paths, a 1080x1920 Anton type poster with slit rises, and a bright launch with footage inside display type
 - `scenes/shaders/`: Shader Layer showroom: a domain-warped gradient field with film grain in WGSL, in a rounded panel and through a type matte, its warp and glow color animated as channels
 - `scenes/stage-forms/`: Stage diagram vocabulary showroom: shapes, icons, and arrowed paths; a packet relaying through a stop; a dot-matrix plane morphing into a tumbling cube and a sphere over a slab; a cube that bursts
 - `scenes/text-surfaces/`: text-surface showroom reel: an agent, introduced by a Lower Third, in a Terminal session that overflows, scrolls, and clears; a Slack-style Chat Thread reacting while the agent streams its fix; the bubbles style; and a pull request's Changed Files with rolling totals and focus

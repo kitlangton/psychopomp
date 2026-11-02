@@ -48,12 +48,13 @@ pub(crate) fn load_custom_fonts(
         let resolved = if decl.path.is_absolute() {
             decl.path.clone()
         } else {
-            let candidate = base.join(&decl.path);
-            if candidate.exists() {
-                candidate
-            } else {
-                decl.path.clone()
-            }
+            // Plan-relative, then working-directory-relative, then
+            // workspace-relative, where Style Kit fonts live.
+            let workspace = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+            [base.join(&decl.path), decl.path.clone()]
+                .into_iter()
+                .find(|candidate| candidate.exists())
+                .unwrap_or_else(|| workspace.join(&decl.path))
         };
         let bytes = fs::read(&resolved).with_context(|| {
             format!(
