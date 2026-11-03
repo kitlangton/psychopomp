@@ -101,6 +101,10 @@ impl<S: 'static> RuneTimeline<S> {
         self.id
     }
 
+    pub(crate) fn current_time(&self) -> f64 {
+        self.cur_t
+    }
+
     pub(crate) fn pixel_size(&self) -> [u32; 2] {
         self.pixel_size
     }

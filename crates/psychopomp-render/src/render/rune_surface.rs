@@ -822,6 +822,7 @@ fn build_kit_node(node: &KitNode, s: &SurfaceState, k: &Kit) -> Option<El> {
                 .w_full()
                 .h(38.0)
                 .px(12.0)
+                .gap(12.0)
                 .radius(6.0)
                 .center_y()
                 .fill(if *selected {
@@ -833,17 +834,21 @@ fn build_kit_node(node: &KitNode, s: &SurfaceState, k: &Kit) -> Option<El> {
                 .transition(Transition::opacity())
                 .child(
                     text(title)
-                        .key("name")
+                        .key(format!("name-{title}"))
                         .font(TextStyle::new(13.5, 520.0))
-                        .color(tone_color(*tone, k)),
+                        .color(tone_color(*tone, k))
+                        .motion(Spring::new(0.26, 0.0))
+                        .transition(Transition::blur_replace()),
                 )
                 .child(spacer())
                 .child(
                     text(hint)
-                        .key("hint")
+                        .key(format!("hint-{hint}"))
                         .ride_trailing()
                         .font(k.ty.ui)
-                        .color(tone_color(*hint_tone, k)),
+                        .color(tone_color(*hint_tone, k))
+                        .motion(Spring::new(0.26, 0.0))
+                        .transition(Transition::blur_replace()),
                 );
             Some(item)
         }
@@ -942,7 +947,24 @@ pub(crate) fn rune_card_child_rect(
     time: f64,
     key: &str,
 ) -> Option<[f32; 4]> {
-    with_plan_timeline(plan, |tl| {
+    let base = plan_uid(plan);
+    let slots = [base ^ (1_u64 << 62), base ^ (1_u64 << 61)];
+    let chosen = SURFACE_CACHE.with(|cell| {
+        let cache = cell.borrow();
+        let mut best: Option<(u64, f64)> = None;
+        for &slot in &slots {
+            if let Some((_, tl)) = cache.iter().find(|(id, _)| *id == slot) {
+                let cur = tl.current_time();
+                if cur <= time + 1.0e-12 && best.is_none_or(|(_, b)| cur > b) {
+                    best = Some((slot, cur));
+                }
+            } else if best.is_none() {
+                return slot;
+            }
+        }
+        best.map(|(slot, _)| slot).unwrap_or(slots[0])
+    });
+    with_cached_surface_timeline(chosen, plan, |tl| {
         sync_surface_pose(tl, time, SurfacePose::default());
         tl.presented_px(time, key).map(|(rect, _)| rect)
     })
