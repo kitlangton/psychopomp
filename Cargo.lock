@@ -2489,6 +2489,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "psychopomp-agents-pitch"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
+ "serde_json",
+]
+
+[[package]]
 name = "psychopomp-amdahl"
 version = "0.1.0"
 dependencies = [
@@ -2604,6 +2614,16 @@ dependencies = [
  "anyhow",
  "psychopomp",
  "psychopomp-pr-walkthrough",
+ "serde_json",
+]
+
+[[package]]
+name = "psychopomp-connections-pitch"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
  "serde_json",
 ]
 
@@ -2756,6 +2776,26 @@ dependencies = [
 
 [[package]]
 name = "psychopomp-ios-build-111"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
+ "serde_json",
+]
+
+[[package]]
+name = "psychopomp-kaizen-opencode"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "psychopomp",
+ "psychopomp-media",
+ "serde_json",
+]
+
+[[package]]
+name = "psychopomp-kaizen-rsi-v2"
 version = "0.1.0"
 dependencies = [
  "anyhow",
