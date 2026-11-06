@@ -10,6 +10,7 @@ use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    art::{SvgArt, TrimMode},
     author::{ActorHandle, ContinuousHandle, PlanBuilder, whole_millis},
     caption::{self, CaptionAlign, CaptionSpanPlan},
     effects::{dissolve, lightning, shield, spinner::Mark},
@@ -25,9 +26,12 @@ use crate::{
         },
         vec3,
     },
+    paint::Paint,
     plan::MediaPlan,
     plan::SpringPlan,
+    rig::{ClipMask, GROUP_DEFAULTS},
     tone::Tone,
+    typography::{TYPE_BASE_DEFAULTS, TypePlan},
 };
 
 pub const STAGE_RECIPE: &str = "stage";
@@ -332,6 +336,78 @@ pub enum StageElement {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         framed: bool,
     },
+    /// Full-canvas backdrop painted in linear HDR (solid sRGB/hex, linear
+    /// gradient, or radial gradient) behind Stage elements.
+    #[serde(rename_all = "camelCase")]
+    Backdrop { id: String, paint: Paint },
+    /// Kinetic display typography with custom faces, tracking, line-height,
+    /// `Paint` gradients, and per-line/word/char choreography (`u{i}.*`) plus
+    /// optional stationary baseline slit masking.
+    #[serde(rename_all = "camelCase")]
+    Type {
+        id: String,
+        at: [f32; 3],
+        spec: TypePlan,
+    },
+    /// Vector artwork from an SVG document, centered on its view box: every
+    /// path filled and stroked in its own colors. `fill` (any `Paint`, its
+    /// gradient spanning the whole art) repaints the paths the SVG fills;
+    /// `stroke` and `width` stroke every path, so a filled logo can draw on. `trim-start`, `trim-end`, and `trim-offset` window the strokes
+    /// (`trim` says whether per subpath or over all of them in order), `fill`
+    /// fades the fills, and `morph` carries the art through `morphs` as a
+    /// form moves through its shapes: 1 is the first morph target.
+    #[serde(rename_all = "camelCase")]
+    Art {
+        id: String,
+        at: [f32; 3],
+        art: SvgArt,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        morphs: Vec<SvgArt>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        fill: Option<Paint>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        stroke: Option<Paint>,
+        /// Stroke width in art units, for every stroked path.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        width: Option<f32>,
+        #[serde(default, skip_serializing_if = "TrimMode::is_each")]
+        trim: TrimMode,
+    },
+    /// A transform rig: `children` sit in its local space (their `at` relative
+    /// to the group's), its channels compose down the hierarchy about `pivot`,
+    /// and an optional GPU `ClipMask` mattes everything inside it.
+    #[serde(rename_all = "camelCase")]
+    Group {
+        id: String,
+        at: [f32; 3],
+        #[serde(default, skip_serializing_if = "is_zero2")]
+        pivot: [f32; 2],
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        clip: Option<ClipMask>,
+        children: Vec<StageElement>,
+    },
+    /// A custom WGSL fragment module painted on a camera-facing quad `size`
+    /// world pixels with rounded `corner`s, in the linear-HDR Stage like any
+    /// other light: it moves, blurs through the shutter, and takes its
+    /// groups' `ClipMask`. `wgsl` defines
+    /// `fn shade(s: ShaderIn, p: Params) -> vec4<f32>` returning straight
+    /// linear RGBA (values above 1 bloom); each of `params` is a field of
+    /// `Params` and a channel (`<id>.<param>`, colors `<id>.<param>.r|g|b`).
+    #[serde(rename_all = "camelCase")]
+    Shader {
+        id: String,
+        at: [f32; 3],
+        size: [f32; 2],
+        #[serde(default, skip_serializing_if = "is_zero")]
+        corner: f32,
+        wgsl: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        params: Vec<ShaderParam>,
+    },
+}
+
+fn is_zero2(v: &[f32; 2]) -> bool {
+    v[0].abs() <= f32::EPSILON && v[1].abs() <= f32::EPSILON
 }
 
 fn default_rune_corner() -> f32 {
@@ -598,13 +674,15 @@ impl Figure {
     }
 }
 
-/// What fills a shape: a tone, or the theme's card `surface` or `background`
-/// (an opaque panel that hides what is behind it).
+/// What fills a shape: a semantic tone, a theme material (`surface`,
+/// `background`, `raised`, `well`), or an explicit `Paint` (solid sRGB/hex,
+/// linear gradient, or radial gradient).
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum Fill {
     Tone(Tone),
     Material(Material),
+    Paint(Paint),
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
@@ -945,9 +1023,149 @@ impl StageElement {
         match &mut self {
             Self::Shape { corner, .. }
             | Self::Path { corner, .. }
-            | Self::RuneCard { corner, .. } => *corner = radius,
+            | Self::RuneCard { corner, .. }
+            | Self::Shader { corner, .. } => *corner = radius,
             other => panic!("stage element '{}' has no corner", other.id()),
         }
+        self
+    }
+
+    /// Full-canvas linear/radial/solid backdrop painted behind all Stage elements.
+    pub fn backdrop(id: &str, paint: Paint) -> Self {
+        Self::Backdrop {
+            id: id.into(),
+            paint,
+        }
+    }
+
+    /// Kinetic display typography at `at` with per-unit (`Block | Line | Word | Char`) channels.
+    pub fn kinetic_type(id: &str, at: [f32; 3], spec: TypePlan) -> Self {
+        Self::Type {
+            id: id.into(),
+            at,
+            spec,
+        }
+    }
+
+    /// A custom WGSL layer `size` world pixels at `at` (see [`Self::Shader`]).
+    pub fn shader(
+        id: &str,
+        at: [f32; 3],
+        size: [f32; 2],
+        wgsl: impl Into<String>,
+        params: Vec<ShaderParam>,
+    ) -> Self {
+        Self::Shader {
+            id: id.into(),
+            at,
+            size,
+            corner: 0.0,
+            wgsl: wgsl.into(),
+            params,
+        }
+    }
+
+    /// Hierarchical transform group at `at`.
+    pub fn group(id: &str, at: [f32; 3]) -> Self {
+        Self::Group {
+            id: id.into(),
+            at,
+            pivot: [0.0, 0.0],
+            clip: None,
+            children: Vec::new(),
+        }
+    }
+
+    /// Pivot offset (in local pixels relative to `at`) around which a `Group` scales and rotates.
+    pub fn pivot(mut self, xy: [f32; 2]) -> Self {
+        let Self::Group { pivot, .. } = &mut self else {
+            panic!("only groups take pivot(), not '{}'", self.id());
+        };
+        *pivot = xy;
+        self
+    }
+
+    /// Matte a `Group`'s children with a GPU `ClipMask`.
+    pub fn clip(mut self, mask: ClipMask) -> Self {
+        let Self::Group { clip, .. } = &mut self else {
+            panic!("only groups take clip(), not '{}'", self.id());
+        };
+        *clip = Some(mask);
+        self
+    }
+
+    /// Append a child element to a `Group` (with `child.at` in local coordinates relative to the group).
+    pub fn child(mut self, element: StageElement) -> Self {
+        let Self::Group { children, .. } = &mut self else {
+            panic!("only groups take child(), not '{}'", self.id());
+        };
+        children.push(element);
+        self
+    }
+
+    /// Append multiple children to a `Group`.
+    pub fn children(mut self, elements: impl IntoIterator<Item = StageElement>) -> Self {
+        let Self::Group { children, .. } = &mut self else {
+            panic!("only groups take children(), not '{}'", self.id());
+        };
+        children.extend(elements);
+        self
+    }
+
+    /// Fill of a flat shape or art with an explicit `Paint` (solid hex, linear,
+    /// or radial gradient); on art it repaints every path the SVG fills.
+    pub fn paint(mut self, paint: Paint) -> Self {
+        match &mut self {
+            Self::Shape { fill, .. } => *fill = Some(Fill::Paint(paint)),
+            Self::Art { fill, .. } => *fill = Some(paint),
+            other => panic!("only shapes and art take paint(), not '{}'", other.id()),
+        }
+        self
+    }
+
+    /// Vector artwork from SVG at `at`, centered on its view box.
+    pub fn art(id: &str, at: [f32; 3], art: SvgArt) -> Self {
+        Self::Art {
+            id: id.into(),
+            at,
+            art,
+            morphs: Vec::new(),
+            fill: None,
+            stroke: None,
+            width: None,
+            trim: TrimMode::Each,
+        }
+    }
+
+    /// Stroke every path of an art in `paint`, `width` art units wide.
+    pub fn stroke_paint(mut self, paint: Paint, width: f32) -> Self {
+        let Self::Art {
+            stroke, width: own, ..
+        } = &mut self
+        else {
+            panic!("only art takes stroke_paint(), not '{}'", self.id());
+        };
+        *stroke = Some(paint);
+        *own = Some(width);
+        self
+    }
+
+    /// Add a morph target to an art: its `morph` channel at `n` shows the
+    /// `n`th target added (0 is the art itself).
+    pub fn morph_to(mut self, target: SvgArt) -> Self {
+        let Self::Art { morphs, .. } = &mut self else {
+            panic!("only art takes morph_to(), not '{}'", self.id());
+        };
+        morphs.push(target);
+        self
+    }
+
+    /// How an art's trim window covers its subpaths.
+    pub fn trim_mode(mut self, mode: TrimMode) -> Self {
+        let Self::Art { trim, .. } = &mut self else {
+            panic!("only art takes trim_mode(), not '{}'", self.id());
+        };
+        *trim = mode;
         self
     }
 
@@ -982,6 +1200,7 @@ impl StageElement {
     pub fn stroke_width(mut self, value: f32) -> Self {
         match &mut self {
             Self::Shape { width, .. } | Self::Path { width, .. } => *width = value,
+            Self::Art { width, .. } => *width = Some(value),
             other => panic!("stage element '{}' has no stroke_width", other.id()),
         }
         self
@@ -1095,7 +1314,12 @@ impl StageElement {
             | Self::Path { id, .. }
             | Self::Icon { id, .. }
             | Self::Footage { id, .. }
-            | Self::RuneCard { id, .. } => id,
+            | Self::RuneCard { id, .. }
+            | Self::Backdrop { id, .. }
+            | Self::Type { id, .. }
+            | Self::Art { id, .. }
+            | Self::Shader { id, .. }
+            | Self::Group { id, .. } => id,
         }
     }
 
@@ -1111,12 +1335,17 @@ impl StageElement {
             | Self::Shape { at, .. }
             | Self::Icon { at, .. }
             | Self::Footage { at, .. }
-            | Self::RuneCard { at, .. } => Some(*at),
+            | Self::RuneCard { at, .. }
+            | Self::Type { at, .. }
+            | Self::Art { at, .. }
+            | Self::Shader { at, .. }
+            | Self::Group { at, .. } => Some(*at),
             Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
             | Self::Bolt { .. }
-            | Self::Shield { .. } => None,
+            | Self::Shield { .. }
+            | Self::Backdrop { .. } => None,
         }
     }
 
@@ -1136,10 +1365,14 @@ impl StageElement {
                 radius: radius * scale,
             }),
             Self::Label { .. }
+            | Self::Type { .. }
+            | Self::Art { .. }
+            | Self::Group { .. }
             | Self::Beam { .. }
             | Self::Packet { .. }
             | Self::Path { .. }
-            | Self::Bolt { .. } => Shape::Point(center),
+            | Self::Bolt { .. }
+            | Self::Backdrop { .. } => Shape::Point(center),
             // The resting silhouette of the first shape; the renderer attaches
             // to the sampled, turned silhouette instead.
             Self::Form { shapes, .. } => match shapes.first() {
@@ -1164,7 +1397,9 @@ impl StageElement {
                 center,
                 radius: size[0].min(size[1]) * 0.5 * scale,
             }),
-            Self::Footage { size, .. } | Self::RuneCard { size, .. } => {
+            Self::Footage { size, .. }
+            | Self::RuneCard { size, .. }
+            | Self::Shader { size, .. } => {
                 Shape::Box(Box2::from_center_size(center, Vec2::from(*size) * scale))
             }
         }
@@ -1238,6 +1473,30 @@ impl StageElement {
                 "tint",
                 "dim",
             ],
+            Self::Backdrop { .. } => &["opacity"],
+            Self::Type { .. } => &[
+                "opacity", "x", "y", "z", "scale", "rotation", "blur", "tracking",
+            ],
+            Self::Art { .. } => &[
+                "opacity",
+                "x",
+                "y",
+                "z",
+                "scale",
+                "rotation",
+                "blur",
+                "trim-start",
+                "trim-end",
+                "trim-offset",
+                "fill",
+                "morph",
+            ],
+            Self::Group { .. } => &[
+                "opacity", "x", "y", "z", "scale", "scale-x", "scale-y", "rotation", "skew",
+                "blur", "clip-x", "clip-y", "clip-w",
+            ],
+            // Parameters are per-layer: see `channel_default`.
+            Self::Shader { .. } => &["opacity", "x", "y", "z", "scale", "rotation", "blur"],
         }
     }
 
@@ -1416,11 +1675,35 @@ impl StageElement {
                 ("tint", 0.0),
                 ("dim", 0.0),
             ],
+            Self::Backdrop { .. } => &[("opacity", 1.0)],
+            Self::Type { .. } => &TYPE_BASE_DEFAULTS,
+            Self::Art { .. } => &[
+                ("opacity", 1.0),
+                ("x", 0.0),
+                ("y", 0.0),
+                ("z", 0.0),
+                ("scale", 1.0),
+                ("rotation", 0.0),
+                ("blur", 0.0),
+                ("trim-start", 0.0),
+                ("trim-end", 1.0),
+                ("trim-offset", 0.0),
+                ("fill", 1.0),
+                ("morph", 0.0),
+            ],
+            Self::Group { .. } => &GROUP_DEFAULTS,
+            Self::Shader { .. } => &SHADER_BASE_DEFAULTS,
         }
     }
 
     /// What `property` reads before anything writes it, if this element reads it.
     pub fn channel_default(&self, property: &str) -> Option<f32> {
+        if let Self::Type { spec, .. } = self {
+            return spec.property_default(property);
+        }
+        if let Self::Shader { params, .. } = self {
+            return shader_property_default(params, property);
+        }
         self.channel_defaults()
             .iter()
             .find(|(name, _)| *name == property)
@@ -1482,8 +1765,25 @@ impl StagePost {
 }
 
 impl StagePlan {
+    /// Preorder traversal of all elements, including children nested inside `Group`s.
+    pub fn all_elements(&self) -> Vec<&StageElement> {
+        fn collect<'a>(items: &'a [StageElement], out: &mut Vec<&'a StageElement>) {
+            for item in items {
+                out.push(item);
+                if let StageElement::Group { children, .. } = item {
+                    collect(children, out);
+                }
+            }
+        }
+        let mut out = Vec::with_capacity(self.elements.len());
+        collect(&self.elements, &mut out);
+        out
+    }
+
     pub fn element(&self, id: &str) -> Option<&StageElement> {
-        self.elements.iter().find(|element| element.id() == id)
+        self.all_elements()
+            .into_iter()
+            .find(|element| element.id() == id)
     }
 
     /// What a stage channel (`camera.z`) or an element's (`client.opacity`)
@@ -1511,7 +1811,8 @@ impl StagePlan {
         }
         property.split_once('.').is_some_and(|(id, rest)| {
             self.element(id)
-                .is_some_and(|element| element.properties().contains(&rest))
+                .and_then(|element| element.channel_default(rest))
+                .is_some()
         })
     }
 
@@ -1552,12 +1853,23 @@ impl StagePlan {
                 && (0.0..=1.0).contains(&self.post.backdrop),
             "stage post values are out of range"
         );
+        let all = self.all_elements();
         ensure!(
-            !self.elements.is_empty() && self.elements.len() <= 128,
-            "a stage has one to 128 elements"
+            !all.is_empty() && all.len() <= 256,
+            "a stage has one to 256 total elements"
         );
+        fn check_group_depth(items: &[StageElement], depth: usize) -> Result<()> {
+            ensure!(depth <= 8, "stage group nesting exceeds maximum depth 8");
+            for item in items {
+                if let StageElement::Group { children, .. } = item {
+                    check_group_depth(children, depth + 1)?;
+                }
+            }
+            Ok(())
+        }
+        check_group_depth(&self.elements, 0)?;
         let mut ids = HashSet::new();
-        for element in &self.elements {
+        for element in all {
             let id = element.id();
             if id.is_empty()
                 || id.chars().any(|c| c.is_whitespace() || c == '.')
@@ -1698,6 +2010,9 @@ impl StagePlan {
                         fill.is_some() || stroke.is_some(),
                         "shape '{id}' needs a fill or a stroke"
                     );
+                    if let Some(Fill::Paint(p)) = fill {
+                        p.validate().with_context(|| format!("shape '{id}' fill"))?;
+                    }
                     ensure!(
                         (0.0..=400.0).contains(corner) && (0.0..=1.0).contains(fill_opacity),
                         "shape '{id}' corner or fill opacity is out of range"
@@ -1812,6 +2127,66 @@ impl StagePlan {
                         .validate()
                         .with_context(|| format!("stage rune-card '{id}'"))?;
                 }
+                StageElement::Backdrop { paint, .. } => {
+                    paint
+                        .validate()
+                        .with_context(|| format!("stage backdrop '{id}'"))?;
+                }
+                StageElement::Type { spec, .. } => {
+                    spec.validate(id)?;
+                }
+                StageElement::Art {
+                    art,
+                    morphs,
+                    fill,
+                    stroke,
+                    width,
+                    ..
+                } => {
+                    ensure!(morphs.len() <= 16, "art '{id}' has over 16 morph targets");
+                    for svg in std::iter::once(art).chain(morphs) {
+                        svg.validate()
+                            .with_context(|| format!("stage art '{id}'"))?;
+                    }
+                    for paint in [fill, stroke].into_iter().flatten() {
+                        paint
+                            .validate()
+                            .with_context(|| format!("stage art '{id}'"))?;
+                    }
+                    if let Some(width) = width {
+                        ensure!(
+                            width.is_finite() && (0.0..=256.0).contains(width),
+                            "art '{id}' stroke width is out of range"
+                        );
+                    }
+                }
+                StageElement::Shader {
+                    size,
+                    corner,
+                    wgsl,
+                    params,
+                    ..
+                } => {
+                    shader::validate_shader(id, *size, *corner, wgsl, params)?;
+                }
+                StageElement::Group {
+                    pivot,
+                    clip,
+                    children,
+                    ..
+                } => {
+                    ensure!(
+                        pivot.iter().all(|v| v.is_finite()),
+                        "group '{id}' pivot must be finite"
+                    );
+                    ensure!(
+                        !children.is_empty(),
+                        "group '{id}' must contain at least one child element"
+                    );
+                    if let Some(mask) = clip {
+                        mask.validate(id)?;
+                    }
+                }
                 StageElement::Label { size, spans, .. } => {
                     ensure!(
                         (10.0..=320.0).contains(size),
@@ -1899,7 +2274,9 @@ fn line(id: &str, text: &str, max: usize) -> Result<()> {
 }
 
 mod camera;
+pub mod shader;
 pub use camera::{CAMERA_CHANNELS, Camera, CameraRig, Footprint, Move, TRACK, camera_default};
+pub use shader::{SHADER_BASE_DEFAULTS, ShaderParam, shader_property_default};
 
 /// One point of an orb's shell and the seeds that shape its shatter.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -2375,9 +2752,24 @@ impl StageActor {
             .collect()
     }
 
-    /// Carry `form`'s points to its shape `index` over `seconds` on a
-    /// minimum-jerk curve; each point's own move is staggered inside it.
-    /// Returns when every point has arrived.
+    /// Draw `art`'s strokes on over `seconds`: `trim-end` starts at 0 (the
+    /// first write declares it there, though art rests drawn) and runs to 1
+    /// on the draw-on curve ([`Ease::DRAW`]). Returns when the strokes are whole.
+    pub fn trim_in(
+        &mut self,
+        scene: &mut PlanBuilder,
+        art: &str,
+        at_nanos: u64,
+        seconds: f32,
+    ) -> u64 {
+        let channel = self.channel(scene, &format!("{art}.trim-end"), 0.0);
+        scene.ease(&channel, at_nanos, 1.0, seconds, Ease::DRAW);
+        at_nanos + whole_millis(seconds)
+    }
+
+    /// Carry `form`'s points (or `art`'s curves) to its shape (or morph
+    /// target) `index` over `seconds` on a minimum-jerk curve; a form's
+    /// points each move staggered inside it. Returns when it has arrived.
     pub fn morph(
         &mut self,
         scene: &mut PlanBuilder,
@@ -2475,6 +2867,135 @@ impl StageActor {
             }
             _ => {}
         }
+    }
+
+    /// Staggered baseline rise across every unit (`Line`, `Word`, or `Char`) of a
+    /// `StageElement::Type`. When `masked` is enabled on `TypePlan`, units stay at
+    /// full opacity and sharp (`blur = 0`) while emerging through the stationary
+    /// line slit (`kit-motion` rule); when unmasked, units also fade in cleanly.
+    pub fn rise_type(
+        &mut self,
+        scene: &mut PlanBuilder,
+        id: &str,
+        at_nanos: u64,
+        stagger_gap: u64,
+        offset_y: f32,
+        spring: SpringPlan,
+    ) -> u64 {
+        let Some(StageElement::Type { spec, .. }) = self.plan.element(id).cloned() else {
+            panic!("stage has no kinetic_type element '{id}'");
+        };
+        let count = spec.unit_count();
+        for idx in 0..count {
+            let t = at_nanos + stagger_gap * idx as u64;
+            let yc = self.channel(scene, &format!("{id}.u{idx}.y"), offset_y);
+            scene.set(&yc, t, offset_y);
+            scene.spring_with(&yc, t, 0.0, spring);
+            if !spec.masked {
+                let oc = self.channel(scene, &format!("{id}.u{idx}.opacity"), 0.0);
+                scene.set(&oc, t, 0.0);
+                scene.ease(&oc, t, 1.0, 0.22, Ease::Smootherstep);
+            }
+        }
+        at_nanos + stagger_gap * count.saturating_sub(1) as u64 + whole_millis(0.45)
+    }
+
+    /// Staggered character/word pop (`scale 0.88 -> 1`, `blur 3.5 -> 0`, `y +18 -> 0`).
+    pub fn pop_type(
+        &mut self,
+        scene: &mut PlanBuilder,
+        id: &str,
+        at_nanos: u64,
+        stagger_gap: u64,
+        spring: SpringPlan,
+    ) -> u64 {
+        let Some(StageElement::Type { spec, .. }) = self.plan.element(id).cloned() else {
+            panic!("stage has no kinetic_type element '{id}'");
+        };
+        let count = spec.unit_count();
+        for idx in 0..count {
+            let t = at_nanos + stagger_gap * idx as u64;
+            let sc = self.channel(scene, &format!("{id}.u{idx}.scale"), 0.88);
+            scene.set(&sc, t, 0.88);
+            scene.spring_with(&sc, t, 1.0, spring);
+            let yc = self.channel(scene, &format!("{id}.u{idx}.y"), 18.0);
+            scene.set(&yc, t, 18.0);
+            scene.spring_with(&yc, t, 0.0, spring);
+            let oc = self.channel(scene, &format!("{id}.u{idx}.opacity"), 0.0);
+            scene.set(&oc, t, 0.0);
+            scene.ease(&oc, t, 1.0, 0.18, Ease::Smootherstep);
+            let bc = self.channel(scene, &format!("{id}.u{idx}.blur"), 3.5);
+            scene.set(&bc, t, 3.5);
+            scene.ease(&bc, t, 0.0, 0.28, Ease::Smootherstep);
+        }
+        at_nanos + stagger_gap * count.saturating_sub(1) as u64 + whole_millis(0.45)
+    }
+
+    /// Animate display letter-spacing (`tracking`, in `em`) smoothly.
+    pub fn sweep_tracking(
+        &mut self,
+        scene: &mut PlanBuilder,
+        id: &str,
+        at_nanos: u64,
+        from_em: f32,
+        to_em: f32,
+        seconds: f32,
+    ) -> u64 {
+        let ch = self.channel(scene, &format!("{id}.tracking"), from_em);
+        scene.set(&ch, at_nanos, from_em);
+        scene.ease(&ch, at_nanos, to_em, seconds, Ease::Smootherstep);
+        at_nanos + whole_millis(seconds)
+    }
+
+    /// Open a `Group`'s `Rect` or `Circle` `ClipMask` from closed (`-aperture`) to
+    /// full aperture (`0.0`) over `seconds`.
+    pub fn wipe_open(
+        &mut self,
+        scene: &mut PlanBuilder,
+        group: &str,
+        at_nanos: u64,
+        seconds: f32,
+    ) -> u64 {
+        let closed = match self.plan.element(group) {
+            Some(StageElement::Group {
+                clip: Some(ClipMask::Rect { size, .. }),
+                ..
+            }) => -size[0],
+            Some(StageElement::Group {
+                clip: Some(ClipMask::Circle { radius, .. }),
+                ..
+            }) => -*radius,
+            _ => panic!("wipe_open requires a Group '{group}' with a Rect or Circle ClipMask"),
+        };
+        let cw = self.channel(scene, &format!("{group}.clip-w"), closed);
+        scene.set(&cw, at_nanos, closed);
+        scene.ease(&cw, at_nanos, 0.0, seconds, Ease::Smootherstep);
+        at_nanos + whole_millis(seconds)
+    }
+
+    /// Spring a `Group` into place around its `pivot` from `from_offset` and `from_deg`.
+    pub fn hinge_in(
+        &mut self,
+        scene: &mut PlanBuilder,
+        group: &str,
+        at_nanos: u64,
+        from_offset: [f32; 2],
+        from_deg: f32,
+        spring: SpringPlan,
+    ) -> u64 {
+        let op = self.channel(scene, &format!("{group}.opacity"), 0.0);
+        scene.set(&op, at_nanos, 0.0);
+        scene.ease(&op, at_nanos, 1.0, 0.22, Ease::Smootherstep);
+        let xc = self.channel(scene, &format!("{group}.x"), from_offset[0]);
+        scene.set(&xc, at_nanos, from_offset[0]);
+        scene.spring_with(&xc, at_nanos, 0.0, spring);
+        let yc = self.channel(scene, &format!("{group}.y"), from_offset[1]);
+        scene.set(&yc, at_nanos, from_offset[1]);
+        scene.spring_with(&yc, at_nanos, 0.0, spring);
+        let rc = self.channel(scene, &format!("{group}.rotation"), from_deg.to_radians());
+        scene.set(&rc, at_nanos, from_deg.to_radians());
+        scene.spring_with(&rc, at_nanos, 0.0, spring);
+        at_nanos + whole_millis(0.55)
     }
 }
 
@@ -3037,7 +3558,19 @@ mod tests {
                 { "kind": "footage", "id": "clip", "at": [1600, 900, -200], "size": [320, 180],
                   "clip": { "media": "clip" }, "mask": { "shape": "circle" } },
                 { "kind": "rune-card", "id": "rune", "at": [1200, 500, 0], "size": [480, 320],
-                  "surface": { "surface": { "recipe": "note", "markdown": "ok" } } }
+                  "surface": { "surface": { "recipe": "note", "markdown": "ok" } } },
+                { "kind": "backdrop", "id": "wash", "paint": { "kind": "solid", "rgba": [17, 24, 39, 255] } },
+                { "kind": "type", "id": "headline", "at": [960, 200, 0],
+                  "spec": { "text": "HELLO WORLD", "size": 64.0, "split": "word" } },
+                { "kind": "group", "id": "rig", "at": [960, 540, 0],
+                  "clip": { "kind": "type", "text": "MOTION", "size": 120.0 },
+                  "children": [
+                    { "kind": "shape", "id": "rig-fill", "at": [0, 0, 0], "shape": { "rect": [400, 140] } },
+                    { "kind": "shader", "id": "rig-field", "at": [0, 0, 0], "size": [400, 140],
+                      "wgsl": "fn shade(s: ShaderIn, p: Params) -> vec4<f32> { return vec4<f32>(p.tint * p.amount, 1.0); }",
+                      "params": [{ "type": "scalar", "name": "amount", "default": 0.5 },
+                                 { "type": "color", "name": "tint", "default": [255, 0, 51] }] }
+                  ] }
             ]))
             .unwrap(),
         );
@@ -3057,10 +3590,14 @@ mod tests {
             "icon",
             "footage",
             "rune-card",
+            "backdrop",
+            "type",
+            "group",
+            "shader",
         ];
         for kind in kinds {
             assert!(
-                plan.elements
+                plan.all_elements()
                     .iter()
                     .any(|e| serde_json::to_value(e).unwrap()["kind"] == kind),
                 "the test plan lacks a {kind}"
@@ -3078,7 +3615,7 @@ mod tests {
                 "stage property '{property}' has no default"
             );
         }
-        for element in &plan.elements {
+        for element in plan.all_elements() {
             let defaults = element.channel_defaults();
             let names = defaults.iter().map(|(name, _)| *name).collect::<Vec<_>>();
             let properties = element.properties();
@@ -3108,6 +3645,10 @@ mod tests {
             "cards have no age"
         );
         assert_eq!(plan.channel_default("missing.opacity"), None);
+        assert_eq!(plan.channel_default("rig-field.amount"), Some(0.5));
+        assert_eq!(plan.channel_default("rig-field.tint.b"), Some(0.2));
+        assert_eq!(plan.channel_default("rig-field.tint"), None);
+        assert!(plan.accepts("rig-field.tint.r"));
     }
 
     #[test]

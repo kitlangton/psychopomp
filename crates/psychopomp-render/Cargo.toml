@@ -16,6 +16,7 @@ path = "src/main.rs"
 anyhow = "1.0"
 bytemuck = { version = "1.25", features = ["derive"] }
 cosmic-text = "0.19"
+swash = "0.2"
 psychopomp = { path = "../psychopomp" }
 pollster = "0.4"
 pulldown-cmark = { version = "0.13", default-features = false }

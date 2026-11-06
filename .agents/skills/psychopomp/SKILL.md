@@ -2,7 +2,7 @@
 name: psychopomp
 description: >
   Make videos, explainer reels, architecture breakdowns, PR walkthroughs, product demos,
-  and deterministic motion graphics in Rust with Psychopomp: wgpu linear-HDR Stage, 24x
+  product launches, editorial pieces, portrait type posters, and deterministic motion graphics in Rust with Psychopomp: wgpu linear-HDR Stage, 24x
   shutter motion blur, keyed code diffs with IDE diagnostics, native chat/terminal
   surfaces, ElevenLabs v4 narration, and headless layout, pop, strip, and LUFS checks.
   Use whenever asked to generate, edit, check, or render a programmatic video or extend
@@ -14,19 +14,51 @@ description: >
 Psychopomp compiles lightweight, GPU-free Rust **Scene Programs** (`scenes/<name>`)
 in under a second into declarative JSON **Scene Plans** and **Reels**, then renders
 `Time -> Pixels` on `wgpu` in linear HDR (`Rgba16Float`) with 24-sample shutter
-motion blur, `cosmic-text` shaping (bundled `CommitMono`), and FFmpeg H.264/AAC
+motion blur, `cosmic-text` shaping (bundled `CommitMono` plus OFL kit fonts), and FFmpeg H.264/AAC
 delivery. Every visual beat is a pure function of `u64` nanosecond time; interrupted
 springs carry both position and velocity.
 
 Before authoring, load `explainer-motion` and read [STORY.md](STORY.md) for
-narrative structure, visual form selection, and anti-slop rules. Canonical
-reference scenes in the repo:
+narrative structure, visual form selection, and anti-slop rules.
+
+## Pick a Style Kit from the brief
+
+Dark CommitMono cards and orbs are the explainer look, not the default. Read
+the brief, then start from the `psychopomp::kit` Style Kit it calls for. A kit
+fixes canvas, palette, post, ground, and two type voices; everything after is
+ordinary Stage authoring. Kits are values: override any field the brief needs.
+
+| Brief | Kit | Canvas | Palette | Type | Primitives |
+|---|---|---|---|---|---|
+| PR, bug, architecture explainer | `kit::explainer` | 1920x1080 | Clear Neutral (`--theme neutral`) | CommitMono | `header`, `chip`, `footer`, `card`, `orb`, diffs, chat |
+| essay, story, quiet announcement | `kit::editorial` | 1920x1080 | warm paper, carbon ink, one vermilion | Instrument Serif over Instrument Sans | `kicker`, `rule`, `flourish`, `Art` with `trim_in` |
+| social poster, title card, quote | `kit::kinetic_poster` | 1080x1920 | chalk, ink, one signal orange | Anton stacks over Instrument Sans | `stack` + `rise_type` slits, `slot` + `block` wipes |
+| product launch, feature reveal | `kit::product_showcase` | 1920x1080 | daylight glass, white-to-sky ground | Archivo Black over Instrument Sans | `type_window` (footage in glyphs), `window`, `footage` |
+
+```rust
+use psychopomp::kit::editorial::{self, INK};
+let kit = editorial::kit();
+let mut scene = kit.begin("essay", 14 * SECOND); // canvas, palette, post, fonts
+let plan = kit.stage([StageElement::kinetic_type("title", [960.0, 380.0, 0.0],
+    kit.headline("A quiet launch", 150.0, Paint::hex(INK)))]); // kit ground first
+```
+
+`kit.begin` declares the kit's bundled fonts (`assets/fonts/*`, each with its
+OFL licence); `kit.headline` / `kit.caption` give the display and text voices;
+`kit.matte(text, size)` and `kit::masked(spec, unit)` give type mattes and slit
+rises. The explainer kit writes nothing to the plan, so explainer films render
+as before. No narration is required: the three style reels (`scenes/editorial`,
+`scenes/kinetic-poster`, `scenes/product-launch`) are silent 12–14 s references.
+
+Canonical reference scenes in the repo:
 - `scenes/opc18-catalog`: measured performance story with card-clone decks,
   `RollingNumberActor`, `MeterActor`, and stepped `Diff`.
 - `scenes/pr-walkthrough/src/flagship.rs`: service orb + client topology zooming
   into stable inline code transitions.
 - `scenes/diagnostics` & `scenes/text-surfaces`: IDE error waves, hover cards,
   inlay hints, native chat threads, terminals, and diffstats.
+- `scenes/editorial`, `scenes/kinetic-poster`, `scenes/product-launch`: one
+  silent reel per non-explainer kit.
 
 ## Steps
 
@@ -58,8 +90,8 @@ reference scenes in the repo:
 
 3. **Build the Scene Program (`scenes/<name>`).** The workspace globs `scenes/*`
    automatically (`psychopomp` + `psychopomp-media` deps only; compiles in <1s).
-   Choose the concrete recipe that matches each act instead of defaulting to
-   generic node boxes:
+   Start from the brief's Style Kit, then choose the concrete recipe that
+   matches each act instead of defaulting to generic node boxes:
    - **Chat / Slack / messaging context:** `ChatActor` (`ChatPlan::new`,
      `.titled("#channel", None)` or `ChatStyle::Bubbles`, `.say`, `.stream`,
      `.highlight`, `.react`).
@@ -78,8 +110,8 @@ reference scenes in the repo:
      `MeterActor`, `RollingNumberActor`, `ConfettiActor`, `TerminalActor`,
      `ChangedFilesActor`.
    Key every beat to spoken phrases with `spoken.at_any(&["phrase", "fallback"])`
-   and causal guards (`.not_before(send.reply())`), frame segments with
-   `chrome::{header, chip, footer}`, and Layer SFX (`sfx::TICK`, `MARK`,
+   and causal guards (`.not_before(send.reply())`), frame explainer segments with
+   `kit::explainer::{header, chip, footer}` (other kits set their own credits), and Layer SFX (`sfx::TICK`, `MARK`,
    `CONFIRM`, `WHOOSH`, `GLITCH`, `IMPACT`, `BOOM`, `SPARKLE`) at `-10..-18 dB`.
    *Done when:* `cargo run -p psychopomp-<name>` emits `<name>.reel.json` and
    `plan validate` reports `"valid": true`.
@@ -112,7 +144,8 @@ reference scenes in the repo:
    cargo run --release -- plan render scenes/<name>/<name>.reel.json output/<name>.mp4 --theme neutral
    ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,r_frame_rate,duration -of json output/<name>.mp4
    ```
-   *Done when:* `ffprobe` confirms `1920x1080`, `60/1` fps, and `h264` + `aac`
+   *Done when:* `ffprobe` confirms the kit's canvas (`1920x1080`, or `1080x1920`
+   for the poster), `60/1` fps, and `h264` (+ `aac` when the film has sound)
    matching the reel duration.
 
 ## Extending Psychopomp

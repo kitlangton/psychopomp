@@ -9,6 +9,7 @@ use std::f32::consts::{FRAC_PI_2, PI, TAU};
 use super::*;
 use crate::footage::StageFootageFrame;
 use psychopomp::{
+    art::{FillRule, Trim, TrimMode},
     callout::CalloutSide,
     caption::{CaptionAlign, CaptionSpanPlan},
     effects::combustion::{self, Burst},
@@ -29,9 +30,11 @@ use psychopomp::{
         shapes::{Box2, Polygon, Port, Shape, connect, fit_between_ports, sphere_ring},
         smoothstep, stops, vec2, vec3,
     },
+    rig::{ClipMask, GroupXform, group_step},
     stage::{
-        Arrow, BoltEnd, Camera, Curve, Figure, Fill, Material, OrbPoint, StageElement, StagePlan,
-        StatusText, TRACK, Waypoint, form_points, morph_point, orb_points, packet, shatter_offset,
+        Arrow, BoltEnd, Camera, Curve, Figure, Fill, Material, OrbPoint, ShaderParam, StageElement,
+        StagePlan, StatusText, TRACK, Waypoint, form_points, morph_point, orb_points, packet,
+        shatter_offset,
     },
     tone::Tone,
 };
@@ -66,6 +69,20 @@ struct Prim {
     mask: [f32; 4],
     mask_shape: [f32; 4],
     mask_color: [f32; 4],
+    grad_a: [f32; 4],
+    grad_b: [f32; 4],
+    /// A group matte (`GroupClip`): mode, screen center, pixels per local unit;
+    /// shape parameters in local units; screen-to-local columns; atlas rect.
+    clip_a: [f32; 4],
+    clip_b: [f32; 4],
+    clip_m: [f32; 4],
+    clip_uv: [f32; 4],
+    /// A skewed or unevenly scaled group's leftover map, inverted (columns),
+    /// applied to pixels about `warp_c.xy`; `warp_c.z` turns it on and
+    /// `warp_c.w` rasterizes `raster` instead of `bbox`.
+    warp: [f32; 4],
+    warp_c: [f32; 4],
+    raster: [f32; 4],
 }
 
 #[repr(C)]
@@ -89,6 +106,10 @@ struct PostUniform {
 struct AtlasText {
     /// x, y, width, height in atlas texels.
     rect: [f32; 4],
+    /// Raster density relative to 1× logical pixels (`TEXT_RASTER` for normal text).
+    raster: f32,
+    /// A matte sprite's center relative to its group's origin, in local pixels.
+    offset: [f32; 2],
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -111,6 +132,9 @@ struct PostPass {
 
 pub(crate) struct StageGpu {
     primitives: wgpu::RenderPipeline,
+    /// One pipeline per custom `Shader` layer, and each layer's slot in it.
+    shaders: Vec<wgpu::RenderPipeline>,
+    shader_slots: HashMap<String, usize>,
     primitive_binding: wgpu::BindGroup,
     prims: wgpu::Buffer,
     points: wgpu::Buffer,
@@ -128,6 +152,7 @@ pub(crate) struct StageGpu {
     texts: HashMap<String, AtlasText>,
     orbs: HashMap<String, Vec<OrbPoint>>,
     forms: HashMap<String, FormGeometry>,
+    arts: HashMap<String, PreparedArt>,
     /// Every footage element's frames share one sRGB atlas; each sample
     /// uploads only the slots whose frame changed.
     footage: wgpu::Texture,
@@ -283,6 +308,29 @@ pub(crate) fn icon_svg(icon: &str, path: &str, view: f32) -> Option<String> {
     }
 }
 
+/// The local box SVG path data `d` covers, as left, top, width, height, or
+/// why it covers none.
+pub(crate) fn matte_path_bounds(d: &str) -> Result<[f32; 4]> {
+    const HALF: f32 = 16384.0;
+    let probe = format!(
+        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{0}" height="{0}"><g transform="translate({HALF} {HALF})"><path d="{d}"/></g></svg>"#,
+        HALF * 2.0
+    );
+    let tree = resvg::usvg::Tree::from_str(&probe, &resvg::usvg::Options::default())
+        .context("SVG path data does not parse")?;
+    let bounds = tree.root().abs_bounding_box();
+    anyhow::ensure!(
+        tree.root().has_children() && bounds.width() > 0.25 && bounds.height() > 0.25,
+        "path data draws nothing"
+    );
+    Ok([
+        bounds.left() - HALF,
+        bounds.top() - HALF,
+        bounds.width(),
+        bounds.height(),
+    ])
+}
+
 /// Rasterize an icon's coverage at `pixels` square, for the atlas.
 fn icon_sprite(svg: &str, pixels: u32) -> Result<TextSprite> {
     rasterize_svg(svg, pixels, pixels)
@@ -340,7 +388,7 @@ pub(crate) const SHADER_STRUCTS: [(&str, usize); 3] = [
 ];
 
 /// One shader from its modules, each read live under `PSYCHOPOMP_SHADER_DIR`.
-fn compose(modules: &[(&str, &'static str)]) -> String {
+pub(super) fn compose(modules: &[(&str, &'static str)]) -> String {
     modules
         .iter()
         .map(|(file, builtin)| shader(file, builtin))
@@ -525,40 +573,61 @@ impl HeadlessRenderer {
                 operation: wgpu::BlendOperation::Add,
             },
         };
-        let primitives = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("stage primitives"),
-            layout: Some(
-                &device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                    label: None,
-                    bind_group_layouts: &[Some(&primitive_layout)],
-                    immediate_size: 0,
+        let primitive_pipeline_layout =
+            device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: None,
+                bind_group_layouts: &[Some(&primitive_layout)],
+                immediate_size: 0,
+            });
+        let primitive_pipeline = |label: &str, module: &wgpu::ShaderModule, fragment: &str| {
+            device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                label: Some(label),
+                layout: Some(&primitive_pipeline_layout),
+                vertex: wgpu::VertexState {
+                    module,
+                    entry_point: Some("vs"),
+                    compilation_options: Default::default(),
+                    buffers: &[],
+                },
+                primitive: wgpu::PrimitiveState {
+                    topology: wgpu::PrimitiveTopology::TriangleStrip,
+                    ..Default::default()
+                },
+                depth_stencil: None,
+                multisample: Default::default(),
+                fragment: Some(wgpu::FragmentState {
+                    module,
+                    entry_point: Some(fragment),
+                    compilation_options: Default::default(),
+                    targets: &[Some(wgpu::ColorTargetState {
+                        format: HDR_FORMAT,
+                        blend: Some(premultiplied),
+                        write_mask: wgpu::ColorWrites::ALL,
+                    })],
                 }),
-            ),
-            vertex: wgpu::VertexState {
-                module: &primitive_shader,
-                entry_point: Some("vs"),
-                compilation_options: Default::default(),
-                buffers: &[],
-            },
-            primitive: wgpu::PrimitiveState {
-                topology: wgpu::PrimitiveTopology::TriangleStrip,
-                ..Default::default()
-            },
-            depth_stencil: None,
-            multisample: Default::default(),
-            fragment: Some(wgpu::FragmentState {
-                module: &primitive_shader,
-                entry_point: Some("fs"),
-                compilation_options: Default::default(),
-                targets: &[Some(wgpu::ColorTargetState {
-                    format: HDR_FORMAT,
-                    blend: Some(premultiplied),
-                    write_mask: wgpu::ColorWrites::ALL,
-                })],
-            }),
-            multiview_mask: None,
-            cache: None,
-        });
+                multiview_mask: None,
+                cache: None,
+            })
+        };
+        let primitives = primitive_pipeline("stage primitives", &primitive_shader, "fs");
+        let primitive_source = compose(&PRIMITIVE_SHADER);
+        let mut shaders = Vec::new();
+        let mut shader_slots = HashMap::new();
+        for element in plan.all_elements() {
+            if let StageElement::Shader {
+                id, wgsl, params, ..
+            } = element
+            {
+                let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+                    label: Some(id),
+                    source: wgpu::ShaderSource::Wgsl(
+                        shader_layer::layer_source(&primitive_source, wgsl, params).into(),
+                    ),
+                });
+                shader_slots.insert(id.clone(), shaders.len());
+                shaders.push(primitive_pipeline(id, &module, "fs_shader"));
+            }
+        }
 
         let post_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("stage post"),
@@ -712,16 +781,15 @@ impl HeadlessRenderer {
                 viewport: [width as f32, height as f32, atlas_size[0], atlas_size[1]],
             }),
         );
-        let orbs = plan
-            .elements
+        let all_elements = plan.all_elements();
+        let orbs = all_elements
             .iter()
             .filter_map(|element| match element {
                 StageElement::Orb { id, points, .. } => Some((id.clone(), orb_points(*points))),
                 _ => None,
             })
             .collect();
-        let forms = plan
-            .elements
+        let forms = all_elements
             .iter()
             .filter_map(|element| match element {
                 StageElement::Form {
@@ -734,8 +802,27 @@ impl HeadlessRenderer {
                 _ => None,
             })
             .collect();
+        let arts = all_elements
+            .iter()
+            .filter_map(|element| match element {
+                StageElement::Art {
+                    id,
+                    art,
+                    morphs,
+                    stroke,
+                    ..
+                } => Some(
+                    PreparedArt::new(art, morphs, stroke.is_some())
+                        .with_context(|| format!("stage art '{id}'"))
+                        .map(|art| (id.clone(), art)),
+                ),
+                _ => None,
+            })
+            .collect::<Result<_>>()?;
         Ok(StageGpu {
             primitives,
+            shaders,
+            shader_slots,
             primitive_binding,
             prims,
             points,
@@ -752,6 +839,7 @@ impl HeadlessRenderer {
             texts: rects,
             orbs,
             forms,
+            arts,
             footage,
             slots,
         })
@@ -762,8 +850,9 @@ impl HeadlessRenderer {
         &mut self,
         plan: &StagePlan,
     ) -> Result<(wgpu::TextureView, [f32; 2], HashMap<String, AtlasText>)> {
+        let all_elements = plan.all_elements();
         let mut strings: Vec<(String, String, f32, Face)> = Vec::new();
-        for element in &plan.elements {
+        for element in &all_elements {
             match element {
                 StageElement::Card {
                     id, title, status, ..
@@ -827,9 +916,58 @@ impl HeadlessRenderer {
                     .clone()
             })
             .collect::<Vec<_>>();
-        // Icons follow the text, rasterized at the same density.
-        let mut keys = strings.into_iter().map(|(key, ..)| key).collect::<Vec<_>>();
-        for element in &plan.elements {
+        // Icons, kinetic `Type` units, and group matte silhouettes follow.
+        let mut keys: Vec<(String, f32, [f32; 2])> = strings
+            .into_iter()
+            .map(|(key, ..)| (key, TEXT_RASTER, [0.0, 0.0]))
+            .collect();
+        for element in &all_elements {
+            if let StageElement::Type { id, spec, .. } = element {
+                let raster = (spec.size * TEXT_RASTER).clamp(8.0, 1024.0);
+                let line = (raster * 1.38).ceil();
+                for unit in spec.units() {
+                    let mut attrs = match &spec.family {
+                        Some(name) => Attrs::new().family(cosmic_text::Family::Name(name.as_str())),
+                        None => fonts::attrs(spec.face),
+                    }
+                    .weight(Weight(spec.weight))
+                    .color(Color::rgb(255, 255, 255));
+                    if spec.italic {
+                        attrs = attrs.style(cosmic_text::Style::Italic);
+                    }
+                    let width =
+                        ((unit.text.chars().count() as f32 * raster * 0.85) as u32 + 96).min(4096);
+                    let sprite = super::smoothing::make_smoothed_sprite(
+                        &mut self.font_system,
+                        &mut self.swash_cache,
+                        vec![(unit.text.as_str(), attrs.clone())],
+                        attrs,
+                        Metrics::new(raster, line),
+                        width,
+                        line as u32,
+                        TEXT_RASTER,
+                        spec.tracking * raster,
+                    );
+                    sprites.push(sprite);
+                    keys.push((
+                        text_key(id, &format!("u{}", unit.index)),
+                        TEXT_RASTER,
+                        [0.0, 0.0],
+                    ));
+                }
+            }
+            if let StageElement::Group {
+                id,
+                clip: Some(mask),
+                ..
+            } = element
+                && let Some((sprite, density, offset)) = self.matte_sprite(id, mask)?
+            {
+                sprites.push(sprite);
+                keys.push((text_key(id, "matte"), density, offset));
+            }
+        }
+        for element in &all_elements {
             if let StageElement::Icon {
                 id,
                 size,
@@ -844,7 +982,7 @@ impl HeadlessRenderer {
                 let pixels = ((size * TEXT_RASTER).ceil() as u32).clamp(4, 2048);
                 sprites
                     .push(icon_sprite(&svg, pixels).with_context(|| format!("icon '{id}' SVG"))?);
-                keys.push(text_key(id, "icon"));
+                keys.push((text_key(id, "icon"), TEXT_RASTER, [0.0, 0.0]));
             }
         }
         // Shelf packing, rows of the tallest sprite.
@@ -885,16 +1023,88 @@ impl HeadlessRenderer {
         let rects = keys
             .into_iter()
             .zip(placements)
-            .map(|(key, (x, y, w, h))| {
+            .map(|((key, raster, offset), (x, y, w, h))| {
                 (
                     key,
                     AtlasText {
                         rect: [x as f32, y as f32, w as f32, h as f32],
+                        raster,
+                        offset,
                     },
                 )
             })
             .collect();
         Ok((atlas, [atlas_width as f32, atlas_height as f32], rects))
+    }
+
+    /// A group matte's coverage sprite, its density in texels per local pixel,
+    /// and its center relative to the group's origin. `Rect` and `Circle`
+    /// mattes are analytic and need none.
+    fn matte_sprite(
+        &mut self,
+        id: &str,
+        mask: &ClipMask,
+    ) -> Result<Option<(TextSprite, f32, [f32; 2])>> {
+        let d = match mask {
+            ClipMask::Rect { .. } | ClipMask::Circle { .. } => return Ok(None),
+            ClipMask::Type {
+                text,
+                face,
+                family,
+                size,
+                weight,
+                tracking,
+                ..
+            } => {
+                let est_advance = (text.chars().count().max(1) as f32 * size * 0.82).max(1.0);
+                let density = TEXT_RASTER.min(3800.0 / est_advance).max(0.5);
+                let raster = (size * density).clamp(8.0, 1024.0);
+                let line = (raster * 1.32).ceil();
+                let attrs = match family {
+                    Some(name) => Attrs::new().family(cosmic_text::Family::Name(name.as_str())),
+                    None => fonts::attrs(*face),
+                }
+                .weight(Weight(*weight))
+                .color(Color::rgb(255, 255, 255));
+                let width = ((text.chars().count() as f32 * raster * 0.9) as u32 + 96).min(4096);
+                let sprite = super::smoothing::make_smoothed_sprite(
+                    &mut self.font_system,
+                    &mut self.swash_cache,
+                    vec![(text.as_str(), attrs.clone())],
+                    attrs,
+                    Metrics::new(raster, line),
+                    width,
+                    line as u32,
+                    density,
+                    tracking * raster,
+                );
+                // The atlas keeps 4 texels past the ink; center the ink.
+                return Ok(Some((sprite, density, [2.0 / density, 0.0])));
+            }
+            ClipMask::Polygon { points, .. } => {
+                let mut d = String::new();
+                for (i, [x, y]) in points.iter().enumerate() {
+                    d.push_str(&format!("{}{x} {y} ", if i == 0 { "M" } else { "L" }));
+                }
+                d.push('Z');
+                d
+            }
+            ClipMask::Path { d, .. } => d.clone(),
+        };
+        let bounds = matte_path_bounds(&d).with_context(|| format!("group '{id}' path clip"))?;
+        const PAD: f32 = 4.0;
+        let [left, top, width, height] = bounds;
+        let (w, h) = (width + PAD * 2.0, height + PAD * 2.0);
+        let density = TEXT_RASTER.min(2048.0 / w.max(h));
+        let (pw, ph) = ((w * density).ceil() as u32, (h * density).ceil() as u32);
+        let (vw, vh) = (pw as f32 / density, ph as f32 / density);
+        let (x0, y0) = (left - PAD, top - PAD);
+        let svg = format!(
+            r#"<svg xmlns="http://www.w3.org/2000/svg" width="{vw}" height="{vh}" viewBox="{x0} {y0} {vw} {vh}"><path d="{d}" fill="white"/></svg>"#
+        );
+        let sprite = super::rasterize_svg(&svg, pw.max(1), ph.max(1))
+            .with_context(|| format!("group '{id}' path clip"))?;
+        Ok(Some((sprite, density, [x0 + vw * 0.5, y0 + vh * 0.5])))
     }
 
     #[cfg(test)]
@@ -962,7 +1172,7 @@ impl HeadlessRenderer {
         value: impl Fn(f64, &str, f32) -> f32,
         footage: impl Fn(f64) -> Result<Vec<StageFootageFrame>>,
     ) -> Result<Vec<u8>> {
-        let look = Look::new(self.theme);
+        let look = Look::with_palette(self.theme, self.palette_override);
         let size = vec2(self.spec.width as f32, self.spec.height as f32);
         let mean = exposure
             .iter()
@@ -986,7 +1196,7 @@ impl HeadlessRenderer {
             if !gpu.slots.is_empty() {
                 let frames = footage(time)?;
                 self.upload_footage(gpu, &frames);
-                for element in &plan.elements {
+                for element in plan.all_elements() {
                     if let StageElement::RuneCard { id, surface, .. } = element
                         && let Some(slot) = gpu.slots.get(id)
                     {
@@ -1006,13 +1216,14 @@ impl HeadlessRenderer {
                 scene: &scene,
                 look,
                 orbs: &gpu.orbs,
+                arts: &gpu.arts,
                 footage: &gpu.slots,
+                shaders: &gpu.shader_slots,
                 frame: StageFrame::new(&gpu.texts, look.background),
+                next_order: 0,
             };
             painter.backdrop(plan.post.backdrop);
-            for (order, element) in plan.elements.iter().enumerate() {
-                painter.element(order, element);
-            }
+            painter.paint_tree(&plan.elements);
             let (prims, points) = painter.frame.finish()?;
             if time == central {
                 post = post_settings(plan, &scene, &value, look, time);
@@ -1081,9 +1292,25 @@ impl HeadlessRenderer {
                 occlusion_query_set: None,
                 multiview_mask: None,
             });
-            pass.set_pipeline(&gpu.primitives);
             pass.set_bind_group(0, &gpu.primitive_binding, &[]);
-            pass.draw(0..4, 0..prims.len() as u32);
+            // Runs of ordinary primitives draw instanced; each custom shader
+            // layer draws alone with its own pipeline, in depth order.
+            let mut start = 0;
+            while start < prims.len() {
+                let slot = shader_layer::slot(prims[start].a[0]);
+                let end = match slot {
+                    Some(_) => start + 1,
+                    None => (start..prims.len())
+                        .find(|&i| shader_layer::slot(prims[i].a[0]).is_some())
+                        .unwrap_or(prims.len()),
+                };
+                let pipeline = slot
+                    .and_then(|slot| gpu.shaders.get(slot))
+                    .unwrap_or(&gpu.primitives);
+                pass.set_pipeline(pipeline);
+                pass.draw(0..4, start as u32..end as u32);
+                start = end;
+            }
         }
         fullscreen(
             &mut encoder,
@@ -1250,14 +1477,54 @@ pub(crate) fn stage_bounds(
     };
     let atlas_width = |key: &str, scale: f32| -> f32 {
         gpu.texts.get(key).map_or(0.0, |text| {
-            (text.rect[2] - 4.0).max(0.0) * scale / TEXT_RASTER
+            (text.rect[2] - 4.0).max(0.0) * scale / text.raster
         })
     };
 
+    let mut child_clips: HashMap<&str, [f32; 4]> = HashMap::new();
+    fn collect_child_clips<'a>(
+        scene: &Scene<'a>,
+        texts: &HashMap<String, AtlasText>,
+        items: &'a [StageElement],
+        inherited: Option<[f32; 4]>,
+        out: &mut HashMap<&'a str, [f32; 4]>,
+    ) {
+        for item in items {
+            if let Some(aabb) = inherited {
+                out.insert(item.id(), aabb);
+            }
+            if let StageElement::Group {
+                id, clip, children, ..
+            } = item
+            {
+                let next = match clip {
+                    Some(mask) => match resolve_group_clip(scene, texts, id, mask) {
+                        GroupClipEval::Closed => Some([0.0, 0.0, 0.0, 0.0]),
+                        GroupClipEval::Active {
+                            aabb: Some(own), ..
+                        } => Some(match inherited {
+                            Some(prev) => [
+                                prev[0].max(own[0]),
+                                prev[1].max(own[1]),
+                                prev[2].min(own[2]),
+                                prev[3].min(own[3]),
+                            ],
+                            None => own,
+                        }),
+                        _ => inherited,
+                    },
+                    None => inherited,
+                };
+                collect_child_clips(scene, texts, children, next, out);
+            }
+        }
+    }
+    collect_child_clips(&scene, &gpu.texts, &plan.elements, None, &mut child_clips);
+
     let mut out = Vec::new();
-    for element in &plan.elements {
+    for element in plan.all_elements() {
         let id = element.id();
-        if element.anchor().is_none() {
+        if matches!(element, StageElement::Group { .. }) || element.anchor().is_none() {
             continue;
         }
         let opacity = scene.unit(id, "opacity");
@@ -1367,6 +1634,41 @@ pub(crate) fn stage_bounds(
                     overflow,
                 )
             }
+            StageElement::Type { spec, .. } => {
+                let units = spec.units();
+                let line_count = spec.text.split('\n').count().max(1);
+                let space_w = spec.size * 0.28 * place.scale;
+                let mut max_line_w = 0.0_f32;
+                for ln in 0..line_count {
+                    let lw: f32 = units
+                        .iter()
+                        .filter(|u| u.line == ln)
+                        .map(|u| {
+                            u.leading_spaces as f32 * space_w
+                                + atlas_width(&text_key(id, &format!("u{}", u.index)), place.scale)
+                        })
+                        .sum();
+                    max_line_w = max_line_w.max(lw);
+                }
+                let total_h = line_count as f32 * spec.size * spec.line_height * place.scale;
+                let left = place.center.x
+                    - match spec.align {
+                        psychopomp::caption::CaptionAlign::Left => 0.0,
+                        psychopomp::caption::CaptionAlign::Center => max_line_w * 0.5,
+                        psychopomp::caption::CaptionAlign::Right => max_line_w,
+                    };
+                (
+                    "label",
+                    Some(spec.text.replace('\n', " ")),
+                    [
+                        vec2(left, place.center.y - total_h * 0.5),
+                        vec2(left + max_line_w, place.center.y - total_h * 0.5),
+                        vec2(left + max_line_w, place.center.y + total_h * 0.5),
+                        vec2(left, place.center.y + total_h * 0.5),
+                    ],
+                    None,
+                )
+            }
             _ => {
                 let kind = match element {
                     StageElement::Orb { .. } => "orb",
@@ -1375,6 +1677,8 @@ pub(crate) fn stage_bounds(
                     StageElement::Shape { .. } => "shape",
                     StageElement::Form { .. } => "form",
                     StageElement::Footage { .. } => "footage",
+                    StageElement::Art { .. } => "art",
+                    StageElement::Shader { .. } => "shader",
                     _ => "element",
                 };
                 let l = CalloutSide::Left.on(place.outline);
@@ -1394,6 +1698,11 @@ pub(crate) fn stage_bounds(
                 )
             }
         };
+        let corners = match scene.warp_of(id) {
+            Some([wx, wy]) => corners
+                .map(|p| place.center + wx * (p.x - place.center.x) + wy * (p.y - place.center.y)),
+            None => corners,
+        };
         let projected = corners.map(project_point);
         if projected
             .iter()
@@ -1409,16 +1718,27 @@ pub(crate) fn stage_bounds(
             });
             continue;
         }
-        let min_x = projected.iter().map(|p| p.x).fold(f32::INFINITY, f32::min);
-        let max_x = projected
+        let mut min_x = projected.iter().map(|p| p.x).fold(f32::INFINITY, f32::min);
+        let mut max_x = projected
             .iter()
             .map(|p| p.x)
             .fold(f32::NEG_INFINITY, f32::max);
-        let min_y = projected.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
-        let max_y = projected
+        let mut min_y = projected.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
+        let mut max_y = projected
             .iter()
             .map(|p| p.y)
             .fold(f32::NEG_INFINITY, f32::max);
+        if let Some(&clip_box) = child_clips.get(id) {
+            let c0 = project_point(vec2(clip_box[0], clip_box[1]));
+            let c1 = project_point(vec2(clip_box[2], clip_box[3]));
+            min_x = min_x.max(c0.x.min(c1.x));
+            max_x = max_x.min(c0.x.max(c1.x));
+            min_y = min_y.max(c0.y.min(c1.y));
+            max_y = max_y.min(c0.y.max(c1.y));
+            if min_x >= max_x || min_y >= max_y {
+                continue;
+            }
+        }
         out.push(StageBoundsItem {
             id: id.to_owned(),
             kind,
@@ -1473,8 +1793,8 @@ fn post_settings(
         ((time * 60.0).floor() % 997.0) as f32,
     ];
     let shock = plan
-        .elements
-        .iter()
+        .all_elements()
+        .into_iter()
         .find_map(|element| {
             let (StageElement::Orb { id, .. } | StageElement::Form { id, .. }) = element else {
                 return None;
@@ -1503,10 +1823,11 @@ fn post_settings(
     [params, grade, shock, rewind, motion]
 }
 
-/// The theme's colors in linear light.
+/// The theme's or custom palette's colors in linear light.
 #[derive(Clone, Copy)]
 struct Look {
     theme: Theme,
+    palette_override: Option<psychopomp::paint::PalettePlan>,
     background: Vec3,
     surface: Vec3,
     raised: Vec3,
@@ -1515,10 +1836,25 @@ struct Look {
 }
 
 impl Look {
-    fn new(theme: Theme) -> Self {
+    fn with_palette(
+        theme: Theme,
+        palette_override: Option<psychopomp::paint::PalettePlan>,
+    ) -> Self {
+        if let Some(p) = palette_override {
+            return Self {
+                theme,
+                palette_override: Some(p),
+                background: linear3(p.background),
+                surface: linear3(p.surface),
+                raised: linear3(p.raised),
+                text: linear3(p.text),
+                muted: linear3(p.muted),
+            };
+        }
         let palette = theme.palette();
         Self {
             theme,
+            palette_override: None,
             background: linear3(palette.background),
             surface: linear3(palette.surface),
             raised: linear3(palette.raised),
@@ -1528,7 +1864,52 @@ impl Look {
     }
 
     fn tone(&self, tone: Tone) -> Vec3 {
-        linear3(self.theme.tone(tone))
+        match self.palette_override {
+            Some(p) => linear3(p.tone(tone)),
+            None => linear3(self.theme.tone(tone)),
+        }
+    }
+
+    fn resolve_paint(
+        &self,
+        paint: psychopomp::paint::Paint,
+        alpha_scale: f32,
+    ) -> ([f32; 4], [f32; 4], [f32; 4]) {
+        use psychopomp::paint::Paint as P;
+        let rgba8_to_lin = |[r, g, b, a]: [u8; 4]| {
+            let lin = linear3([r, g, b]);
+            [lin.x, lin.y, lin.z, (f32::from(a) / 255.0) * alpha_scale]
+        };
+        match paint {
+            P::Tone { tone, alpha } => (
+                rgba(self.tone(tone), alpha * alpha_scale),
+                [0.0; 4],
+                [0.0; 4],
+            ),
+            P::Solid { rgba: c } => (rgba8_to_lin(c), [0.0; 4], [0.0; 4]),
+            P::Linear {
+                angle_deg,
+                from,
+                to,
+            } => {
+                let rad = angle_deg.to_radians();
+                (
+                    rgba8_to_lin(from),
+                    [1.0, rad.cos(), rad.sin(), 0.0],
+                    rgba8_to_lin(to),
+                )
+            }
+            P::Radial {
+                center,
+                radius,
+                inner,
+                outer,
+            } => (
+                rgba8_to_lin(inner),
+                [2.0, center[0], center[1], radius],
+                rgba8_to_lin(outer),
+            ),
+        }
     }
 }
 
@@ -1762,6 +2143,10 @@ struct Scene<'a> {
     camera: Camera,
     focus: f32,
     dof: f32,
+    /// Each grouped element's composed parent transform, and whether the
+    /// element turns itself in the screen plane (`turns_on_screen`).
+    parent_xforms: HashMap<&'a str, (GroupXform, bool)>,
+    group_xforms: HashMap<&'a str, GroupXform>,
     placements: HashMap<&'a str, Placement>,
     links: HashMap<&'a str, Link>,
     /// Each path's legs, split at its stops.
@@ -1801,12 +2186,15 @@ impl<'a> Scene<'a> {
             camera: authored,
             focus: read(plan, value, "camera.focus"),
             dof: read(plan, value, "camera.dof").max(0.0),
+            parent_xforms: HashMap::new(),
+            group_xforms: HashMap::new(),
             placements: HashMap::new(),
             links: HashMap::new(),
             routes: HashMap::new(),
             forms: HashMap::new(),
             lights: Vec::new(),
         };
+        scene.populate_xforms();
         let pan = scene.tracked();
         let rumble = shake::rumble(time, trauma(plan, value));
         scene.camera.position = vec3(
@@ -1820,6 +2208,39 @@ impl<'a> Scene<'a> {
         scene
     }
 
+    fn populate_xforms(&mut self) {
+        fn walk<'a>(
+            plan: &'a StagePlan,
+            value: &'a dyn Fn(&str, f32) -> f32,
+            items: &'a [StageElement],
+            parent: Option<GroupXform>,
+            parents: &mut HashMap<&'a str, (GroupXform, bool)>,
+            groups: &mut HashMap<&'a str, GroupXform>,
+        ) {
+            for item in items {
+                if let Some(gx) = parent {
+                    parents.insert(item.id(), (gx, turns_on_screen(item)));
+                }
+                if let StageElement::Group { id, children, .. } = item {
+                    let child_gx =
+                        group_step(parent.unwrap_or_default(), item, |element, property| {
+                            read(plan, value, &format!("{element}.{property}"))
+                        });
+                    groups.insert(id.as_str(), child_gx);
+                    walk(plan, value, children, Some(child_gx), parents, groups);
+                }
+            }
+        }
+        walk(
+            self.plan,
+            self.value,
+            &self.plan.elements,
+            None,
+            &mut self.parent_xforms,
+            &mut self.group_xforms,
+        );
+    }
+
     /// The authored pan, blended toward the pans that center each followed
     /// element or packet by its `camera.track.<id>` weight. Weights summing
     /// past 1 share the frame. A packet is found where this very sample draws
@@ -1827,10 +2248,10 @@ impl<'a> Scene<'a> {
     /// ends at different depths.
     fn tracked(&self) -> Vec2 {
         let base = self.camera.position.truncate();
-        let tracks = self
-            .plan
-            .elements
+        let all = self.plan.all_elements();
+        let tracks = all
             .iter()
+            .copied()
             .filter(|element| element.followable())
             .filter_map(|element| {
                 let weight = read(self.plan, self.value, &format!("{TRACK}{}", element.id()));
@@ -1849,6 +2270,8 @@ impl<'a> Scene<'a> {
                     position: pan.extend(self.camera.position.z),
                     ..self.camera
                 },
+                parent_xforms: self.parent_xforms.clone(),
+                group_xforms: self.group_xforms.clone(),
                 placements: HashMap::new(),
                 links: HashMap::new(),
                 routes: HashMap::new(),
@@ -1856,9 +2279,7 @@ impl<'a> Scene<'a> {
                 lights: Vec::new(),
                 ..*self
             };
-            probe.placements = self
-                .plan
-                .elements
+            probe.placements = all
                 .iter()
                 .filter_map(|element| Some((element.id(), probe.place(element)?)))
                 .collect();
@@ -1911,8 +2332,8 @@ impl<'a> Scene<'a> {
         geometry: Option<&HashMap<String, FormGeometry>>,
     ) -> Self {
         let mut scene = Self::camera(plan, value, time, size);
-        scene.placements = plan
-            .elements
+        let all = plan.all_elements();
+        scene.placements = all
             .iter()
             .filter_map(|element| Some((element.id(), scene.place(element)?)))
             .collect();
@@ -1930,8 +2351,7 @@ impl<'a> Scene<'a> {
             }
             scene.forms.insert(element.id(), form);
         }
-        scene.routes = plan
-            .elements
+        scene.routes = all
             .iter()
             .filter_map(|element| match element {
                 StageElement::Path {
@@ -1946,15 +2366,14 @@ impl<'a> Scene<'a> {
             })
             .collect();
         // Shields wrap what they surround, so they are placed after it.
-        for element in &plan.elements {
+        for element in &all {
             if let StageElement::Shield { id, around, .. } = element
                 && let Some(place) = scene.shield_place(element, around)
             {
                 scene.placements.insert(id.as_str(), place);
             }
         }
-        scene.links = plan
-            .elements
+        scene.links = all
             .iter()
             .filter_map(|element| match element {
                 StageElement::Beam {
@@ -1964,16 +2383,31 @@ impl<'a> Scene<'a> {
             })
             .collect();
         let mut lights = Vec::new();
-        for element in &plan.elements {
+        for element in &all {
             scene.lights_of(element, &mut lights);
         }
         scene.lights = lights;
         scene
     }
 
-    /// An element's channel, or its Stage channel default when nothing writes it.
-    fn v(&self, id: &str, property: &str) -> f32 {
+    fn raw_v(&self, id: &str, property: &str) -> f32 {
         read(self.plan, self.value, &format!("{id}.{property}"))
+    }
+
+    /// An element's channel, or its Stage channel default when nothing writes it,
+    /// composed with any ancestor `Group` transform: opacity multiplies, blur
+    /// adds, and an element that turns on screen turns with its groups.
+    fn v(&self, id: &str, property: &str) -> f32 {
+        let raw = self.raw_v(id, property);
+        if let Some(&(gx, turns)) = self.parent_xforms.get(id) {
+            match property {
+                "opacity" => return raw.clamp(0.0, 1.0) * gx.opacity,
+                "rotation" if turns => return raw + gx.rotation(),
+                "blur" => return raw.max(0.0) + gx.blur,
+                _ => {}
+            }
+        }
+        raw
     }
 
     /// A channel clamped to 0..1: opacities, progress, and amounts.
@@ -2006,14 +2440,25 @@ impl<'a> Scene<'a> {
     fn place(&self, element: &StageElement) -> Option<Placement> {
         let id = element.id();
         let anchor = Vec3::from(element.anchor()?);
-        let offset = vec3(self.v(id, "x"), self.v(id, "y"), self.v(id, "z"));
-        let world = anchor + offset;
+        let offset = vec3(
+            self.raw_v(id, "x"),
+            self.raw_v(id, "y"),
+            self.raw_v(id, "z"),
+        );
+        if let StageElement::Group { .. } = element {
+            return self.group_place(element);
+        }
+        let (world, group_scale) = if let Some(&(gx, _)) = self.parent_xforms.get(id) {
+            (gx.transform_point(anchor + offset), gx.uniform_scale())
+        } else {
+            (anchor + offset, 1.0)
+        };
         let (center, perspective) = self.camera.project(world)?;
         let breath = match element {
             StageElement::Orb { .. } | StageElement::Form { .. } => self.breath(),
             _ => 1.0,
         };
-        let scale = perspective * self.v(id, "scale").max(0.01) * breath;
+        let scale = perspective * group_scale * self.raw_v(id, "scale").max(0.01) * breath;
         let sized = match element {
             StageElement::Shape {
                 shape: Figure::Rect(size),
@@ -2048,6 +2493,70 @@ impl<'a> Scene<'a> {
             scale,
             outline,
         })
+    }
+
+    /// A group's handle: its own origin, at its composed scale, outlined by
+    /// its shaped matte or else by the outlines of what it holds.
+    fn group_place(&self, element: &StageElement) -> Option<Placement> {
+        let StageElement::Group {
+            id, clip, children, ..
+        } = element
+        else {
+            return None;
+        };
+        let gx = self
+            .group_xforms
+            .get(id.as_str())
+            .copied()
+            .unwrap_or_default();
+        let world = gx.transform_point(Vec3::ZERO);
+        let (center, perspective) = self.camera.project(world)?;
+        let project = |local: Vec2| {
+            self.camera
+                .project(gx.transform_point(local.extend(0.0)))
+                .map(|(point, _)| point)
+        };
+        let outline =
+            if let Some((middle, half)) = clip.as_ref().and_then(|clip| clip.local_extent()) {
+                let corners = [
+                    vec2(-1.0, -1.0),
+                    vec2(1.0, -1.0),
+                    vec2(1.0, 1.0),
+                    vec2(-1.0, 1.0),
+                ]
+                .map(|sign| project(middle + half * sign));
+                match corners {
+                    [Some(a), Some(b), Some(c), Some(d)] => {
+                        Shape::Polygon(Polygon::hull(center, [a, b, c, d]))
+                    }
+                    _ => Shape::Point(center),
+                }
+            } else {
+                children
+                    .iter()
+                    .filter_map(|child| self.place(child))
+                    .map(|place| shape_box(&place.outline))
+                    .reduce(|a, b| Box2 {
+                        min: a.min.min(b.min),
+                        max: a.max.max(b.max),
+                    })
+                    .map_or(Shape::Point(center), Shape::Box)
+            };
+        Some(Placement {
+            world,
+            depth: self.camera.depth(world),
+            center,
+            scale: perspective * gx.uniform_scale(),
+            outline,
+        })
+    }
+
+    /// The screen-space map a grouped element's pixels still need (columns),
+    /// when its groups skew, stretch, or turn it in ways it cannot draw itself.
+    fn warp_of(&self, id: &str) -> Option<[Vec2; 2]> {
+        let &(gx, turns) = self.parent_xforms.get(id)?;
+        let drawn_turn = if turns { gx.rotation() } else { 0.0 };
+        gx.has_residual(drawn_turn).then(|| gx.residual(drawn_turn))
     }
 
     /// A shield is centered on what it surrounds, at its own scale.
@@ -2435,8 +2944,8 @@ impl Scene<'_> {
             return Vec::new();
         };
         self.plan
-            .elements
-            .iter()
+            .all_elements()
+            .into_iter()
             .filter_map(|element| {
                 let StageElement::Packet {
                     id: packet_id,
@@ -2491,7 +3000,7 @@ impl Scene<'_> {
     /// life: contact point, seconds since the stroke, tone, and strength.
     fn strikes_on(&self, target: &str) -> Vec<(Vec2, f32, Tone, f32)> {
         let mut strikes = Vec::new();
-        for element in &self.plan.elements {
+        for element in self.plan.all_elements() {
             let StageElement::Bolt {
                 id,
                 from,
@@ -2547,7 +3056,7 @@ impl Scene<'_> {
                 strength,
             })
             .collect::<Vec<_>>();
-        for element in &self.plan.elements {
+        for element in self.plan.all_elements() {
             let StageElement::Packet {
                 id: packet,
                 beam,
@@ -2916,16 +3425,262 @@ impl CardInk {
     }
 }
 
+/// A group's matte on screen this sample.
+enum GroupClipEval {
+    /// Nothing is cut away.
+    Open,
+    /// Everything is cut away.
+    Closed,
+    /// Prim fields `clip_a`, `clip_b`, `clip_m`, `clip_uv`, and the screen box
+    /// outside of which nothing shows (none for an inverted matte).
+    Active {
+        clip: [[f32; 4]; 4],
+        aabb: Option<[f32; 4]>,
+    },
+}
+
+/// Mode 1 is a rounded rect, 2 a circle, 3 an atlas coverage sprite (polygon,
+/// path, or type). The shader maps each pixel into the group's local space with
+/// the inverse of its composed transform, so the matte moves, turns, scales,
+/// and skews with the group.
+fn resolve_group_clip(
+    scene: &Scene<'_>,
+    texts: &HashMap<String, AtlasText>,
+    id: &str,
+    mask: &ClipMask,
+) -> GroupClipEval {
+    let gx = scene.group_xforms.get(id).copied().unwrap_or_default();
+    let shift = vec2(scene.raw_v(id, "clip-x"), scene.raw_v(id, "clip-y"));
+    let widen = scene.raw_v(id, "clip-w");
+    let invert = mask.is_inverted();
+    let closed = if invert {
+        GroupClipEval::Open
+    } else {
+        GroupClipEval::Closed
+    };
+    let flag = if invert { 1.0 } else { 0.0 };
+    let (mode, center, half, params, uv) = match mask {
+        ClipMask::Rect {
+            size,
+            corner,
+            offset,
+            feather,
+            ..
+        } => {
+            let half = vec2(size[0] + widen, size[1]) * 0.5;
+            if half.x <= 0.0005 {
+                return closed;
+            }
+            let params = [half.x, half.y, *corner, *feather];
+            let pad = half + Vec2::splat(*feather);
+            (
+                1.0,
+                Vec2::from(*offset) + shift,
+                pad,
+                params,
+                [flag, 0.0, 0.0, 0.0],
+            )
+        }
+        ClipMask::Circle {
+            radius,
+            offset,
+            feather,
+            ..
+        } => {
+            let radius = radius + widen;
+            if radius <= 0.001 {
+                return closed;
+            }
+            let params = [radius, 0.0, 0.0, *feather];
+            let pad = Vec2::splat(radius + feather);
+            (
+                2.0,
+                Vec2::from(*offset) + shift,
+                pad,
+                params,
+                [flag, 0.0, 0.0, 0.0],
+            )
+        }
+        ClipMask::Polygon { .. } | ClipMask::Path { .. } | ClipMask::Type { .. } => {
+            let Some(atlas) = texts.get(&text_key(id, "matte")) else {
+                return closed;
+            };
+            let half = vec2(atlas.rect[2], atlas.rect[3]) / atlas.raster * 0.5;
+            let [x, y, w, h] = atlas.rect;
+            (
+                3.0,
+                Vec2::from(atlas.offset) + shift,
+                half,
+                [half.x, half.y, 0.0, flag],
+                [x, y, x + w, y + h],
+            )
+        }
+    };
+    let Some((screen, perspective)) = scene.camera.project(gx.transform_point(center.extend(0.0)))
+    else {
+        return closed;
+    };
+    let (ax, ay) = (gx.x_axis * perspective, gx.y_axis * perspective);
+    let det = ax.perp_dot(ay);
+    if det.abs() < 1e-6 {
+        return closed;
+    }
+    let inverse = [ay.y / det, -ax.y / det, -ay.x / det, ax.x / det];
+    let aa = det.abs().sqrt();
+    let reach = half + Vec2::splat(2.0 / aa);
+    let corners = [
+        vec2(-reach.x, -reach.y),
+        vec2(reach.x, -reach.y),
+        vec2(reach.x, reach.y),
+        vec2(-reach.x, reach.y),
+    ]
+    .map(|corner| screen + ax * corner.x + ay * corner.y);
+    let (low, high) = corners.iter().fold(
+        (Vec2::splat(f32::INFINITY), Vec2::splat(f32::NEG_INFINITY)),
+        |(low, high), &point| (low.min(point), high.max(point)),
+    );
+    GroupClipEval::Active {
+        clip: [[mode, screen.x, screen.y, aa], params, inverse, uv],
+        aabb: (!invert).then_some([low.x, low.y, high.x, high.y]),
+    }
+}
+
+/// Whether an element turns itself in the screen plane when its `rotation`
+/// channel changes. Others (cards, labels, icons, and orbs and forms, whose
+/// rotation is a turn in depth) are turned by their group's pixel warp.
+fn turns_on_screen(element: &StageElement) -> bool {
+    matches!(
+        element,
+        StageElement::Shape { .. }
+            | StageElement::Type { .. }
+            | StageElement::Art { .. }
+            | StageElement::Footage { .. }
+            | StageElement::RuneCard { .. }
+            | StageElement::Shader { .. }
+    )
+}
+
+/// The axis-aligned box around an outline.
+fn shape_box(shape: &Shape) -> Box2 {
+    match shape {
+        Shape::Box(bounds) => *bounds,
+        Shape::Circle(circle) => {
+            Box2::from_center_size(circle.center, Vec2::splat(circle.radius * 2.0))
+        }
+        Shape::Point(point) => Box2::from_center_size(*point, Vec2::ZERO),
+        Shape::Polygon(polygon) => polygon.bounds(),
+    }
+}
+
+/// The screen rectangle a primitive rasterizes.
+fn raster_of(prim: &Prim) -> [f32; 4] {
+    if prim.warp_c[3] > 0.5 {
+        prim.raster
+    } else {
+        prim.bbox
+    }
+}
+
 /// Draws each element of one sample into its frame.
 struct Painter<'a> {
     scene: &'a Scene<'a>,
     look: Look,
     orbs: &'a HashMap<String, Vec<OrbPoint>>,
+    arts: &'a HashMap<String, PreparedArt>,
     footage: &'a HashMap<String, FootageSlot>,
+    shaders: &'a HashMap<String, usize>,
     frame: StageFrame<'a>,
+    next_order: usize,
 }
 
 impl<'a> Painter<'a> {
+    /// Paint elements in declaration order, descending into groups: each
+    /// leaf is warped by what its groups' transform leaves over, then each
+    /// group's matte applies to every primitive drawn inside it that no inner
+    /// matte claimed (an outer matte still bounds them by its screen box).
+    fn paint_tree(&mut self, elements: &[StageElement]) {
+        for element in elements {
+            let start = self.frame.prims.len();
+            let StageElement::Group {
+                id, clip, children, ..
+            } = element
+            else {
+                let order = self.next_order;
+                self.next_order += 1;
+                self.element(order, element);
+                self.warp_leaf(element, start);
+                continue;
+            };
+            if self.scene.unit(id, "opacity") <= 0.001 {
+                continue;
+            }
+            let eval = match clip {
+                Some(mask) => resolve_group_clip(self.scene, self.frame.texts, id, mask),
+                None => GroupClipEval::Open,
+            };
+            if matches!(eval, GroupClipEval::Closed) {
+                continue;
+            }
+            self.paint_tree(children);
+            let GroupClipEval::Active { clip, aabb } = eval else {
+                continue;
+            };
+            for prim in &mut self.frame.prims[start..] {
+                if prim.clip_a[0] == 0.0 {
+                    [prim.clip_a, prim.clip_b, prim.clip_m, prim.clip_uv] = clip;
+                }
+                if let Some(aabb) = aabb {
+                    let r = raster_of(prim);
+                    let cut = [
+                        r[0].max(aabb[0]),
+                        r[1].max(aabb[1]),
+                        r[2].min(aabb[2]),
+                        r[3].min(aabb[3]),
+                    ];
+                    prim.raster = if cut[0] < cut[2] && cut[1] < cut[3] {
+                        cut
+                    } else {
+                        [0.0; 4]
+                    };
+                    prim.warp_c[3] = 1.0;
+                }
+            }
+        }
+    }
+
+    /// Warp a grouped leaf's primitives about its center by what its groups'
+    /// transform leaves over once it has drawn itself scaled and turned.
+    fn warp_leaf(&mut self, element: &StageElement, start: usize) {
+        let id = element.id();
+        let (Some([wx, wy]), Some(place)) = (self.scene.warp_of(id), self.scene.placements.get(id))
+        else {
+            return;
+        };
+        let det = wx.perp_dot(wy);
+        if det.abs() < 1e-6 {
+            return;
+        }
+        let c = place.center;
+        let inverse = [wy.y / det, -wx.y / det, -wy.x / det, wx.x / det];
+        for prim in &mut self.frame.prims[start..] {
+            let r = raster_of(prim);
+            let corners = [
+                vec2(r[0], r[1]),
+                vec2(r[2], r[1]),
+                vec2(r[2], r[3]),
+                vec2(r[0], r[3]),
+            ]
+            .map(|p| c + wx * (p.x - c.x) + wy * (p.y - c.y));
+            let (low, high) = corners.iter().fold(
+                (Vec2::splat(f32::INFINITY), Vec2::splat(f32::NEG_INFINITY)),
+                |(low, high), &point| (low.min(point), high.max(point)),
+            );
+            prim.warp = inverse;
+            prim.warp_c = [c.x, c.y, 1.0, 1.0];
+            prim.raster = [low.x - 1.0, low.y - 1.0, high.x + 1.0, high.y + 1.0];
+        }
+    }
+
     /// A faint neutral light behind the scene. Warmth comes only from the bloom
     /// of what is actually lit.
     fn backdrop(&mut self, amount: f32) {
@@ -2962,6 +3717,29 @@ impl<'a> Painter<'a> {
             (StageElement::Label { align, spans, .. }, Some(place)) => {
                 self.label(order, id, *align, spans, place)
             }
+            (StageElement::Type { spec, .. }, Some(place)) => {
+                self.kinetic_type(order, id, spec, place)
+            }
+            (
+                StageElement::Art {
+                    fill,
+                    stroke,
+                    width,
+                    trim,
+                    ..
+                },
+                Some(place),
+            ) => self.art(
+                order,
+                id,
+                ArtStyle {
+                    fill: *fill,
+                    stroke: *stroke,
+                    width: *width,
+                    trim: *trim,
+                },
+                place,
+            ),
             (
                 StageElement::Ring {
                     radius,
@@ -3098,9 +3876,91 @@ impl<'a> Painter<'a> {
                 Tone::Accent,
                 place,
             ),
+            (
+                StageElement::Shader {
+                    size,
+                    corner,
+                    params,
+                    ..
+                },
+                Some(place),
+            ) => self.shader(order, id, Vec2::from(*size), *corner, params, place),
+            (StageElement::Backdrop { paint, .. }, _) => {
+                let opacity = scene.unit(id, "opacity");
+                if opacity > 0.001 {
+                    let size = self.scene.camera.size;
+                    let (fill, grad_a, grad_b) = self.look.resolve_paint(*paint, opacity);
+                    let prim = if grad_a[0] < 0.5 {
+                        Prim {
+                            bbox: [0.0, 0.0, size.x, size.y],
+                            a: [5.0, size.x * 0.5, size.y * 0.5, size.x.max(size.y)],
+                            fill,
+                            stroke: fill,
+                            ..Default::default()
+                        }
+                    } else {
+                        Prim {
+                            bbox: [0.0, 0.0, size.x, size.y],
+                            a: [5.0, size.x * 0.5, size.y * 0.5, size.x.max(size.y)],
+                            fill,
+                            grad_a,
+                            grad_b,
+                            ..Default::default()
+                        }
+                    };
+                    self.frame.prims.push(prim);
+                    self.frame.close(f32::INFINITY, order + 1);
+                }
+            }
             // A positioned element behind the camera.
             _ => {}
         }
+    }
+
+    /// A custom shader layer: one primitive its own pipeline draws, carrying
+    /// its placement, the sample time, and its packed parameters.
+    fn shader(
+        &mut self,
+        order: usize,
+        id: &str,
+        size: Vec2,
+        corner: f32,
+        params: &[ShaderParam],
+        place: Placement,
+    ) {
+        let scene = self.scene;
+        let opacity = scene.unit(id, "opacity");
+        let Some(&slot) = self.shaders.get(id) else {
+            return;
+        };
+        if opacity > 0.001 {
+            let scale = place.scale;
+            let blur = scene.blur_at(place.depth) + scene.v(id, "blur").max(0.0) * scale;
+            let half = size * 0.5 * scale;
+            let [fill, stroke, glow, uv, light, light_color, pool, pool_color] =
+                shader_layer::pack_params(params, |property| scene.raw_v(id, property));
+            self.frame.prims.push(Prim {
+                bbox: around(place.center, Vec2::splat(half.length() + blur + 2.0)),
+                a: [
+                    shader_layer::SHADER_KIND + slot as f32,
+                    place.center.x,
+                    place.center.y,
+                    scene.v(id, "rotation"),
+                ],
+                b: [half.x, half.y, corner * scale, blur],
+                grad_a: [scene.time, scale, opacity, 0.0],
+                fill,
+                stroke,
+                glow,
+                uv,
+                light,
+                light_color,
+                pool,
+                pool_color,
+                ..Default::default()
+            });
+        }
+        self.frame.close(place.depth, order);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -3189,6 +4049,7 @@ impl<'a> Painter<'a> {
                 light_color: reflection_color,
                 pool,
                 pool_color,
+                ..Default::default()
             },
         );
         // The diagrams' double frame: a quiet rule 3 px inside the edge.
@@ -4470,18 +5331,155 @@ impl<'a> Painter<'a> {
                 } else {
                     width * shown as f32 / count as f32
                 };
+                let ink_rgb = span.color.map_or_else(|| look.tone(span.tone), linear3);
                 self.frame.text(
                     key,
                     vec2(x, place.center.y),
                     place.scale,
                     CaptionAlign::Left,
-                    rgba(look.tone(span.tone), opacity),
+                    rgba(ink_rgb, opacity),
                     reveal,
                     blur,
                 );
             }
             remaining -= shown;
             x += width;
+        }
+        self.frame.close(place.depth - 0.5, order);
+    }
+
+    fn kinetic_type(
+        &mut self,
+        order: usize,
+        id: &str,
+        spec: &psychopomp::typography::TypePlan,
+        place: Placement,
+    ) {
+        let (scene, look) = (self.scene, self.look);
+        let base_opacity = scene.unit(id, "opacity");
+        if base_opacity <= 0.001 {
+            return;
+        }
+        let base_blur = scene.blur_at(place.depth) + scene.v(id, "blur").max(0.0) * place.scale;
+        let base_rot = scene.v(id, "rotation");
+        let extra_track = scene.v(id, "tracking") * spec.size * place.scale;
+        let space_w = (spec.size * 0.28 * place.scale + extra_track).max(0.0);
+
+        let units = spec.units();
+        let line_count = spec.text.split('\n').count().max(1);
+        let line_step = spec.size * spec.line_height * place.scale;
+        let first_line_y = place.center.y - (line_count.saturating_sub(1) as f32) * line_step * 0.5;
+        let viewport = scene.camera.size;
+
+        let is_block = spec.split == psychopomp::typography::SplitUnit::Block;
+        for ln in 0..line_count {
+            let line_units: Vec<_> = units.iter().filter(|u| u.line == ln).collect();
+            if line_units.is_empty() {
+                continue;
+            }
+            let widths: Vec<f32> = line_units
+                .iter()
+                .map(|u| {
+                    let key = text_key(id, &format!("u{}", u.index));
+                    self.frame.width(&key, place.scale)
+                })
+                .collect();
+            let spaces: Vec<f32> = line_units
+                .iter()
+                .enumerate()
+                .map(|(k, u)| {
+                    u.leading_spaces as f32 * space_w + if k > 0 { extra_track } else { 0.0 }
+                })
+                .collect();
+            let line_w: f32 = widths.iter().sum::<f32>() + spaces.iter().sum::<f32>();
+            let line_y = first_line_y + ln as f32 * line_step;
+            let mut cursor_x = place.center.x
+                - match spec.align {
+                    CaptionAlign::Left => 0.0,
+                    CaptionAlign::Center => line_w * 0.5,
+                    CaptionAlign::Right => line_w,
+                };
+            let slit = if spec.masked {
+                let half_slit = (spec.size * place.scale * 0.62).max(line_step * 0.54);
+                [0.0, line_y - half_slit, viewport.x, line_y + half_slit]
+            } else {
+                [0.0; 4]
+            };
+
+            for ((u, &uw), &lead) in line_units.iter().zip(&widths).zip(&spaces) {
+                cursor_x += lead;
+                let u_idx = if is_block { 0 } else { u.index };
+                let u_op = scene.unit(id, &format!("u{u_idx}.opacity")) * base_opacity;
+                if u_op <= 0.001 {
+                    cursor_x += uw;
+                    continue;
+                }
+                let ux = scene.v(id, &format!("u{u_idx}.x")) * place.scale;
+                let uy = scene.v(id, &format!("u{u_idx}.y")) * place.scale;
+                let uscale = scene.v(id, &format!("u{u_idx}.scale")).max(0.01);
+                let urot = base_rot + scene.v(id, &format!("u{u_idx}.rotation"));
+                let ublur =
+                    base_blur + scene.v(id, &format!("u{u_idx}.blur")).max(0.0) * place.scale;
+
+                let key = text_key(id, &format!("u{}", u.index));
+                let Some(atlas) = self.frame.texts.get(&key) else {
+                    cursor_x += uw;
+                    continue;
+                };
+                let draw_scale = place.scale * uscale;
+                let size = vec2(atlas.rect[2], atlas.rect[3]) * (draw_scale / atlas.raster);
+                let local_offset = vec2(
+                    cursor_x + uw * 0.5 - place.center.x + ux,
+                    line_y - place.center.y + uy,
+                );
+                let unit_center = if base_rot.abs() > 1e-5 {
+                    place.center + Vec2::from_angle(base_rot).rotate(local_offset)
+                } else {
+                    place.center + local_offset
+                };
+                let left = unit_center.x - size.x * 0.5;
+                let top = unit_center.y - size.y * 0.5;
+                let uv = [
+                    atlas.rect[0],
+                    atlas.rect[1],
+                    atlas.rect[0] + atlas.rect[2],
+                    atlas.rect[1] + atlas.rect[3],
+                ];
+                let (fill, grad_a, grad_b) = look.resolve_paint(spec.paint, u_op);
+                let gamma = super::smoothing::glyph_coverage_exponent(
+                    [fill[0], fill[1], fill[2]],
+                    TEXT_RASTER,
+                );
+                let pad = if urot.abs() > 1e-4 {
+                    Vec2::splat(size.length() * 0.5 + ublur + 4.0)
+                } else {
+                    size * 0.5 + Vec2::splat(ublur + 3.0)
+                };
+                if spec.backing {
+                    self.frame.prims.push(Prim {
+                        bbox: around(unit_center, pad + 6.0),
+                        a: [4.0, left, top, 5.0 + ublur * 0.5],
+                        b: [size.x, size.y, size.x + 8.0, urot],
+                        fill: rgba(look.background, u_op * 0.8),
+                        uv,
+                        pool: slit,
+                        ..Default::default()
+                    });
+                }
+                self.frame.prims.push(Prim {
+                    bbox: around(unit_center, pad),
+                    a: [4.0, left, top, ublur * 0.5],
+                    b: [size.x, size.y, size.x + 8.0, urot],
+                    fill,
+                    uv,
+                    light: [0.0, 0.0, gamma, 0.0],
+                    pool: slit,
+                    grad_a,
+                    grad_b,
+                    ..Default::default()
+                });
+                cursor_x += uw;
+            }
         }
         self.frame.close(place.depth - 0.5, order);
     }
@@ -4524,6 +5522,120 @@ struct Shell {
     hurt: f32,
     pulse: f32,
     blur: f32,
+}
+
+/// An art element's paint overrides and trim mode, from its payload.
+#[derive(Clone, Copy)]
+struct ArtStyle {
+    fill: Option<psychopomp::paint::Paint>,
+    stroke: Option<psychopomp::paint::Paint>,
+    width: Option<f32>,
+    trim: TrimMode,
+}
+
+impl Painter<'_> {
+    /// Vector art: each path's fill (one compound primitive, gradients
+    /// spanning the whole art), then its strokes cut to the trim window. It
+    /// turns about its center and morphs by its `morph` channel.
+    fn art(&mut self, order: usize, id: &str, style: ArtStyle, place: Placement) {
+        let (scene, look) = (self.scene, self.look);
+        let opacity = scene.unit(id, "opacity");
+        let Some(prepared) = self.arts.get(id) else {
+            return;
+        };
+        if opacity <= 0.001 {
+            return;
+        }
+        let scale = place.scale;
+        let blur = scene.blur_at(place.depth) + scene.v(id, "blur").max(0.0) * scale;
+        let turn = Vec2::from_angle(scene.v(id, "rotation"));
+        let to_screen = |p: Vec2| place.center + turn.rotate(p) * scale;
+        let art = prepared.at(scene.v(id, "morph"));
+        let frame = art.bounds().map(|(low, high)| {
+            let corners = [low, vec2(high.x, low.y), high, vec2(low.x, high.y)].map(to_screen);
+            let (low, high) = corners.iter().fold((Vec2::MAX, Vec2::MIN), |(lo, hi), p| {
+                (lo.min(*p), hi.max(*p))
+            });
+            [low.x, low.y, high.x, high.y]
+        });
+        let fill_amount = scene.unit(id, "fill") * opacity;
+        let trim = Trim {
+            start: scene.v(id, "trim-start"),
+            end: scene.v(id, "trim-end"),
+            offset: scene.v(id, "trim-offset"),
+        };
+        let mut strokes = art
+            .trimmed_strokes(trim, style.trim, scale)
+            .into_iter()
+            .peekable();
+        let srgb = |[r, g, b, a]: [f32; 4], alpha: f32| {
+            let lin = Vec3::from(super::theme::linear(
+                [r, g, b].map(|v| (v * 255.0).round() as u8),
+            ));
+            rgba(lin, a * alpha)
+        };
+        for (index, path) in art.paths.iter().enumerate() {
+            if let (Some(frame), Some(own), true) = (frame, path.fill, fill_amount > 0.001) {
+                let (fill, grad_a, grad_b) = match style.fill {
+                    Some(paint) => look.resolve_paint(paint, fill_amount),
+                    None => (srgb(own, fill_amount), [0.0; 4], [0.0; 4]),
+                };
+                let rings = path
+                    .subpaths
+                    .iter()
+                    .map(|sub| {
+                        sub.flatten(scale)
+                            .points()
+                            .iter()
+                            .map(|p| to_screen(*p))
+                            .collect::<Vec<_>>()
+                    })
+                    .collect::<Vec<_>>();
+                self.frame.compound_fill(
+                    &rings,
+                    path.rule == FillRule::EvenOdd,
+                    blur,
+                    frame,
+                    Paint {
+                        fill,
+                        grad_a,
+                        grad_b,
+                        ..Default::default()
+                    },
+                );
+            }
+            let width = style.width.unwrap_or(path.width) * scale;
+            let color = match (style.stroke, path.stroke) {
+                (Some(paint), _) => {
+                    let (from, grad, to) = look.resolve_paint(paint, opacity);
+                    if grad[0] > 0.5 {
+                        std::array::from_fn(|i| lerp(from[i], to[i], 0.5))
+                    } else {
+                        from
+                    }
+                }
+                (None, Some(own)) => srgb(own, opacity),
+                (None, None) => [0.0; 4],
+            };
+            while let Some((_, line)) = strokes.next_if(|(path, _)| *path == index) {
+                if width <= 0.01 {
+                    continue;
+                }
+                let line = Polyline::new(line.points().iter().map(|p| to_screen(*p)).collect());
+                self.frame.polyline(
+                    &line,
+                    1.0,
+                    [width, blur],
+                    Paint {
+                        stroke: color,
+                        ..Default::default()
+                    },
+                    SOLID,
+                );
+            }
+        }
+        self.frame.close(place.depth, order);
+    }
 }
 
 /// A shape element's figure and paint, from its payload.
@@ -4638,6 +5750,7 @@ impl Painter<'_> {
                     light_color,
                     pool,
                     pool_color,
+                    ..Default::default()
                 },
             );
             if settled_border {
@@ -4670,18 +5783,25 @@ impl Painter<'_> {
         } else if let Some(fill) = style.fill
             && closed
         {
-            let color = match fill {
-                Fill::Tone(tone) => look.tone(tone),
-                Fill::Material(Material::Surface | Material::Raised) => look.surface,
-                Fill::Material(Material::Background | Material::Well) => look.background,
-            };
             let amount = scene.unit(id, "fill") * style.fill_opacity * opacity;
+            let (fill_rgba, grad_a, grad_b) = match fill {
+                Fill::Tone(tone) => (rgba(look.tone(tone), amount), [0.0; 4], [0.0; 4]),
+                Fill::Material(Material::Surface | Material::Raised) => {
+                    (rgba(look.surface, amount), [0.0; 4], [0.0; 4])
+                }
+                Fill::Material(Material::Background | Material::Well) => {
+                    (rgba(look.background, amount), [0.0; 4], [0.0; 4])
+                }
+                Fill::Paint(p) => look.resolve_paint(p, amount),
+            };
             self.frame.polygon(
                 &outline,
                 0.0,
                 blur,
                 Paint {
-                    fill: rgba(color, amount),
+                    fill: fill_rgba,
+                    grad_a,
+                    grad_b,
                     pool,
                     pool_color,
                     ..Default::default()
@@ -5176,6 +6296,8 @@ struct Paint {
     light_color: [f32; 4],
     pool: [f32; 4],
     pool_color: [f32; 4],
+    grad_a: [f32; 4],
+    grad_b: [f32; 4],
 }
 
 /// How a lightning channel shines: core half width and its taper toward the
@@ -5254,6 +6376,8 @@ impl<'a> StageFrame<'a> {
             light_color: paint.light_color,
             pool: paint.pool,
             pool_color: paint.pool_color,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
             ..Default::default()
         });
     }
@@ -5270,6 +6394,8 @@ impl<'a> StageFrame<'a> {
             fill: paint.fill,
             stroke: paint.stroke,
             glow: paint.glow,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
             ..Default::default()
         });
     }
@@ -5278,6 +6404,7 @@ impl<'a> StageFrame<'a> {
     /// first), filled, with an optional `border` of that many pixels.
     fn polygon(&mut self, points: &[Vec2], border: f32, blur: f32, paint: Paint) {
         let visible = paint.fill[3] > 0.001
+            || (paint.grad_a[0] > 0.5 && paint.grad_b[3] > 0.001)
             || (border > 0.0 && paint.stroke[3] > 0.001)
             || paint.glow[..3].iter().any(|v| *v > 0.0);
         if points.len() < 3 || !visible {
@@ -5302,6 +6429,48 @@ impl<'a> StageFrame<'a> {
             uv: [first as f32, points.len() as f32, 0.0, 0.0],
             pool: paint.pool,
             pool_color: paint.pool_color,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
+            ..Default::default()
+        });
+    }
+
+    /// Closed `rings` filled together as one shape (holes by winding: nonzero,
+    /// or alternating with `even_odd`), with a gradient laid across `frame`
+    /// (x0, y0, x1, y1) rather than this primitive's own box.
+    fn compound_fill(
+        &mut self,
+        rings: &[Vec<Vec2>],
+        even_odd: bool,
+        blur: f32,
+        frame: [f32; 4],
+        paint: Paint,
+    ) {
+        let visible = paint.fill[3] > 0.001 || (paint.grad_a[0] > 0.5 && paint.grad_b[3] > 0.001);
+        let rings = rings.iter().filter(|ring| ring.len() >= 3);
+        if !visible || rings.clone().next().is_none() {
+            return;
+        }
+        let first = self.points.len();
+        let (mut low, mut high) = (Vec2::MAX, Vec2::MIN);
+        for ring in rings {
+            let closing = (ring[0].distance(ring[ring.len() - 1]) > 1e-4).then_some(ring[0]);
+            for (index, point) in ring.iter().chain(closing.iter()).enumerate() {
+                (low, high) = (low.min(*point), high.max(*point));
+                let start = if index == 0 { 1.0 } else { 0.0 };
+                self.points.push([point.x, point.y, start, 0.0]);
+            }
+        }
+        let pad = Vec2::splat(blur + 2.0);
+        let (low, high) = (low - pad, high + pad);
+        self.prims.push(Prim {
+            bbox: [low.x, low.y, high.x, high.y],
+            a: [14.0, if even_odd { 1.0 } else { 0.0 }, 0.0, blur],
+            fill: paint.fill,
+            uv: [first as f32, (self.points.len() - first) as f32, 0.0, 0.0],
+            light: frame,
+            grad_a: paint.grad_a,
+            grad_b: paint.grad_b,
             ..Default::default()
         });
     }
@@ -5459,7 +6628,8 @@ impl<'a> StageFrame<'a> {
             if copy.bbox[0] >= copy.bbox[2] || copy.bbox[1] >= copy.bbox[3] {
                 continue;
             }
-            if matches!(prim.a[0] as u32, 3 | 7) {
+            let kind = prim.a[0] as u32;
+            if matches!(kind, 3 | 7 | 14) {
                 let first = prim.uv[0] as usize;
                 let count = prim.uv[1] as usize;
                 copy.uv[0] = self.points.len() as f32;
@@ -5471,10 +6641,21 @@ impl<'a> StageFrame<'a> {
                 copy.a[1] += offset.x;
                 copy.a[2] += offset.y;
             }
-            for light in [&mut copy.light, &mut copy.pool] {
-                light[0] += offset.x;
-                light[1] += offset.y;
-                light[3] *= alpha;
+            if kind == 14 {
+                // A compound fill's `light` is its gradient frame.
+                copy.light = [
+                    prim.light[0] + offset.x,
+                    prim.light[1] + offset.y,
+                    prim.light[2] + offset.x,
+                    prim.light[3] + offset.y,
+                ];
+                copy.grad_b[3] *= alpha;
+            } else {
+                for light in [&mut copy.light, &mut copy.pool] {
+                    light[0] += offset.x;
+                    light[1] += offset.y;
+                    light[3] *= alpha;
+                }
             }
             copy.fill[3] *= alpha;
             copy.stroke[3] *= alpha;
@@ -5488,7 +6669,7 @@ impl<'a> StageFrame<'a> {
     /// On-screen width of an atlas string's ink at `scale`.
     fn width(&self, key: &str, scale: f32) -> f32 {
         self.texts.get(key).map_or(0.0, |text| {
-            (text.rect[2] - 4.0).max(0.0) * scale / TEXT_RASTER
+            (text.rect[2] - 4.0).max(0.0) * scale / text.raster
         })
     }
 
@@ -5591,6 +6772,8 @@ mod tests {
             "request#label".into(),
             super::AtlasText {
                 rect: [0.0, 0.0, 220.0, 48.0],
+                raster: super::TEXT_RASTER,
+                offset: [0.0, 0.0],
             },
         )]);
         let mut frame = super::StageFrame::new(&texts, super::Vec3::ZERO);
@@ -5781,6 +6964,161 @@ mod tests {
             sprite.pixels.chunks(4).all(|p| p[3] == 255),
             "path data fills its view"
         );
+    }
+
+    #[test]
+    fn matte_path_bounds_are_local_and_reject_empty_paths() {
+        let [left, top, width, height] =
+            super::matte_path_bounds("M -40 -10 L 60 -10 L 60 30 L -40 30 Z").unwrap();
+        assert!((left + 40.0).abs() < 0.01 && (top + 10.0).abs() < 0.01);
+        assert!((width - 100.0).abs() < 0.01 && (height - 40.0).abs() < 0.01);
+        assert!(super::matte_path_bounds("M 0 0 Q oops").is_err());
+        assert!(super::matte_path_bounds("M 0 0 L 0 0 Z").is_err());
+    }
+
+    #[test]
+    #[ignore = "requires a headless GPU; group mattes cut pixels in local space and bounds"]
+    fn group_mattes_clip_pixels_and_bounds() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "group", "id": "slot", "at": [80, 90, 0],
+                  "clip": { "kind": "rect", "size": [100, 40] }, "children": [
+                    { "kind": "shape", "id": "bar", "at": [0, 30, 0], "shape": { "rect": [100, 60] },
+                      "stroke": null, "fill": { "kind": "solid", "rgba": [255, 255, 255, 255] } }
+                ] },
+                { "kind": "group", "id": "tri", "at": [240, 90, 0],
+                  "clip": { "kind": "polygon", "points": [[-50, 40], [50, 40], [0, -40]] }, "children": [
+                    { "kind": "shape", "id": "fill", "at": [0, 0, 0], "shape": { "rect": [120, 120] },
+                      "stroke": null, "fill": { "kind": "solid", "rgba": [255, 255, 255, 255] } }
+                ] }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "group-matte-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let frame = renderer
+            .render_stage(&plan, &gpu, 0.0, |_, rest| rest)
+            .unwrap();
+        let lit = |x: usize, y: usize| frame[(y * 320 + x) * 4] > 200;
+        // The bar starts at y 60 locally but the slot ends at y 20.
+        assert!(lit(80, 105), "inside the slot");
+        assert!(!lit(80, 125), "below the slot's edge");
+        assert!(lit(240, 120), "triangle base");
+        assert!(!lit(200, 60), "outside the triangle's slope");
+        assert!(lit(240, 60), "triangle apex column");
+        let bounds = super::stage_bounds(&plan, &gpu, &|_, rest| rest, 0.0, vec2(320.0, 180.0));
+        let bar = bounds.iter().find(|item| item.id == "bar").unwrap();
+        let bottom = bar.bbox[1] + bar.bbox[3];
+        assert!(
+            (bottom - 110.0).abs() < 3.0,
+            "bar bounds clip: {:?}",
+            bar.bbox
+        );
+    }
+
+    #[test]
+    #[ignore = "requires a headless GPU; a custom shader layer draws its parameters, in order, clipped"]
+    fn shader_layers_draw_params_in_depth_order_inside_mattes() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "group", "id": "slot", "at": [160, 90, 0],
+                  "clip": { "kind": "rect", "size": [100, 60] }, "children": [
+                    { "kind": "shader", "id": "fx", "at": [0, 0, 0], "size": [200, 120],
+                      "wgsl": "fn shade(s: ShaderIn, p: Params) -> vec4<f32> { return vec4<f32>(p.tint * p.gain, 1.0); }",
+                      "params": [{ "type": "scalar", "name": "gain", "default": 1.0 },
+                                 { "type": "color", "name": "tint", "default": [255, 0, 0] }] },
+                    { "kind": "shape", "id": "dot", "at": [20, 0, 0], "shape": { "rect": [16, 16] },
+                      "stroke": null, "fill": { "kind": "solid", "rgba": [255, 255, 255, 255] } }
+                ] }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "shader-layer-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let frame = renderer
+            .render_stage(&plan, &gpu, 0.0, |_, rest| rest)
+            .unwrap();
+        let pixel = |frame: &[u8], x: usize, y: usize| {
+            let i = (y * 320 + x) * 4;
+            [frame[i], frame[i + 1], frame[i + 2]]
+        };
+        let red = pixel(&frame, 140, 90);
+        assert!(red[0] > 200 && red[1] < 60, "the tint: {red:?}");
+        let dot = pixel(&frame, 180, 90);
+        assert!(
+            dot.iter().all(|&c| c > 235),
+            "the later shape on top: {dot:?}"
+        );
+        assert_eq!(
+            pixel(&frame, 140, 130),
+            pixel(&frame, 10, 10),
+            "the matte cuts the layer"
+        );
+        let green = renderer
+            .render_stage(&plan, &gpu, 0.0, |property, rest| match property {
+                "fx.tint.r" => 0.0,
+                "fx.tint.g" => 1.0,
+                "fx.gain" => 0.5,
+                _ => rest,
+            })
+            .unwrap();
+        let green = pixel(&green, 140, 90);
+        assert!(
+            green[1] > 120 && green[1] < 230 && green[0] < 60,
+            "channels drive the parameters: {green:?}"
+        );
+    }
+
+    #[test]
+    fn vector_art_fills_with_holes_and_trims_its_strokes() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "art", "id": "frame", "at": [80, 90, 0],
+                  "fill": { "kind": "solid", "rgba": [255, 0, 0, 255] },
+                  "art": r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><path fill-rule="evenodd" fill="#fff" d="M0 0H120V120H0Z M40 40V80H80V40Z"/></svg>"## },
+                { "kind": "art", "id": "line", "at": [240, 90, 0],
+                  "art": r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 10"><path d="M0 5H120" fill="none" stroke="#fff" stroke-width="6"/></svg>"## }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "art-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let frame = renderer
+            .render_stage(&plan, &gpu, 0.0, |name, rest| {
+                if name == "line.trim-end" { 0.5 } else { rest }
+            })
+            .unwrap();
+        let pixel = |x: usize, y: usize| &frame[(y * 320 + x) * 4..(y * 320 + x) * 4 + 3];
+        let red = pixel(30, 90);
+        assert!(red[0] > 200 && red[1] < 60, "override fill: {red:?}");
+        assert_eq!(
+            pixel(80, 90),
+            pixel(5, 5),
+            "the even-odd hole is background"
+        );
+        assert!(pixel(200, 90)[1] > 200, "drawn half of the stroke");
+        assert_eq!(pixel(280, 90), pixel(5, 5), "trimmed half of the stroke");
     }
 
     #[test]

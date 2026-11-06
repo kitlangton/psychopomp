@@ -5,6 +5,7 @@
 
 mod stories;
 
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -82,6 +83,44 @@ const VIEWPORT_GROUP: Group = Group::new("Viewport", "viewport", &[SHUTTER_MODE]
 pub(crate) const STUDIO_GROUPS: &[Group] = &[SURFACE_GROUP, MOTION_GROUP, VIEWPORT_GROUP];
 pub(crate) const STORY_GROUPS: &[Group] = &[SURFACE_GROUP, MOTION_GROUP];
 
+/// Studio's groups plus one "Shaders" group per custom shader layer in the
+/// plan, whose knobs are named by override key (`<actor>.<element>.<param>`).
+/// Rune knobs are `'static`, so the plan's knobs are leaked once at open.
+fn shader_groups(session: Option<&PreviewSession>) -> (&'static [Group], Vec<&'static str>) {
+    let tunables = session.map(PreviewSession::tunables).unwrap_or_default();
+    if tunables.is_empty() {
+        return (STUDIO_GROUPS, Vec::new());
+    }
+    let leak = |text: String| -> &'static str { Box::leak(text.into_boxed_str()) };
+    let mut by_layer: Vec<(String, Vec<Knob>)> = Vec::new();
+    let mut keys = Vec::new();
+    for tunable in tunables {
+        let (layer, _) = tunable
+            .label
+            .split_once('.')
+            .unwrap_or((tunable.label.as_str(), ""));
+        let layer = layer.to_owned();
+        let key = leak(tunable.key);
+        keys.push(key);
+        let [min, max] = tunable.range;
+        let knob = Knob::new(key, min, max, tunable.default)
+            .label(leak(tunable.label))
+            .step((max - min) / 200.0)
+            .about("Pins this shader channel");
+        match by_layer.iter_mut().find(|(name, _)| *name == layer) {
+            Some((_, knobs)) => knobs.push(knob),
+            None => by_layer.push((layer, vec![knob])),
+        }
+    }
+    let mut groups = STUDIO_GROUPS.to_vec();
+    for (layer, knobs) in by_layer {
+        let knobs: &'static [Knob] = Box::leak(knobs.into_boxed_slice());
+        groups
+            .push(Group::new(leak(format!("{layer} shader")), "viewport", knobs).under("Shaders"));
+    }
+    (Box::leak(groups.into_boxed_slice()), keys)
+}
+
 pub(crate) fn knob_style(dark: bool) -> Style {
     if dark { Style::dark() } else { Style::light() }
 }
@@ -104,6 +143,11 @@ pub(crate) struct StudioState {
     playing: bool,
     last_tick: Option<f64>,
     rendered_key: Option<(u64, bool)>,
+    /// Studio's knob groups, with the plan's shader parameters.
+    groups: &'static [Group],
+    /// Override keys of the shader knobs, and the overrides last applied.
+    shader_keys: Vec<&'static str>,
+    overrides: Vec<(&'static str, f32)>,
     demo: ConnectStory,
     remembered_frame: bool,
 }
@@ -126,6 +170,7 @@ pub(crate) fn studio_init() -> StudioState {
     let duration = session
         .as_ref()
         .map_or(2.4, PreviewSession::duration_seconds);
+    let (groups, shader_keys) = shader_groups(session.as_ref());
     let mut state = StudioState {
         knobs: Knobs::default(),
         plan_path,
@@ -136,6 +181,9 @@ pub(crate) fn studio_init() -> StudioState {
         playing: false,
         last_tick: None,
         rendered_key: None,
+        groups,
+        shader_keys,
+        overrides: Vec::new(),
         demo: ConnectStory::default(),
         remembered_frame: false,
     };
@@ -167,6 +215,30 @@ impl StudioState {
         self.demo.renamed = self.playhead >= 1.1;
     }
 
+    /// Apply the shader knobs that were moved as channel overrides, and
+    /// re-render when they changed.
+    fn sync_overrides(&mut self) -> bool {
+        let wanted = self
+            .shader_keys
+            .iter()
+            .filter_map(|&key| self.knobs.values.get(key).map(|&v| (key, v)))
+            .collect::<Vec<_>>();
+        if wanted == self.overrides {
+            return false;
+        }
+        if let Some(session) = &mut self.session {
+            let map = wanted
+                .iter()
+                .map(|&(key, v)| (key.to_owned(), v))
+                .collect::<HashMap<_, _>>();
+            session.set_overrides(&map);
+        }
+        self.overrides = wanted;
+        self.rendered_key = None;
+        self.refresh_viewport();
+        true
+    }
+
     fn seek(&mut self, t: f64) {
         self.playhead = t.clamp(0.0, self.duration.max(0.1));
         self.refresh_viewport();
@@ -177,9 +249,10 @@ fn studio_poll(s: &mut StudioState, now: f64, tx: &mut Tx) -> bool {
     if !s.remembered_frame {
         s.remembered_frame = rune_mac::remember_frame("Psychopomp Studio");
     }
+    let tuned = s.sync_overrides();
     if !s.playing {
         s.last_tick = None;
-        return false;
+        return tuned;
     }
     tx.wake_after(Duration::from_millis(16));
     let dt = s
@@ -422,7 +495,7 @@ pub(crate) fn studio_view(s: &StudioState, cx: &mut Cx<StudioState>) -> El {
     rune_knobs::side(
         page,
         &s.knobs,
-        STUDIO_GROUPS,
+        s.groups,
         knob_style(cx.system_dark()),
         |st: &mut StudioState| &mut st.knobs,
     )

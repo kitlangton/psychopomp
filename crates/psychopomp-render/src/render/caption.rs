@@ -58,9 +58,14 @@ impl HeadlessRenderer {
                         if span.text.is_empty() {
                             0.0
                         } else {
-                            let color = self.theme.tone(span.tone);
-                            self.plain_text_sprite(&span.text, PlainTextSpec { color, ..spec })
-                                .advance
+                            let color =
+                                span.color.unwrap_or_else(|| self.effective_tone(span.tone));
+                            self.plain_text_sprite_in(
+                                plan.face,
+                                &span.text,
+                                PlainTextSpec { color, ..spec },
+                            )
+                            .advance
                         }
                     })
                     .sum::<f32>()
@@ -123,12 +128,16 @@ impl HeadlessRenderer {
             .map(|line| {
                 line.iter()
                     .map(|span| {
-                        let color = self.theme.tone(span.tone);
+                        let color = span.color.unwrap_or_else(|| self.effective_tone(span.tone));
                         if span.text.is_empty() {
                             0.0
                         } else {
-                            self.plain_text_sprite(&span.text, PlainTextSpec { color, ..spec })
-                                .advance
+                            self.plain_text_sprite_in(
+                                plan.face,
+                                &span.text,
+                                PlainTextSpec { color, ..spec },
+                            )
+                            .advance
                         }
                     })
                     .collect::<Vec<_>>()
@@ -146,7 +155,7 @@ impl HeadlessRenderer {
             })
             .collect::<Vec<_>>();
         if plan.chip {
-            let palette = self.theme.palette();
+            let palette = self.effective_palette();
             let left = lefts.iter().copied().fold(f32::INFINITY, f32::min);
             let right = widths
                 .iter()
@@ -205,8 +214,12 @@ impl HeadlessRenderer {
                     break 'lines;
                 }
                 let clip = width * shown as f32 / chars as f32;
-                let color = self.theme.tone(span.tone);
-                let sprite = self.plain_text_sprite(&span.text, PlainTextSpec { color, ..spec });
+                let color = span.color.unwrap_or_else(|| self.effective_tone(span.tone));
+                let sprite = self.plain_text_sprite_in(
+                    plan.face,
+                    &span.text,
+                    PlainTextSpec { color, ..spec },
+                );
                 composite_text(
                     pixels,
                     canvas,

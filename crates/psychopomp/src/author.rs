@@ -197,6 +197,41 @@ impl PlanBuilder {
         }
     }
 
+    pub fn with_canvas(mut self, canvas: crate::canvas::CanvasPlan) -> Self {
+        self.plan.canvas = canvas;
+        self
+    }
+
+    pub fn set_canvas(&mut self, canvas: crate::canvas::CanvasPlan) -> &mut Self {
+        self.plan.canvas = canvas;
+        self
+    }
+
+    pub fn canvas(&self) -> crate::canvas::CanvasPlan {
+        self.plan.canvas
+    }
+
+    pub fn with_palette(mut self, palette: crate::paint::PalettePlan) -> Self {
+        self.plan.palette = Some(palette);
+        self
+    }
+
+    pub fn set_palette(&mut self, palette: crate::paint::PalettePlan) -> &mut Self {
+        self.plan.palette = Some(palette);
+        self
+    }
+
+    pub fn add_font(
+        &mut self,
+        family: impl Into<String>,
+        path: impl Into<std::path::PathBuf>,
+    ) -> &mut Self {
+        self.plan
+            .fonts
+            .push(crate::face::FontFacePlan::new(family, path));
+        self
+    }
+
     pub fn actor(
         &mut self,
         id: impl Into<String>,

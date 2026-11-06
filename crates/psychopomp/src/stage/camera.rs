@@ -394,14 +394,27 @@ fn footprint(element: &StageElement, at: Vec3, scale: f32) -> Option<Footprint> 
             Shape::Point(_) => (Vec2::ZERO, Vec2::ZERO),
         },
         StageElement::Icon { size, .. } => (Vec2::splat(size * 0.5), Vec2::ZERO),
-        StageElement::Footage { size, .. } | StageElement::RuneCard { size, .. } => {
-            (Vec2::from(*size) * 0.5, Vec2::ZERO)
+        StageElement::Footage { size, .. }
+        | StageElement::RuneCard { size, .. }
+        | StageElement::Shader { size, .. } => (Vec2::from(*size) * 0.5, Vec2::ZERO),
+        StageElement::Type { spec, .. } => {
+            let lines = spec.text.split('\n').collect::<Vec<_>>();
+            let max_chars = lines.iter().map(|l| l.chars().count()).max().unwrap_or(1) as f32;
+            let w = max_chars * spec.size * (0.58 + spec.tracking.max(-0.08));
+            let h = lines.len().max(1) as f32 * spec.size * spec.line_height;
+            (vec2(w * 0.5, h * 0.5), Vec2::ZERO)
+        }
+        StageElement::Group { clip, .. } => {
+            let (center, half) = clip.as_ref()?.local_extent()?;
+            (half, center)
         }
         StageElement::Beam { .. }
         | StageElement::Packet { .. }
         | StageElement::Path { .. }
         | StageElement::Bolt { .. }
-        | StageElement::Shield { .. } => return None,
+        | StageElement::Shield { .. }
+        | StageElement::Art { .. }
+        | StageElement::Backdrop { .. } => return None,
     };
     Some(Footprint {
         at,
@@ -590,7 +603,7 @@ impl CameraRig {
         seconds: f32,
     ) -> Result<u64> {
         let pose = self.pose(scene, at_nanos);
-        let aim = pose.aim(self.center(scene, toward, at_nanos)?);
+        let aim = pose.aim(self.center(scene, toward, at_nanos)?.0);
         let lean = pose.position.truncate().lerp(aim, 0.35);
         let target = Camera {
             position: lean.extend(pose.position.z + 24.0),
@@ -659,7 +672,7 @@ impl CameraRig {
         [yaw, pitch]: [f32; 2],
         motion: Move,
     ) -> Result<u64> {
-        let subject = self.center(scene, around, at_nanos + motion.nanos())?;
+        let subject = self.center(scene, around, at_nanos + motion.nanos())?.0;
         let mut target = Camera {
             yaw,
             pitch,
@@ -683,7 +696,7 @@ impl CameraRig {
         motion: Move,
     ) -> Result<u64> {
         let pose = self.pose(scene, at_nanos);
-        let distance = pose.distance(self.center(scene, subject, at_nanos)?);
+        let distance = pose.distance(self.center(scene, subject, at_nanos)?.0);
         ensure!(
             distance - dolly > 0.1 * FOCAL,
             "a {dolly} px dolly zoom would pass through '{subject}'"
@@ -715,7 +728,7 @@ impl CameraRig {
         let end = at_nanos + motion.nanos();
         let depth = self
             .pose(scene, end)
-            .depth(self.center(scene, element, end)?);
+            .depth(self.center(scene, element, end)?.0);
         self.write(scene, "camera.focus", at_nanos, depth, motion);
         Ok(end)
     }
@@ -773,7 +786,7 @@ impl CameraRig {
                 }
                 _ => element.id(),
             };
-            pan += pose.aim(self.center(scene, rest, end)?) * weight;
+            pan += pose.aim(self.center(scene, rest, end)?.0) * weight;
             total += weight;
         }
         if total > 0.0 {
@@ -891,9 +904,20 @@ impl CameraRig {
         }
     }
 
+    /// A Stage channel at `at_nanos`, or its default when nothing writes it.
+    fn channel_at(&self, scene: &PlanBuilder, id: &str, property: &str, at_nanos: u64) -> f32 {
+        let key = format!("{id}.{property}");
+        scene
+            .sample(&self.actor, &key, at_nanos)
+            .map(|state| state.position)
+            .or_else(|| self.plan.channel_default(&key))
+            .unwrap_or(0.0)
+    }
+
     /// The world center of a positioned element at `at_nanos`, after its own
-    /// x/y/z channels.
-    fn center(&self, scene: &PlanBuilder, id: &str, at_nanos: u64) -> Result<Vec3> {
+    /// x/y/z channels and the groups around it, and the scale those groups add.
+    /// A group's center is its own origin.
+    fn center(&self, scene: &PlanBuilder, id: &str, at_nanos: u64) -> Result<(Vec3, f32)> {
         let element = self
             .plan
             .element(id)
@@ -901,12 +925,14 @@ impl CameraRig {
         let anchor = element
             .anchor()
             .with_context(|| format!("'{id}' has no position of its own"))?;
-        let offset = |axis: &str| {
-            scene
-                .sample(&self.actor, &format!("{id}.{axis}"), at_nanos)
-                .map_or(0.0, |state| state.position)
-        };
-        Ok(Vec3::from(anchor) + vec3(offset("x"), offset("y"), offset("z")))
+        let read =
+            |element: &str, property: &str| self.channel_at(scene, element, property, at_nanos);
+        if let Some(own) = self.plan.group_xform(id, read) {
+            return Ok((own.transform_point(Vec3::ZERO), own.uniform_scale()));
+        }
+        let parent = self.plan.parent_xform(id, read);
+        let local = Vec3::from(anchor) + vec3(read(id, "x"), read(id, "y"), read(id, "z"));
+        Ok((parent.transform_point(local), parent.uniform_scale()))
     }
 
     /// What `id` covers: its own billboard, a beam's two ends, or a packet's beam.
@@ -922,12 +948,26 @@ impl CameraRig {
                 Ok(ends)
             }
             StageElement::Packet { beam, .. } => self.footprints(scene, beam, at_nanos),
+            // A group without a shaped matte covers what it holds.
+            StageElement::Group { clip, children, .. }
+                if clip.as_ref().and_then(|clip| clip.local_extent()).is_none() =>
+            {
+                let mut all = Vec::new();
+                for child in children {
+                    all.extend(self.footprints(scene, child.id(), at_nanos)?);
+                }
+                Ok(all)
+            }
+            StageElement::Group { .. } => {
+                let (at, scale) = self.center(scene, id, at_nanos)?;
+                Ok(footprint(element, at, scale).into_iter().collect())
+            }
             _ => {
-                let scale = scene
+                let own = scene
                     .sample(&self.actor, &format!("{id}.scale"), at_nanos)
                     .map_or(1.0, |state| state.position.max(0.01));
-                let at = self.center(scene, id, at_nanos)?;
-                Ok(footprint(element, at, scale).into_iter().collect())
+                let (at, groups) = self.center(scene, id, at_nanos)?;
+                Ok(footprint(element, at, own * groups).into_iter().collect())
             }
         }
     }

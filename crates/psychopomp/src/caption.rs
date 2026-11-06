@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     anchor::{self, AnchorPlan},
     author::{ActorHandle, ContinuousHandle, PlanBuilder},
+    face::Face,
     tone::Tone,
 };
 
@@ -20,6 +21,8 @@ pub struct CaptionPlan {
     pub origin: [f32; 2],
     #[serde(default, skip_serializing_if = "CaptionAlign::is_default")]
     pub align: CaptionAlign,
+    #[serde(default, skip_serializing_if = "Face::is_mono")]
+    pub face: Face,
     pub size: f32,
     pub lines: Vec<Vec<CaptionSpanPlan>>,
     /// A rounded surface behind the text, as for a status chip.
@@ -42,6 +45,9 @@ pub struct CaptionSpanPlan {
     pub text: String,
     #[serde(default, skip_serializing_if = "Tone::is_default")]
     pub tone: Tone,
+    /// Explicit sRGB pigment overriding `tone` when set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color: Option<[u8; 3]>,
 }
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
@@ -64,7 +70,22 @@ impl CaptionSpanPlan {
         Self {
             text: text.into(),
             tone,
+            color: None,
         }
+    }
+
+    pub fn rgb(text: impl Into<String>, rgb: [u8; 3]) -> Self {
+        Self {
+            text: text.into(),
+            tone: Tone::Plain,
+            color: Some(rgb),
+        }
+    }
+
+    pub fn hex(text: impl Into<String>, hex: &str) -> Self {
+        let rgb =
+            crate::paint::parse_hex_rgb(hex).unwrap_or_else(|e| panic!("invalid hex '{hex}': {e}"));
+        Self::rgb(text, rgb)
     }
 }
 
@@ -74,12 +95,18 @@ impl CaptionPlan {
         Self {
             origin,
             align: CaptionAlign::Left,
+            face: Face::Mono,
             size,
             lines: vec![spans],
             chip: false,
             anchors: Vec::new(),
             glass: false,
         }
+    }
+
+    pub fn face(mut self, face: Face) -> Self {
+        self.face = face;
+        self
     }
 
     pub fn aligned(mut self, align: CaptionAlign) -> Self {

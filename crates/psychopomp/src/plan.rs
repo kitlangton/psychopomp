@@ -7,9 +7,14 @@ use std::{
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::math::{
-    easing::{Ease, cubic_in_out},
-    smoothstep, vec2,
+use crate::{
+    canvas::CanvasPlan,
+    face::FontFacePlan,
+    math::{
+        easing::{Ease, cubic_in_out},
+        smoothstep, vec2,
+    },
+    paint::PalettePlan,
 };
 
 mod channels;
@@ -455,6 +460,18 @@ impl ReelPlan {
                 (None, _) => {}
             }
             let previous = &self.segments[index - 1];
+            if segment.plan.canvas.size() != previous.plan.canvas.size()
+                || segment.plan.canvas.fps != previous.plan.canvas.fps
+            {
+                anyhow::bail!(
+                    "reel segment '{}' canvas ({:?} @ {}fps) does not match previous segment ({:?} @ {}fps)",
+                    segment.plan.id,
+                    segment.plan.canvas.size(),
+                    segment.plan.canvas.fps,
+                    previous.plan.canvas.size(),
+                    previous.plan.canvas.fps
+                );
+            }
             // The previous segment must be alone on screen before this one starts,
             // so no instant ever blends three segments.
             let available = previous
@@ -492,6 +509,12 @@ impl ReelPlan {
 
     pub fn duration_nanos(&self) -> u64 {
         self.spans().last().map_or(0, |span| span.end_nanos)
+    }
+
+    pub fn canvas(&self) -> CanvasPlan {
+        self.segments
+            .first()
+            .map_or_else(CanvasPlan::default, |seg| seg.plan.canvas)
     }
 
     /// The segments visible at `seconds`, in draw order. Outside transitions this
@@ -638,6 +661,12 @@ pub struct ScenePlan {
     pub version: u32,
     pub id: String,
     pub duration_nanos: u64,
+    #[serde(default, skip_serializing_if = "CanvasPlan::is_default")]
+    pub canvas: CanvasPlan,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub palette: Option<PalettePlan>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub fonts: Vec<FontFacePlan>,
     #[serde(default)]
     pub actors: Vec<ActorPlan>,
     #[serde(default)]
@@ -660,6 +689,9 @@ impl ScenePlan {
             version: SCENE_PLAN_VERSION,
             id: id.into(),
             duration_nanos,
+            canvas: CanvasPlan::default(),
+            palette: None,
+            fonts: Vec::new(),
             actors: Vec::new(),
             semantic_targets: Vec::new(),
             continuous_channels: Vec::new(),
@@ -689,6 +721,22 @@ impl ScenePlan {
                 "durationNanos",
                 "scene duration must be positive",
             ));
+        }
+        if let Err(err) = self.canvas.validate() {
+            diagnostics.push(PlanDiagnostic::new(
+                "invalid-canvas",
+                "canvas",
+                err.to_string(),
+            ));
+        }
+        for (index, font) in self.fonts.iter().enumerate() {
+            if let Err(err) = font.validate() {
+                diagnostics.push(PlanDiagnostic::new(
+                    "invalid-font",
+                    format!("fonts[{index}]"),
+                    err.to_string(),
+                ));
+            }
         }
 
         let mut actor_ids = HashSet::new();

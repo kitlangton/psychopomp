@@ -8,6 +8,7 @@ use serde::Serialize;
 use serde_json::json;
 
 use super::{Theme, delivery::write_rgba_png, still::Loaded};
+#[cfg(test)]
 use crate::exposure::{HEIGHT, WIDTH};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -19,7 +20,7 @@ pub(crate) struct CropRect {
 }
 
 impl CropRect {
-    pub(crate) fn parse(spec: &str) -> Result<Self> {
+    pub(crate) fn parse_in(spec: &str, [max_w, max_h]: [u32; 2]) -> Result<Self> {
         let parts: Vec<u32> = spec
             .split(',')
             .map(|part| {
@@ -36,15 +37,20 @@ impl CropRect {
             "--crop width and height must be positive"
         );
         ensure!(
-            x < WIDTH && y < HEIGHT,
-            "--crop origin ({x},{y}) is outside {WIDTH}x{HEIGHT}"
+            x < max_w && y < max_h,
+            "--crop origin ({x},{y}) is outside {max_w}x{max_h}"
         );
         Ok(Self {
             x,
             y,
-            width: width.min(WIDTH - x),
-            height: height.min(HEIGHT - y),
+            width: width.min(max_w - x),
+            height: height.min(max_h - y),
         })
+    }
+
+    #[cfg(test)]
+    pub(crate) fn parse(spec: &str) -> Result<Self> {
+        Self::parse_in(spec, [WIDTH, HEIGHT])
     }
 }
 
@@ -115,26 +121,31 @@ pub(crate) struct StripOptions<'a> {
     pub count: usize,
     pub columns: usize,
     pub cell_width: u32,
-    pub crop: Option<CropRect>,
+    pub crop_spec: Option<&'a str>,
     pub shutter: bool,
     pub theme: Theme,
 }
 
 pub(crate) fn render_strip(options: StripOptions<'_>) -> Result<()> {
     ensure!(options.columns >= 1, "--cols must be at least 1");
-    ensure!(
-        (64..=WIDTH).contains(&options.cell_width),
-        "--width must be in 64..={WIDTH}"
-    );
     let (loaded, mut renderer) =
         pollster::block_on(Loaded::load(options.plan_path, options.theme))?;
+    let [canvas_w, canvas_h] = loaded.canvas().size();
+    ensure!(
+        (64..=canvas_w.max(64)).contains(&options.cell_width),
+        "--width must be in 64..={canvas_w}"
+    );
+    let crop = options
+        .crop_spec
+        .map(|s| CropRect::parse_in(s, [canvas_w, canvas_h]))
+        .transpose()?;
     let index = loaded.time_index();
     let times = index.resolve_strip_times(options.spec, options.count)?;
     ensure!(!times.is_empty(), "strip resolved zero frames");
 
-    let (src_w, src_h) = match options.crop {
+    let (src_w, src_h) = match crop {
         Some(c) => (c.width, c.height),
-        None => (WIDTH, HEIGHT),
+        None => (canvas_w, canvas_h),
     };
     let cell_w = options.cell_width.min(src_w);
     let cell_h = ((u64::from(cell_w) * u64::from(src_h) + u64::from(src_w / 2)) / u64::from(src_w))
@@ -147,15 +158,15 @@ pub(crate) fn render_strip(options: StripOptions<'_>) -> Result<()> {
     let sheet_h = rows * (cell_h + label_h) + (rows + 1) * gap;
 
     let mut sheet = vec![0_u8; (sheet_w * sheet_h * 4) as usize];
-    for px in sheet.chunks_exact_mut(4) {
+    for px in sheet.as_chunks_mut::<4>().0 {
         px.copy_from_slice(&[17, 17, 16, 255]);
     }
 
     let mut frame_meta = Vec::with_capacity(times.len());
     for (idx, &at) in times.iter().enumerate() {
         let full = loaded.still(&mut renderer, at, options.shutter)?;
-        let region = match options.crop {
-            Some(c) => crop_rgba(&full, WIDTH, HEIGHT, c),
+        let region = match crop {
+            Some(c) => crop_rgba(&full, canvas_w, canvas_h, c),
             None => full,
         };
         let thumb = downscale_rgba(&region, src_w, src_h, cell_w, cell_h);
@@ -254,7 +265,7 @@ mod tests {
     #[test]
     fn crop_and_downscale_preserve_constant_colors_and_bounds() {
         let mut frame = vec![0_u8; (WIDTH * HEIGHT * 4) as usize];
-        for px in frame.chunks_exact_mut(4) {
+        for px in frame.as_chunks_mut::<4>().0 {
             px.copy_from_slice(&[40, 120, 200, 255]);
         }
         let crop = CropRect::parse("100, 200, 400, 200").unwrap();

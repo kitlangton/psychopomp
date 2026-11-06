@@ -30,6 +30,118 @@ impl CubicBezier {
                 .collect(),
         )
     }
+
+    /// A straight segment as a cubic, its handles at thirds.
+    pub fn line(start: Vec2, end: Vec2) -> Self {
+        Self {
+            start,
+            control_a: start.lerp(end, 1.0 / 3.0),
+            control_b: start.lerp(end, 2.0 / 3.0),
+            end,
+        }
+    }
+
+    /// A quadratic Bézier raised exactly to a cubic.
+    pub fn quadratic(start: Vec2, control: Vec2, end: Vec2) -> Self {
+        Self {
+            start,
+            control_a: start.lerp(control, 2.0 / 3.0),
+            control_b: end.lerp(control, 2.0 / 3.0),
+            end,
+        }
+    }
+
+    /// Every control point at `point`: a curve of zero length.
+    pub fn point_at(point: Vec2) -> Self {
+        Self {
+            start: point,
+            control_a: point,
+            control_b: point,
+            end: point,
+        }
+    }
+
+    /// The same curve traced from `end` back to `start`.
+    pub fn reversed(&self) -> Self {
+        Self {
+            start: self.end,
+            control_a: self.control_b,
+            control_b: self.control_a,
+            end: self.start,
+        }
+    }
+
+    /// The two halves either side of parameter `t` (de Casteljau).
+    pub fn split(&self, t: f32) -> (Self, Self) {
+        let ab = self.start.lerp(self.control_a, t);
+        let bc = self.control_a.lerp(self.control_b, t);
+        let cd = self.control_b.lerp(self.end, t);
+        let abc = ab.lerp(bc, t);
+        let bcd = bc.lerp(cd, t);
+        let mid = abc.lerp(bcd, t);
+        (
+            Self {
+                start: self.start,
+                control_a: ab,
+                control_b: abc,
+                end: mid,
+            },
+            Self {
+                start: mid,
+                control_a: bcd,
+                control_b: cd,
+                end: self.end,
+            },
+        )
+    }
+
+    /// Each control point moved `t` of the way toward `other`'s.
+    pub fn lerp(&self, other: &Self, t: f32) -> Self {
+        Self {
+            start: self.start.lerp(other.start, t),
+            control_a: self.control_a.lerp(other.control_a, t),
+            control_b: self.control_b.lerp(other.control_b, t),
+            end: self.end.lerp(other.end, t),
+        }
+    }
+
+    /// Length of the control polygon: never shorter than the curve.
+    pub fn hull_length(&self) -> f32 {
+        self.start.distance(self.control_a)
+            + self.control_a.distance(self.control_b)
+            + self.control_b.distance(self.end)
+    }
+
+    /// The parameters that cut the curve into `pieces` of equal arc length.
+    pub fn equal_length_cuts(&self, pieces: usize) -> Vec<f32> {
+        const SAMPLES: usize = 32;
+        let table = self.flatten(SAMPLES);
+        let length = table.length();
+        (1..pieces.max(1))
+            .map(|k| {
+                let target = length * k as f32 / pieces as f32;
+                let lengths = table.lengths();
+                let index = lengths.partition_point(|&at| at < target).clamp(1, SAMPLES);
+                let along = inverse_lerp(lengths[index - 1], lengths[index], target);
+                (index as f32 - 1.0 + along) / SAMPLES as f32
+            })
+            .collect()
+    }
+
+    /// The curve cut into `pieces` of about equal arc length.
+    pub fn divide(&self, pieces: usize) -> Vec<Self> {
+        let mut out = Vec::with_capacity(pieces.max(1));
+        let mut rest = *self;
+        let mut done = 0.0;
+        for t in self.equal_length_cuts(pieces) {
+            let (head, tail) = rest.split(inverse_lerp(done, 1.0, t));
+            out.push(head);
+            rest = tail;
+            done = t;
+        }
+        out.push(rest);
+        out
+    }
 }
 
 /// Points joined by straight segments, with the running length at each point.
@@ -126,6 +238,41 @@ mod tests {
 
     fn corner() -> Polyline {
         Polyline::new(vec![vec2(0.0, 0.0), vec2(100.0, 0.0), vec2(100.0, 100.0)])
+    }
+
+    #[test]
+    fn cubics_split_reverse_and_divide_by_arc_length() {
+        let curve = CubicBezier {
+            start: vec2(0.0, 0.0),
+            control_a: vec2(0.0, 100.0),
+            control_b: vec2(20.0, 100.0),
+            end: vec2(200.0, 0.0),
+        };
+        let (head, tail) = curve.split(0.3);
+        assert_eq!((head.start, tail.end), (curve.start, curve.end));
+        assert!(head.end.distance(curve.point(0.3)) < 1e-4);
+        assert!(tail.point(0.5).distance(curve.point(0.65)) < 1e-3);
+        assert!(curve.reversed().point(0.2).distance(curve.point(0.8)) < 1e-4);
+
+        let pieces = curve.divide(4);
+        assert_eq!(pieces.len(), 4);
+        assert_eq!((pieces[0].start, pieces[3].end), (curve.start, curve.end));
+        for pair in pieces.windows(2) {
+            assert_eq!(pair[0].end, pair[1].start);
+        }
+        let lengths: Vec<f32> = pieces.iter().map(|p| p.flatten(32).length()).collect();
+        let mean = lengths.iter().sum::<f32>() / 4.0;
+        assert!(
+            lengths.iter().all(|l| (l - mean).abs() < mean * 0.02),
+            "{lengths:?}"
+        );
+
+        let line = CubicBezier::line(vec2(0.0, 0.0), vec2(90.0, 0.0));
+        assert!((line.hull_length() - 90.0).abs() < 1e-4);
+        assert_eq!(line.lerp(&curve, 0.0), line);
+        assert_eq!(line.lerp(&curve, 1.0), curve);
+        let quad = CubicBezier::quadratic(vec2(0.0, 0.0), vec2(50.0, 100.0), vec2(100.0, 0.0));
+        assert!(quad.point(0.5).distance(vec2(50.0, 50.0)) < 1e-4);
     }
 
     #[test]
