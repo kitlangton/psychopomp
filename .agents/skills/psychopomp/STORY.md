@@ -44,7 +44,8 @@ Check every contact sheet (`plan strip`) against these before rendering MP4:
   left slab with code, then a centred diagram; never three beats in a row with
   the same layout and size.
 - **Generous margins and optical balance.** Keep content inside about
-  `x = 140..1780`, `y = 100..980`; portrait posters keep an 80 px margin and a top masthead rule. Size
+  `x = 140..1780`, `y = 100..980`; portrait posters keep an 80 px margin and a
+  top masthead rule. Size
   Stage cards wide enough (`330..480 px`) that titles and statuses pass
   `plan check`'s `card_text_overflow` gate without cramping.
 - **Continuity.** Elements travel one smooth monotonic path (`plan onion`);
