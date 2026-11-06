@@ -1456,6 +1456,8 @@ pub(crate) struct StageBoundsItem {
     pub bbox: [f32; 4],
     /// `(label_text, text_px, inner_card_px)` when card text exceeds card inner width.
     pub card_overflow: Option<(String, f32, f32)>,
+    /// On-screen type size in pixels, after scale and camera, for text items.
+    pub text_px: Option<f32>,
     pub non_finite: bool,
 }
 
@@ -1556,6 +1558,7 @@ pub(crate) fn stage_bounds(
                 text: None,
                 bbox: [0.0; 4],
                 card_overflow: None,
+                text_px: None,
                 non_finite: true,
             });
             continue;
@@ -1563,6 +1566,12 @@ pub(crate) fn stage_bounds(
         let Some(place) = scene.place(element) else {
             continue;
         };
+        let text_px = match element {
+            StageElement::Label { size, .. } => Some(*size),
+            StageElement::Type { spec, .. } => Some(spec.size),
+            _ => None,
+        }
+        .map(|size| size * place.scale * zoom);
         let (kind, text, corners, card_overflow) = match element {
             StageElement::Label {
                 size: font_size,
@@ -1714,6 +1723,7 @@ pub(crate) fn stage_bounds(
                 text,
                 bbox: [0.0; 4],
                 card_overflow: None,
+                text_px: None,
                 non_finite: true,
             });
             continue;
@@ -1750,6 +1760,7 @@ pub(crate) fn stage_bounds(
                 (max_y - min_y).max(0.0),
             ],
             card_overflow,
+            text_px,
             non_finite: false,
         });
     }
@@ -5914,11 +5925,14 @@ impl Painter<'_> {
         let flow = scene.v(id, "flow").clamp(0.0, 1.5);
         let emphasis = scene.unit(id, "emphasis");
         let surge = scene.v(id, "surge").clamp(0.0, 1.5);
+        let tint = scene.unit(id, "tint");
         let own = look.tone(tone);
-        // Matte like a beam; emphasis and surge bring up its tone.
+        // Matte like a beam; emphasis and surge bring up its tone, and tint
+        // inks it flat in its tone, for graphic looks on colour fields.
         let color = (look.muted * 0.7)
             .lerp(own, 0.12 + 0.45 * emphasis)
-            .lerp(own, 0.35 * surge.min(1.0));
+            .lerp(own, 0.35 * surge.min(1.0))
+            .lerp(own, tint);
         let far = legs.iter().map(Link::far).fold(f32::MIN, f32::max);
         let blur = scene.blur_at(far);
         let lengths = legs.iter().map(|leg| leg.path.length()).collect::<Vec<_>>();
@@ -5928,7 +5942,7 @@ impl Painter<'_> {
         for (leg, length) in legs.iter().zip(&lengths) {
             let scale = leg.scale_at(0.5);
             let paint = Paint {
-                stroke: rgba(color, 0.75 * opacity * (1.0 + 0.3 * surge)),
+                stroke: rgba(color, (0.75 + 0.25 * tint) * opacity * (1.0 + 0.3 * surge)),
                 glow: glow4(color * (0.05 * surge * opacity), 4.0 * scale),
                 ..Default::default()
             };
@@ -7020,6 +7034,47 @@ mod tests {
             (bottom - 110.0).abs() < 3.0,
             "bar bounds clip: {:?}",
             bar.bbox
+        );
+    }
+
+    #[test]
+    #[ignore = "requires a headless GPU; tint inks a path flat in its own tone"]
+    fn tint_inks_a_path_in_its_tone() {
+        let plan: StagePlan = serde_json::from_value(serde_json::json!({
+            "post": psychopomp::stage::StagePost::FLAT,
+            "elements": [
+                { "kind": "path", "id": "line", "tone": "error", "width": 24,
+                  "through": [[20, 90, 0], [300, 90, 0]] }
+            ]
+        }))
+        .unwrap();
+        let mut renderer = pollster::block_on(HeadlessRenderer::new(crate::render::RenderSpec {
+            width: 320,
+            height: 180,
+            file_name: "path-tint-proof".into(),
+        }))
+        .unwrap();
+        renderer.set_theme(super::Theme::Neutral);
+        let gpu = renderer.prepare_stage(&plan).unwrap();
+        let mut red = |tint: f32| {
+            let frame = renderer
+                .render_stage(&plan, &gpu, 0.0, |key, rest| {
+                    if key == "line.tint" { tint } else { rest }
+                })
+                .unwrap();
+            let i = (90 * 320 + 160) * 4;
+            [frame[i], frame[i + 1], frame[i + 2]]
+        };
+        let matte = red(0.0);
+        let inked = red(1.0);
+        // Matte is mostly the muted grey; inked is the error tone itself.
+        assert!(
+            inked[0] > 200 && inked[0] as i32 - inked[1] as i32 > 80,
+            "inked: {inked:?}"
+        );
+        assert!(
+            inked[0] as i32 - inked[1] as i32 > 2 * (matte[0] as i32 - matte[1] as i32),
+            "{matte:?} vs {inked:?}"
         );
     }
 

@@ -446,7 +446,7 @@ impl Move {
         }
     }
 
-    fn nanos(self) -> u64 {
+    pub(crate) fn nanos(self) -> u64 {
         whole_millis(self.seconds())
     }
 }

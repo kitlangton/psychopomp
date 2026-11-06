@@ -1,0 +1,6396 @@
+{
+  "version": 1,
+  "id": "kaizen-opencode",
+  "segments": [
+    {
+      "transitionNanos": 0,
+      "transitionStyle": "crossfade",
+      "plan": {
+        "version": 2,
+        "id": "01-surge",
+        "durationNanos": 25549000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "kaizen × opencode",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "25× the commits, 25× the hidden queues"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "anomaly · 2026"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "kicker",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "WEEKLY TEAM COMMITS",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                260.0
+              ],
+              "size": 20.0
+            }
+          },
+          {
+            "id": "commits-num",
+            "recipe": "rolling-number",
+            "data": {
+              "bold": true,
+              "durationNanos": 650000000,
+              "origin": [
+                150.0,
+                352.0
+              ],
+              "rolls": [
+                {
+                  "atNanos": 1350000000,
+                  "value": "1,551"
+                },
+                {
+                  "atNanos": 7650000000,
+                  "value": "5,436"
+                }
+              ],
+              "size": 92.0,
+              "suffix": [
+                {
+                  "text": " / wk",
+                  "tone": "muted"
+                }
+              ],
+              "tone": "accent",
+              "value": "215"
+            }
+          },
+          {
+            "id": "ytd",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "36,576"
+                  },
+                  {
+                    "text": " commits · Jan 5 – Oct 19",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                456.0
+              ],
+              "size": 21.0
+            }
+          },
+          {
+            "id": "surge-chip",
+            "recipe": "caption",
+            "data": {
+              "chip": true,
+              "glass": true,
+              "lines": [
+                [
+                  {
+                    "text": "25.3× ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "weekly throughput"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                548.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "drag-chip",
+            "recipe": "caption",
+            "data": {
+              "chip": true,
+              "glass": true,
+              "lines": [
+                [
+                  {
+                    "text": "queues & defects ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "scale 25× too"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                628.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "surge-plot",
+            "recipe": "plot",
+            "data": {
+              "marks": [
+                {
+                  "id": "oct",
+                  "label": "Oct fleet",
+                  "x": 38.0
+                }
+              ],
+              "origin": [
+                690.0,
+                225.0
+              ],
+              "series": [
+                {
+                  "id": "commits",
+                  "label": "commits / wk",
+                  "points": [
+                    [
+                      0.0,
+                      215.0
+                    ],
+                    [
+                      1.0,
+                      311.0
+                    ],
+                    [
+                      2.0,
+                      483.0
+                    ],
+                    [
+                      3.0,
+                      414.0
+                    ],
+                    [
+                      4.0,
+                      261.0
+                    ],
+                    [
+                      5.0,
+                      298.0
+                    ],
+                    [
+                      6.0,
+                      453.0
+                    ],
+                    [
+                      7.0,
+                      294.0
+                    ],
+                    [
+                      8.0,
+                      307.0
+                    ],
+                    [
+                      9.0,
+                      297.0
+                    ],
+                    [
+                      10.0,
+                      204.0
+                    ],
+                    [
+                      11.0,
+                      272.0
+                    ],
+                    [
+                      12.0,
+                      204.0
+                    ],
+                    [
+                      13.0,
+                      229.0
+                    ],
+                    [
+                      14.0,
+                      486.0
+                    ],
+                    [
+                      15.0,
+                      288.0
+                    ],
+                    [
+                      16.0,
+                      369.0
+                    ],
+                    [
+                      17.0,
+                      304.0
+                    ],
+                    [
+                      18.0,
+                      423.0
+                    ],
+                    [
+                      19.0,
+                      482.0
+                    ],
+                    [
+                      20.0,
+                      733.0
+                    ],
+                    [
+                      21.0,
+                      956.0
+                    ],
+                    [
+                      22.0,
+                      1123.0
+                    ],
+                    [
+                      23.0,
+                      434.0
+                    ],
+                    [
+                      24.0,
+                      1551.0
+                    ],
+                    [
+                      25.0,
+                      1441.0
+                    ],
+                    [
+                      26.0,
+                      1194.0
+                    ],
+                    [
+                      27.0,
+                      840.0
+                    ],
+                    [
+                      28.0,
+                      624.0
+                    ],
+                    [
+                      29.0,
+                      446.0
+                    ],
+                    [
+                      30.0,
+                      608.0
+                    ],
+                    [
+                      31.0,
+                      832.0
+                    ],
+                    [
+                      32.0,
+                      1050.0
+                    ],
+                    [
+                      33.0,
+                      1177.0
+                    ],
+                    [
+                      34.0,
+                      1139.0
+                    ],
+                    [
+                      35.0,
+                      783.0
+                    ],
+                    [
+                      36.0,
+                      1466.0
+                    ],
+                    [
+                      37.0,
+                      1176.0
+                    ],
+                    [
+                      38.0,
+                      917.0
+                    ],
+                    [
+                      39.0,
+                      2556.0
+                    ],
+                    [
+                      40.0,
+                      3500.0
+                    ],
+                    [
+                      41.0,
+                      5436.0
+                    ]
+                  ],
+                  "tone": "accent"
+                },
+                {
+                  "dashed": true,
+                  "id": "drag",
+                  "label": "unmanaged queue wait",
+                  "points": [
+                    [
+                      0.0,
+                      160.0
+                    ],
+                    [
+                      1.0,
+                      166.5
+                    ],
+                    [
+                      2.0,
+                      173.0
+                    ],
+                    [
+                      3.0,
+                      179.5
+                    ],
+                    [
+                      4.0,
+                      186.0
+                    ],
+                    [
+                      5.0,
+                      192.5
+                    ],
+                    [
+                      6.0,
+                      199.0
+                    ],
+                    [
+                      7.0,
+                      205.5
+                    ],
+                    [
+                      8.0,
+                      212.0
+                    ],
+                    [
+                      9.0,
+                      218.5
+                    ],
+                    [
+                      10.0,
+                      225.0
+                    ],
+                    [
+                      11.0,
+                      231.5
+                    ],
+                    [
+                      12.0,
+                      238.0
+                    ],
+                    [
+                      13.0,
+                      244.5
+                    ],
+                    [
+                      14.0,
+                      251.0
+                    ],
+                    [
+                      15.0,
+                      257.5
+                    ],
+                    [
+                      16.0,
+                      264.0
+                    ],
+                    [
+                      17.0,
+                      270.5
+                    ],
+                    [
+                      18.0,
+                      277.0
+                    ],
+                    [
+                      19.0,
+                      283.5
+                    ],
+                    [
+                      20.0,
+                      290.0
+                    ],
+                    [
+                      21.0,
+                      296.5
+                    ],
+                    [
+                      22.0,
+                      303.0
+                    ],
+                    [
+                      23.0,
+                      309.5
+                    ],
+                    [
+                      24.0,
+                      316.0
+                    ],
+                    [
+                      25.0,
+                      322.5
+                    ],
+                    [
+                      26.0,
+                      329.0
+                    ],
+                    [
+                      27.0,
+                      335.5
+                    ],
+                    [
+                      28.0,
+                      342.0
+                    ],
+                    [
+                      29.0,
+                      348.5
+                    ],
+                    [
+                      30.0,
+                      355.0
+                    ],
+                    [
+                      31.0,
+                      361.5
+                    ],
+                    [
+                      32.0,
+                      368.0
+                    ],
+                    [
+                      33.0,
+                      374.5
+                    ],
+                    [
+                      34.0,
+                      381.0
+                    ],
+                    [
+                      35.0,
+                      387.5
+                    ],
+                    [
+                      36.0,
+                      394.0
+                    ],
+                    [
+                      37.0,
+                      400.5
+                    ],
+                    [
+                      38.0,
+                      480.0
+                    ],
+                    [
+                      39.0,
+                      1520.0
+                    ],
+                    [
+                      40.0,
+                      2950.0
+                    ],
+                    [
+                      41.0,
+                      4850.0
+                    ]
+                  ],
+                  "tone": "error"
+                }
+              ],
+              "size": [
+                1030.0,
+                575.0
+              ],
+              "x": {
+                "label": "week of 2026 (Jan 5 → Oct 19)",
+                "range": [
+                  0.0,
+                  41.0
+                ],
+                "ticks": [
+                  0.0,
+                  10.0,
+                  20.0,
+                  30.0,
+                  40.0
+                ]
+              },
+              "y": {
+                "label": "commits / wk",
+                "range": [
+                  0.0,
+                  6000.0
+                ],
+                "ticks": [
+                  0.0,
+                  1500.0,
+                  3000.0,
+                  4500.0,
+                  6000.0
+                ]
+              }
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "Taiichi Ohno · ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "Toyota Production System (1978)"
+                  },
+                  {
+                    "text": " — expose every bottleneck at line speed",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "surge-chip.opacity",
+            "actorId": "surge-chip",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 11650000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "surge-chip.y",
+            "actorId": "surge-chip",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 11650000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "drag-chip.opacity",
+            "actorId": "drag-chip",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "drag-chip.y",
+            "actorId": "drag-chip",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14090000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "surge-plot.axes",
+            "actorId": "surge-plot",
+            "property": "axes",
+            "initial": 1.0,
+            "events": []
+          },
+          {
+            "id": "surge-plot.series.drag.draw",
+            "actorId": "surge-plot",
+            "property": "series.drag.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 14090000000,
+                "target": 1.0,
+                "durationNanos": 1800000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "surge-plot.series.commits.draw",
+            "actorId": "surge-plot",
+            "property": "series.commits.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "durationNanos": 6500000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "surge-plot.playhead",
+            "actorId": "surge-plot",
+            "property": "playhead",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 450000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 450000000,
+                "target": 41.0,
+                "durationNanos": 6500000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "surge-plot.playhead.opacity",
+            "actorId": "surge-plot",
+            "property": "playhead.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "surge-plot.series.commits.ride",
+            "actorId": "surge-plot",
+            "property": "series.commits.ride",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "surge-plot.mark.oct.opacity",
+            "actorId": "surge-plot",
+            "property": "mark.oct.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7250000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18770000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18770000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "surge",
+            "startNanos": 0,
+            "endNanos": 25549000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg1_surge",
+            "path": "media/65a658f8e230312b.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 23599000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 24049000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "whoosh-curve",
+            "path": "../../assets/psychopomp-intro/whoosh.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 612208333,
+            "timelineStartNanos": 650000000,
+            "timelineEndNanos": 1262208333,
+            "gainDb": -17.0
+          },
+          {
+            "id": "mark-peak",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 7650000000,
+            "timelineEndNanos": 7950000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "warn-queue",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 14090000000,
+            "timelineEndNanos": 14570000000,
+            "gainDb": -17.0
+          },
+          {
+            "id": "tick-ohno",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 18770000000,
+            "timelineEndNanos": 18910000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 800000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "2026 SURGE",
+          "NUMMI 1984"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "02-nummi",
+        "durationNanos": 35069000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "1982 → 1984",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "NUMMI: 85% the same workers, a different system"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "warning"
+                  },
+                  {
+                    "text": "Fremont · Georgetown"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "andon-rig",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    960.0,
+                    265.0,
+                    3.0
+                  ],
+                  "corner": 18.0,
+                  "fill": "well",
+                  "id": "housing",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      1480.0,
+                      128.0
+                    ]
+                  }
+                },
+                {
+                  "id": "cord",
+                  "kind": "path",
+                  "through": [
+                    [
+                      260.0,
+                      382.0,
+                      1.0
+                    ],
+                    [
+                      1660.0,
+                      382.0,
+                      1.0
+                    ]
+                  ],
+                  "tone": "warning",
+                  "width": 2.5999999046325684
+                },
+                {
+                  "at": [
+                    330.0,
+                    360.0,
+                    0.0
+                  ],
+                  "id": "cord-tag",
+                  "kind": "label",
+                  "size": 17.0,
+                  "spans": [
+                    {
+                      "text": "OVERHEAD ANDON CORD",
+                      "tone": "warning"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1150.0,
+                    404.0,
+                    0.0
+                  ],
+                  "corner": 6.0,
+                  "fill": "warning",
+                  "fillOpacity": 0.8500000238418579,
+                  "id": "pull-grip",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      24.0,
+                      42.0
+                    ]
+                  }
+                },
+                {
+                  "arrow": "end",
+                  "dash": [
+                    10.0,
+                    8.0
+                  ],
+                  "id": "track",
+                  "kind": "path",
+                  "through": [
+                    [
+                      260.0,
+                      480.0,
+                      2.0
+                    ],
+                    [
+                      1660.0,
+                      480.0,
+                      2.0
+                    ]
+                  ],
+                  "tone": "muted",
+                  "width": 2.0
+                },
+                {
+                  "at": [
+                    390.0,
+                    480.0,
+                    -1.0
+                  ],
+                  "corner": 12.0,
+                  "fill": "raised",
+                  "id": "chassis",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      176.0,
+                      50.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    390.0,
+                    480.0,
+                    -2.0
+                  ],
+                  "id": "chassis-lbl",
+                  "kind": "label",
+                  "size": 18.0,
+                  "spans": [
+                    {
+                      "text": "NOVA #042"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    390.0,
+                    265.0,
+                    1.0
+                  ],
+                  "corner": 12.0,
+                  "fill": "surface",
+                  "id": "st1",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      310.0,
+                      86.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    390.0,
+                    265.0,
+                    0.0
+                  ],
+                  "id": "st1-txt",
+                  "kind": "label",
+                  "size": 22.0,
+                  "spans": [
+                    {
+                      "text": "01 · STAMP"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    770.0,
+                    265.0,
+                    1.0
+                  ],
+                  "corner": 12.0,
+                  "fill": "surface",
+                  "id": "st2",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      310.0,
+                      86.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    770.0,
+                    265.0,
+                    0.0
+                  ],
+                  "id": "st2-txt",
+                  "kind": "label",
+                  "size": 22.0,
+                  "spans": [
+                    {
+                      "text": "02 · WELD"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1150.0,
+                    265.0,
+                    1.0
+                  ],
+                  "corner": 12.0,
+                  "fill": "surface",
+                  "id": "st3",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      310.0,
+                      86.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1150.0,
+                    265.0,
+                    0.0
+                  ],
+                  "id": "st3-txt",
+                  "kind": "label",
+                  "size": 22.0,
+                  "spans": [
+                    {
+                      "text": "03 · TRIM"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1530.0,
+                    265.0,
+                    1.0
+                  ],
+                  "corner": 12.0,
+                  "fill": "surface",
+                  "id": "st4",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      310.0,
+                      86.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1530.0,
+                    265.0,
+                    0.0
+                  ],
+                  "id": "st4-txt",
+                  "kind": "label",
+                  "size": 22.0,
+                  "spans": [
+                    {
+                      "text": "04 · FINAL"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1150.0,
+                    265.0,
+                    0.5
+                  ],
+                  "corner": 12.0,
+                  "fill": "error",
+                  "fillOpacity": 0.3199999928474426,
+                  "id": "st3-red",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      310.0,
+                      86.0
+                    ]
+                  }
+                },
+                {
+                  "at": [
+                    1150.0,
+                    265.0,
+                    0.4000000059604645
+                  ],
+                  "corner": 12.0,
+                  "fill": "success",
+                  "fillOpacity": 0.2800000011920929,
+                  "id": "st3-green",
+                  "kind": "shape",
+                  "shape": {
+                    "rect": [
+                      310.0,
+                      86.0
+                    ]
+                  }
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "gm-stat",
+            "recipe": "caption",
+            "data": {
+              "chip": true,
+              "glass": true,
+              "lines": [
+                [
+                  {
+                    "text": "GM Fremont 1982  ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "> 20% absent",
+                    "tone": "error"
+                  },
+                  {
+                    "text": " · worst in GM",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                628.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "nummi-stat",
+            "recipe": "caption",
+            "data": {
+              "chip": true,
+              "glass": true,
+              "lines": [
+                [
+                  {
+                    "text": "NUMMI 1985       ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "2% absent",
+                    "tone": "success"
+                  },
+                  {
+                    "text": " · 85% same UAW"
+                  }
+                ]
+              ],
+              "origin": [
+                150.0,
+                712.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "andon-bars",
+            "recipe": "bars",
+            "data": {
+              "axis": {
+                "label": "andon cord pulls / week",
+                "range": [
+                  0.0,
+                  2200.0
+                ],
+                "ticks": [
+                  0.0,
+                  1000.0,
+                  2000.0
+                ]
+              },
+              "origin": [
+                1180.0,
+                604.0
+              ],
+              "readout": {
+                "grouping": true
+              },
+              "rowHeight": 86.0,
+              "rows": [
+                {
+                  "id": "georgetown",
+                  "label": "Georgetown KY"
+                },
+                {
+                  "id": "detroit",
+                  "label": "Detroit rival"
+                }
+              ],
+              "series": [
+                {
+                  "id": "pulls",
+                  "label": "pulls / wk",
+                  "tone": "accent"
+                }
+              ],
+              "size": 22.0,
+              "width": 520.0
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "Spear & Bowen (HBR 1999): ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "every task is a falsifiable hypothesis"
+                  },
+                  {
+                    "text": " · Shook (LEI 2009)",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "andon-rig.st3-red.opacity",
+            "actorId": "andon-rig",
+            "property": "st3-red.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 19730000000,
+                "target": 1.0,
+                "durationNanos": 140000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 22030000000,
+                "target": 0.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "andon-rig.st3-green.opacity",
+            "actorId": "andon-rig",
+            "property": "st3-green.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 22030000000,
+                "target": 1.0,
+                "durationNanos": 280000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "andon-rig.chassis.x",
+            "actorId": "andon-rig",
+            "property": "chassis.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 18330000000,
+                "target": 760.0,
+                "durationNanos": 1350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 22330000000,
+                "target": 1140.0,
+                "durationNanos": 1150000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "andon-rig.chassis-lbl.x",
+            "actorId": "andon-rig",
+            "property": "chassis-lbl.x",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 18330000000,
+                "target": 760.0,
+                "durationNanos": 1350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 22330000000,
+                "target": 1140.0,
+                "durationNanos": 1150000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "andon-rig.pull-grip.y",
+            "actorId": "andon-rig",
+            "property": "pull-grip.y",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 19730000000,
+                "target": 20.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 0.85,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 20380000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 0.8,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "gm-stat.opacity",
+            "actorId": "gm-stat",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 750000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "gm-stat.y",
+            "actorId": "gm-stat",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 750000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "nummi-stat.opacity",
+            "actorId": "nummi-stat",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 10530000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "nummi-stat.y",
+            "actorId": "nummi-stat",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 10530000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.opacity",
+            "actorId": "andon-bars",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22780000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.y",
+            "actorId": "andon-bars",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22780000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.axes",
+            "actorId": "andon-bars",
+            "property": "axes",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 22780000000,
+                "target": 1.0,
+                "durationNanos": 900000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.row.georgetown.opacity",
+            "actorId": "andon-bars",
+            "property": "row.georgetown.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22930000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.row.detroit.opacity",
+            "actorId": "andon-bars",
+            "property": "row.detroit.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 23020000000,
+                "target": 1.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.bar.georgetown.pulls",
+            "actorId": "andon-bars",
+            "property": "bar.georgetown.pulls",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 23130000000,
+                "target": 2000.0,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "andon-bars.bar.detroit.pulls",
+            "actorId": "andon-bars",
+            "property": "bar.detroit.pulls",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 23220000000,
+                "target": 2.0,
+                "responseSeconds": 1.0200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 29330000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 29330000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "nummi",
+            "startNanos": 0,
+            "endNanos": 35069000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg2_nummi",
+            "path": "media/b0ff1002c9e9a823.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 33119000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 33569000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "sfx-nummi",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 10530000000,
+            "timelineEndNanos": 10870000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "sfx-cord",
+            "path": "../../assets/opencode-hot-reload/impact.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 520000000,
+            "timelineStartNanos": 19730000000,
+            "timelineEndNanos": 20250000000,
+            "gainDb": -14.0
+          },
+          {
+            "id": "sfx-fixed",
+            "path": "../../assets/visual-effects/task-success.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 420000000,
+            "timelineStartNanos": 22030000000,
+            "timelineEndNanos": 22450000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "sfx-george",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 23130000000,
+            "timelineEndNanos": 23430000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 600000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "03-techniques",
+        "durationNanos": 36349000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "core mechanics",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Five loops that turn a factory into an experiment"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "request"
+                  },
+                  {
+                    "text": "TPS · Shingo · Rother"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "mechanics-grid",
+            "recipe": "keyed-grid",
+            "data": {
+              "axes": [
+                {
+                  "name": "Col",
+                  "values": [
+                    "C1",
+                    "C2",
+                    "C3"
+                  ]
+                },
+                {
+                  "name": "Row",
+                  "values": [
+                    "3Ms",
+                    "Kanban",
+                    "Genchi",
+                    "Poka",
+                    "Kata"
+                  ]
+                },
+                {
+                  "name": "Layer",
+                  "values": [
+                    "TPS"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "atNanos": 12610000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      2,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 19250000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      3,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 24810000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      4,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 29330000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      5,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 31730000000,
+                  "snapshot": {
+                    "arrangement": "layers",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      5,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "atNanos": 34330000000,
+                  "snapshot": {
+                    "arrangement": "table",
+                    "focusSlice": null,
+                    "visible": [
+                      3,
+                      5,
+                      1
+                    ]
+                  }
+                }
+              ],
+              "initial": {
+                "arrangement": "table",
+                "focusSlice": null,
+                "visible": [
+                  3,
+                  1,
+                  1
+                ]
+              },
+              "labels": [
+                {
+                  "indices": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "primary": "3Ms · Muda / Mura / Muri",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    0,
+                    0
+                  ],
+                  "primary": "Unevenness & overload create waste",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    0,
+                    0
+                  ],
+                  "primary": "Measure p50/p95 wait; keep load < 85%",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    1,
+                    0
+                  ],
+                  "primary": "Kanban & Heijunka",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    1,
+                    0
+                  ],
+                  "primary": "Pull cards cap WIP; level the mix",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    1,
+                    0
+                  ],
+                  "primary": "Cap builders to cache TTL; budget cores",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    2,
+                    0
+                  ],
+                  "primary": "Genchi Genbutsu & 5 Whys",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    2,
+                    0
+                  ],
+                  "primary": "Go see the floor; ask Why 5 times",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    2,
+                    0
+                  ],
+                  "primary": "Read raw traces & SQLite; cite file:line",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    3,
+                    0
+                  ],
+                  "primary": "Poka-Yoke (Shingo 1961)",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    3,
+                    0
+                  ],
+                  "primary": "Prevent > detect > scold workers",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    3,
+                    0
+                  ],
+                  "primary": "Shell & git hooks block bad states",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    0,
+                    4,
+                    0
+                  ],
+                  "primary": "Standard Work & Kata",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    1,
+                    4,
+                    0
+                  ],
+                  "primary": "Baseline + 1 PDCA prediction/step",
+                  "secondary": ""
+                },
+                {
+                  "indices": [
+                    2,
+                    4,
+                    0
+                  ],
+                  "primary": "SKILL.md + read-only benchmark gate",
+                  "secondary": ""
+                }
+              ],
+              "style": {
+                "fill": {
+                  "color": [
+                    22,
+                    24,
+                    29
+                  ],
+                  "kind": "banded"
+                },
+                "lineOpacity": 0.4000000059604645,
+                "lineWidth": 1.0,
+                "rules": "rows",
+                "table": {
+                  "alignments": [
+                    "left",
+                    "left",
+                    "left"
+                  ],
+                  "columnWidths": [
+                    360.0,
+                    520.0,
+                    560.0
+                  ],
+                  "fontSize": 22.0,
+                  "headers": [
+                    "Technique",
+                    "Shop-Floor Mechanism",
+                    "Agent Harness Equivalent"
+                  ],
+                  "padding": 22.0,
+                  "rowHeight": 76.0
+                }
+              }
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "Liker (2004) · "
+                  },
+                  {
+                    "text": "prevent > detect > instruct",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · Rother's Kata & Deming's PDSA",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 24810000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 24810000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "techniques",
+            "startNanos": 0,
+            "endNanos": 36349000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg3_techniques",
+            "path": "media/ede60231cede80b4.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 34399000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 34849000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "row-tick-0",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 12610000000,
+            "timelineEndNanos": 12750000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "row-tick-1",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 19250000000,
+            "timelineEndNanos": 19390000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "row-tick-2",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 24810000000,
+            "timelineEndNanos": 24950000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "row-tick-3",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 29330000000,
+            "timelineEndNanos": 29470000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "layers-tilt",
+            "path": "../../assets/psychopomp-intro/whoosh.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 612208333,
+            "timelineStartNanos": 31730000000,
+            "timelineEndNanos": 32342208333,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 600000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "04-andon-poka",
+        "durationNanos": 36909000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "live receipts · 1",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Stopping the line in my local agent fleet"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "studio + seer"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "term",
+            "recipe": "terminal",
+            "data": {
+              "lines": [
+                {
+                  "id": "boot",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "[studio] ",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "OpenCode Beta :4096 active · single-writer DB",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "id": "cmd1",
+                  "kind": "command",
+                  "text": "opencode serve --standalone"
+                },
+                {
+                  "id": "out2",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "studio-guard: ",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "'--standalone' refused (exit 1)"
+                    }
+                  ]
+                },
+                {
+                  "id": "out3",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "  opencode.db stays single-writer (4/night → 0)",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "id": "cmd4",
+                  "kind": "command",
+                  "text": "git push origin main"
+                },
+                {
+                  "id": "out5",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "seer-andon: ",
+                      "tone": "warning"
+                    },
+                    {
+                      "text": "main red 18m (blamed 1b737295)"
+                    }
+                  ]
+                },
+                {
+                  "id": "out6",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "  known red: 10 · yours: 1 ",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "— push refused until blamed test passes",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "done": [
+                    {
+                      "text": "blamed test green ",
+                      "tone": "success"
+                    },
+                    {
+                      "text": "· inherited red 61% → 11%"
+                    }
+                  ],
+                  "id": "task7",
+                  "kind": "task",
+                  "spans": [
+                    {
+                      "text": "seer-main-watch verifying blamed test fix...",
+                      "tone": "request"
+                    }
+                  ]
+                },
+                {
+                  "id": "out8",
+                  "kind": "output",
+                  "spans": [
+                    {
+                      "text": "rustc-gate: ",
+                      "tone": "success"
+                    },
+                    {
+                      "text": "bypass compiles 2,111/day → 8/day (−99.6%)"
+                    }
+                  ]
+                }
+              ],
+              "origin": [
+                140.0,
+                195.0
+              ],
+              "prompt": [
+                {
+                  "text": "seer ",
+                  "tone": "accent"
+                },
+                {
+                  "text": "❯ ",
+                  "tone": "muted"
+                }
+              ],
+              "rows": 13,
+              "size": 19.0,
+              "title": "studio · ~/code/open-source/seer",
+              "width": 920.0
+            }
+          },
+          {
+            "id": "checks",
+            "recipe": "checklist",
+            "data": {
+              "items": [
+                {
+                  "id": "guard",
+                  "label": "studio-guard",
+                  "result": "0 DB splits"
+                },
+                {
+                  "id": "andon",
+                  "label": "seer-andon hook",
+                  "result": "61% → 11%"
+                },
+                {
+                  "id": "rustc",
+                  "label": "rustc token gate",
+                  "result": "−99.6%"
+                },
+                {
+                  "id": "alerts",
+                  "label": "alerts storm rule",
+                  "result": "load 506"
+                }
+              ],
+              "origin": [
+                1105.0,
+                215.0
+              ],
+              "panel": true,
+              "rail": true,
+              "size": 24.0,
+              "title": "poka-yoke & andon",
+              "width": 665.0
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "note 1ce6a2f6 · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "seer/docs/red-main.md",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · kitlangton/hivemind#28",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "term.line.cmd1.reveal",
+            "actorId": "term",
+            "property": "line.cmd1.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 7270000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.caret",
+            "actorId": "term",
+            "property": "caret",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 7270000000,
+                "target": 1.0,
+                "durationNanos": 60000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 8903423763,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 15930000000,
+                "target": 1.0,
+                "durationNanos": 60000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 17346272808,
+                "value": 0.0
+              }
+            ]
+          },
+          {
+            "id": "term.line.cmd1.typed",
+            "actorId": "term",
+            "property": "line.cmd1.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 7639980790,
+                "value": 0.037037037
+              },
+              {
+                "operation": "set",
+                "atNanos": 7677946898,
+                "value": 0.074074075
+              },
+              {
+                "operation": "set",
+                "atNanos": 7721605629,
+                "value": 0.11111111
+              },
+              {
+                "operation": "set",
+                "atNanos": 7751475839,
+                "value": 0.14814815
+              },
+              {
+                "operation": "set",
+                "atNanos": 7790544476,
+                "value": 0.18518518
+              },
+              {
+                "operation": "set",
+                "atNanos": 7824642063,
+                "value": 0.22222222
+              },
+              {
+                "operation": "set",
+                "atNanos": 7865827171,
+                "value": 0.25925925
+              },
+              {
+                "operation": "set",
+                "atNanos": 7895716426,
+                "value": 0.2962963
+              },
+              {
+                "operation": "set",
+                "atNanos": 7930156323,
+                "value": 0.33333334
+              },
+              {
+                "operation": "set",
+                "atNanos": 7994077344,
+                "value": 0.37037036
+              },
+              {
+                "operation": "set",
+                "atNanos": 8034829986,
+                "value": 0.4074074
+              },
+              {
+                "operation": "set",
+                "atNanos": 8068362744,
+                "value": 0.44444445
+              },
+              {
+                "operation": "set",
+                "atNanos": 8107094069,
+                "value": 0.4814815
+              },
+              {
+                "operation": "set",
+                "atNanos": 8149588873,
+                "value": 0.5185185
+              },
+              {
+                "operation": "set",
+                "atNanos": 8175841358,
+                "value": 0.5555556
+              },
+              {
+                "operation": "set",
+                "atNanos": 8217659714,
+                "value": 0.5925926
+              },
+              {
+                "operation": "set",
+                "atNanos": 8256646879,
+                "value": 0.6296296
+              },
+              {
+                "operation": "set",
+                "atNanos": 8314455745,
+                "value": 0.6666667
+              },
+              {
+                "operation": "set",
+                "atNanos": 8348406498,
+                "value": 0.7037037
+              },
+              {
+                "operation": "set",
+                "atNanos": 8382519426,
+                "value": 0.7407407
+              },
+              {
+                "operation": "set",
+                "atNanos": 8412118235,
+                "value": 0.7777778
+              },
+              {
+                "operation": "set",
+                "atNanos": 8460848278,
+                "value": 0.8148148
+              },
+              {
+                "operation": "set",
+                "atNanos": 8502385847,
+                "value": 0.8518519
+              },
+              {
+                "operation": "set",
+                "atNanos": 8531440020,
+                "value": 0.8888889
+              },
+              {
+                "operation": "set",
+                "atNanos": 8561386669,
+                "value": 0.9259259
+              },
+              {
+                "operation": "set",
+                "atNanos": 8603997518,
+                "value": 0.962963
+              },
+              {
+                "operation": "set",
+                "atNanos": 8643423763,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "term.line.out2.reveal",
+            "actorId": "term",
+            "property": "line.out2.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 12090000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.out3.reveal",
+            "actorId": "term",
+            "property": "line.out3.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 12135000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.cmd4.reveal",
+            "actorId": "term",
+            "property": "line.cmd4.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 15930000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.cmd4.typed",
+            "actorId": "term",
+            "property": "line.cmd4.typed",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 16280073091,
+                "value": 0.05
+              },
+              {
+                "operation": "set",
+                "atNanos": 16307157062,
+                "value": 0.1
+              },
+              {
+                "operation": "set",
+                "atNanos": 16341571756,
+                "value": 0.15
+              },
+              {
+                "operation": "set",
+                "atNanos": 16378069496,
+                "value": 0.2
+              },
+              {
+                "operation": "set",
+                "atNanos": 16435431762,
+                "value": 0.25
+              },
+              {
+                "operation": "set",
+                "atNanos": 16486017068,
+                "value": 0.3
+              },
+              {
+                "operation": "set",
+                "atNanos": 16531973991,
+                "value": 0.35
+              },
+              {
+                "operation": "set",
+                "atNanos": 16576445829,
+                "value": 0.4
+              },
+              {
+                "operation": "set",
+                "atNanos": 16609549731,
+                "value": 0.45
+              },
+              {
+                "operation": "set",
+                "atNanos": 16664574046,
+                "value": 0.5
+              },
+              {
+                "operation": "set",
+                "atNanos": 16713420965,
+                "value": 0.55
+              },
+              {
+                "operation": "set",
+                "atNanos": 16758223640,
+                "value": 0.6
+              },
+              {
+                "operation": "set",
+                "atNanos": 16801571135,
+                "value": 0.65
+              },
+              {
+                "operation": "set",
+                "atNanos": 16829714079,
+                "value": 0.7
+              },
+              {
+                "operation": "set",
+                "atNanos": 16861211570,
+                "value": 0.75
+              },
+              {
+                "operation": "set",
+                "atNanos": 16910818599,
+                "value": 0.8
+              },
+              {
+                "operation": "set",
+                "atNanos": 16955014915,
+                "value": 0.85
+              },
+              {
+                "operation": "set",
+                "atNanos": 16989420455,
+                "value": 0.9
+              },
+              {
+                "operation": "set",
+                "atNanos": 17038975146,
+                "value": 0.95
+              },
+              {
+                "operation": "set",
+                "atNanos": 17086272808,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "term.line.out5.reveal",
+            "actorId": "term",
+            "property": "line.out5.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 20620000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.out6.reveal",
+            "actorId": "term",
+            "property": "line.out6.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 20665000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.task7.reveal",
+            "actorId": "term",
+            "property": "line.task7.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 28110000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.task7.spin",
+            "actorId": "term",
+            "property": "line.task7.spin",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 28110000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 28110000000,
+                "target": 8.799,
+                "durationNanos": 8799000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 31363424167,
+                "value": 3.2534242
+              }
+            ]
+          },
+          {
+            "id": "term.line.task7.mark",
+            "actorId": "term",
+            "property": "line.task7.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 29603424177,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 29603424177,
+                "target": 1.76,
+                "durationNanos": 1760000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "term.line.task7.status",
+            "actorId": "term",
+            "property": "line.task7.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 29833424181,
+                "target": 1.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "term.line.out8.reveal",
+            "actorId": "term",
+            "property": "line.out8.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 31170000000,
+                "target": 1.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.opacity",
+            "actorId": "checks",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.y",
+            "actorId": "checks",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 600000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.guard.reveal",
+            "actorId": "checks",
+            "property": "item.guard.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 800000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.andon.reveal",
+            "actorId": "checks",
+            "property": "item.andon.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 920000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.rustc.reveal",
+            "actorId": "checks",
+            "property": "item.rustc.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 1040000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.alerts.reveal",
+            "actorId": "checks",
+            "property": "item.alerts.reveal",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 1160000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "checks.item.guard.spinner",
+            "actorId": "checks",
+            "property": "item.guard.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 7570000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 7570000000,
+                "target": 29.339,
+                "durationNanos": 29339000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.guard.mark",
+            "actorId": "checks",
+            "property": "item.guard.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 12663431950,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 12663431950,
+                "target": 24.245,
+                "durationNanos": 24245000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.guard.outcome",
+            "actorId": "checks",
+            "property": "item.guard.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 12663431950,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "checks.item.andon.spinner",
+            "actorId": "checks",
+            "property": "item.andon.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 15930000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 15930000000,
+                "target": 20.979,
+                "durationNanos": 20979000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.andon.mark",
+            "actorId": "checks",
+            "property": "item.andon.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 29423432045,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 29423432045,
+                "target": 7.485,
+                "durationNanos": 7485000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.andon.outcome",
+            "actorId": "checks",
+            "property": "item.andon.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 29423432045,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "checks.item.rustc.spinner",
+            "actorId": "checks",
+            "property": "item.rustc.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 30670000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 30670000000,
+                "target": 6.239,
+                "durationNanos": 6239000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.rustc.mark",
+            "actorId": "checks",
+            "property": "item.rustc.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 32163424177,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 32163424177,
+                "target": 4.745,
+                "durationNanos": 4745000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.rustc.outcome",
+            "actorId": "checks",
+            "property": "item.rustc.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 32163424177,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "checks.item.alerts.spinner",
+            "actorId": "checks",
+            "property": "item.alerts.spinner",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 31370000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 31370000000,
+                "target": 5.539,
+                "durationNanos": 5539000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.alerts.mark",
+            "actorId": "checks",
+            "property": "item.alerts.mark",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 32463264341,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 32463264341,
+                "target": 4.445,
+                "durationNanos": 4445000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "checks.item.alerts.outcome",
+            "actorId": "checks",
+            "property": "item.alerts.outcome",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 32463264341,
+                "value": 1.0
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 20770000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 20770000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "andon-poka",
+            "startNanos": 0,
+            "endNanos": 36909000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg4_andon_poka",
+            "path": "media/f6b4d8cbd461769f.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 34959000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 35409000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "refuse-1",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 12090000000,
+            "timelineEndNanos": 12570000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "refuse-2",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 20620000000,
+            "timelineEndNanos": 21100000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "green-andon",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 29360000000,
+            "timelineEndNanos": 29700000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "green-rustc",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 31770000000,
+            "timelineEndNanos": 32070000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 600000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "05-five-whys",
+        "durationNanos": 31148999999,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "live receipts · 2",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Genchi Genbutsu & 5 Whys: the 25–30 GiB deadband"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "error"
+                  },
+                  {
+                    "text": "70.2% queue wait"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "editor",
+            "recipe": "editor",
+            "data": {
+              "additionalInlineReveals": [
+                {
+                  "channel": "inlay.spill_hint",
+                  "lineId": "line-7",
+                  "rangeId": "inlay:spill_hint"
+                }
+              ],
+              "enteringOffsetX": 0.0,
+              "fileName": "hivemind/src/clean.rs",
+              "finalLineIds": [
+                "line-0",
+                "line-1",
+                "line-3",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-7",
+                "line-8"
+              ],
+              "focusHeight": 44.0,
+              "focusLineId": "line-0",
+              "initialLineIds": [
+                "line-0",
+                "line-1",
+                "line-2",
+                "line-4",
+                "line-5",
+                "line-6",
+                "line-7"
+              ],
+              "lineHeight": 44.0,
+              "lines": [
+                {
+                  "id": "line-0",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "pub fn "
+                        },
+                        {
+                          "style": "accent",
+                          "text": "default_min_free_gb_for_host"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "(host: &str) -> f64 {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-1",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "if"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " host."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "to_ascii_lowercase"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "()."
+                        },
+                        {
+                          "style": "accent",
+                          "text": "contains"
+                        },
+                        {
+                          "style": "plain",
+                          "text": "("
+                        },
+                        {
+                          "style": "string",
+                          "text": "\"studio\""
+                        },
+                        {
+                          "style": "plain",
+                          "text": ") {"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-2",
+                  "mark": "removed",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "deadband",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              245,
+                              167,
+                              66
+                            ]
+                          },
+                          "text": "25.0"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": {
+                            "rgb": [
+                              128,
+                              128,
+                              128
+                            ]
+                          },
+                          "text": "// < 30 GiB gate: clean reclaims 0.00 GiB x12"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "deadband",
+                      "id": "deadband",
+                      "lastPartId": "deadband"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-3",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "    "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "clamped",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              245,
+                              167,
+                              66
+                            ]
+                          },
+                          "text": "35.0"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "code-2",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        },
+                        {
+                          "style": {
+                            "rgb": [
+                              128,
+                              128,
+                              128
+                            ]
+                          },
+                          "text": "// gate 30 + 5 GiB margin: zero deadband"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "clamped",
+                      "id": "clamped",
+                      "lastPartId": "clamped"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-4",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  } "
+                        },
+                        {
+                          "style": "keyword",
+                          "text": "else"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " { "
+                        },
+                        {
+                          "style": {
+                            "rgb": [
+                              245,
+                              167,
+                              66
+                            ]
+                          },
+                          "text": "80.0"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " }"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-5",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "}"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-6",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": " "
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": []
+                },
+                {
+                  "id": "line-7",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "keyword",
+                          "text": "let"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " warm_cargo = has_warm_dd && demand.kind == "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "cargo_kind",
+                      "spans": [
+                        {
+                          "style": "type",
+                          "text": "CargoBuild"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "inlay:spill_hint",
+                      "spans": [
+                        {
+                          "style": {
+                            "rgb": [
+                              140,
+                              146,
+                              158
+                            ]
+                          },
+                          "text": " // load 163.5"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "cargo_kind",
+                      "id": "cargo_kind",
+                      "lastPartId": "cargo_kind"
+                    },
+                    {
+                      "firstPartId": "inlay:spill_hint",
+                      "id": "inlay:spill_hint",
+                      "lastPartId": "inlay:spill_hint"
+                    }
+                  ]
+                },
+                {
+                  "id": "line-8",
+                  "mark": "added",
+                  "parts": [
+                    {
+                      "id": "code",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "  && node.thermal_pressure == "
+                        },
+                        {
+                          "style": {
+                            "rgb": [
+                              245,
+                              167,
+                              66
+                            ]
+                          },
+                          "text": "0"
+                        },
+                        {
+                          "style": "plain",
+                          "text": " && "
+                        }
+                      ]
+                    },
+                    {
+                      "id": "spill",
+                      "spans": [
+                        {
+                          "style": "plain",
+                          "text": "node.cpu_busy_pct < "
+                        },
+                        {
+                          "style": {
+                            "rgb": [
+                              245,
+                              167,
+                              66
+                            ]
+                          },
+                          "text": "85.0"
+                        },
+                        {
+                          "style": "plain",
+                          "text": ";"
+                        }
+                      ]
+                    }
+                  ],
+                  "semanticRanges": [
+                    {
+                      "firstPartId": "spill",
+                      "id": "spill",
+                      "lastPartId": "spill"
+                    }
+                  ]
+                }
+              ],
+              "snapshots": [
+                {
+                  "atNanos": 25010000000,
+                  "lineIds": [
+                    "line-0",
+                    "line-1",
+                    "line-3",
+                    "line-4",
+                    "line-5",
+                    "line-6",
+                    "line-7",
+                    "line-8"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": "caret",
+            "recipe": "cursor",
+            "data": {
+              "anchors": [
+                {
+                  "id": "deadband",
+                  "target": "deadband"
+                },
+                {
+                  "id": "clamped",
+                  "target": "clamped"
+                },
+                {
+                  "id": "spill",
+                  "target": "spill"
+                }
+              ]
+            }
+          },
+          {
+            "id": "err",
+            "recipe": "diagnostic",
+            "data": {
+              "target": "deadband"
+            }
+          },
+          {
+            "id": "why-card",
+            "recipe": "hover-card",
+            "data": {
+              "sections": [
+                {
+                  "code": [
+                    [
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "5"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " "
+                      },
+                      {
+                        "style": "type",
+                        "text": "Whys"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " · "
+                      },
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "321.3h"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " queued vs "
+                      },
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "136.7h"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " "
+                      },
+                      {
+                        "style": "accent",
+                        "text": "run"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " ("
+                      },
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "2"
+                      },
+                      {
+                        "style": "plain",
+                        "text": ","
+                      },
+                      {
+                        "style": {
+                          "rgb": [
+                            245,
+                            167,
+                            66
+                          ]
+                        },
+                        "text": "904"
+                      },
+                      {
+                        "style": "plain",
+                        "text": " jobs)"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "text": [
+                    [
+                      {
+                        "text": "Studio gated < "
+                      },
+                      {
+                        "text": "30 GiB",
+                        "tone": "error"
+                      },
+                      {
+                        "text": " for 11.1h while clean slept at "
+                      },
+                      {
+                        "text": "25 GiB",
+                        "tone": "warning"
+                      },
+                      {
+                        "text": "."
+                      }
+                    ],
+                    [
+                      {
+                        "text": "50 subagents spilled to pro (load 163.5, 46 exit-75 kills).",
+                        "tone": "muted"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "side": "below",
+              "target": "deadband"
+            }
+          },
+          {
+            "id": "resolved",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "edge": "bottom",
+                  "id": "spill",
+                  "kind": "editor",
+                  "target": "spill"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "Studio 26 → 63 GiB free ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "· pro load 163.5 → 13.6"
+                  }
+                ]
+              ],
+              "reach": 58.0,
+              "side": "bottom",
+              "size": 24.0,
+              "tone": "success"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "2026-10-28-rsi-system-3.md · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "kitlangton/hivemind#36",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · nextest exit 100 | 101 fixed in same PR",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [
+          {
+            "id": "deadband",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-2",
+              "rangeId": "deadband"
+            }
+          },
+          {
+            "id": "clamped",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-3",
+              "rangeId": "clamped"
+            }
+          },
+          {
+            "id": "spill",
+            "actorId": "editor",
+            "selector": {
+              "lineId": "line-8",
+              "rangeId": "spill"
+            }
+          }
+        ],
+        "continuousChannels": [
+          {
+            "id": "editor.mark.line-2",
+            "actorId": "editor",
+            "property": "mark.line-2",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25010000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.panel-y",
+            "actorId": "editor",
+            "property": "panel-y",
+            "initial": 70.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 0.0,
+                "responseSeconds": 0.84000003,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.panel-opacity",
+            "actorId": "editor",
+            "property": "panel-opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "editor.inlay.spill_hint",
+            "actorId": "editor",
+            "property": "inlay.spill_hint",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 22230000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 25010000000,
+                "target": 0.0,
+                "responseSeconds": 0.48000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.opacity",
+            "actorId": "caret",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 700000000,
+                "target": 1.0,
+                "responseSeconds": 0.192,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 28950000000,
+                "target": 0.0,
+                "responseSeconds": 0.192,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.blink",
+            "actorId": "caret",
+            "property": "blink",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 700000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 700000000,
+                "target": 30.448,
+                "durationNanos": 30448000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 25430000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 25750000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 25750000000,
+                "target": 5.398,
+                "durationNanos": 5398000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 28950000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "err.draw",
+            "actorId": "err",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 12210000000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "why-card.presence",
+            "actorId": "why-card",
+            "property": "presence",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18290000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 0.82,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 24790000000,
+                "target": 0.0,
+                "responseSeconds": 0.24000001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.deadband",
+            "actorId": "caret",
+            "property": "anchor.deadband",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25430000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.clamped",
+            "actorId": "caret",
+            "property": "anchor.clamped",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25430000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.anchor.spill",
+            "actorId": "caret",
+            "property": "anchor.spill",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25430000000,
+                "target": 0.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "caret.head",
+            "actorId": "caret",
+            "property": "head",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25430000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "caret.tail",
+            "actorId": "caret",
+            "property": "tail",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25430000000,
+                "target": 1.0,
+                "responseSeconds": 0.384,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.wave",
+            "actorId": "err",
+            "property": "wave",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25710000000,
+                "target": 0.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "err.opacity",
+            "actorId": "err",
+            "property": "opacity",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 25830000000,
+                "target": 0.0,
+                "durationNanos": 320000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "resolved.draw",
+            "actorId": "resolved",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 28450000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "resolved.label",
+            "actorId": "resolved",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 28630000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25010000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 25010000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "five-whys",
+            "startNanos": 0,
+            "endNanos": 31148999999
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg5_five_whys",
+            "path": "media/70b356c0e7f50649.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 29198999999,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 29648999999,
+            "gainDb": 0.0
+          },
+          {
+            "id": "deadband-err",
+            "path": "../../assets/pr-walkthrough/glitch.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 200000000,
+            "timelineStartNanos": 12210000000,
+            "timelineEndNanos": 12410000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "spill-spike",
+            "path": "../../assets/visual-effects/task-failure.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 480000000,
+            "timelineStartNanos": 22530000000,
+            "timelineEndNanos": 23010000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "fix-land",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 25010000000,
+            "timelineEndNanos": 25350000000,
+            "gainDb": -15.0
+          },
+          {
+            "id": "load-cool",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 28450000000,
+            "timelineEndNanos": 29245000000,
+            "gainDb": -16.5
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 600000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "06-muda-kanban",
+        "durationNanos": 30429000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "live receipts · 3",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Eliminating Muda & enforcing Kanban WIP limits"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "−30% $/turn · WIP ≤ 6"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "seer-ledger",
+            "recipe": "rune-surface",
+            "data": {
+              "commits": [
+                {
+                  "action": {
+                    "markdown": "Cut token, SQLite, and review waste first, then cap builders to match fleet slots.\n\n```facts\nOpus 200K compaction: {verified} $0.091 → $0.061 / turn (−30%, 1,599 ok)\nSQLite media_blob: {verified} 914 → 1 row/day > 256 KB (16 → 0.3 MB)\nBlind 24-run A/B: {verified} Sonnet 39% cost · Zen −97% console\n```\n\n```compare\nUnbounded push: 30 builders queue > 10 min and expire Anthropic's 5m cache.\nKanban pull (seer wip <= 6): excess cards queue FIFO and wake as slots free up.\n```\n\n```steps\n{built} limit.input 444k → 235k · >200K spend 67.8% → 0.3%\n{built} Review diet −89% ($437 → $20/day, small-diff check kept)\n{built} seer wip --max 6 + seer land warm merge train (0.3s swap)\n```",
+                    "op": "set-markdown"
+                  },
+                  "atNanos": 23330000000,
+                  "label": "reveal verified steps"
+                }
+              ],
+              "origin": [
+                960.0,
+                520.0
+              ],
+              "scaleFactor": 1.559999942779541,
+              "surface": {
+                "markdown": "Cut token, SQLite, and review waste first, then cap builders to match fleet slots.\n\n```facts\nOpus 200K compaction: {verified} $0.091 → $0.061 / turn (−30%, 1,599 ok)\nSQLite media_blob: {verified} 914 → 1 row/day > 256 KB (16 → 0.3 MB)\nBlind 24-run A/B: {verified} Sonnet 39% cost · Zen −97% console\n```\n\n```compare\nUnbounded push: 30 builders queue > 10 min and expire Anthropic's 5m cache.\nKanban pull (seer wip <= 6): excess cards queue FIFO and wake as slots free up.\n```",
+                "recipe": "note",
+                "title": "t793 · Flow, Compaction & Kanban WIP Receipts",
+                "width": 650.0
+              },
+              "theme": "opencode"
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "compaction-200k-review · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "Little's Law: L = λW",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": " · seer_wip.py keeps Cargo inside 5m cache TTL",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "seer-ledger.opacity",
+            "actorId": "seer-ledger",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "durationNanos": 260000000,
+                "curve": "cubic-out"
+              }
+            ]
+          },
+          {
+            "id": "seer-ledger.y",
+            "actorId": "seer-ledger",
+            "property": "y",
+            "initial": 18.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "seer-ledger.scale",
+            "actorId": "seer-ledger",
+            "property": "scale",
+            "initial": 0.985,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 80000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 0.88,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 17250000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 17250000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "muda-kanban",
+            "startNanos": 0,
+            "endNanos": 30429000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg6_muda_kanban",
+            "path": "media/290d5bdddd5a0450.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 28479000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 28929000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "tick-blob",
+            "path": "../../assets/visual-effects/task-running.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 140000000,
+            "timelineStartNanos": 11890000000,
+            "timelineEndNanos": 12030000000,
+            "gainDb": -16.5
+          },
+          {
+            "id": "mark-sonnet",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 17250000000,
+            "timelineEndNanos": 17550000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "commit-steps",
+            "path": "../../assets/opencode-hot-reload/confirm.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 340000000,
+            "timelineStartNanos": 23330000000,
+            "timelineEndNanos": 23670000000,
+            "gainDb": -15.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 800000000,
+      "transitionStyle": "wipe",
+      "transitionWipe": {
+        "direction": "left",
+        "labels": [
+          "LOCAL SCRIPTS",
+          "OPENCODE PRODUCT"
+        ]
+      },
+      "plan": {
+        "version": 2,
+        "id": "07-proposals",
+        "durationNanos": 43869000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "product proposals",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Four Kaizen primitives to ship natively in OpenCode"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "opencode roadmap"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    310.0,
+                    520.0,
+                    0.0
+                  ],
+                  "id": "harness",
+                  "kind": "card",
+                  "size": [
+                    320.0,
+                    136.0
+                  ],
+                  "status": [
+                    {
+                      "text": "personal scripts today",
+                      "tone": "muted"
+                    },
+                    {
+                      "text": "1 · stop on 1st defect",
+                      "tone": "error"
+                    },
+                    {
+                      "text": "2 · zero split-brain DB",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "3 · p95 queue visible",
+                      "tone": "request"
+                    },
+                    {
+                      "text": "4 · cache-safe pull WIP",
+                      "tone": "success"
+                    }
+                  ],
+                  "title": "agent harness"
+                },
+                {
+                  "at": [
+                    1140.0,
+                    525.0,
+                    28.0
+                  ],
+                  "corner": 24.0,
+                  "framed": true,
+                  "id": "roadmap",
+                  "kind": "rune-card",
+                  "size": [
+                    990.0,
+                    620.0
+                  ],
+                  "surface": {
+                    "commits": [
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 0,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "p1",
+                              "op": "set-selected",
+                              "selected": true
+                            },
+                            {
+                              "key": "p2",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p3",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p4",
+                              "op": "set-selected",
+                              "selected": false
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 8450000000,
+                        "label": "proposal 1"
+                      },
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 1,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "p1",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p2",
+                              "op": "set-selected",
+                              "selected": true
+                            },
+                            {
+                              "key": "p3",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p4",
+                              "op": "set-selected",
+                              "selected": false
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 18930000000,
+                        "label": "proposal 2"
+                      },
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 2,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "p1",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p2",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p3",
+                              "op": "set-selected",
+                              "selected": true
+                            },
+                            {
+                              "key": "p4",
+                              "op": "set-selected",
+                              "selected": false
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 26850000000,
+                        "label": "proposal 3"
+                      },
+                      {
+                        "action": {
+                          "actions": [
+                            {
+                              "index": 3,
+                              "key": "tabs",
+                              "op": "select-segment"
+                            },
+                            {
+                              "key": "p1",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p2",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p3",
+                              "op": "set-selected",
+                              "selected": false
+                            },
+                            {
+                              "key": "p4",
+                              "op": "set-selected",
+                              "selected": true
+                            }
+                          ],
+                          "op": "batch"
+                        },
+                        "atNanos": 35170000000,
+                        "label": "proposal 4"
+                      }
+                    ],
+                    "origin": [
+                      495.0,
+                      310.0
+                    ],
+                    "size": [
+                      990.0,
+                      620.0
+                    ],
+                    "surface": {
+                      "recipe": "kit",
+                      "root": {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "kind": "text",
+                                "size": 15.0,
+                                "text": "OpenCode · Built-In Kaizen",
+                                "tone": "base",
+                                "weight": 600.0
+                              },
+                              {
+                                "kind": "spacer"
+                              },
+                              {
+                                "kind": "badge",
+                                "label": "v2 product",
+                                "tone": "accent"
+                              }
+                            ],
+                            "gap": 8.0,
+                            "key": "hdr",
+                            "kind": "row",
+                            "padding": 0.0
+                          },
+                          {
+                            "children": [
+                              {
+                                "kind": "text",
+                                "size": 12.0,
+                                "text": "Pillar",
+                                "tone": "muted",
+                                "weight": 500.0
+                              },
+                              {
+                                "kind": "spacer"
+                              },
+                              {
+                                "key": "tabs",
+                                "kind": "segmented",
+                                "selected": 0,
+                                "tabs": [
+                                  "Andon",
+                                  "Lease",
+                                  "/kaizen",
+                                  "WIP Pull"
+                                ],
+                                "width": 360.0
+                              }
+                            ],
+                            "gap": 8.0,
+                            "key": "seg-row",
+                            "kind": "row",
+                            "padding": 0.0
+                          },
+                          {
+                            "children": [
+                              {
+                                "hint": "stop loops → 1-tap card",
+                                "hint_tone": "muted",
+                                "key": "p1",
+                                "kind": "list-row",
+                                "selected": true,
+                                "title": "1 · Turn Andon Breaker",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "db.lock + --bins pre-push",
+                                "hint_tone": "muted",
+                                "key": "p2",
+                                "kind": "list-row",
+                                "title": "2 · Single-Writer & Hooks",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "spans → top p95 queue",
+                                "hint_tone": "muted",
+                                "key": "p3",
+                                "kind": "list-row",
+                                "title": "3 · Wide Events & /kaizen",
+                                "tone": "base"
+                              },
+                              {
+                                "hint": "wake queue + SKILL deltas",
+                                "hint_tone": "muted",
+                                "key": "p4",
+                                "kind": "list-row",
+                                "title": "4 · Event Pull & Skill Ratchet",
+                                "tone": "base"
+                              }
+                            ],
+                            "gap": 5.0,
+                            "key": "rows",
+                            "kind": "col",
+                            "padding": 0.0
+                          }
+                        ],
+                        "gap": 12.0,
+                        "key": "dialog",
+                        "kind": "dialog",
+                        "padding": 18.0,
+                        "width": 488.0
+                      }
+                    },
+                    "theme": "opencode"
+                  }
+                },
+                {
+                  "bend": 0.0,
+                  "from": "harness",
+                  "id": "beam",
+                  "kind": "beam",
+                  "to": "roadmap::tabs",
+                  "tone": "accent"
+                },
+                {
+                  "beam": "beam",
+                  "id": "pkt",
+                  "kind": "packet",
+                  "label": "ship",
+                  "tone": "accent"
+                }
+              ],
+              "post": {
+                "backdrop": 0.11999999731779099,
+                "bloom": 0.18000000715255737,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "pin-note",
+            "recipe": "callout",
+            "data": {
+              "anchors": [
+                {
+                  "actor": "roadmap",
+                  "edge": "bottom",
+                  "id": "pin-p4",
+                  "key": "rows/p4",
+                  "kind": "rune",
+                  "side": "bottom"
+                }
+              ],
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "built into OpenCode ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "· zero custom shell glue",
+                    "tone": "muted"
+                  }
+                ]
+              ],
+              "reach": 44.0,
+              "side": "top-right",
+              "size": 24.0
+            }
+          },
+          {
+            "id": "tabs-loupe",
+            "recipe": "lens",
+            "data": {
+              "anchors": [
+                {
+                  "actor": "roadmap",
+                  "id": "pin-seg0",
+                  "key": "tabs/segment0",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "roadmap",
+                  "id": "pin-seg1",
+                  "key": "tabs/segment1",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "roadmap",
+                  "id": "pin-seg2",
+                  "key": "tabs/segment2",
+                  "kind": "rune"
+                },
+                {
+                  "actor": "roadmap",
+                  "id": "pin-seg3",
+                  "key": "tabs/segment3",
+                  "kind": "rune"
+                }
+              ],
+              "dispersion": 0.03999999910593033,
+              "magnification": 1.4199999570846558,
+              "refraction": 0.6000000238418579,
+              "shadow": 0.5,
+              "size": [
+                230.0,
+                88.0
+              ]
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "1 Andon · ",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "2 DB & Hook Lease · "
+                  },
+                  {
+                    "text": "3 Wide-Event /kaizen · "
+                  },
+                  {
+                    "text": "4 Pull WIP & Skill Ratchet",
+                    "tone": "success"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.beam.draw",
+            "actorId": "stage",
+            "property": "beam.draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 750000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 750000000,
+                "target": 1.0,
+                "durationNanos": 550000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -60.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 20.0,
+                "responseSeconds": 2.64,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.roadmap.rotation",
+            "actorId": "stage",
+            "property": "roadmap.rotation",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 300000000,
+                "target": -0.02,
+                "responseSeconds": 2.16,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.beam.port",
+            "actorId": "stage",
+            "property": "beam.port",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 450000000,
+                "target": 1.0,
+                "durationNanos": 300000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.harness.status-from",
+            "actorId": "stage",
+            "property": "harness.status-from",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8450000000,
+                "value": 0.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 8800000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 18930000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 19280000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 26850000000,
+                "value": 2.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 27200000000,
+                "value": -1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 35170000000,
+                "value": 3.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 35520000000,
+                "value": -1.0
+              }
+            ]
+          },
+          {
+            "id": "stage.harness.status",
+            "actorId": "stage",
+            "property": "harness.status",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8450000000,
+                "value": 1.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 18930000000,
+                "value": 2.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 26850000000,
+                "value": 3.0
+              },
+              {
+                "operation": "set",
+                "atNanos": 35170000000,
+                "value": 4.0
+              }
+            ]
+          },
+          {
+            "id": "stage.harness.swap",
+            "actorId": "stage",
+            "property": "harness.swap",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8450000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 8450000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 18930000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 18930000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 26850000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 26850000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "set",
+                "atNanos": 35170000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 35170000000,
+                "target": 1.0,
+                "durationNanos": 350000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.pkt.age",
+            "actorId": "stage",
+            "property": "pkt.age",
+            "initial": -1.0,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8110000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 8110000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 18590000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 18590000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 26510000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 26510000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              },
+              {
+                "operation": "set",
+                "atNanos": 34830000000,
+                "value": 0.0
+              },
+              {
+                "operation": "ease",
+                "atNanos": 34830000000,
+                "target": 4.0,
+                "durationNanos": 4000000000,
+                "curve": "linear"
+              }
+            ]
+          },
+          {
+            "id": "stage.pkt.flight",
+            "actorId": "stage",
+            "property": "pkt.flight",
+            "initial": 0.72,
+            "events": [
+              {
+                "operation": "set",
+                "atNanos": 8110000000,
+                "value": 0.72
+              },
+              {
+                "operation": "set",
+                "atNanos": 18590000000,
+                "value": 0.72
+              },
+              {
+                "operation": "set",
+                "atNanos": 26510000000,
+                "value": 0.72
+              },
+              {
+                "operation": "set",
+                "atNanos": 34830000000,
+                "value": 0.72
+              }
+            ]
+          },
+          {
+            "id": "pin-note.draw",
+            "actorId": "pin-note",
+            "property": "draw",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 35670000000,
+                "target": 1.0,
+                "durationNanos": 420000000,
+                "curve": {
+                  "cubic-bezier": [
+                    0.45,
+                    0.0,
+                    0.2,
+                    1.0
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "pin-note.label",
+            "actorId": "pin-note",
+            "property": "label",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 35850000000,
+                "target": 1.0,
+                "responseSeconds": 0.36,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.presence",
+            "actorId": "tabs-loupe",
+            "property": "presence",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 8450000000,
+                "target": 1.0,
+                "responseSeconds": 0.6,
+                "dampingRatio": 0.86,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 42969000000,
+                "target": 0.0,
+                "responseSeconds": 0.28800002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg0",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg0",
+            "initial": 1.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 26850000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35170000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg1",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg1",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 26850000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35170000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg2",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg2",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 26850000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35170000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "tabs-loupe.anchor.pin-seg3",
+            "actorId": "tabs-loupe",
+            "property": "anchor.pin-seg3",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 26850000000,
+                "target": 0.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              },
+              {
+                "operation": "spring",
+                "atNanos": 35170000000,
+                "target": 1.0,
+                "responseSeconds": 0.72,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.00001,
+                "velocityThreshold": 0.00001
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 18930000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "proposals",
+            "startNanos": 0,
+            "endNanos": 43869000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg7_proposals",
+            "path": "media/5c6bc46147c57e22.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 41919000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 42369000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "prop-mark-1",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 8450000000,
+            "timelineEndNanos": 8750000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "prop-mark-2",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 18930000000,
+            "timelineEndNanos": 19230000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "prop-mark-3",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 26850000000,
+            "timelineEndNanos": 27150000000,
+            "gainDb": -16.0
+          },
+          {
+            "id": "prop-mark-4",
+            "path": "../../assets/pr-walkthrough/mark.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 300000000,
+            "timelineStartNanos": 35170000000,
+            "timelineEndNanos": 35470000000,
+            "gainDb": -16.0
+          }
+        ]
+      }
+    },
+    {
+      "transitionNanos": 650000000,
+      "transitionStyle": "dip",
+      "plan": {
+        "version": 2,
+        "id": "08-close",
+        "durationNanos": 17769000000,
+        "actors": [
+          {
+            "id": "header",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "kaizen × opencode",
+                    "tone": "accent"
+                  },
+                  {
+                    "text": "  "
+                  },
+                  {
+                    "text": "Fix quality by changing the line the work runs on"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                96.0
+              ],
+              "size": 30.0
+            }
+          },
+          {
+            "id": "chip",
+            "recipe": "caption",
+            "data": {
+              "align": "right",
+              "chip": true,
+              "lines": [
+                [
+                  {
+                    "text": "● ",
+                    "tone": "success"
+                  },
+                  {
+                    "text": "215 → 5,436 / wk"
+                  }
+                ]
+              ],
+              "origin": [
+                1780.0,
+                96.0
+              ],
+              "size": 22.0
+            }
+          },
+          {
+            "id": "stage",
+            "recipe": "stage",
+            "data": {
+              "elements": [
+                {
+                  "at": [
+                    490.0,
+                    495.0,
+                    0.0
+                  ],
+                  "id": "crystal",
+                  "kind": "form",
+                  "points": 780,
+                  "shapes": [
+                    {
+                      "shape": "plane",
+                      "size": [
+                        360.0,
+                        210.0
+                      ]
+                    },
+                    {
+                      "edges": 0.6499999761581421,
+                      "shape": "box",
+                      "size": [
+                        224.0,
+                        224.0,
+                        224.0
+                      ]
+                    },
+                    {
+                      "radius": 148.0,
+                      "shape": "sphere"
+                    }
+                  ],
+                  "tone": "accent"
+                },
+                {
+                  "at": [
+                    490.0,
+                    735.0,
+                    0.0
+                  ],
+                  "id": "slab",
+                  "kind": "form",
+                  "points": 460,
+                  "shapes": [
+                    {
+                      "edges": 0.699999988079071,
+                      "shape": "box",
+                      "size": [
+                        430.0,
+                        14.0,
+                        250.0
+                      ]
+                    }
+                  ],
+                  "tone": "muted"
+                },
+                {
+                  "at": [
+                    1245.0,
+                    395.0,
+                    10.0
+                  ],
+                  "face": "shout",
+                  "id": "hero-num",
+                  "kind": "label",
+                  "size": 92.0,
+                  "spans": [
+                    {
+                      "text": "215 → 5,436",
+                      "tone": "accent"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1245.0,
+                    482.0,
+                    10.0
+                  ],
+                  "face": "sans-bold",
+                  "id": "hero-sub",
+                  "kind": "label",
+                  "size": 24.0,
+                  "spans": [
+                    {
+                      "text": "COMMITS PER WEEK · ANOMALY 2026",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1245.0,
+                    596.0,
+                    10.0
+                  ],
+                  "face": "sans-bold",
+                  "id": "law-1",
+                  "kind": "label",
+                  "size": 34.0,
+                  "spans": [
+                    {
+                      "text": "STOP THE LINE · GO AND SEE"
+                    }
+                  ]
+                },
+                {
+                  "at": [
+                    1245.0,
+                    662.0,
+                    10.0
+                  ],
+                  "face": "sans-bold",
+                  "id": "law-2",
+                  "kind": "label",
+                  "size": 32.0,
+                  "spans": [
+                    {
+                      "text": "PREVENT > DETECT > INSTRUCT",
+                      "tone": "success"
+                    }
+                  ]
+                }
+              ],
+              "post": {
+                "backdrop": 0.10000000149011612,
+                "bloom": 0.1599999964237213,
+                "grain": 0.012000000104308128,
+                "vignette": 0.2199999988079071
+              }
+            }
+          },
+          {
+            "id": "foot",
+            "recipe": "caption",
+            "data": {
+              "lines": [
+                [
+                  {
+                    "text": "Ohno · Imai · Liker · ",
+                    "tone": "muted"
+                  },
+                  {
+                    "text": "Spear & Bowen · Shingo · Rother · Deming"
+                  }
+                ]
+              ],
+              "origin": [
+                140.0,
+                1004.0
+              ],
+              "size": 28.0
+            }
+          }
+        ],
+        "semanticTargets": [],
+        "continuousChannels": [
+          {
+            "id": "stage.camera.z",
+            "actorId": "stage",
+            "property": "camera.z",
+            "initial": -50.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 0,
+                "target": 24.0,
+                "responseSeconds": 3.1200001,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.law-1.opacity",
+            "actorId": "stage",
+            "property": "law-1.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 4370000000,
+                "target": 1.0,
+                "durationNanos": 280000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.law-1.y",
+            "actorId": "stage",
+            "property": "law-1.y",
+            "initial": 14.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 4370000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.law-2.opacity",
+            "actorId": "stage",
+            "property": "law-2.opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 14050000000,
+                "target": 1.0,
+                "durationNanos": 280000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.law-2.y",
+            "actorId": "stage",
+            "property": "law-2.y",
+            "initial": 14.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14050000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "stage.crystal.morph",
+            "actorId": "stage",
+            "property": "crystal.morph",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 4370000000,
+                "target": 1.0,
+                "durationNanos": 1500000000,
+                "curve": "smootherstep"
+              },
+              {
+                "operation": "ease",
+                "atNanos": 14050000000,
+                "target": 2.0,
+                "durationNanos": 1600000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.crystal.pitch",
+            "actorId": "stage",
+            "property": "crystal.pitch",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 4520000000,
+                "target": 0.7853982,
+                "durationNanos": 1500000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "stage.crystal.rotation",
+            "actorId": "stage",
+            "property": "crystal.rotation",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "ease",
+                "atNanos": 4520000000,
+                "target": 0.55,
+                "durationNanos": 1800000000,
+                "curve": "smootherstep"
+              }
+            ]
+          },
+          {
+            "id": "foot.opacity",
+            "actorId": "foot",
+            "property": "opacity",
+            "initial": 0.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14050000000,
+                "target": 1.0,
+                "responseSeconds": 0.42000002,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          },
+          {
+            "id": "foot.y",
+            "actorId": "foot",
+            "property": "y",
+            "initial": 10.0,
+            "events": [
+              {
+                "operation": "spring",
+                "atNanos": 14050000000,
+                "target": 0.0,
+                "responseSeconds": 0.54,
+                "dampingRatio": 1.0,
+                "positionThreshold": 0.001,
+                "velocityThreshold": 0.001
+              }
+            ]
+          }
+        ],
+        "stateChannels": [],
+        "cues": [
+          {
+            "id": "close",
+            "startNanos": 0,
+            "endNanos": 17769000000
+          }
+        ],
+        "media": [
+          {
+            "id": "narration-seg8_close",
+            "path": "media/eb5bcf355631ff59.mp3",
+            "kind": "audio",
+            "role": "script",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 15519000000,
+            "timelineStartNanos": 450000000,
+            "timelineEndNanos": 15969000000,
+            "gainDb": 0.0
+          },
+          {
+            "id": "morph-box",
+            "path": "../../assets/psychopomp-intro/whoosh.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 612208333,
+            "timelineStartNanos": 4370000000,
+            "timelineEndNanos": 4982208333,
+            "gainDb": -16.5
+          },
+          {
+            "id": "morph-sphere",
+            "path": "../../assets/effect-shows-errors/prismatic-bloom.wav",
+            "kind": "audio",
+            "role": "layer",
+            "sourceStartNanos": 0,
+            "sourceEndNanos": 795000000,
+            "timelineStartNanos": 14050000000,
+            "timelineEndNanos": 14845000000,
+            "gainDb": -15.0
+          }
+        ]
+      }
+    }
+  ]
+}

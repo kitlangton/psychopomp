@@ -1,6 +1,7 @@
 //! Agent preflight & continuity inspection (`psychopomp plan check`):
 //! - projected screen-space bounds (`clipped_by_canvas`, `off_canvas`, `nan_pose`)
 //! - Stage card text fit (`card_text_overflow`)
+//! - text below the legibility floor (`small_text`, 2.6% of the short side)
 //! - 1-frame visual discontinuity scan (`--pops`: step pops & flash pops)
 //! - optional audio mix loudness/clipping/missing-file verification (`--audio`)
 
@@ -489,6 +490,21 @@ pub(crate) fn inspect_prepared_plan(
                     inspect_hint: Some(crop_cmd(plan_path, round_sec, ibox, size)),
                 });
             }
+            if let Some(px) = item.text_px
+                && let Some(finding) = small_text(
+                    px,
+                    &item.id,
+                    item.text.as_deref(),
+                    item.bbox,
+                    size,
+                    &target,
+                    seg.clone(),
+                    round_sec,
+                    plan_path,
+                )
+            {
+                out.push(finding);
+            }
             // Check text-bearing Stage items (`card`, `label`) against canvas edges.
             if matches!(item.kind, "card" | "label")
                 && let Some(finding) = classify_canvas_box(
@@ -595,6 +611,43 @@ pub(crate) fn inspect_reel_at(
     out
 }
 
+/// Stage text set below the legibility floor (`kit::scale::FLOOR` of the
+/// frame's short side, 28 px at 1080): it can't be read on a phone.
+#[allow(clippy::too_many_arguments)]
+fn small_text(
+    px: f32,
+    id: &str,
+    text: Option<&str>,
+    bbox: [f32; 4],
+    [cw, ch]: [u32; 2],
+    target: &str,
+    segment: Option<String>,
+    sec: f64,
+    plan_path: &Path,
+) -> Option<Finding> {
+    let floor = psychopomp::kit::scale::floor(cw.min(ch) as f32);
+    let text = text.unwrap_or("").trim();
+    if px >= floor - 0.5 || text.is_empty() || bbox[2] <= 0.5 {
+        return None;
+    }
+    let ibox = to_ibox(bbox);
+    Some(Finding {
+        severity: Severity::Warning,
+        kind: "small_text",
+        segment,
+        target: target.to_owned(),
+        message: format!(
+            "'{}' (\"{}\") is set at {px:.0}px on screen, under the {floor:.0}px floor; use kit::scale (LABEL is 36)",
+            id,
+            text.chars().take(40).collect::<String>()
+        ),
+        first_seconds: sec,
+        last_seconds: sec,
+        bbox: Some(ibox),
+        inspect_hint: Some(crop_cmd(plan_path, sec, ibox, [cw, ch])),
+    })
+}
+
 fn classify_canvas_box(
     bbox: [f32; 4],
     [cw, ch]: [u32; 2],
@@ -686,6 +739,29 @@ mod tests {
             }
         }
         px
+    }
+
+    #[test]
+    fn text_under_the_floor_warns_and_text_on_it_does_not() {
+        let check = |px: f32, text: &str| {
+            small_text(
+                px,
+                "path",
+                Some(text),
+                [100.0, 100.0, 300.0, 30.0],
+                [1920, 1080],
+                "stage.path",
+                None,
+                1.0,
+                Path::new("plan.json"),
+            )
+        };
+        let finding = check(22.0, "vendors/github/index.ts").expect("22px is under 28px");
+        assert_eq!(finding.kind, "small_text");
+        assert_eq!(finding.severity, Severity::Warning);
+        assert!(check(36.0, "vendors/github/index.ts").is_none());
+        assert!(check(28.0, "at the floor").is_none());
+        assert!(check(12.0, "   ").is_none());
     }
 
     #[test]

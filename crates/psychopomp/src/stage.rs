@@ -936,6 +936,32 @@ impl StageElement {
         }
     }
 
+    /// A straight, plain path through `through`: element ids (it docks on
+    /// their outlines) or world points. [`StageActor::connect`] draws it on,
+    /// and a [`Self::packet`] can travel it.
+    pub fn path(id: &str, through: Vec<Waypoint>) -> Self {
+        Self::Path {
+            id: id.into(),
+            through,
+            curve: Curve::default(),
+            corner: 0.0,
+            bend: 0.0,
+            tone: Tone::default(),
+            width: default_width(),
+            dash: None,
+            arrow: Arrow::None,
+        }
+    }
+
+    /// Arrowheads on a path or an open shape.
+    pub fn arrow(mut self, value: Arrow) -> Self {
+        match &mut self {
+            Self::Path { arrow, .. } | Self::Shape { arrow, .. } => *arrow = value,
+            other => panic!("stage element '{}' has no arrow", other.id()),
+        }
+        self
+    }
+
     /// A rectangle shape with a muted stroke and no fill.
     pub fn rect(id: &str, at: [f32; 3], size: [f32; 2]) -> Self {
         Self::Shape {
@@ -1455,7 +1481,9 @@ impl StageElement {
                 "opacity", "x", "y", "z", "width", "height", "scale", "rotation", "blur", "draw",
                 "fill", "emphasis", "flash",
             ],
-            Self::Path { .. } => &["opacity", "draw", "trim", "flow", "emphasis", "surge"],
+            Self::Path { .. } => &[
+                "opacity", "draw", "trim", "flow", "emphasis", "surge", "tint",
+            ],
             Self::Icon { .. } => &["opacity", "x", "y", "z", "scale", "blur", "flash"],
             Self::Footage { .. } => &STAGE_FOOTAGE_CHANNELS,
             Self::RuneCard { .. } => &[
@@ -1631,6 +1659,7 @@ impl StageElement {
                 ("flow", 0.0),
                 ("emphasis", 0.0),
                 ("surge", 0.0),
+                ("tint", 0.0),
             ],
             Self::Icon { .. } => &[
                 ("opacity", 1.0),
@@ -2439,18 +2468,28 @@ impl StageActor {
     }
 
     /// The channel for `property`, declared on first use with `initial`.
+    ///
+    /// # Panics
+    ///
+    /// When the Stage has no such property (a missing element or a channel
+    /// its kind lacks): the renderer would reject it, so authoring fails
+    /// here, where the scene line is still on the stack.
     pub fn channel(
         &mut self,
         scene: &mut PlanBuilder,
         property: &str,
         initial: f32,
     ) -> ContinuousHandle {
+        assert!(
+            self.plan.accepts(property),
+            "stage actor '{}' has no property '{property}'",
+            self.id()
+        );
         scene.channel(&self.actor, property, initial)
     }
 
     /// The channel for `property`, declared on first use at the value the
     /// renderer reads when nothing writes it ([`StagePlan::channel_default`]).
-    /// An unknown property starts at 0; the renderer's preflight rejects it.
     fn resting(&mut self, scene: &mut PlanBuilder, property: &str) -> ContinuousHandle {
         let initial = self.plan.channel_default(property).unwrap_or(0.0);
         self.channel(scene, property, initial)
@@ -3680,6 +3719,15 @@ mod tests {
             ..plan
         };
         assert_eq!(custom.channel_default("post.vignette"), Some(0.22));
+    }
+
+    #[test]
+    #[should_panic(expected = "has no property 'ghost.opacity'")]
+    fn a_channel_on_a_missing_element_fails_while_authoring() {
+        let mut scene = PlanBuilder::new("stage-demo", 5_000_000_000);
+        let mut stage = StageActor::declare(&mut scene, "stage", &plan()).unwrap();
+        stage.channel(&mut scene, "caption.opacity", 0.0);
+        stage.channel(&mut scene, "ghost.opacity", 0.0);
     }
 
     #[test]

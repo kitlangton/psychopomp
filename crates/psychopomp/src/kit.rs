@@ -9,13 +9,29 @@
 //! | essay, story, or quiet announcement on warm paper | [`editorial`] |
 //! | social poster, title card, or quote in portrait | [`kinetic_poster`] |
 //! | bright product launch or feature reveal | [`product_showcase`] |
+//! | code walkthrough where the code is the picture | [`ide`] |
+//! | pitch or argument told in huge claims on colour fields | [`broadsheet`] |
+//!
+//! Every kit shares the [`scale`] (type sizes and the legibility floor),
+//! [`code`] (highlighted code blocks the camera can frame), [`diagram`]
+//! (nodes, drawn-on edges, packets), [`field`] (colour fields), and
+//! [`moves`] (entrances with a character each). A film
+//! may move between kits' rooms beat to beat: one visual idea per beat, and
+//! the next beat changes scale, colour, or composition.
 //!
 //! Kits are values, not a framework: change any field (`.canvas(..)`,
 //! `.palette`, a voice) when the brief asks for it.
+pub mod broadsheet;
+pub mod code;
+pub mod diagram;
 pub mod editorial;
 pub mod explainer;
+pub mod field;
+pub mod ide;
 pub mod kinetic_poster;
+pub mod moves;
 pub mod product_showcase;
+pub mod scale;
 
 use crate::{
     author::PlanBuilder,
@@ -203,12 +219,14 @@ mod tests {
     use super::*;
     use crate::author::SECOND;
 
-    fn kits() -> [StyleKit; 4] {
+    fn kits() -> [StyleKit; 6] {
         [
             explainer::kit(),
             editorial::kit(),
             kinetic_poster::kit(),
             product_showcase::kit(),
+            ide::kit(),
+            broadsheet::kit(),
         ]
     }
 

@@ -46,6 +46,7 @@ pub mod sfx;
 pub mod stage;
 pub mod state;
 pub mod subtitles;
+pub mod syntax;
 pub mod task;
 pub mod terminal;
 pub mod text;
