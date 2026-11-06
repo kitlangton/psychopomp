@@ -14,7 +14,8 @@
 //!
 //! Every kit shares the [`scale`] (type sizes and the legibility floor),
 //! [`code`] (highlighted code blocks the camera can frame), [`diagram`]
-//! (nodes, drawn-on edges, packets), and [`field`] (colour fields). A film
+//! (nodes, drawn-on edges, packets), [`field`] (colour fields), and
+//! [`moves`] (entrances with a character each). A film
 //! may move between kits' rooms beat to beat: one visual idea per beat, and
 //! the next beat changes scale, colour, or composition.
 //!
@@ -28,6 +29,7 @@ pub mod explainer;
 pub mod field;
 pub mod ide;
 pub mod kinetic_poster;
+pub mod moves;
 pub mod product_showcase;
 pub mod scale;
 
