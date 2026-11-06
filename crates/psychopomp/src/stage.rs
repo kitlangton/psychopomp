@@ -936,6 +936,32 @@ impl StageElement {
         }
     }
 
+    /// A straight, plain path through `through`: element ids (it docks on
+    /// their outlines) or world points. [`StageActor::connect`] draws it on,
+    /// and a [`Self::packet`] can travel it.
+    pub fn path(id: &str, through: Vec<Waypoint>) -> Self {
+        Self::Path {
+            id: id.into(),
+            through,
+            curve: Curve::default(),
+            corner: 0.0,
+            bend: 0.0,
+            tone: Tone::default(),
+            width: default_width(),
+            dash: None,
+            arrow: Arrow::None,
+        }
+    }
+
+    /// Arrowheads on a path or an open shape.
+    pub fn arrow(mut self, value: Arrow) -> Self {
+        match &mut self {
+            Self::Path { arrow, .. } | Self::Shape { arrow, .. } => *arrow = value,
+            other => panic!("stage element '{}' has no arrow", other.id()),
+        }
+        self
+    }
+
     /// A rectangle shape with a muted stroke and no fill.
     pub fn rect(id: &str, at: [f32; 3], size: [f32; 2]) -> Self {
         Self::Shape {

@@ -124,6 +124,14 @@ impl Ease {
     /// acceleration meet the holds continuously at both ends.
     pub const GLIDE: Self = Self::Smootherstep;
 
+    /// Eases by role, so a film never runs one curve on everything. An
+    /// arrival lands on a long tail (expo-out, `cubic-bezier(0.16, 1, 0.3, 1)`).
+    pub const ARRIVE: Self = Self::CubicBezier([0.16, 1.0, 0.3, 1.0]);
+    /// A camera move or a colour flood eases both ways (power2.inOut).
+    pub const TRAVEL: Self = Self::CubicBezier([0.45, 0.0, 0.55, 1.0]);
+    /// An exit or a zoom through accelerates away (power3.in).
+    pub const LEAVE: Self = Self::CubicBezier([0.32, 0.0, 0.67, 0.0]);
+
     pub fn sample(self, t: f32) -> f32 {
         let t = t.clamp(0.0, 1.0);
         match self {
