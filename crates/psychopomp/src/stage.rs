@@ -1481,7 +1481,9 @@ impl StageElement {
                 "opacity", "x", "y", "z", "width", "height", "scale", "rotation", "blur", "draw",
                 "fill", "emphasis", "flash",
             ],
-            Self::Path { .. } => &["opacity", "draw", "trim", "flow", "emphasis", "surge"],
+            Self::Path { .. } => &[
+                "opacity", "draw", "trim", "flow", "emphasis", "surge", "tint",
+            ],
             Self::Icon { .. } => &["opacity", "x", "y", "z", "scale", "blur", "flash"],
             Self::Footage { .. } => &STAGE_FOOTAGE_CHANNELS,
             Self::RuneCard { .. } => &[
@@ -1657,6 +1659,7 @@ impl StageElement {
                 ("flow", 0.0),
                 ("emphasis", 0.0),
                 ("surge", 0.0),
+                ("tint", 0.0),
             ],
             Self::Icon { .. } => &[
                 ("opacity", 1.0),

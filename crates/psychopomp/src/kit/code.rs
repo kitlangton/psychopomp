@@ -9,12 +9,18 @@
 //! let stage = kit.stage(code.elements());
 //! code.reveal(&mut s, sc, at, millis(40));
 //! code.focus(&mut s, sc, 3..5, at + seconds(1.2), 0.5);
-//! s.camera().frame(sc, &code.ids(3..5), 160.0, at + seconds(1.2), Move::Glide(0.9))?;
+//! code.frame(&s.camera(), sc, 3..5, 120.0, at + seconds(1.2), Move::Glide(0.9))?;
 //! ```
 //!
 //! Focus dims the other lines rather than hiding them, so the viewer keeps
 //! the shape of the file while the eye goes to the line the voice names.
+//! [`CodeBlock::frame`] pushes in on lines but always keeps every column in
+//! frame: a code line cut off at the frame's edge reads as a mistake, while
+//! lines running off the top and bottom read as a camera move.
 use std::ops::Range;
+
+use anyhow::{Context, Result};
+use glam::{Vec2, vec2, vec3};
 
 use crate::{
     author::PlanBuilder,
@@ -22,7 +28,7 @@ use crate::{
     face::Face,
     math::easing::Ease,
     paint::Paint,
-    stage::{StageActor, StageElement},
+    stage::{CameraRig, Footprint, Move, StageActor, StageElement},
     syntax::{Lang, SyntaxTheme, lex},
     tone::Tone,
 };
@@ -33,8 +39,6 @@ use super::scale;
 pub const LINE_HEIGHT: f32 = 1.55;
 /// Advance of one CommitMono character as a multiple of the type size.
 pub const ADVANCE: f32 = 0.6;
-/// How bright an unfocused line stays.
-pub const DIM: f32 = 0.28;
 /// How far a line rises as it reveals, as a fraction of its size.
 const RISE: f32 = 0.3;
 
@@ -318,7 +322,11 @@ impl CodeBlock {
         seconds: f32,
     ) {
         for index in 0..self.lines.len() {
-            let level = if lines.contains(&index) { 1.0 } else { DIM };
+            let level = if lines.contains(&index) {
+                1.0
+            } else {
+                self.theme.dim
+            };
             for id in self.drawn(index) {
                 s.ease(
                     sc,
@@ -362,6 +370,35 @@ impl CodeBlock {
             seconds,
             Ease::TRAVEL,
         );
+    }
+
+    /// Push the camera in on `lines`, as close as the block's full width
+    /// allows inside `padding`: rows above and below may leave the frame,
+    /// columns never do. Returns when the move settles.
+    pub fn frame(
+        &self,
+        camera: &CameraRig,
+        sc: &mut PlanBuilder,
+        lines: Range<usize>,
+        padding: f32,
+        at: u64,
+        motion: Move,
+    ) -> Result<u64> {
+        let [left, _, width, _] = self.bounds();
+        let top = self.line_y(lines.start) - self.pitch() * 0.5;
+        let height = self.pitch() * lines.len().max(1) as f32;
+        let footprint = Footprint {
+            at: vec3(left + width * 0.5, top + height * 0.5, 0.0),
+            half: vec2(width, height) * 0.5,
+            shift: Vec2::ZERO,
+        };
+        let pose = camera
+            .pose(sc, at + motion.nanos())
+            .framed(&[footprint], padding)
+            .with_context(|| {
+                format!("{} lines {lines:?} cannot fit inside {padding} px", self.id)
+            })?;
+        Ok(camera.move_to(sc, &pose, at, motion))
     }
 
     /// Fade the whole block out (an exit: shorter than the entrance).
@@ -507,7 +544,7 @@ mod tests {
                 .position
         };
         assert_eq!(value(&scene, "entry-l3.opacity"), 1.0);
-        assert_eq!(value(&scene, "entry-l0.opacity"), DIM);
+        assert_eq!(value(&scene, "entry-l0.opacity"), code.theme.dim);
         assert_eq!(value(&scene, "entry-focus.opacity"), 1.0);
         assert!((value(&scene, "entry-focus.y") - 3.5 * code.pitch()).abs() < 1e-3);
         assert!((value(&scene, "entry-focus.height") - code.pitch()).abs() < 1e-3);
@@ -526,5 +563,39 @@ mod tests {
         let pose = s.camera().framing(&scene, &targets, 200.0, 0).unwrap();
         // Framing one line pushes in: the camera zooms past rest.
         assert!(pose.zoom > 1.0 || pose.position.z > 0.0, "{pose:?}");
+    }
+
+    #[test]
+    fn framing_lines_keeps_every_column() {
+        let code = CodeBlock::new(
+            "wide",
+            Lang::TypeScript,
+            &format!("a\n{}\nb", "x".repeat(60)),
+        )
+        .at([100.0, 400.0])
+        .size(40.0);
+        let kit = explainer::kit();
+        let plan = kit.stage(code.elements());
+        let mut scene = kit.begin("code", 4 * SECOND);
+        let s = StageActor::declare(&mut scene, "stage", &plan).unwrap();
+        let camera = s.camera();
+        code.frame(&camera, &mut scene, 0..1, 100.0, 0, Move::Cut)
+            .unwrap();
+        let pose = camera.pose(&scene, SECOND);
+        let [left, _, width, _] = code.bounds();
+        let edge = |x: f32| pose.project(vec3(x, code.line_y(1), 0.0)).unwrap().0.x;
+        // The widest line sits inside the padding even though only line 0
+        // was asked for.
+        assert!(edge(left) >= 99.0, "{}", edge(left));
+        assert!(
+            edge(left + width) <= 1920.0 - 99.0,
+            "{}",
+            edge(left + width)
+        );
+        assert!(
+            edge(left + width) - edge(left) > 1700.0,
+            "pushes in until the width fills"
+        );
+        scene.finish().unwrap();
     }
 }

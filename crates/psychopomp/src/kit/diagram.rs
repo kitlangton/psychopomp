@@ -11,9 +11,14 @@
 //! s.connect(sc, "ask", at, 0.6);
 //! s.send(sc, "ask-packet", at + seconds(0.7), 0.9);
 //! ```
+//!
+//! Edges draw matte by default, a quiet grey with a hint of their tone, so
+//! a dark diagram stays calm. On a colour field, [`ink`] them: they draw
+//! flat in their tone, like a printed line.
 use crate::{
+    author::PlanBuilder,
     paint::Paint,
-    stage::{Arrow, StageElement, Waypoint},
+    stage::{Arrow, StageActor, StageElement, Waypoint},
     tone::Tone,
     typography::TypePlan,
 };
@@ -64,6 +69,13 @@ pub fn route(id: &str, from: &str, via: &[[f32; 2]], to: &str, tone: Tone) -> St
         .stroke_width(EDGE_WIDTH)
         .corner(EDGE_CORNER)
         .arrow(Arrow::End)
+}
+
+/// Draw `edges` flat in their tone from the start, instead of matte.
+pub fn ink(s: &mut StageActor, sc: &mut PlanBuilder, edges: &[&str]) {
+    for edge in edges {
+        s.channel(sc, &format!("{edge}.tint"), 1.0);
+    }
 }
 
 /// A packet that travels `edge` from its first node.
@@ -118,9 +130,11 @@ mod tests {
         let mut s = StageActor::declare(&mut scene, "stage", &plan).unwrap();
         let drawn = s.connect(&mut scene, "ask", 0, 0.6);
         s.send(&mut scene, "ask-packet", drawn + seconds(0.2), 0.9);
-        let draw = |at| scene.sample(s.actor(), "ask.draw", at).unwrap().position;
-        assert_eq!(draw(0), 0.0);
-        assert_eq!(draw(SECOND), 1.0);
+        ink(&mut s, &mut scene, &["ask"]);
+        let sample = |property, at| scene.sample(s.actor(), property, at).unwrap().position;
+        assert_eq!(sample("ask.draw", 0), 0.0);
+        assert_eq!(sample("ask.draw", SECOND), 1.0);
+        assert_eq!(sample("ask.tint", 0), 1.0);
         scene.finish().unwrap();
     }
 }

@@ -532,6 +532,9 @@ pub struct SyntaxTheme {
     /// Inserted and deleted ink, for diff signs.
     pub add: [u8; 3],
     pub remove: [u8; 3],
+    /// How bright an unfocused line stays. Ink on paper fades into the
+    /// ground sooner than light on dark, so the day theme dims less.
+    pub dim: f32,
 }
 
 impl SyntaxTheme {
@@ -560,6 +563,7 @@ impl SyntaxTheme {
             constant: [255, 159, 67],
             add: [110, 231, 150],
             remove: [255, 107, 107],
+            dim: 0.28,
         }
     }
 
@@ -587,6 +591,7 @@ impl SyntaxTheme {
             constant: [176, 108, 12],
             add: [46, 111, 64],
             remove: [196, 43, 35],
+            dim: 0.42,
         }
     }
 
