@@ -30,7 +30,9 @@ ordinary Stage authoring. Kits are values: override any field the brief needs.
 
 | Brief | Kit | Canvas | Palette | Type | Primitives |
 |---|---|---|---|---|---|
-| PR, bug, architecture explainer | `kit::explainer` | 1920x1080 | Clear Neutral (`--theme neutral`) | CommitMono | `header`, `chip`, `footer`, `card`, `orb`, diffs, chat |
+| PR, pitch, architecture explainer (code room) | `kit::ide` | 1920x1080 | night `#0B0D12`, one amber `#FFB020` | Archivo Black over CommitMono | `kit::code::CodeBlock` (night theme), `kit::diagram`, camera pushes |
+| PR, pitch, architecture explainer (colour room) | `kit::broadsheet` | 1920x1080 | vermilion `#E8401C`, cobalt `#1F3FD1`, paper `#F2EDE4`, signal `#FFC400` | Anton over Instrument Sans | `kit::field` floods, `broadsheet::shout`, day-theme `CodeBlock`, `diagram::ink` |
+| legacy dark card explainer | `kit::explainer` | 1920x1080 | Clear Neutral | CommitMono | `card`, `orb`, diffs, chat |
 | essay, story, quiet announcement | `kit::editorial` | 1920x1080 | warm paper, carbon ink, one vermilion | Instrument Serif over Instrument Sans | `kicker`, `rule`, `flourish`, `Art` with `trim_in` |
 | social poster, title card, quote | `kit::kinetic_poster` | 1080x1920 | chalk, ink, one signal orange | Anton stacks over Instrument Sans | `stack` + `rise_type` slits, `slot` + `block` wipes |
 | product launch, feature reveal | `kit::product_showcase` | 1920x1080 | daylight glass, white-to-sky ground | Archivo Black over Instrument Sans | `type_window` (footage in glyphs), `window`, `footage` |
@@ -50,7 +52,13 @@ rises. The explainer kit writes nothing to the plan, so explainer films render
 as before. No narration is required: the three style reels (`scenes/editorial`,
 `scenes/kinetic-poster`, `scenes/product-launch`) are silent 12–14 s references.
 
+Explainers and pitches alternate the `ide` and `broadsheet` rooms beat by beat;
+`kit::diagram`, `kit::moves` and `kit::scale` work in both. See
+[Art direction](#art-direction) and `docs/craft.md` for the sources.
+
 Canonical reference scenes in the repo:
+- `scenes/agents-pitch`, `scenes/connections-pitch`: narrated pitches that
+  alternate the IDE room and colour fields; the reference for explainers.
 - `scenes/opc18-catalog`: measured performance story with card-clone decks,
   `RollingNumberActor`, `MeterActor`, and stepped `Diff`.
 - `scenes/pr-walkthrough/src/flagship.rs`: service orb + client topology zooming
@@ -59,6 +67,48 @@ Canonical reference scenes in the repo:
   inlay hints, native chat threads, terminals, and diffstats.
 - `scenes/editorial`, `scenes/kinetic-poster`, `scenes/product-launch`: one
   silent reel per non-explainer kit.
+
+## Art direction
+
+A film is samey when every beat is the same small grey text on black. Each beat
+gets one visual idea, and the film changes scale, colour and composition
+between beats.
+
+- **One idea per beat.** One focal object; everything else is hidden or dimmed.
+  Never put the narration on screen word for word: show the real type, row, path
+  or number, and stamp only the 1–3 word term as it's said.
+- **Vary rooms.** Alternate the IDE room with colour fields (`kit::field`:
+  `field`, `slab`, `flood`, `drain`, `wipe`). A field change marks a new act.
+  No header, chip or footer chrome, and no thin floating boxes.
+- **Type scale, with a floor.** Use `kit::scale`: `HERO` 220, `DISPLAY` 160,
+  `HEADLINE` 112, `BODY` 52, `CODE` 42, `LABEL` 36. Nothing under `FLOOR`
+  (2.6% of the short side, 28 px at 1080p); `plan check` warns `small_text`.
+  The display element is 3–6× its neighbours. `scale::read_hold(text)` gives the
+  minimum hold (0.4 s + 0.2 s a word).
+- **Code is always highlighted.** `kit::code::CodeBlock::new(id, Lang::TypeScript, src)`
+  with the room's theme (`ide::THEME` night, `broadsheet::THEME` day), at most
+  `MAX_CODE_LINES` (12) lines, size ≥ `CODE`. `.focus(...)` dims the rest by the
+  theme's `dim`; `.frame(...)` pushes the camera in on lines but never crops a
+  column. `.mark(lines, LineMark::Deleted)` shows a diff. Line ids are
+  `{id}-l{n}` (blank lines draw none), numbers `{id}-n{n}`.
+- **Move the camera to what's said.** `s.camera().frame(sc, &[ids], pad, at, Move::Glide(s))`
+  frames named elements; push in on the line or node the narration names.
+- **Entrances from `kit::moves`:** `on(&spoken, "phrase")` (lands 80 ms before the
+  word), `hide`, `arrive`, `slide`, `stamp`, `pop`, `show`, `out`, `dim`. Pick
+  three or four per film and repeat them. Eases by role: `Ease::ARRIVE` for
+  entrances, `TRAVEL` for moves, `LEAVE` for exits.
+- **Diagrams on colour.** `kit::diagram` nodes and edges; on a colour field call
+  `diagram::ink(s, sc, &[edge ids])` so edges draw flat in their tone.
+- **Text paints over shapes.** Fields are always behind, and labels close at
+  depth −0.5, so a slab or field can't cover text. A room that should be empty
+  hides its own elements.
+- **Unknown properties panic.** Writing a channel for an element that doesn't
+  exist (`pr5-risk.opacity`) panics while authoring, with your scene line on the
+  stack.
+- **Glyphs.** Anton and Archivo Black lack ✕ and ∪; keep arrows out of Anton.
+  CommitMono has → ← ∪ ≤; Instrument Sans lacks ≤. Avoid ⊓ and ⇄.
+- **Cues.** `on()` takes the first occurrence of a phrase and panics if it isn't
+  said; avoid number words (they normalize to digits) and hyphenated words.
 
 ## Steps
 
@@ -109,9 +159,9 @@ Canonical reference scenes in the repo:
    - **Benchmarks, checks, and counters:** `ChecklistActor`, `BarsActor`,
      `MeterActor`, `RollingNumberActor`, `ConfettiActor`, `TerminalActor`,
      `ChangedFilesActor`.
-   Key every beat to spoken phrases with `spoken.at_any(&["phrase", "fallback"])`
-   and causal guards (`.not_before(send.reply())`), frame explainer segments with
-   `kit::explainer::{header, chip, footer}` (other kits set their own credits), and Layer SFX (`sfx::TICK`, `MARK`,
+   Key every beat to spoken phrases with `kit::moves::on(&spoken, "phrase")` or
+   `spoken.at_any(&["phrase", "fallback"])` and causal guards
+   (`.not_before(send.reply())`), and layer SFX (`sfx::TICK`, `MARK`,
    `CONFIRM`, `WHOOSH`, `GLITCH`, `IMPACT`, `BOOM`, `SPARKLE`) at `-10..-18 dB`.
    *Done when:* `cargo run -p psychopomp-<name>` emits `<name>.reel.json` and
    `plan validate` reports `"valid": true`.
@@ -120,12 +170,13 @@ Canonical reference scenes in the repo:
    segment with `psychopomp::time_spec` (`3.2s`, `500ms`, `120f`, `50%`, `intro`,
    `intro@1.5s`, `intro..outro`):
    ```sh
-   cargo run --release -- plan check scenes/<name>/<name>.reel.json --pops --audio --theme neutral
-   cargo run --release -- plan strip scenes/<name>/<name>.reel.json all output/strip.png -n 16 --cols 4 --shutter --theme neutral
-   cargo run --release -- plan frame scenes/<name>/<name>.reel.json "intro@2s,receipts@50%,verdict@end" output/stills --shutter --theme neutral
+   cargo run --release -- plan check scenes/<name>/<name>.reel.json --pops --audio
+   cargo run --release -- plan strip scenes/<name>/<name>.reel.json all output/strip.png -n 16 --cols 4 --shutter
+   cargo run --release -- plan frame scenes/<name>/<name>.reel.json "intro@2s,receipts@50%,verdict@end" output/stills --shutter
    ```
    - `plan check [--pops] [--audio]` verifies projected canvas bounds
-     (`clipped_by_canvas`, `off_canvas`, `nan_pose`), **Stage card text fit**
+     (`clipped_by_canvas`, `off_canvas`, `nan_pose`), text under the legibility
+     floor (`small_text`), **Stage card text fit**
      (`card_text_overflow`), 1-frame step/flash discontinuities (`--pops`),
      missing audio files, digital clipping, and ITU-R BS.1770-4 loudness (aim
      for `-14..-18 LUFS` integrated, true peak `< -1 dBTP`, segments within `2 LU`).
@@ -141,7 +192,7 @@ Canonical reference scenes in the repo:
 5. **Render and probe.** Encode the full-shutter 1080p60 MP4 once after sheets
    and checks pass (`--draft` is for fast single-sample timing checks only):
    ```sh
-   cargo run --release -- plan render scenes/<name>/<name>.reel.json output/<name>.mp4 --theme neutral
+   cargo run --release -- plan render scenes/<name>/<name>.reel.json output/<name>.mp4
    ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,r_frame_rate,duration -of json output/<name>.mp4
    ```
    *Done when:* `ffprobe` confirms the kit's canvas (`1920x1080`, or `1080x1920`
