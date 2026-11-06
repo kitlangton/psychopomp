@@ -43,14 +43,15 @@ pub fn read_hold(text: &str) -> f32 {
     0.4 + 0.2 * text.split_whitespace().count() as f32
 }
 
+// The display sizes are at least three times the body size.
+const _: () = assert!(HERO >= 3.0 * BODY && DISPLAY >= 3.0 * BODY);
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn the_scale_has_a_boss_and_a_floor() {
-        assert!(HERO >= 3.0 * BODY);
-        assert!(DISPLAY >= 3.0 * BODY);
+    fn labels_sit_above_the_floor() {
         assert!(LABEL > floor(1080.0));
         assert_eq!(floor(1080.0).round(), 28.0);
         assert_eq!(fit(HEADLINE, 2160.0), 2.0 * HEADLINE);
