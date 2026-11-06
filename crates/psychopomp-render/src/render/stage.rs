@@ -1456,6 +1456,8 @@ pub(crate) struct StageBoundsItem {
     pub bbox: [f32; 4],
     /// `(label_text, text_px, inner_card_px)` when card text exceeds card inner width.
     pub card_overflow: Option<(String, f32, f32)>,
+    /// On-screen type size in pixels, after scale and camera, for text items.
+    pub text_px: Option<f32>,
     pub non_finite: bool,
 }
 
@@ -1556,6 +1558,7 @@ pub(crate) fn stage_bounds(
                 text: None,
                 bbox: [0.0; 4],
                 card_overflow: None,
+                text_px: None,
                 non_finite: true,
             });
             continue;
@@ -1563,6 +1566,12 @@ pub(crate) fn stage_bounds(
         let Some(place) = scene.place(element) else {
             continue;
         };
+        let text_px = match element {
+            StageElement::Label { size, .. } => Some(*size),
+            StageElement::Type { spec, .. } => Some(spec.size),
+            _ => None,
+        }
+        .map(|size| size * place.scale * zoom);
         let (kind, text, corners, card_overflow) = match element {
             StageElement::Label {
                 size: font_size,
@@ -1714,6 +1723,7 @@ pub(crate) fn stage_bounds(
                 text,
                 bbox: [0.0; 4],
                 card_overflow: None,
+                text_px: None,
                 non_finite: true,
             });
             continue;
@@ -1750,6 +1760,7 @@ pub(crate) fn stage_bounds(
                 (max_y - min_y).max(0.0),
             ],
             card_overflow,
+            text_px,
             non_finite: false,
         });
     }
